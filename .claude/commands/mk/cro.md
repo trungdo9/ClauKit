@@ -16,7 +16,7 @@ REST: $2..$n (action-specific arguments)
 
 ## Workflow
 
-Activate copywriter + cro skills. Reference .claude/workflows/cro-framework.md (25 points).
+Activate `copywriting` + `cro` skills. Reference .claude/workflows/cro-framework.md (25 points).
 
 ### Actions
 
