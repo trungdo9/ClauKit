@@ -1,12 +1,12 @@
 # Design Guidelines
 
-**Last Updated**: 2026-01-31
-**Version**: 1.0.1
-**Project**: spark-dev
+**Last Updated**: 2026-07-16
+**Version**: 1.3.6
+**Project**: ClauKit
 
 ## Overview
 
-This document provides design guidelines, principles, and best practices for projects built with spark-dev template.
+This document provides design guidelines, principles, and best practices for projects built with the ClauKit template (`@trungdo9/ClauKit`, installed via `ck init`).
 
 ## Design Principles
 
@@ -54,8 +54,8 @@ This document provides design guidelines, principles, and best practices for pro
 ### From References
 
 ```bash
-/ck:design screenshot "path/to/screenshot.png"
-/ck:design video "path/to/video.mp4"
+/ck:design screenshot "path/to/screenshot.png"   # match reference exactly
+/ck:design describe "path/to/screenshot-or-video"  # describe + hand-off plan only, no implementation
 ```
 
 ### UI/UX Pro Max
@@ -263,4 +263,4 @@ Export design tokens for code:
 - [System Architecture](./system-architecture.md)
 - [Code Standards](./code-standards.md)
 - [Deployment Guide](./deployment-guide.md)
-- [UI/UX Designer Agent](../.claude/agents/ui-ux-designer.md)
+- [UI/UX Pro Max Skill (Style Intelligence)](../.claude/skills/software/design/ui-ux-pro-max/SKILL.md)

@@ -1,12 +1,12 @@
 # System Architecture
 
-**Last Updated**: 2026-01-31
-**Version**: 1.0.1
-**Project**: spark-dev
+**Last Updated**: 2026-07-16
+**Version**: 1.3.6
+**Project**: ClauKit
 
 ## Overview
 
-spark-dev implements a multi-agent AI orchestration architecture where specialized agents collaborate through a file-based communication protocol. Built on top of ClaudeKit Engineer, it enables developers to leverage AI assistance throughout the entire software development lifecycle.
+ClauKit implements a multi-agent AI orchestration architecture where specialized agents collaborate through a file-based communication protocol, running entirely inside Claude Code. It enables developers to leverage AI assistance throughout the entire software development lifecycle via three installable kits (`engineer`, `marketing`, `both`).
 
 ## Architectural Pattern
 
@@ -62,39 +62,44 @@ spark-dev implements a multi-agent AI orchestration architecture where specializ
 
 #### 2.1 Agent Types
 
-**19 Specialized Agents**:
+**30 Specialized Agents** — 19 in `.claude/agents/engineering/` (engineer kit) + 11 in `.claude/agents/marketing/` (marketing kit). No `specialists/`, `operations/`, or `research/` subfolders exist; both pools are flat.
+
+**Engineering (19)**:
 
 | Category | Agent | Purpose |
 |----------|-------|---------|
 | Planning | `planner` | Technical planning and architecture |
 | Planning | `researcher` | Research and analysis |
 | Planning | `brainstormer` | Solution ideation |
+| Development | `frontend-developer` | UI implementation + design creation (via design skills) |
+| Development | `backend-developer` | Server-side logic, APIs, infrastructure |
 | Quality | `tester` | Test creation and execution |
 | Quality | `code-reviewer` | Code quality assessment |
 | Quality | `debugger` | Issue analysis and debugging |
-| Quality | `security-auditor` | Security analysis |
+| Quality | `performance-agent` | Performance profiling and optimization |
+| Quality | `security-auditor` | Security analysis (OWASP 2025) |
 | Documentation | `docs-manager` | Documentation maintenance |
-| Documentation | `copywriter` | Content creation |
 | Documentation | `journal-writer` | Development journaling |
 | Operations | `git-manager` | Version control operations |
 | Operations | `project-manager` | Progress tracking |
 | Operations | `database-admin` | Database operations |
 | Operations | `mcp-manager` | MCP server management |
+| Operations | `integration-agent` | Third-party API / payment / webhook integration |
 | Implementation | `scout` | Codebase exploration |
-| Implementation | `scout-external` | External tool exploration |
-| Implementation | `ui-ux-designer` | Design creation |
-| Implementation | `lovable-to-nextjs` | Lovable to Next.js conversion |
-| Implementation | `csharp-expert` | C#/.NET development |
+| Implementation | `scout-external` | External tool exploration (Gemini/OpenCode) |
+
+**Marketing (11, only with `--kit marketing`/`both`)**: `campaign-manager`, `content-strategist`, `copywriter`, `crm-specialist`, `email-specialist`, `market-researcher`, `seo-content`, `seo-geo`, `seo-schema`, `seo-technical`, `video-producer`.
+
+No `lovable-to-nextjs` or `csharp-expert` agents exist on disk — verify any agent name against `docs/clauKit-registry.md` § 2 before citing it. C#/.NET is covered by the `csharp-developer` **skill** (`software/development/csharp-developer/`), not an agent.
 
 #### 2.2 Agent Definition Structure
 
 ```yaml
 ---
 name: agent-name
-description: Agent purpose and use cases
-mode: subagent | all
-model: anthropic/claude-sonnet-4-20250514
-temperature: 0.1
+description: Agent purpose and use cases (used for auto-delegation matching)
+model: opus | sonnet | haiku | inherit
+tools: Glob, Grep, Read, Edit, Write, ...   # optional — omit to inherit full tool set
 ---
 
 # Agent instructions in markdown
@@ -104,15 +109,13 @@ temperature: 0.1
 ## Quality Standards
 ```
 
-**Agent Modes**:
-- `subagent`: Spawned by other agents, runs independently
-- `all`: Can be invoked as main or sub agent
+No `mode` or `temperature` field is used in current agent frontmatter (only `name`/`description`/`model`/optional `tools`).
 
-**Model Selection**:
-- `claude-sonnet-4-20250514` - Fast, efficient (most agents)
-- `claude-opus-4-1-20250805` - Advanced reasoning (complex planning)
-- `google/gemini-2.5-flash` - Cost-effective (docs-manager)
-- `grok-code` - Specialized (git-manager)
+**Model Selection** (per `docs/clauKit-registry.md` § 2):
+- `opus` — advanced reasoning: `planner`, `brainstormer`, `code-reviewer`, `debugger`
+- `sonnet` — default, most agents (`frontend-developer`, `backend-developer`, `tester`, `docs-manager`, `journal-writer`, `database-admin`, `performance-agent`, `integration-agent`, and all 11 marketing agents)
+- `haiku` — token-efficient, narrow-scope agents: `git-manager`, `mcp-manager`, `project-manager`, `researcher`, `scout`, `scout-external`
+- `inherit` — takes the calling session's model: `security-auditor`
 
 #### 2.3 Agent Communication Protocol
 
@@ -153,22 +156,25 @@ Issues, blockers, or questions
 
 #### 3.1 Command Categories
 
-**65+ Slash Commands**:
+**37 command files** — 25 under `.claude/commands/ck/` (`/ck:<name>`) + 12 under `.claude/commands/mk/` (`/mk:<name>`). All engineer-kit commands live under the `ck:` prefix (applied 2026-05-17); `/skill:*` commands referenced in older docs never existed as files and are not part of the current command set.
 
 | Category | Commands |
 |----------|----------|
-| Development | `/plan`, `/cook`, `/test`, `/ask`, `/bootstrap`, `/brainstorm` |
-| Debugging | `/debug`, `/fix`, `/fix --quick`, `/fix --review`, `/fix ci`, `/fix test`, `/fix types`, `/fix logs`, `/fix ui` |
-| Design | `/design fast`, `/design good`, `/design 3d`, `/design screenshot`, `/design video`, `/design describe`, `/design ui-ux-pro-max` |
-| Content | `/content fast`, `/content good`, `/content enhance`, `/content cro` |
-| Documentation | `/docs -init`, `/docs -update`, `/docs -summarize` (aliases: `/docs init`, `/docs update`, `/docs summarize`) |
-| SEO | `/seo audit`, `/seo keywords`, `/seo schema` |
-| Git Operations | `/git cm`, `/git cp`, `/git pr`, `/git merge` |
-| Planning | `/plan fast`, `/plan hard`, `/plan two`, `/plan ci`, `/plan cro` |
-| Project Management | `/watzup`, `/journal`, `/scout`, `/scout -ext` |
-| Skills | `/skill:add`, `/skill:create`, `/skill:optimize`, `/skill:fix-logs` |
-| Integration | `/sepay`, `/use-mcp` |
-| Code Review | `/review` |
+| Development | `/ck:plan`, `/ck:cook`, `/ck:test`, `/ck:ask`, `/ck:bootstrap`, `/ck:brainstorm`, `/ck:team` |
+| Debugging | `/ck:debug`, `/ck:fix [ci\|logs\|test\|types\|ui]`, `/ck:fix [--auto\|--review\|--quick\|--parallel\|--flow]` |
+| Design | `/ck:design [fast\|good] [3d\|screenshot\|describe\|ui-ux-pro-max]` |
+| Documentation | `/ck:docs [init\|update\|summarize]` |
+| SEO (engineer kit) | `/ck:seo [audit\|keywords\|schema]` |
+| Security | `/ck:security [scope] [--en]` |
+| Orchestration | `/ck:flow [save\|list]`, `/ck:team` |
+| Git Operations | `/ck:git [cm\|cp\|pr\|merge]` |
+| Planning | `/ck:plan [fast\|hard\|two\|ci\|cro] [-o md\|html]` |
+| Refactor / Port | `/ck:refactor`, `/ck:xia` |
+| Project Management | `/ck:watzup`, `/ck:journal`, `/ck:scout [-ext]`, `/ck:find` |
+| Integration | `/ck:sepay`, `/ck:use-mcp` |
+| Code Review | `/ck:review [--flow]` |
+| Research | `/ck:research` |
+| Marketing kit (12, `/mk:` namespace) | `/mk:plan`, `/mk:seo`, `/mk:content`, `/mk:email`, `/mk:ads`, `/mk:cro`, `/mk:research`, `/mk:growth`, `/mk:campaign`, `/mk:leads`, `/mk:nurture`, `/mk:video` |
 
 #### 3.2 Command Workflow Pattern
 
@@ -223,7 +229,7 @@ Re-creates Claude Code's dynamic-workflow model on ClauKit primitives — 4-axis
 #### 4.2 Standard Workflows
 
 **Feature Development Workflow**:
-1. User: `/cook "add user authentication"`
+1. User: `/ck:cook "add user authentication"`
 2. Planner: Create implementation plan
 3. Researchers: Explore auth solutions (parallel)
 4. Planner: Synthesize research, create detailed plan
@@ -236,7 +242,7 @@ Re-creates Claude Code's dynamic-workflow model on ClauKit primitives — 4-axis
 11. Git Manager: Commit with conventional message
 
 **Bug Fix Workflow**:
-1. User: `/debug "API timeout errors"`
+1. User: `/ck:debug "API timeout errors"`
 2. Debugger: Analyze logs and system
 3. Debugger: Identify root cause
 4. Planner: Create fix plan
@@ -246,7 +252,7 @@ Re-creates Claude Code's dynamic-workflow model on ClauKit primitives — 4-axis
 8. Git Manager: Commit fix
 
 **Documentation Update Workflow**:
-1. User: `/docs -update` (alias: `/docs update`)
+1. User: `/ck:docs update`
 2. Docs Manager: Check doc freshness
 3. (If >1 day old): Run `repomix` for codebase summary
 4. Docs Manager: Analyze codebase changes
@@ -270,13 +276,14 @@ Re-creates Claude Code's dynamic-workflow model on ClauKit primitives — 4-axis
         └── examples.md
 ```
 
-**Skill Categories**:
-- **DevOps**: Cloudflare, Docker, Google Cloud
-- **Databases**: MongoDB, PostgreSQL
-- **Web Frameworks**: Next.js, Turborepo
-- **UI Styling**: shadcn/ui, Tailwind CSS
-- **Individual Skills**: chrome-devtools, debugging, docs-seeker, document-skills, ffmpeg, imagemagick, gemini-audio, gemini-video-understanding, mcp-builder, problem-solving, shopify
-- **Specialized**: csharp-expert, security-audit, seo
+**126 skills across 5 groups** (see `docs/clauKit-registry.md` § 1 for the full itemized list):
+- **`global/`** (1): `docs-seeker`
+- **`marketing/`** (50): claude-seo engine (`seo`, `seo-audit`, `seo-technical`, `seo-content`, `seo-schema`, `seo-geo`, +19 more `seo-*`), coreyhaines31-sourced (`copywriting`, `cro`, `ads`, `emails`, `analytics`, +18 more), ClauKit-authored (`product-marketing`, `kit-builder`)
+- **`automation/`** (6): `marketing-orchestrator`, `mcp-ga4`, `mcp-gsc`, `mcp-sendgrid`, `mcp-resend`, `mcp-reviewweb`
+- **`integrations/`** (2): `wordpress-rest`, `mcp-wordpress`
+- **`software/`** (67): top-level standalone (`git`, `worktree`, `research`, `planning`, `cook`, `refactor`, `debugging`, `code-review`, `dynamic-workflow`, `team`, `xia`, `chrome-devtools`, `agent-browser`, `security`, `cti-expert`, `problem-solving`, `sequential-thinking`, …) + subcategorized: `ai/` (`ai-artist`, `ai-multimodal`, `remotion`), `database/` (`postgresql`, `supabase`), `design/` (`aesthetic`, `frontend-design`, `ui-ux-pro-max`, `threejs`, …), `development/` (`csharp-developer`, `node-specialist`, `python-pro`, `react-specialist`, `nextjs-developer`, `typescript-pro`, `bootstrap`, `test-automation`, …), `document-skills/` (`docx`, `pdf`, `pptx`, `xlsx`), `git/`, `infrastructure/` (`docker-expert`)
+
+No `ffmpeg`, `shopify`, `mongodb`, `turborepo`, `csharp-expert`, or `security-audit` skills exist — these were either never real or have been superseded (`security-audit` → `security`; C# coverage → `csharp-developer`; image/video work → `ai-multimodal`). Verify any skill name against the registry before citing it.
 
 #### 5.2 Skill Invocation
 
@@ -319,18 +326,16 @@ Re-creates Claude Code's dynamic-workflow model on ClauKit primitives — 4-axis
 
 #### 6.2 MCP (Model Context Protocol) Integration
 
-**Available MCP Servers**:
+**Available MCP Servers** (`.claude/.mcp.json.example`):
 - **context7**: Read latest documentation
+- **human-mcp**: Gemini-backed multimodal helper (requires `GOOGLE_GEMINI_API_KEY`)
+- **chrome-devtools**: Browser automation / devtools access
 - **sequential-thinking**: Structured thinking process
-- **SearchAPI**: Google and YouTube search
-- **review-website**: Web content extraction
-- **VidCap**: Video transcript analysis
 
 **Skills Integration**:
-- **ai-multimodal**: Visual analysis (images, videos, documents)
+- **ai-multimodal**: Visual analysis + image generation/editing (images, videos, documents)
 - **docs-seeker**: Documentation reading
 - **sequential-thinking**: Problem decomposition
-- **imagemagick**: Image processing
 
 #### 6.3 External Service Integration
 
@@ -468,9 +473,8 @@ Remote Repository (GitHub)
 - PowerShell (Windows hooks)
 
 **AI Platforms**:
-- Anthropic Claude (Sonnet 4, Opus 4)
-- Google Gemini 2.5 Flash
-- Grok Code
+- Anthropic Claude (opus/sonnet/haiku via agent `model:` frontmatter — see § 2.2)
+- Google Gemini (optional, via `human-mcp` MCP server and `GEMINI_API_KEY` env var)
 
 **Development Tools**:
 - Semantic Release (versioning)

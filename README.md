@@ -1,6 +1,6 @@
 # ClauKit — The Opinionated Multi-Agent Orchestration Framework for Claude Code
 
-*128 skills · 31 agents · 72 gated commands · atomic-commit safety · MCP-ready · 3 installable kits*
+*126 skills · 30 agents · 52 gated commands · atomic-commit safety · MCP-ready · 3 installable kits*
 
 [![GitHub stars](https://img.shields.io/github/stars/trungdo9/ClauKit?style=social)](https://github.com/trungdo9/ClauKit/stargazers)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
@@ -9,7 +9,7 @@
 
 Claude Code gives you the primitives — but no opinions on how to combine them. You're left to invent your own workflows, manage parallel agents by hand, and hope you don't `git push` a broken refactor. Most Claude Code templates throw a thousand skills at the wall and call it a day.
 
-**ClauKit is the opinionated alternative.** 128 curated skills, 31 specialized agents, 72 gated commands — each one earns its place. Built-in pre-flight checks block destructive operations. Multi-agent orchestration via `/ck:team` and `/ck:flow` runs parallel Claude Code work safely. **3 installable kits** — engineer (default), marketing, both.
+**ClauKit is the opinionated alternative.** 126 curated skills, 30 specialized agents, 52 gated commands — each one earns its place. Built-in pre-flight checks block destructive operations. Multi-agent orchestration via `/ck:team` and `/ck:flow` runs parallel Claude Code work safely. **3 installable kits** — engineer (default), marketing, both.
 
 > Plan once. `/clear` context. Cook with confidence. That's the ClauKit workflow.
 
@@ -17,7 +17,7 @@ Claude Code gives you the primitives — but no opinions on how to combine them.
 
 - **Gated pipelines, not gambling.** `/ck:refactor` and `/ck:cook` enforce pre-flight gates — clean working tree, tests green, not on `main`. See [`.claude/workflows/primary-workflow.md`](./.claude/workflows/primary-workflow.md). Skip the gates and the command refuses to run.
 - **Trio architecture — one concept, one entry point.** Every skill (knowledge) maps to an agent (persona) and a command (`/ck:<name>` trigger). No tool roulette. Full map in [`docs/clauKit-registry.md`](./docs/clauKit-registry.md).
-- **Curated, not crawled.** 71 skills hand-selected for AI dev workflows — research, planning, refactoring, testing, code review, SEO, payments. Each maintained, each documented, each in the registry. No abandoned scaffolds.
+- **Curated, not crawled.** 126 skills hand-selected for AI dev workflows — research, planning, refactoring, testing, code review, SEO, payments. Each maintained, each documented, each in the registry. No abandoned scaffolds.
 
 ## Quick Start
 
@@ -275,7 +275,7 @@ flowchart LR
     H --> I["/ck:git cm or cp"]
 ```
 
-**Tip**: `/ck:find` is your meta-helper across 71 skills + 52 commands. Use it whenever you think "there's probably a ClauKit tool for this".
+**Tip**: `/ck:find` is your meta-helper across 126 skills + 52 commands. Use it whenever you think "there's probably a ClauKit tool for this".
 
 ---
 
@@ -460,7 +460,7 @@ ultracode / native dynamic-workflow     →  not used — /ck:flow is the ClauKi
 
 ## 🎯 Marketing Kit
 
-Install with `ck init --kit marketing` (or `--kit both`). Adds the **`/mk:` namespace** — 50 marketing skills, 10 agents, 12 commands, plus WordPress publishing. Every `/mk:` command (except `/mk:plan`) **hard-fails without `plans/marketing-context.md`** — the hub holding your ICP, positioning, brand voice, competitors, goals, and channels.
+Install with `ck init --kit marketing` (or `--kit both`). Adds the **`/mk:` namespace** — 50 marketing skills, 11 agents, 12 commands, plus WordPress publishing. Every `/mk:` command (except `/mk:plan`) **hard-fails without `plans/marketing-context.md`** — the hub holding your ICP, positioning, brand voice, competitors, goals, and channels.
 
 > **The marketing rule**: `/mk:plan` once → it writes the context hub → every other `/mk:` command reads from it. Plan once, run many.
 
@@ -494,10 +494,10 @@ ClauKit isn't for everyone. If you want an editor with AI baked in → use [Curs
 ```
 claukit/
 ├── .claude/                    # Claude Code configuration
-│   ├── agents/                 # Specialized agent definitions (21 agents)
+│   ├── agents/                 # Specialized agent definitions (30 agents: 19 engineering/ + 11 marketing/)
 │   ├── commands/               # Slash command implementations (52 commands)
 │   ├── hooks/                  # Git hooks and scripts
-│   ├── skills/                 # Specialized skills library (71 skills)
+│   ├── skills/                 # Specialized skills library (126 skills)
 │   ├── workflows/              # Development workflow definitions
 │   ├── settings.json           # Claude Code settings
 │   ├── metadata.json           # Project metadata
@@ -528,7 +528,7 @@ claukit/
 
 ### AI Agent System
 
-**21 Specialized Agents**:
+**30 Specialized Agents** — 19 engineer-kit (`.claude/agents/engineering/`) + 11 marketing-kit (`.claude/agents/marketing/`, only with `--kit marketing`/`both`):
 
 | Category | Agents |
 |----------|--------|
@@ -537,10 +537,11 @@ claukit/
 | Quality | `tester`, `code-reviewer`, `debugger`, `performance-agent`, `security-auditor` |
 | Documentation | `docs-manager`, `journal-writer` |
 | Operations | `git-manager`, `project-manager`, `database-admin`, `mcp-manager`, `integration-agent` |
-| Implementation | `scout`, `scout-external`, `ui-ux-designer` |
-| Specialized | `copywriter` |
+| Implementation | `scout`, `scout-external` |
 
-### Slash Commands (26)
+Marketing kit (11): `campaign-manager`, `content-strategist`, `copywriter`, `crm-specialist`, `email-specialist`, `market-researcher`, `seo-content`, `seo-geo`, `seo-schema`, `seo-technical`, `video-producer` — see [`skills/marketing/README.md`](./skills/marketing/README.md).
+
+### Slash Commands (25)
 
 All dispatcher commands use **positional args** (no dash prefix) for mode selection. Only `/ck:fix` uses `--flags` for combinable modifiers.
 
@@ -555,13 +556,15 @@ All dispatcher commands use **positional args** (no dash prefix) for mode select
 | `/ck:docs` | `[init\|update\|summarize]` |
 | `/ck:find` | `<task-description>` |
 | `/ck:fix` | `[ci\|logs\|test\|types\|ui] [--auto] [--review] [--quick] [--parallel] <issue>` |
+| `/ck:flow` | `[save\|list] <task>` |
 | `/ck:git` | `[cm\|cp\|pr\|merge]` |
 | `/ck:journal` | `(no args)` |
 | `/ck:plan` | `[fast\|hard\|two\|ci\|cro] <task> [-o md\|html]` · `<plan.md> -o html` (convert existing plan → HTML) |
 | `/ck:refactor` | `<refactor-pattern>` |
 | `/ck:research` | `<topic>` |
-| `/ck:review` | `[tasks-or-prompt]` |
+| `/ck:review` | `[tasks-or-prompt] [--flow]` |
 | `/ck:scout` | `<prompt> [scale] [-ext]` |
+| `/ck:security` | `[scope] [--en]` |
 | `/ck:seo` | `[audit\|keywords\|schema] <target>` |
 | `/ck:sepay` | `<tasks>` |
 | `/ck:team` | `<template> [context] [--devs\|--reviewers\|--researchers\|--debuggers N]` |
@@ -627,7 +630,7 @@ All documentation is maintained in `./docs`:
 <details>
 <summary><strong>What is ClauKit and how is it different from aggregate Claude Code templates?</strong></summary>
 
-ClauKit is an opinionated multi-agent orchestration framework for Claude Code with 74 curated skills, 21 agents, and 60 gated commands. Unlike aggregate Claude Code templates (often 1000+ skills, kitchen-sink approach), ClauKit hand-selects each skill, enforces pre-flight safety gates on destructive operations, and ships a trio architecture (skill + agent + command) so every concept has exactly one entry point. See the [comparison table](#claukit-vs-other-ai-coding-tools) for side-by-side capabilities.
+ClauKit is an opinionated multi-agent orchestration framework for Claude Code with 126 curated skills, 30 agents, and 52 gated commands. Unlike aggregate Claude Code templates (often 1000+ skills, kitchen-sink approach), ClauKit hand-selects each skill, enforces pre-flight safety gates on destructive operations, and ships a trio architecture (skill + agent + command) so every concept has exactly one entry point. See the [comparison table](#claukit-vs-other-ai-coding-tools) for side-by-side capabilities.
 
 </details>
 
@@ -710,7 +713,7 @@ eligibility in SERP.
   "name": "ClauKit",
   "applicationCategory": "DeveloperApplication",
   "operatingSystem": "Cross-platform",
-  "description": "Opinionated multi-agent orchestration framework for Claude Code with 74 curated skills, 21 agents, and 60 gated commands.",
+  "description": "Opinionated multi-agent orchestration framework for Claude Code with 126 curated skills, 30 agents, and 52 gated commands.",
   "url": "https://github.com/trungdo9/ClauKit",
   "license": "https://opensource.org/licenses/MIT",
   "author": { "@type": "Person", "name": "trungdo9" },
@@ -725,7 +728,7 @@ eligibility in SERP.
     {
       "@type": "Question",
       "name": "What is ClauKit and how is it different from aggregate Claude Code templates?",
-      "acceptedAnswer": { "@type": "Answer", "text": "ClauKit is an opinionated multi-agent orchestration framework for Claude Code with 74 curated skills, 21 agents, and 60 gated commands. Unlike aggregate Claude Code templates (often 1000+ skills, kitchen-sink approach), ClauKit hand-selects each skill, enforces pre-flight safety gates on destructive operations, and ships a trio architecture (skill + agent + command)." }
+      "acceptedAnswer": { "@type": "Answer", "text": "ClauKit is an opinionated multi-agent orchestration framework for Claude Code with 126 curated skills, 30 agents, and 52 gated commands. Unlike aggregate Claude Code templates (often 1000+ skills, kitchen-sink approach), ClauKit hand-selects each skill, enforces pre-flight safety gates on destructive operations, and ships a trio architecture (skill + agent + command)." }
     },
     {
       "@type": "Question",

@@ -84,13 +84,11 @@ project-root/
 - Main file always named `SKILL.md`
 - Supporting files in `references/` or `scripts/`
 - Examples:
-  - `cloudflare-workers/SKILL.md`
-  - `mongodb/SKILL.md`
-  - `csharp-expert/SKILL.md`
-  - `security/SKILL.md`
-  - `postgresql/SKILL.md`
-  - `supabase/SKILL.md`
-  - `seo/SKILL.md`
+  - `software/development/csharp-developer/SKILL.md`
+  - `software/security/SKILL.md`
+  - `database/databases/SKILL.md` (postgresql)
+  - `database/supabase/SKILL.md`
+  - `marketing/seo/SKILL.md`
 
 **Documentation** (`docs/`):
 - Format: `[document-purpose].md`
@@ -938,7 +936,6 @@ const expensiveCalculation = memoize((n) => {
 
 ### Related Projects
 - [Claude Code Documentation](https://docs.claude.com/)
-- [ClaudeKit Engineer](https://github.com/claudekit/claudekit-engineer)
 
 ## Unresolved Questions
 

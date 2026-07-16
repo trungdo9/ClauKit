@@ -1,14 +1,14 @@
 # Project Overview & Product Development Requirements (PDR)
 
-**Project Name**: spark-dev
-**Version**: 1.0.1
-**Last Updated**: 2026-01-31
+**Project Name**: ClauKit
+**Version**: 1.3.6
+**Last Updated**: 2026-07-16
 **Status**: Active Development
 **Repository**: https://github.com/trungdo9/ClauKit
 
 ## Executive Summary
 
-spark-dev is a development template for building AI-powered applications with Claude Code. Built on top of ClaudeKit Engineer, it provides a standardized foundation for AI-assisted development with pre-configured agents, commands, skills, and workflows.
+ClauKit is an opinionated multi-agent orchestration framework for Claude Code, distributed as the npm package `@trungdo9/ClauKit` (CLI: `ck`/`claukit`). `ck init` copies `.claude/` (agents, commands, skills, workflows) into any project, giving it a standardized foundation for AI-assisted development. Three installable kits: `engineer` (default), `marketing`, `both`.
 
 ## Project Purpose
 
@@ -64,19 +64,23 @@ Provide a production-ready template that:
 
 ### 1. Multi-Agent Orchestration System
 
-**Agent Types** (19 agents):
-- **Planning Agents**: planner, researcher, brainstormer
-- **Implementation Agents**: Main agent, scout, scout-external, ui-ux-designer, csharp-expert
-- **Quality Agents**: tester, code-reviewer, debugger, security-auditor
-- **Documentation Agents**: docs-manager, copywriter, journal-writer
-- **Management Agents**: project-manager, git-manager, database-admin, mcp-manager
+**Agent Types** (30 total — 19 engineering + 11 marketing, `.claude/agents/{engineering,marketing}/`):
+- **Planning Agents**: `planner`, `researcher`, `brainstormer`
+- **Implementation Agents**: `scout`, `scout-external`, `frontend-developer`, `backend-developer`
+- **Quality Agents**: `tester`, `code-reviewer`, `debugger`, `performance-agent`, `security-auditor`
+- **Documentation Agents**: `docs-manager`, `journal-writer`
+- **Management Agents**: `project-manager`, `git-manager`, `database-admin`, `mcp-manager`, `integration-agent`
+- **Marketing Agents** (marketing kit only, 11): `campaign-manager`, `content-strategist`, `copywriter`, `crm-specialist`, `email-specialist`, `market-researcher`, `seo-content`, `seo-geo`, `seo-schema`, `seo-technical`, `video-producer`
+
+No `csharp-expert` agent exists — C#/.NET is covered by the `csharp-developer` skill, not a dedicated agent.
 
 **Orchestration Patterns**:
 - **Sequential Chaining**: Planning -> Implementation -> Testing -> Review -> Deploy
 - **Parallel Execution**: Multiple researchers exploring different approaches
 - **Query Fan-Out**: Simultaneous investigation of technical solutions
+- **Controlled Fan-Out/Pipeline** (`/ck:flow`): phase-gated, cost-previewed orchestration over agent personas — re-creates the dynamic-workflow model on ClauKit primitives, never the native `ultracode` runtime
 
-### 2. Slash Commands (22, all `/ck:<name>`)
+### 2. Slash Commands (37 files: 25 `/ck:<name>` + 12 `/mk:<name>`)
 
 **Development**:
 - `/ck:plan [task]` - Research and create implementation plans
@@ -128,6 +132,25 @@ Provide a production-ready template that:
 
 **Integration**:
 - `/ck:use-mcp` - Use MCP servers
+- `/ck:sepay` - SePay.vn payment integration
+
+**Quality & Security**:
+- `/ck:review [--flow]` - Scan and analyze the codebase
+- `/ck:security [scope] [--en]` - OWASP 2025 security audit
+
+**Refactor & Migration**:
+- `/ck:refactor <pattern>` - Large mechanical refactor (rename/extract/migrate/codemod), gated + atomic-commit
+- `/ck:xia <github-url>` - Port & refactor a feature from a public GitHub repo
+
+**Orchestration**:
+- `/ck:team <template>` - Persistent multi-session teammates (templates: research/cook/review/debug)
+- `/ck:flow [save|list] <task>` - Controllable phase-gated fan-out/pipeline over agent personas (never native `ultracode`)
+
+**Discovery**:
+- `/ck:find <task>` - Recommend the right ClauKit skill/agent/command
+
+**Marketing kit** (`/mk:` namespace, 12 commands — only with `--kit marketing`/`both`; every command except `/mk:plan` hard-fails without `plans/marketing-context.md`):
+- `/mk:plan`, `/mk:seo`, `/mk:content`, `/mk:email`, `/mk:ads`, `/mk:cro`, `/mk:research`, `/mk:growth`, `/mk:campaign`, `/mk:leads`, `/mk:nurture`, `/mk:video`
 
 ### 3. Workflow System
 
@@ -302,9 +325,8 @@ Provide a production-ready template that:
 - Cross-platform hook dispatcher (Node.js)
 
 **AI Platforms**:
-- Anthropic Claude (Sonnet 4, Opus 4)
-- Google Gemini (for docs-manager)
-- Grok Code (for git-manager)
+- Anthropic Claude (opus/sonnet/haiku, selected per-agent via `model:` frontmatter — `docs-manager`=sonnet, `git-manager`=haiku)
+- Google Gemini (optional, via `human-mcp` MCP server + `GEMINI_API_KEY`)
 
 **Development Tools**:
 - Semantic Release
@@ -320,12 +342,11 @@ Provide a production-ready template that:
 
 ### Integration Points
 
-**MCP Tools**:
+**MCP Tools** (`.claude/.mcp.json.example`):
 - **context7**: Read latest documentation
 - **sequential-thinking**: Structured problem solving
-- **SearchAPI**: Google and YouTube search
-- **review-website**: Web content extraction
-- **VidCap**: Video transcript analysis
+- **human-mcp**: Gemini-backed multimodal helper
+- **chrome-devtools**: Browser automation / devtools access
 
 **External Services**:
 - GitHub (Actions, Releases, PRs)
@@ -520,6 +541,7 @@ Provide a production-ready template that:
 - [Code Standards](./code-standards.md)
 - [System Architecture](./system-architecture.md)
 - [Project Roadmap](./project-roadmap.md)
+- [ClauKit Registry](./clauKit-registry.md) — skills + agents + commands single source of truth
 - [Design Guidelines](./design-guidelines.md)
 - [Deployment Guide](./deployment-guide.md)
 

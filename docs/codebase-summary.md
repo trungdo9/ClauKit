@@ -1,55 +1,45 @@
 # Codebase Summary
 
-**Last Updated**: 2026-01-31
-**Version**: 1.0.1
+**Last Updated**: 2026-07-16
+**Version**: 1.3.6
 **Repository**: https://github.com/trungdo9/ClauKit
 
 ## Overview
 
-spark-dev is a development template for building AI-powered applications with Claude Code. Built on top of ClaudeKit Engineer, it provides a standardized foundation for AI-assisted development with pre-configured agents, commands, skills, and workflows.
+ClauKit is an opinionated multi-agent orchestration framework that runs inside Claude Code. It ships pre-configured agents, slash commands, skills, and gated workflows via `ck init` (installs `.claude/` into any project). Three installable kits: `engineer` (default, `/ck:` namespace), `marketing` (`/mk:` namespace), `both`.
 
 ## Project Structure
 
 ```
-spark-dev/
-├── .claude/                    # Claude Code configuration
-│   ├── agents/                 # 23 specialized agent definitions
-│   ├── commands/               # 54 slash command implementations
-│   ├── hooks/                  # Git hooks and scripts
-│   │   └── scout-block.js      # Scout Block Hook dispatcher
-│   ├── skills/                 # 75 skills (3-tier: global/, software/, marketing/)
-│   ├── workflows/              # Development workflow definitions
+ClauKit/
+├── .claude/                    # Claude Code configuration (what `ck init` copies)
+│   ├── agents/
+│   │   ├── engineering/        # 19 engineer-kit agent definitions
+│   │   └── marketing/          # 11 marketing-kit agent definitions
+│   ├── commands/
+│   │   ├── ck/                 # 25 engineer-kit command files (/ck:<name>)
+│   │   └── mk/                 # 12 marketing-kit command files (/mk:<name>)
+│   ├── hooks/                  # Git hooks and scripts (scout-block.js dispatcher)
+│   ├── kits/                   # Kit manifests (*.json) — engineer/marketing/both
+│   ├── skills/                 # 126 SKILL.md files — see § Skills Library below
+│   ├── workflows/              # Development workflow definitions (*.md)
 │   ├── settings.json           # Claude Code settings
-│   ├── metadata.json           # Project metadata
-│   ├── .env.example            # Environment variables template
-│   ├── .gitignore              # Git exclusions
+│   ├── metadata.json           # Installed-project metadata (kit, version)
+│   ├── .env.example            # Environment template
 │   ├── .mcp.json.example       # MCP configuration template
-│   ├── statusline.sh           # Bash statusline script
-│   ├── statusline.ps1          # PowerShell statusline script
-│   └── statusline.js           # Node.js statusline script
-├── .opencode/                  # OpenCode CLI configuration
-│   ├── agent/                  # Agent definitions
-│   └── command/                # Command definitions
-├── .github/                    # GitHub configuration
-│   └── workflows/              # CI/CD workflows
-├── docs/                       # Project documentation
-│   ├── project-overview-pdr.md
-│   ├── codebase-summary.md
-│   ├── code-standards.md
-│   ├── system-architecture.md
-│   └── project-roadmap.md
-├── plans/                      # Implementation plans and reports
-│   └── reports/                # Agent-to-agent communication
-├── scripts/                    # Setup and utility scripts
-│   └── postinstall.js          # Post-install setup script
+│   ├── statusline.sh/.ps1/.js  # Cross-platform statusline scripts
+├── .opencode/                  # OpenCode CLI configuration (mirrors .claude/)
+│   ├── agent/
+│   └── command/
+├── .github/workflows/          # CI/CD (semantic-release)
+├── docs/                       # Project documentation (this file's home)
+├── plans/                      # Implementation plans + `<plan>/reports/`
+├── scripts/                    # Setup/utility scripts (postinstall, link-skills)
+├── skills/marketing/README.md  # Marketing kit reference (skills/agents/commands)
 ├── CLAUDE.md                   # Project instructions for Claude
+├── MARKETING.md                # Full marketing kit guide
 ├── README.md                   # Project overview
-├── package.json                # Node.js dependencies
-├── .releaserc.json             # Semantic release configuration
-├── .commitlintrc.json          # Commit linting rules
-├── .gitignore                  # Git exclusions
-├── .repomixignore              # Repomix exclusions
-├── CHANGELOG.md                # Version history
+├── package.json                # `@trungdo9/ClauKit` npm package (bin: `ck`, `claukit`)
 └── LICENSE                     # MIT License
 ```
 
@@ -59,142 +49,112 @@ spark-dev/
 - **Node.js**: >=18.0.0
 - **Package Manager**: npm
 - **License**: MIT
-
-### Production Dependencies
-- `next-engineer` - GitHub package for AI-powered development
+- **Package**: `@trungdo9/ClauKit` (CLI binaries `ck` / `claukit`)
 
 ### Development Dependencies
-- `@commitlint/cli`: ^18.4.3
-- `@commitlint/config-conventional`: ^18.4.3
-- `@semantic-release/changelog`: ^6.0.3
-- `@semantic-release/commit-analyzer`: ^11.1.0
-- `@semantic-release/exec`: ^6.0.3
-- `@semantic-release/git`: ^10.0.1
-- `@semantic-release/github`: ^9.2.6
-- `@semantic-release/npm`: ^11.0.2
-- `@semantic-release/release-notes-generator`: ^12.1.0
-- `conventional-changelog-conventionalcommits`: ^7.0.2
-- `husky`: ^8.0.3
-- `semantic-release`: ^22.0.12
+- `@commitlint/cli` + `@commitlint/config-conventional`
+- `@semantic-release/*` (changelog, commit-analyzer, exec, git, github, npm, release-notes-generator)
+- `conventional-changelog-conventionalcommits`
+- `husky`, `semantic-release`
 
 ### Development Tools
 - **Semantic Release**: Automated versioning and changelog
 - **Commitlint**: Conventional commit enforcement
 - **Husky**: Git hooks automation
-- **Repomix**: Codebase compaction for AI consumption
+- **Repomix**: Optional codebase compaction for AI consumption (`repomix-output.xml`, not committed)
 
 ### CI/CD
-- **GitHub Actions**: Automated release workflow
-- **Semantic Versioning**: Automated version management
-- **Conventional Commits**: Structured commit messages
+- **GitHub Actions**: Automated release workflow (`.github/workflows/release.yml`)
+- **Semantic Versioning**: Automated version management via Conventional Commits
 
 ## Key Components
 
 ### 1. Agent Orchestration System
 
-**Claude Code Agents** (`.claude/agents/` - 22 agents, organized by role):
+**Claude Code Agents** (`.claude/agents/` — 30 total, two folders, no `specialists/`, `operations/`, or `research/` subfolders):
 
-| Folder | Agents |
-|--------|--------|
-| `engineering/` | `planner`, `project-manager`, `frontend-developer`, `backend-developer`, `code-reviewer`, `tester`, `debugger`, `docs-manager`, `journal-writer`, `performance-agent` |
-| `specialists/` | `ui-ux-designer`, `copywriter`, `database-admin`, `security-auditor` |
-| `operations/` | `git-manager`, `mcp-manager`, `integration-agent` |
-| `research/` | `scout`, `scout-external`, `researcher` |
-| (root) | `brainstormer` |
+| Folder | Count | Agents |
+|--------|------:|--------|
+| `engineering/` (engineer kit) | 19 | `backend-developer`, `brainstormer`, `code-reviewer`, `database-admin`, `debugger`, `docs-manager`, `frontend-developer`, `git-manager`, `integration-agent`, `journal-writer`, `mcp-manager`, `performance-agent`, `planner`, `project-manager`, `researcher`, `scout`, `scout-external`, `security-auditor`, `tester` |
+| `marketing/` (marketing kit) | 11 | `campaign-manager`, `content-strategist`, `copywriter`, `crm-specialist`, `email-specialist`, `market-researcher`, `seo-content`, `seo-geo`, `seo-schema`, `seo-technical`, `video-producer` |
 
-**OpenCode Agents** (`.opencode/agent/`):
-- Similar agent definitions optimized for OpenCode CLI
+Notes:
+- `ui-ux-designer` agent was **removed** (2026-07-16) — design work now routes to `frontend-developer` + design skills (`aesthetic`, `frontend-design`, `ui-ux-pro-max`).
+- `copywriter` was **relocated** `engineering/` → `marketing/` (2026-07-16) — it's a marketing persona, not shipped with the engineer kit.
+- No `csharp-expert` or `lovable-to-nextjs` agents exist (never did on disk, or were removed — verify against `docs/clauKit-registry.md` § 2 before citing any agent name).
+
+**OpenCode Agents** (`.opencode/agent/`): mirrors the `.claude/agents/` definitions, optimized for OpenCode CLI.
 
 ### 2. Slash Commands System
 
-**Categories** (22 commands, all invoked as `/ck:<name>`):
+**Command files**: 25 under `.claude/commands/ck/` (`/ck:<name>`) + 12 under `.claude/commands/mk/` (`/mk:<name>`) = 37 files. `docs/clauKit-registry.md` counts "commands" differently (dispatcher sub-actions like `/ck:fix ci` counted separately) — its header/§3/§6 figures (64/52/72) currently disagree with each other; treat the registry's § 3 tables as the itemized source of truth until that's reconciled.
 
-| Category | Commands |
-|----------|----------|
-| Development | `/ck:plan`, `/ck:cook`, `/ck:test`, `/ck:ask`, `/ck:bootstrap`, `/ck:brainstorm`, `/ck:team` |
-| Debugging | `/ck:debug`, `/ck:fix`, `/ck:fix ci`, `/ck:fix test`, `/ck:fix types`, `/ck:fix logs`, `/ck:fix ui` |
-| Design | `/ck:design fast`, `/ck:design good`, `/ck:design 3d`, `/ck:design screenshot`, `/ck:design describe`, `/ck:design ui-ux-pro-max` |
-| Documentation | `/ck:docs init`, `/ck:docs update`, `/ck:docs summarize` |
-| SEO | `/ck:seo audit`, `/ck:seo keywords`, `/ck:seo schema` |
-| Git Operations | `/ck:git cm`, `/ck:git cp`, `/ck:git pr`, `/ck:git merge` |
-| Planning | `/ck:plan fast`, `/ck:plan hard`, `/ck:plan two`, `/ck:plan ci`, `/ck:plan cro` |
-| Session | `/ck:watzup`, `/ck:journal`, `/ck:scout`, `/ck:scout -ext` |
-| Integration | `/ck:sepay`, `/ck:use-mcp` |
-| Review | `/ck:review` |
+| Namespace | Commands |
+|-----------|----------|
+| `/ck:` (engineer kit, 25 files) | `ask`, `bootstrap`, `brainstorm`, `cook`, `debug`, `design`, `docs`, `find`, `fix`, `flow`, `git`, `journal`, `plan`, `refactor`, `research`, `review`, `scout`, `security`, `seo`, `sepay`, `team`, `test`, `use-mcp`, `watzup`, `xia` |
+| `/mk:` (marketing kit, 12 files) | `ads`, `campaign`, `content`, `cro`, `email`, `growth`, `leads`, `nurture`, `plan`, `research`, `seo`, `video` |
+
+Several `/ck:` commands are dispatchers with positional-arg variants (no dash), e.g. `/ck:fix [ci|logs|test|types|ui]`, `/ck:git [cm|cp|pr|merge]`, `/ck:plan [fast|hard|two|ci|cro]`, `/ck:docs [init|update|summarize]`, `/ck:seo [audit|keywords|schema]`. `/ck:fix` also takes combinable flags: `--auto --review --quick --parallel --flow`.
 
 ### 3. Skills Library
 
-**Skills Organization** (`.claude/skills/` — 75 SKILL.md files, 3-tier):
+**Skills Organization** (`.claude/skills/` — 126 `SKILL.md` files across 5 top-level groups):
 
-- `global/` (1): `docs-seeker` — cross-cutting
-- `marketing/` (2): `seo`, `geo`
-- `software/` (66): top-level standalone + subcategories
-  - Subcategories: `ai/`, `database/`, `design/`, `development/`, `document-skills/`, `git/`
-  - 12 stubs awaiting research-fill: `agentize`, `ck-graphify`, `coding-level`, `context-engineering`, `cook`, `gkg`, `plans-kanban`, `predict`, `project-organization`, `retro`, `scenario`, `xia`
+| Group | Count | Notes |
+|-------|------:|-------|
+| `global/` | 1 | `docs-seeker` |
+| `marketing/` | 50 | 25 claude-seo engine skills + 23 coreyhaines31-sourced + 2 ClauKit-authored (`product-marketing`, `kit-builder`) |
+| `automation/` | 6 | MCP wrappers: `marketing-orchestrator`, `mcp-ga4`, `mcp-gsc`, `mcp-sendgrid`, `mcp-resend`, `mcp-reviewweb` |
+| `integrations/` | 2 | `wordpress-rest`, `mcp-wordpress` |
+| `software/` | 67 | Top-level standalone (37) + subcategorized: `ai/` (3), `database/` (2), `design/` (9), `development/` (9), `document-skills/` (4), `git/` (2), `infrastructure/` (1) |
 
-Single source of truth: `docs/clauKit-registry.md` (covers skills + agents + commands + duplicate detection). Skills auto-activate by description match; commands/agents cross-link to related skills via `Related skills` footer.
+No `ffmpeg`, `shopify`, or `csharp-expert` skills exist. Image/video generation and editing route through the `ai-multimodal` skill (stale `imagemagick` references were purged 2026-07-16 along with the earlier-deleted `media-processing` skill). C#/.NET work is covered by the `csharp-developer` skill (`software/development/csharp-developer/`), not `csharp-expert`.
+
+Single source of truth: **`docs/clauKit-registry.md`** (skills + agents + commands + duplicate detection). Skills auto-activate by description match; agents/commands cross-link to related skills.
 
 ### 4. Workflows
 
 **Primary Workflows** (`.claude/workflows/`):
 
-1. **primary-workflow.md**: Core development cycle
-   - Code implementation
-   - Testing
-   - Code quality
-   - Integration
-   - Debugging
-
-2. **development-rules.md**: Development standards
-   - File size management (<200 lines)
-   - YANGI, KISS, DRY principles
-   - Code quality guidelines
-   - Pre-commit/push rules
-
-3. **orchestration-protocol.md**: Agent coordination patterns
-   - Sequential chaining
-   - Parallel execution
-
-4. **documentation-management.md**: Documentation maintenance
-   - Roadmap and changelog updates
-   - Automatic update triggers
-   - Documentation protocols
+1. **primary-workflow.md** — Core development cycle (Plan → `/clear` → Cook → Test → Review)
+2. **development-rules.md** — Development standards (file size, YAGNI/KISS/DRY, pre-commit rules)
+3. **orchestration-protocol.md** — Agent coordination patterns (sequential/parallel/fan-out)
+4. **documentation-management.md** — Documentation maintenance triggers and protocols
+5. **cro-framework.md**, **fix-pipeline.md** — canonical pipelines referenced by `/ck:plan cro` and the `/ck:fix` family respectively
 
 ### 5. Hooks System
 
 **Scout Block Hook** (`.claude/hooks/scout-block.js`):
-- Cross-platform hook for blocking heavy directories
-- Automatic platform detection (Windows/Unix/WSL)
-- Blocks: node_modules, __pycache__, .git/, dist/, build/
+- Cross-platform Node.js dispatcher (Windows/Unix/WSL auto-detection)
+- Blocks heavy directories: `node_modules`, `__pycache__`, `.git/`, `dist/`, `build/`
 - Improves AI agent response time and token efficiency
 
 ### 6. Statusline Scripts
 
 Three implementations for cross-platform statusline:
-- `statusline.sh` - Bash (Unix/Linux/WSL)
-- `statusline.ps1` - PowerShell (Windows)
-- `statusline.js` - Node.js (universal fallback)
+- `statusline.sh` — Bash (Unix/Linux/WSL)
+- `statusline.ps1` — PowerShell (Windows)
+- `statusline.js` — Node.js (universal fallback)
 
 ## Entry Points
 
 ### For Users
 - **README.md**: Project overview and quick start
 - **CLAUDE.md**: Development instructions and workflows
+- **MARKETING.md**: Marketing kit guide (if `--kit marketing`/`both`)
 
 ### For Developers
-- **package.json**: Dependencies and scripts
-- **.releaserc.json**: Semantic release configuration
-- **.commitlintrc.json**: Commit message linting rules
-- **.gitignore**: Version control exclusions
+- **package.json**: Dependencies and scripts (`ck`/`claukit` bin)
+- **.releaserc.json** / **.commitlintrc.json**: Release + commit-lint config
 
 ### For Agents
-- **CLAUDE.md**: Primary agent instructions
-- **.claude/workflows/**: Workflow definitions
+- **CLAUDE.md**: Primary agent instructions (delegates to `.claude/workflows/*`)
+- **docs/clauKit-registry.md**: Skill/agent/command inventory (read before creating anything new)
 - **plans/templates/**: Implementation plan templates
 
 ## Development Principles
 
-### YANGI (You Aren't Gonna Need It)
+### YAGNI (You Aren't Gonna Need It)
 Avoid over-engineering and unnecessary features
 
 ### KISS (Keep It Simple, Stupid)
@@ -207,10 +167,10 @@ Eliminate code duplication
 - Keep files under 200 lines for optimal context management
 - Split large files into focused components
 - Extract utilities into separate modules
+- Exception: `README.md` (curated at ~768 lines per recent deliberate commits) — see Unresolved Questions
 
 ### Security First
 - Try-catch error handling
-- Security standards coverage
 - No secrets in commits
 - Confidential info protection
 
@@ -223,6 +183,7 @@ Eliminate code duplication
 - Sequential: Task dependencies require ordered execution
 - Parallel: Independent tasks run simultaneously
 - Query Fan-Out: Multiple researchers explore different approaches
+- Controlled fan-out/pipeline: `/ck:flow` decomposes a task into phases and routes each to an agent persona, gated + cost-previewed (does **not** use the native `ultracode` runtime)
 
 ## Git Workflow
 
@@ -231,58 +192,35 @@ Eliminate code duplication
 type(scope): description
 ```
 
-**Types**:
-- `feat:` - Features (minor bump)
-- `fix:` - Bug fixes (patch bump)
-- `docs:` - Documentation (patch bump)
-- `refactor:` - Code refactoring (patch bump)
-- `test:` - Tests (patch bump)
-- `ci:` - CI changes (patch bump)
-- `BREAKING CHANGE:` - Major version bump
+**Types**: `feat` (minor bump) · `fix` (patch) · `docs` (patch) · `refactor` (patch) · `test` (patch) · `ci` (patch) · `BREAKING CHANGE:` (major)
 
-**Automated Release**:
-- Every push to `main` triggers release check
-- Semantic versioning (MAJOR.MINOR.PATCH)
-- Automated changelog generation
-- GitHub releases with generated notes
+**Automated Release**: every push to `main` triggers semantic-release (version bump, changelog, GitHub release).
 
 ## Documentation Standards
 
-**Required Docs** (`./docs/`):
-- `project-overview-pdr.md` - Project overview and PDR
-- `code-standards.md` - Coding standards and structure
-- `codebase-summary.md` - This file
-- `system-architecture.md` - Architecture documentation
-- `project-roadmap.md` - Development roadmap
-- `design-guidelines.md` - Design principles and guidelines
-- `deployment-guide.md` - Deployment procedures
+**Canonical doc set** (`./docs/`):
+- `project-overview-pdr.md` — Project overview and PDR
+- `code-standards.md` — Coding standards and structure
+- `codebase-summary.md` — This file
+- `system-architecture.md` — Architecture documentation
+- `project-roadmap.md` — Development roadmap
+- `clauKit-registry.md` — Skills + agents + commands single source of truth
+- `design-guidelines.md` [optional] — Design principles and guidelines
+- `deployment-guide.md` [optional] — Deployment procedures
 
-**Documentation Triggers**:
-- Feature implementation completion
-- Major milestone achievements
-- Bug fixes
-- Security updates
-- Weekly reviews
+**Documentation Triggers**: feature implementation completion · new/removed skill-agent-command · bug fixes · security updates.
 
 ## File Statistics
 
-**Repository Statistics**:
-- Total Files: 468 files (in repomix output)
-- Total Tokens: 1,022,780 tokens
-- Total Characters: 4,297,314 chars
+Not regenerated this pass — no `repomix-output.xml` is committed to the repo (generated on demand by `/ck:docs update`, gitignored). Run `repomix` locally for current token/file counts rather than trusting stale numbers here.
 
-**Project-Specific Files**:
-- Configuration files: 15+
-- Agent definitions: 19
-- Command definitions: 65+
-- Workflow files: 4+
-- Documentation files: 6+
+**Verified counts** (via `ls`/`find` against the filesystem, 2026-07-16):
+- Agent definitions: 30 (19 engineering + 11 marketing)
+- Command files: 37 (25 `ck/` + 12 `mk/`)
+- Skill files: 126 `SKILL.md`
+- Workflow files: 5 (`primary-workflow.md`, `development-rules.md`, `orchestration-protocol.md`, `documentation-management.md`, plus `cro-framework.md`/`fix-pipeline.md` references)
 
 ## Integration Capabilities
-
-### Discord Notifications
-Script: `.claude/hooks/send-discord.sh`
-Purpose: Send project updates to Discord channels
 
 ### GitHub Actions
 Workflow: `.github/workflows/release.yml`
@@ -290,21 +228,21 @@ Features: Automated releases, changelog generation
 
 ### MCP Servers
 Configuration: `.claude/.mcp.json.example`
-Supports: context7, sequential-thinking, SearchAPI, and more
+Kit-specific MCP wrappers live under `.claude/skills/automation/` (GA4, GSC, SendGrid, Resend, ReviewWeb) and `.claude/skills/integrations/` (WordPress).
 
 ## Critical Files
 
 ### Configuration
-- `/package.json` - Node.js config
-- `/.releaserc.json` - Release config
-- `/.commitlintrc.json` - Commit linting
-- `/.gitignore` - Git exclusions
-- `/.repomixignore` - Repomix exclusions
+- `/package.json` — Node.js config (`@trungdo9/ClauKit`)
+- `/.releaserc.json` — Release config
+- `/.commitlintrc.json` — Commit linting
+- `/.gitignore` — Git exclusions
 
 ### Documentation
-- `/README.md` - Main project docs
-- `/CLAUDE.md` - Agent instructions
-- `/CHANGELOG.md` - Version history
+- `/README.md` — Main project docs
+- `/CLAUDE.md` — Agent instructions
+- `/MARKETING.md` — Marketing kit guide
+- `/CHANGELOG.md` — Version history (auto-generated by semantic-release)
 
 ### Workflows
 - `/.claude/workflows/primary-workflow.md`
@@ -314,11 +252,11 @@ Supports: context7, sequential-thinking, SearchAPI, and more
 
 ## Version History
 
-**Current**: v1.0.1
+**Current**: v1.3.6
 **License**: MIT
-**Author**: Trung Dev
 **Repository**: https://github.com/trungdo9/ClauKit
 
 ## Unresolved Questions
 
-None identified. All core components are well-documented and functional.
+1. `docs/clauKit-registry.md` command-count convention is internally inconsistent (header says 64, § 3 body sums to 52, § 6 Summary Counts says 72) — needs reconciliation in a future pass; this doc uses the literal file count (37) plus a pointer to that discrepancy instead of picking one.
+2. `README.md` is 768 lines, exceeding the generic "<300 lines" guidance in `CLAUDE.md` — appears to be a deliberate choice from a recent commit ("docs: split marketing kit guide into MARKETING.md"). Flagging rather than enforcing; needs an explicit decision on whether the rule should carve out an exception for README.

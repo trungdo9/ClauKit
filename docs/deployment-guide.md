@@ -1,12 +1,12 @@
 # Deployment Guide
 
-**Last Updated**: 2026-01-31
-**Version**: 1.0.1
-**Project**: spark-dev
+**Last Updated**: 2026-07-16
+**Version**: 1.3.6
+**Project**: ClauKit
 
 ## Overview
 
-This guide covers deployment options and configurations for projects built with spark-dev template.
+This guide covers deployment options and configurations for projects built with the ClauKit template (`@trungdo9/ClauKit`, installed via `ck init`).
 
 ## Deployment Environments
 

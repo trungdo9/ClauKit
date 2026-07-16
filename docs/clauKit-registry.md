@@ -1,8 +1,8 @@
 # ClauKit Registry
 
-**Last Updated**: 2026-06-08 (WordPress integration — `skills/integrations/` added: `wordpress-rest` + `mcp-wordpress`; reconciled prior 128/127 skills off-by-one to table-derived total)
+**Last Updated**: 2026-07-16 (`ui-ux-designer` agent removed — design work rerouted to `frontend-developer` + design skills; stale `imagemagick` skill refs purged; `copywriter` agent relocated `engineering/` → `marketing/` — see § 5)
 **Scope**: Single source of truth for every Skill, Agent, and Command in this project.
-**Counts**: 126 skills (126 active + 0 scaffold) · 31 agents · 64 commands · **221 total entries**
+**Counts**: 126 skills (126 active + 0 scaffold) · 30 agents · 64 commands · **220 total entries**
 
 Replaces previous `skills-catalog.md` (skills only). One file, all three resource types, with duplicate/overlap detection.
 
@@ -236,14 +236,15 @@ All 40 are active (`dynamic-workflow` added 2026-06-03, paired with `/ck:flow`; 
 
 ---
 
-## 2 · Agents (31)
+## 2 · Agents (30)
 
-### `marketing/` (10) — marketing kit
+### `marketing/` (11) — marketing kit
 
 | Name | Status | Model | File |
 |---|:---:|---|---|
 | `campaign-manager` | ✅ | sonnet | `marketing/campaign-manager.md` |
 | `content-strategist` | ✅ | sonnet | `marketing/content-strategist.md` |
+| `copywriter` 🔁 | ✅ | sonnet | `marketing/copywriter.md` (relocated from `engineering/` 2026-07-16) |
 | `crm-specialist` | ✅ | sonnet | `marketing/crm-specialist.md` |
 | `email-specialist` | ✅ | sonnet | `marketing/email-specialist.md` |
 | `market-researcher` | ✅ | sonnet | `marketing/market-researcher.md` |
@@ -253,14 +254,13 @@ All 40 are active (`dynamic-workflow` added 2026-06-03, paired with `/ck:flow`; 
 | `seo-technical` | ✅ | sonnet | `marketing/seo-technical.md` |
 | `video-producer` | ✅ | sonnet | `marketing/video-producer.md` |
 
-### `engineering/` (21) — engineer kit
+### `engineering/` (19) — engineer kit
 
 | Name | Status | Model | File |
 |---|:---:|---|---|
 | `backend-developer` | ✅ | sonnet | `engineering/backend-developer.md` |
 | `brainstormer` 🔁 | ✅ | opus | `engineering/brainstormer.md` |
 | `code-reviewer` 🔁 | ✅ | opus | `engineering/code-reviewer.md` |
-| `copywriter` 🔁 | ✅ | sonnet | `engineering/copywriter.md` |
 | `database-admin` 🔁 | ✅ | sonnet | `engineering/database-admin.md` |
 | `debugger` 🔁 | ✅ | opus | `engineering/debugger.md` |
 | `docs-manager` 🔁 | ✅ | sonnet | `engineering/docs-manager.md` |
@@ -277,7 +277,6 @@ All 40 are active (`dynamic-workflow` added 2026-06-03, paired with `/ck:flow`; 
 | `scout-external` 🔁 | ✅ | haiku | `engineering/scout-external.md` |
 | `security-auditor` 🔁 | ✅ | inherit | `engineering/security-auditor.md` |
 | `tester` 🔁 | ✅ | sonnet | `engineering/tester.md` |
-| `ui-ux-designer` 🔁 | ✅ | inherit | `engineering/ui-ux-designer.md` |
 
 ---
 
@@ -423,8 +422,8 @@ Other trios (`testing` → covered by `web-testing`/`chrome-devtools`, `design` 
 | Debugging | `debugging` | `debugger` | `/ck:debug` |
 | Testing | `web-testing` (developer toolkit), `test-automation` (QA/automation engineering) | `tester` | `/ck:test`, `/ck:fix test` |
 | Docs | `mintlify`, `markdown-novel-viewer`, `tech-graph`, `document-skills/*` | `docs-manager` | `/ck:docs [init\|update\|summarize]` |
-| Design | 10 design skills | `ui-ux-designer` | `/ck:design` |
-| Content | `show-off` | `copywriter` | – (marketing kit: `/mk:content`) |
+| Design | 10 design skills | `frontend-developer` (agent `ui-ux-designer` removed 2026-07-16) | `/ck:design` |
+| Content | `show-off` | `copywriter` (marketing kit) | – (marketing kit: `/mk:content`) |
 | SEO/GEO | `seo`, `geo` | – (agent removed 2026-05-17) | `/ck:seo [audit\|keywords\|schema]` |
 | Git | `git`, `worktree` | `git-manager` | `/ck:git [cm\|cp\|pr\|merge]` |
 | Bootstrap | `bootstrap` (knowledge) | – | `/ck:bootstrap` |
@@ -474,7 +473,7 @@ Verification: `for f in $(find .claude/skills -name SKILL.md); do …` returns z
 
 ### 4e · Indirect overlaps (not flagged) — multiple knowledge skills feed one agent
 
-- `ui-ux-designer` agent reads from 10 design skills — by design, not a bug.
+- `frontend-developer` agent reads from 10 design skills for design work (inherited from removed `ui-ux-designer`) — by design, not a bug.
 - `docs-manager` agent reads from 5+ doc skills — by design.
 - Security: `security` (OWASP 2025 scanner + mindset) + `cti-expert` (threat intel) feed `security-auditor` — distinct scopes.
 
@@ -543,6 +542,13 @@ Verification: `for f in $(find .claude/skills -name SKILL.md); do …` returns z
 |---|---|---|
 | Removed | `seo-specialist` | `marketing/` folder emptied + removed. `/seo audit`, `/seo keywords`, `/seo schema` commands now run directly with `seo` skill + references (no dedicated agent). Frontmatter had non-standard fields (`mode`, `temperature`, `skills`) — legacy from OpenCode/agentgateway. |
 
+### Agent removal (2026-07-16)
+
+| Action | Agent | Notes |
+|---|---|---|
+| Relocated | `copywriter` | Moved `engineering/copywriter.md` → `marketing/copywriter.md` — marketing persona misplaced in engineer kit. Engineer kit (dir-include) no longer ships it; marketing kit gets it via `agents/marketing/` dir instead of `requires.shared` (manifest entry dropped). `cro-framework.md` note updated; `/mk:cro` "copywriter skill" misnomer fixed → `copywriting` skill. |
+| Removed | `ui-ux-designer` | Heaviest agent file (18KB); design methodology already lives in the 10 design skills (`aesthetic`, `frontend-design`, `ui-ux-pro-max`, …). All routing rerouted to `frontend-developer` + design skills: `/ck:design`, `/ck:fix ui`, `/ck:cook` Implement stage, `/ck:bootstrap` fast mode, `fix-pipeline`. Style Intelligence reference now points to `ui-ux-pro-max` skill. Stale `imagemagick` skill refs (skill deleted with `media-processing` at `715e5d5`) purged from `cook`, `design`, `fix`, `review`, `development-rules` — image gen/edit routes through `ai-multimodal`. |
+
 ---
 
 ## 6 · Summary Counts
@@ -552,15 +558,15 @@ Verification: `for f in $(find .claude/skills -name SKILL.md); do …` returns z
 | Skills · `global/` | 1 | 0 | 1 |
 | Skills · `marketing/` | 50 | 0 | 50 |
 | Skills · `automation/` | 6 | 0 | 6 |
-| Skills · `software/` | 70 | 0 | 70 |
+| Skills · `software/` | 67 | 0 | 67 |
 | Skills · `integrations/` (NEW) | 2 | 0 | 2 |
 | Skills · removed (v2.0.0: old `geo`, old `seo/references`) | — | — | — |
-| **Skills total** | **129** | **0** | **129** |
-| Agents · `engineering/` | 21 | 0 | 21 |
-| Agents · `marketing/` | 10 | 0 | 10 |
-| **Agents total** | **31** | **0** | **31** |
+| **Skills total** | **126** | **0** | **126** |
+| Agents · `engineering/` | 19 | 0 | 19 |
+| Agents · `marketing/` | 11 | 0 | 11 |
+| **Agents total** | **30** | **0** | **30** |
 | Commands | 72 | 0 | 72 |
-| **Grand total entries** | | | **232** |
+| **Grand total entries** | | | **228** |
 
 ## 7 · Open Issues
 
