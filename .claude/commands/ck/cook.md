@@ -10,9 +10,10 @@ Think harder to drive the following feature end-to-end. Follow the cook skill me
 ## Role Responsibilities
 
 - You are a senior software engineer driving a feature from idea (or existing plan) to production-ready code.
-- Activate the `cook` skill ([.claude/skills/software/cook/SKILL.md](.claude/skills/software/cook/SKILL.md)) — the **single source of truth** for the 5-stage lifecycle (Plan → Code → Test → Docs → Deploy) and gating rules. Don't redefine methodology here; delegate to the skill.
+- Activate the `cook` skill ([.claude/skills/software/cook/SKILL.md](.claude/skills/software/cook/SKILL.md)) — the **single source of truth** for the gated lifecycle (Gate → Plan → Code → Test → Review → Docs → Deploy), the Exact-Requirements Gate, gating rules, and anti-patterns. Don't redefine methodology here; delegate to the skill.
 - Confirm priorities with the user before each major stage transition (unless `--auto` mode is set).
-- Drive implementation honoring **YAGNI**, **KISS**, **DRY** principles.
+- Honor **YAGNI**, **KISS**, **DRY**.
+- All subagent reports go to `plans/<plan>/reports/` (per Orchestration Protocol); read summaries, don't inline full outputs.
 
 **IMPORTANT:** Remind these rules in subagent communication:
 - Sacrifice grammar for the sake of concision when writing reports.
@@ -21,117 +22,94 @@ Think harder to drive the following feature end-to-end. Follow the cook skill me
 ## Argument & Mode Resolution
 
 **Step 1 — Detect input type:**
-- If `$ARGUMENTS` contains a path to an existing `.md` file (e.g. `plans/.../plan.md`) → treat as **plan path**, auto-enable `--from-plan`.
-- Otherwise → treat as **task description**; full pipeline starts from research/plan.
+- `$ARGUMENTS` contains a path to an existing `.md` file (e.g. `plans/.../plan.md`) → **plan path**, auto-enable `--from-plan`.
+- Otherwise → **task description**; full pipeline from research/plan.
 
-**Step 2 — Resolve mode flags:**
+**Step 2 — Resolve mode flags (composable):**
 
 | Flag | Effect |
 |---|---|
-| (default) | Full pipeline with user approval gates between major stages; Exact-Requirements Gate enforced |
-| `--fast` | Skip research phase; keep gate + plan + test + review |
-| `--auto` | Skip user approval gates; gate fills 5 items best-effort with `[ASSUMED]` logging; auto-approve if `Critical=0 AND High=0` in code-reviewer report |
-| `--from-plan` | Skip research + plan + Exact-Requirements Gate; jump straight to implementation (auto-set when arg is a plan path) |
-| `--no-test` | Skip test stage; **log waiver** per cook skill gating rule |
+| (default) | Full pipeline; user approval gates between stages |
+| `--fast` | Skip Research stage; instruct planner: codebase-context only, no external research. Gate + plan + test + review kept |
+| `--auto` | Skip user approval gates; gate fields filled best-effort with `[ASSUMED]` logging; review auto-approves if `Critical = 0 AND High = 0` |
+| `--from-plan` | Skip Research + Plan stages; extract the 5 gate items from the plan file, `[ASSUMED]`-log any missing (auto-set when arg is a plan path) |
+| `--no-test` | Skip Test stage; **log waiver** per cook skill gating rule |
 
-Flags are composable (e.g. `/cook plan.md --auto`).
+**Guard:** `--auto` + `--no-test` cannot combine — auto-approval relies on tests; a test waiver requires human sign-off. Fall back to interactive approval and tell the user why.
+
+**Loop cap (all modes):** max **3 fix cycles per gate** (Test, Review). On the 3rd failure: halt, run `[[retro]]` on spec/scope, ask the user.
 
 ## Workflow
 
-### Stage 0 — Analysis & Exact-Requirements Gate
+Stages are named; numbering lives in the cook skill (source of truth).
 
-* Activate the `cook` skill; read its Stage 0 (Exact-Requirements Gate) + 5 stages + gate rules + anti-patterns.
-* **Run the Exact-Requirements Gate** (cook skill Stage 0): derive the 5 items — expected output, acceptance criteria, scope boundary, non-negotiable constraints, touchpoints. If any is missing, STOP and ask the user ONE question at a time (skip the stop in `--auto` — log `[ASSUMED]` fields instead).
-  * The gate is **UNSKIPPABLE by `--fast` and `--auto`**. Only `--from-plan` bypasses it.
-* Analyze the skills catalog and activate any other skills needed (e.g. `planning`, `research`, `code-review`, `scenario`, `test--automation`).
-* If `--from-plan`: read the plan file end-to-end, map dependencies, list ambiguities. **Gate skipped** (requirements settled in plan). Skip to Stage 3.
-* Else: continue to Stage 1.
+### Gate — Exact-Requirements Gate
 
-### Stage 1 — Research (Plan gate)
+* Activate the `cook` skill; run its Stage 0 gate: derive the 5 items (expected output, acceptance criteria, scope boundary, constraints, touchpoints). Missing item → STOP, ask the user ONE question at a time. Mode behavior (`--auto` assumes + logs; `--from-plan` extracts from plan) is defined in the skill.
+* The gate is **UNSKIPPABLE**. `--fast` and `--auto` never bypass it; `--from-plan` satisfies it from the plan file.
+* Analyze the skills catalog via `/ck:find` (don't read the full registry); activate what's needed (e.g. `planning`, `research`, `code-review`, `scenario`, `test-automation`).
+* If `--from-plan`: read the plan end-to-end, map dependencies, list ambiguities, then jump to **Implement**.
+
+### Research
 
 **Skip if `--fast` or `--from-plan`.**
 
-* Spawn `researcher` agent(s) in parallel to gather technical knowledge relevant to the task.
-* Spawn `scout` agent in parallel to discover relevant files in the codebase.
-* Wait for all parallel agents to report. Consolidate findings.
+* Spawn `researcher` agent(s) + `scout` agent in parallel; reports → `plans/<plan>/reports/`. Consolidate findings.
 
-### Stage 2 — Plan (Code gate)
+### Plan
 
 **Skip if `--from-plan`.**
 
-* Delegate to `planner` agent to create an implementation plan in `./plans/<YYMMDD-HHMM>-<slug>/plan`.
-* Use `bash -c 'date +%y%m%d-%H%M'` for the timestamp prefix.
-* The plan must cite impact diff, files to change, and risks (cook skill Stage 1 gate).
-* **Gate**: stop and ask user to review the plan before proceeding (skip user prompt in `--auto` mode).
+* Delegate to `planner` agent → plan in `./plans/<YYMMDD-HHMM>-<slug>/plan` (timestamp via `bash -c 'date +%y%m%d-%H%M'`). Plan must cite impact diff, files to change, risks.
+* **Gate**: user reviews the plan before coding (skip prompt in `--auto`).
+* On approval, offer the context-reset path: user runs `/clear` then `/ck:cook <plan-path>` to implement with a fresh context (framework default: "Plan once, `/clear`, cook"). Continuing in-session is fine for small features.
 
-### Stage 3 — Implementation
+### Implement
 
-* Read the plan general overview only; implement phases one by one. Do **not** load all phases at once.
-* For frontend tasks (UI, components, pages), delegate to `frontend-developer`.
-* For backend tasks (APIs, database, server), delegate to `backend-developer`.
-* For UI styling/design work, delegate to `ui-ux-designer` following `./docs/design-guidelines.md`.
-  * Use `ai-multimodal` skill to generate + verify image assets.
-  * Use `imagemagick` skill for image editing if needed.
-* Use `project-manager` to update phase progress in the plan file between phases.
-* After each phase: run type checking + compile; resolve syntax errors before continuing.
+* Read the plan general overview only; implement phases one by one — do **not** load all phases at once.
+* Frontend (UI, components, pages, styling/design) → `frontend-developer` (activates `aesthetic` + `frontend-design` skills for design work; `ai-multimodal` skill to generate + verify image assets).
+* Backend (APIs, database, server) → `backend-developer`.
+* `project-manager` updates phase progress in the plan file between phases.
+* After each phase: type-check + compile; resolve syntax errors before continuing.
 
-### Stage 4 — Testing (Test gate)
+### Test
 
-**Skip if `--no-test`. Log waiver in the plan file per cook skill anti-pattern rule.**
+**Skip if `--no-test` (waiver logged in plan file).**
 
-* Write real tests covering happy path + negative + recovery cases. **No mocks, no fake data, no tricks to pass CI.**
-* Delegate to `tester` agent to run the suite.
-* On failure: delegate to `debugger` agent for root cause; ask implementer agent to fix; re-run.
-* Repeat until 100% pass. Do not ignore failed tests or fabricate data.
+* Real tests: happy path + negative + recovery. **No mocks-to-pass, no fake data.**
+* `tester` runs the suite. On failure: `debugger` finds root cause → implementer fixes → re-run. 100% pass required; loop cap applies.
 
-### Stage 5 — Code Review (Docs gate)
+### Review
 
-Maps to **cook skill Stage 4 (Review)**. Follow `code-review` skill ([.claude/skills/software/code-review/SKILL.md](.claude/skills/software/code-review/SKILL.md)) — single source of truth for review protocol.
+Follow the `code-review` skill ([.claude/skills/software/code-review/SKILL.md](.claude/skills/software/code-review/SKILL.md)) — single source of truth for the review protocol (SHAs, dispatch fields, edge-case scouting, verification gates).
 
-* **5a. Edge-case scout (optional, recommended for complex changes):** `/scout edge cases for <feature>` — surfaces files affected beyond modified, data-flow paths, side effects. Hand report to reviewer.
-* **5b. Get SHAs:** `BASE_SHA=$(git rev-parse HEAD~1)`, `HEAD_SHA=$(git rev-parse HEAD)`. For uncommitted changes, WIP-commit first per `code-review/references/requesting-code-review.md`.
-* **5c. Dispatch `code-reviewer` agent** with: `WHAT_WAS_IMPLEMENTED`, `PLAN_OR_REQUIREMENTS` (link to plan file), `BASE_SHA`, `HEAD_SHA`, `DESCRIPTION`. Agent emits severity buckets: Critical / High / Medium / Low.
-* **Gate decision:**
-  * `--auto` mode: pass if `Critical = 0 AND High = 0`. Else fallback to user approval.
-  * default / `--fast` modes: always require user approval after review.
-* On Critical/High findings: ask implementer agent to fix → re-run Stage 4 (Testing) → re-review until clean. Apply `code-review` skill's **Verification Gates** before claiming "fixed".
+* Optional for complex changes: `/ck:scout edge cases for <feature>` → hand report to reviewer.
+* Dispatch `code-reviewer` per the skill's "Requesting Review" protocol; it emits Critical / High / Medium / Low.
+* **Gate decision:** `--auto` passes if `Critical = 0 AND High = 0`, else falls back to user approval. Default / `--fast`: always user approval.
+* Critical/High findings: fix → re-run Test → re-review until clean (loop cap applies). Apply the skill's Verification Gates before claiming "fixed".
 
-### Stage 6 — Project Management & Documentation (Deploy gate)
+### Docs
 
-**On user approval (or auto-approve):**
-* Use `project-manager` and `docs-manager` in parallel:
-  * `project-manager`: update plan progress + task status; refresh `./docs/project-roadmap.md`.
-  * `docs-manager`: update `./docs/*` if affected.
+**On approval (or auto-approve):** `project-manager` (plan progress + `./docs/project-roadmap.md`) and `docs-manager` (`./docs/*` if affected) in parallel.
+**On rejection:** clarify issues with user → fix → loop back to Test.
 
-**On user rejection:**
-* Ask user to clarify issues; ask implementer agent to fix; loop back to Stage 4.
+### Report
 
-### Stage 7 — Onboarding & Final Report
-
-* Instruct user how to use the new feature (env vars, API keys, config). Ask 1 question at a time; wait for answer before next.
-* Summarize changes briefly; suggest next steps.
-* Ask if user wants to commit + push; if yes, delegate to `git-manager`.
-* **IMPORTANT:** List unresolved questions at the end of the report.
+* **Acceptance-criteria checklist (mandatory):** table of each Gate criterion → verification evidence (test output, command result). No completion claim without it (code-review skill Iron Law).
+* Instruct user how to use the feature (env vars, keys, config). Default: one question at a time; in `--auto`, bundle everything into the report — never block.
+* Summarize changes; suggest next steps. Offer commit + push → `git-manager`.
+* List unresolved questions at the end.
 
 ## Mode Quick Reference
 
 ```
-/ck:cook "add user profile"                      → full pipeline, interactive gates
-/ck:cook "prototype landing hero" --fast          → skip research, still test + review
-/ck:cook "add OAuth login" --auto                 → autonomous; auto-approve if clean review
-/ck:cook plans/260517-1430-auth/plan.md          → auto --from-plan; jump to impl
-/ck:cook plans/.../plan.md --auto                 → autonomous execution of existing plan
-/ck:cook "experimental UI tweak" --no-test        → skip test stage (waiver logged)
+/ck:cook "add user profile"                → full pipeline, interactive gates
+/ck:cook "add OAuth login" --auto          → autonomous; auto-approve if clean review
+/ck:cook plans/260517-1430-auth/plan.md    → auto --from-plan; jump to implement
 ```
 
 ## Relationship to Other Commands
 
 - `/ck:plan` — creates plan only; pair with `/ck:cook plan.md` to execute.
-- `/ck:team` — multi-agent parallel fan-out (different concept from cook's sequential gated pipeline).
+- `/ck:team` — parallel multi-session fan-out (vs cook's sequential gated pipeline).
 - `/ck:brainstorm` — architectural decisions before planning.
-
-**REMEMBER:**
-- Cook skill methodology is the source of truth; this command is the workflow trigger.
-- Never skip a gate silently — either pass or log a visible waiver.
-- Generate visual assets via `ai-multimodal` skill on the fly when needed; verify them with the same skill.
-- For image editing (background removal, crop, resize), use ImageMagick or similar.

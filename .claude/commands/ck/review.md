@@ -65,4 +65,4 @@ Dedup → confirmed-only report (main-session orchestrator, gated/inspectable)
 
 ## Notes
 - Concise grammar, list unresolved questions at end.
-- Visual assets: `ai-multimodal` skill (generate + verify). For image editing → ImageMagick or similar.
+- Visual assets: `ai-multimodal` skill (generate + verify + edit).

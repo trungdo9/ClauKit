@@ -6,7 +6,7 @@ argument-hint: [tasks-or-screenshot] [fast|good] [3d|screenshot|describe|ui-ux-p
 **Think hard.** Plan & design from:
 <input>$ARGUMENTS</input>
 
-`ui-ux-designer` agent activates canonical design skills (`aesthetic` + `frontend-design`) — no need to re-list here.
+Design work routes to the `frontend-developer` agent, which must activate the canonical design skills (`aesthetic` + `frontend-design`) — no need to re-list here.
 
 ## Flags (parse `$ARGUMENTS` — workflow flags + output-type flags are combinable; output-type flags are mutually exclusive)
 
@@ -33,16 +33,16 @@ Output-type flags drive the *what*; workflow flags drive the *how* (e.g. `good 3
 ### Default (no output flag) — standard UI
 
 1. (if `good`) `researcher` subagent → research style, trends, fonts, colors, borders, spacing, element positioning.
-2. `ui-ux-designer` subagent → implement design.
+2. `frontend-developer` subagent → implement design.
 3. Default stack: pure HTML/CSS/JS (unless user specifies).
 4. Report → ask review/approve.
 5. On approval → update `./docs/design-guidelines.md` if needed.
 
 ### `3d` — Three.js / WebGL specialist
 
-1. `ui-ux-designer` + `researcher` subagents → 3D design plan following `planning` skill's progressive disclosure structure.
-2. `ui-ux-designer` implements step by step: Three.js scenes · particle effects · custom GLSL shaders · cinematic camera + post-processing · responsive · 60fps target.
-3. Asset pipeline: `ai-multimodal` (textures, skyboxes, env maps, sprites, video bg, inpainting/outpainting) + `imagemagick` (normal/height maps · sprite sheets · masking).
+1. `frontend-developer` + `researcher` subagents → 3D design plan following `planning` skill's progressive disclosure structure.
+2. `frontend-developer` implements step by step: Three.js scenes · particle effects · custom GLSL shaders · cinematic camera + post-processing · responsive · 60fps target.
+3. Asset pipeline: `ai-multimodal` (textures, skyboxes, env maps, sprites, video bg, inpainting/outpainting, normal/height maps, masking).
 4. Test across devices for 60fps.
 5. Report → ask review/approve.
 6. On approval → document shaders, particle systems, reusable 3D components in `./docs/design-guidelines.md`.
@@ -52,7 +52,7 @@ Output-type flags drive the *what*; workflow flags drive the *how* (e.g. `good 3
 ### `screenshot` — match reference exactly
 
 1. `ai-multimodal` → describe screenshot in super detail: style · trends · fonts (predict **Google Fonts name + size**, don't default to Inter/Poppins) · colors · borders · spacing · positions · sizes · shapes · textures · light/shadow · reflections · blur/glow · backgrounds · transitions.
-2. `ui-ux-designer` subagent → design plan via `planning` skill's progressive disclosure structure to match the screenshot.
+2. `frontend-developer` subagent → design plan via `planning` skill's progressive disclosure structure to match the screenshot.
 3. Implement step by step (default stack: pure HTML/CSS/JS).
 4. Report → ask review/approve.
 5. On approval → update `./docs/design-guidelines.md` if needed.
@@ -60,7 +60,7 @@ Output-type flags drive the *what*; workflow flags drive the *how* (e.g. `good 3
 ### `describe` — describe + plan only (no implementation)
 
 1. `ai-multimodal` → describe screenshot/video in super detail. Cover every element: style · position · interaction · animation · transition · color · border · icon · font (Google Fonts name + size) · spacing · padding · margin · size · shape · texture · material · light · shadow · reflection · refraction · blur · glow · image · background transparency.
-2. `ui-ux-designer` subagent → create implementation plan via `planning` skill's progressive disclosure structure.
+2. `frontend-developer` subagent → create implementation plan via `planning` skill's progressive disclosure structure.
 3. Report plan summary to user. **No implementation.**
 
 ### `ui-ux-pro-max` — Style Intelligence
@@ -68,7 +68,7 @@ Output-type flags drive the *what*; workflow flags drive the *how* (e.g. `good 3
 Input: `[product-type] [style] [industry]` (e.g. `SaaS minimal fintech`, `landing page elegant beauty`, `dashboard brutalism gaming`).
 
 1. Analyze requirements (product type · style · industry).
-2. Delegate to `ui-ux-designer` agent with Style Intelligence:
+2. Delegate to `frontend-developer` agent activating the `ui-ux-pro-max` skill (Style Intelligence):
    - Select style (50+ options: Minimalism · Brutalism · Glassmorphism · Neumorphism · Dark Mode · …)
    - Choose palette (21 options: SaaS Blue · Healthcare · Beauty/Spa · Fintech · …)
    - Pick font pairing (50 options: Elegant/Luxury · Modern/Tech · Professional · …)
@@ -77,12 +77,12 @@ Input: `[product-type] [style] [industry]` (e.g. `SaaS minimal fintech`, `landin
 4. Output comprehensive UI implementation.
 
 **Stack:** default `html-tailwind`. Supported: react · nextjs · vue · svelte · swiftui · react-native · flutter · shadcn.
-**Reference:** `.claude/agents/specialists/ui-ux-designer.md` for full Style Intelligence docs.
+**Reference:** [.claude/skills/software/design/ui-ux-pro-max/SKILL.md](.claude/skills/software/design/ui-ux-pro-max/SKILL.md) for full Style Intelligence docs.
 
 ## Notes
 - All plan structure → `planning` skill ([.claude/skills/software/planning/SKILL.md](.claude/skills/software/planning/SKILL.md)).
-- All design methodology → `ui-ux-designer` agent (auto-activates `aesthetic` + `frontend-design`).
-- Generate visual assets with `ai-multimodal`; verify quality with same skill. Background removal via `ai-multimodal` or ImageMagick.
+- All design methodology → `frontend-developer` agent + design skills (`aesthetic`, `frontend-design`, `ui-ux-pro-max`).
+- Generate visual assets with `ai-multimodal`; verify quality with same skill. Background removal via `ai-multimodal`.
 - Concise grammar in reports. List unresolved questions at end.
 
 ## Examples

@@ -13,16 +13,17 @@ A **feature lifecycle pipeline**: take one feature from written spec to producti
 
 Distinct from:
 - `[[bootstrap]]` — sets up a new project (one-time).
-- `/ck:cook <plan> -from-plan` — implements code given an existing plan (one stage).
-- `[[orchestrate]]` — multi-agent task delegation (parallel fan-out).
+- `/ck:cook <plan> --from-plan` — implements code given an existing plan (one stage).
+- `[[team]]` — multi-agent parallel fan-out across independent sessions.
+- `[[dynamic-workflow]]` — gated, cost-previewed orchestration recipes (`/ck:flow`).
 
 `cook` is sequential, single-feature, gated.
 
 ## Skill vs `/ck:cook` command
 
-The skill defines the methodology and gates. The `/ck:cook` command ([.claude/commands/cook.md](.claude/commands/cook.md)) is the workflow trigger that walks an agent through them with mode flags (`--fast`, `--auto`, `--from-plan`, `--no-test`). The skill is the source of truth; the command is sugar.
+The skill defines the methodology and gates. The `/ck:cook` command ([.claude/commands/ck/cook.md](.claude/commands/ck/cook.md)) is the workflow trigger that walks an agent through them with mode flags (`--fast`, `--auto`, `--from-plan`, `--no-test`). The skill is the source of truth; the command is sugar.
 
-Use `/ck:cook <plan> -from-plan` as the fast-path for "plan-already-exists".
+Use `/ck:cook <plan> --from-plan` as the fast-path for "plan-already-exists".
 
 ## When to Use
 
@@ -62,9 +63,11 @@ Before any planning, derive these 5 items from the task. This is a **hard gate**
 **Mode behavior:**
 - **Default / `--fast`:** gate is mandatory. `--fast` only skips research, NOT this gate.
 - **`--auto`:** fill all 5 best-effort from context; LOG each assumed field marked `[ASSUMED]` (inline in run output / plan file, same place waivers go) instead of stopping to ask.
-- **`--from-plan`:** SKIP the gate — requirements were settled upstream when the plan was written.
+- **`--from-plan`:** EXTRACT the 5 items from the plan file (don't ask the user); any item the plan doesn't settle → fill best-effort and `[ASSUMED]`-log it. A hand-written plan without acceptance criteria must not silently un-anchor the goal.
 
-Gate passes only when all 5 are filled & user-confirmed (default / `--fast`) or all 5 are filled & `[ASSUMED]`-logged (`--auto`).
+Gate passes only when all 5 are filled & user-confirmed (default / `--fast`) or all 5 are filled & `[ASSUMED]`-logged (`--auto` / `--from-plan`).
+
+**Closing the loop:** the 5 items are not write-once — the final report re-verifies each acceptance criterion against fresh evidence (criterion → test output / command result), per `[[code-review]]` verification gates.
 
 ## Worked Example (CI: GitHub Actions)
 
@@ -84,6 +87,7 @@ Same stages map cleanly to GitLab CI, Buildkite, CircleCI, or a Makefile — met
 ## Failure Recovery
 
 - Gate fails → don't proceed; either fix or **explicitly waive** with a reason in the PR/plan.
+- **Loop cap:** max 3 fix cycles per gate (Test, Review). On the 3rd consecutive failure: halt, run `[[retro]]`, ask the user — don't burn tokens iterating on a broken scope.
 - Multiple gates fail → halt and run a `[[retro]]` on the spec or estimation; cook again on a refined scope.
 - Production smoke fails → execute the documented rollback path before debugging.
 
@@ -103,4 +107,4 @@ See `references/`:
 
 ## Cross-links
 
-`[[bootstrap]]`, `[[orchestrate]]`, `[[planning]]`, `[[scenario]]`, `[[test-automation]]`, `[[code-review]]`, `[[retro]]`
+`[[bootstrap]]`, `[[team]]`, `[[dynamic-workflow]]`, `[[planning]]`, `[[scenario]]`, `[[test-automation]]`, `[[code-review]]`, `[[retro]]`

@@ -49,7 +49,7 @@ Single source of truth for the `/ck:fix` family of commands. Each `/ck:fix*` com
 | `--review` (added) | `researcher` subagent (external research) |
 | `test` | `tester` first → `debugger` for failures |
 | `types` | direct: run typecheck → fix loop (no agent) |
-| `ui` | `ui-ux-designer` subagent + `chrome-devtools` skill |
+| `ui` | `frontend-developer` subagent + `chrome-devtools` skill |
 | `logs` / `ci` (added) | `scout` subagent (locate issues in codebase) |
 
 **[3.5] Exact-Root-Cause Gate (MANDATORY — blocks Stage [4] and [5])** — after Diagnose, agent must answer all 6 questions before proceeding. If any answer is "unknown", go back to Stage [3] with new evidence.
@@ -71,7 +71,7 @@ Single source of truth for the `/ck:fix` family of commands. Each `/ck:fix*` com
 - `--quick` / `types` / `ui` (skip — go straight to implement)
 
 **[5] Implement** — main agent applies the fix based on diagnostic reports + plan.
-- `ui` variant uses `ui-ux-designer` for implementation
+- `ui` variant uses `frontend-developer` for implementation
 - `--review` may use additional skills (`sequential-thinking`, `problem-solving`)
 
 **[6] Verify** — `tester` subagent runs tests + compile.
@@ -102,7 +102,7 @@ For variants `--review` and `ui` (those with plan/docs update in the Variant Mat
 
 ```
 [2.5] Scout Gate        → Agent[scout]: answer the 5 items → reports/scout-flow.md
-[3]   Diagnose          → Agent[debugger|tester|ui-ux-designer]: root cause → reports/diagnose-flow.md
+[3]   Diagnose          → Agent[debugger|tester|frontend-developer]: root cause → reports/diagnose-flow.md
 [3.5] Root-Cause Gate   → Agent: answer the 6 Q from the handoff; any "unknown" → loop [3]
 [3.7] Adversarial Verify→ N Agent skeptics: "refute this root cause; default refuted if unsure"
                            majority refute → loop [3] with refutation evidence; survive → proceed

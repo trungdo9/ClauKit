@@ -38,7 +38,7 @@ If there is an existing markdown implementation plan, use `/ck:cook <path-to-pla
 Turns the two prose gates into **discrete, inspectable agent stages** ([2.5] Scout, [3.5] Root-Cause) with structured handoff to `plans/<plan>/reports/`, and adds a **[3.7] adversarial-verify** stage on the root cause before implement. Activates the `dynamic-workflow` skill ([.claude/skills/software/dynamic-workflow/SKILL.md](../../skills/software/dynamic-workflow/SKILL.md)) — source of truth for the pattern; this is just the trigger. **Complements** the canonical pipeline; does not replace it.
 
 - **Full stage shape + 4-axis inheritance:** see [fix-pipeline.md → *Orchestrated Execution*](../../workflows/fix-pipeline.md).
-- **Persona routing:** scout → `scout`; diagnose → variant specialist (`debugger`/`tester`/`ui-ux-designer`); skeptics → independent agent instances; implement → main agent.
+- **Persona routing:** scout → `scout`; diagnose → variant specialist (`debugger`/`tester`/`frontend-developer`); skeptics → independent agent instances; implement → main agent.
 - **Cost preview** shown before the run (per `/ck:flow`); orchestrator can inspect/abort between phases.
 - **Explicit opt-in only** — `--auto` never turns this on.
 
@@ -146,15 +146,15 @@ Each variant follows the **Fix Pipeline** ([.claude/workflows/fix-pipeline.md](.
 
 ### `ui` — UI-specialist pipeline (⚡⚡)
 
-`ui-ux-designer` subagent reads `./docs/design-guidelines.md` then fixes:
+`frontend-developer` subagent (with `aesthetic` + `frontend-design` skills) reads `./docs/design-guidelines.md` then fixes:
 <issue>{ISSUES}</issue>
 
 - **Stage [2]** (multimodal): if screenshots/videos → `ai-multimodal` skill for detailed issue description.
 - **Stage [2.5]** (scout): scout 5 mandatory items (project type, symptom component + callers, related tests, 20 commits, design conventions).
-- **Stage [3]** (diagnose): `ui-ux-designer` subagent (NOT `debugger`).
+- **Stage [3]** (diagnose): `frontend-developer` subagent (NOT `debugger`).
 - **Stage [3.5]** (root-cause gate): answer 6 questions including "why now" (recent design change? dep upgrade? layout regression?).
 - **Stage [4]** (plan): SKIP — go directly to implement.
-- **Stage [5]** (implement): `ui-ux-designer` applies fix step by step.
+- **Stage [5]** (implement): `frontend-developer` applies fix step by step.
 - **Stage [6]** (verify): two-layer check:
   - Screenshot exact parent container + `ai-multimodal` analysis (also `video-analysis` / `document-extraction` as needed) → verify design-guideline match.
   - `chrome-devtools` skill → verify implementation match.
@@ -164,9 +164,9 @@ Each variant follows the **Fix Pipeline** ([.claude/workflows/fix-pipeline.md](.
 - **Post-impl (user rejects):** ask reasons, loop the pipeline.
 - **Final:** summary + ask about commit/push → `git-manager`.
 
-**Companion skills:** `ai-multimodal` (generate + verify visual assets), `ImageMagick` (image edits — bg removal, crop, resize), `chrome-devtools` (browser verification).
+**Companion skills:** `ai-multimodal` (generate + verify visual assets, image edits — bg removal, crop, resize), `chrome-devtools` (browser verification).
 
-**Distinct:** specialist agent = `ui-ux-designer` (not `debugger`). Multi-layer visual verification (screenshot + AI analysis + chrome-devtools). Post-impl docs update + commit flow (like `/fix --review`).
+**Distinct:** specialist agent = `frontend-developer` (not `debugger`). Multi-layer visual verification (screenshot + AI analysis + chrome-devtools). Post-impl docs update + commit flow (like `/fix --review`).
 
 ## Examples
 - `/ck:fix payment webhook 500s` — default full pipeline.
