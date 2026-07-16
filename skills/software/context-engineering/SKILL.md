@@ -108,4 +108,4 @@ See `references/`:
 
 ## Cross-links
 
-`[[sequential-thinking]]`, `[[problem-solving]]`, `[[research]]`, `[[team]]`, `[[skill-creator]]`, `[[gkg]]` (graph-as-context substrate)
+`[[sequential-thinking]]`, `[[problem-solving]]`, `[[research]]`, `[[team]]`, `[[gkg]]` (graph-as-context substrate)

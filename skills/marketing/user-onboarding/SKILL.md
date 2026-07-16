@@ -1,12 +1,12 @@
 ---
 name: user-onboarding
-description: User onboarding (renamed to avoid collision with software/onboarding) — emails, in-app, lifecycle.
+description: User onboarding — emails, in-app, lifecycle.
 allowed-tools: Read, Write, Glob, Grep
 ---
 
 # User Onboarding
 
-> User onboarding (renamed to avoid collision with software/onboarding) — emails, in-app, lifecycle.
+> User onboarding — emails, in-app, lifecycle.
 
 ---
 

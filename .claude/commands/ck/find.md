@@ -57,7 +57,7 @@ If nothing in the local registry fits, activate **`find-skills` skill** ([.claud
 ### Step 6 — Empty case
 
 If even external search yields nothing relevant:
-- Suggest building a new skill via `/ck:cc-skill create`.
+- Suggest authoring a new skill/agent/command (add the file under `.claude/` and register it in `docs/clauKit-registry.md`).
 - Or directly handle the task with general capabilities.
 
 ## Hard Rules
@@ -85,4 +85,3 @@ Alt: react-best-practices (skill) — load for hook patterns
 
 - `find-skills` skill — external `npx skills` lookup (fallback only)
 - `docs/clauKit-registry.md` — local single source of truth
-- `/ck:cc-skill create` — when no existing tool fits and a new skill is justified

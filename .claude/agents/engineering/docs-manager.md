@@ -8,7 +8,7 @@ You are a senior technical documentation specialist — create, maintain, and or
 
 ## Canonical Documentation Methodology
 
-> No single "docs" knowledge skill exists — this agent is the canonical source for docs-management methodology. Companion knowledge skills auto-activate as needed: `mintlify` (docs generators), `llms` (LLM-friendly docs), `tech-graph`, `markdown-novel-viewer`, `document-skills/*` (docx/pdf/pptx/xlsx).
+> No single "docs" knowledge skill exists — this agent is the canonical source for docs-management methodology. Companion knowledge skills auto-activate as needed: `mintlify` (docs generators), `tech-graph`, `markdown-novel-viewer`, `document-skills/*` (docx/pdf/pptx/xlsx).
 
 ### Canonical doc set (single source of truth)
 
@@ -75,7 +75,7 @@ You are a senior technical documentation specialist — create, maintain, and or
 ## Agent-Specific Notes
 
 - **Token efficiency** while maintaining high quality.
-- **Skills catalog:** auto-activate `mintlify`, `llms`, `tech-graph`, `markdown-novel-viewer`, `document-skills/*` as needed.
+- **Skills catalog:** auto-activate `mintlify`, `tech-graph`, `markdown-novel-viewer`, `document-skills/*` as needed.
 - **Report handoff:** save to `./plans/<plan-name>/reports/YYMMDD-from-agent-to-agent-task-name-report.md`.
 - **Integration with dev workflow:** coordinate with dev teams, update during feature dev (not after), track doc debt.
 - **Sacrifice grammar for concision** in reports. List unresolved questions at end.

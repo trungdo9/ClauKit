@@ -17,7 +17,7 @@ Claude Code gives you the primitives — but no opinions on how to combine them.
 
 - **Gated pipelines, not gambling.** `/ck:refactor` and `/ck:cook` enforce pre-flight gates — clean working tree, tests green, not on `main`. See [`.claude/workflows/primary-workflow.md`](./.claude/workflows/primary-workflow.md). Skip the gates and the command refuses to run.
 - **Trio architecture — one concept, one entry point.** Every skill (knowledge) maps to an agent (persona) and a command (`/ck:<name>` trigger). No tool roulette. Full map in [`docs/clauKit-registry.md`](./docs/clauKit-registry.md).
-- **Curated, not crawled.** 74 skills hand-selected for AI dev workflows — research, planning, refactoring, testing, code review, SEO, payments. Each maintained, each documented, each in the registry. No abandoned scaffolds.
+- **Curated, not crawled.** 71 skills hand-selected for AI dev workflows — research, planning, refactoring, testing, code review, SEO, payments. Each maintained, each documented, each in the registry. No abandoned scaffolds.
 
 ## Quick Start
 
@@ -141,9 +141,9 @@ Just cloned a repo — get oriented in 10 minutes, ready to work.
 
 ```mermaid
 flowchart LR
-    A[git clone repo] --> B["/ck:onboard<br/>6-phase tour"]
+    A[git clone repo] --> B["read README + CLAUDE.md + docs/"]
     B --> C{Need more?}
-    C -->|drill into files| D["/ck:scout"]
+    C -->|map entry points / drill into files| D["/ck:scout"]
     C -->|architectural Q| E["/ck:ask"]
     C -->|recent activity| F["/ck:watzup"]
     D --> G[Ready to work]
@@ -151,7 +151,7 @@ flowchart LR
     F --> G
 ```
 
-**When to use**: new joiner OR returning after long absence. `/ck:onboard` reads existing docs + maps entry points + suggests first task — does NOT regenerate docs.
+**When to use**: new joiner OR returning after long absence. Start from the existing docs, then `/ck:scout` to map entry points, `/ck:ask` for architecture questions, and `/ck:watzup` for recent activity — orient only, does NOT regenerate docs.
 
 ---
 
@@ -275,7 +275,7 @@ flowchart LR
     H --> I["/ck:git cm or cp"]
 ```
 
-**Tip**: `/ck:find` is your meta-helper across 74 skills + 60 commands. Use it whenever you think "there's probably a ClauKit tool for this".
+**Tip**: `/ck:find` is your meta-helper across 71 skills + 52 commands. Use it whenever you think "there's probably a ClauKit tool for this".
 
 ---
 
@@ -305,7 +305,6 @@ Specialized journeys with single-command entry points.
 | Scenario | Command | Chain after |
 |---|---|---|
 | 🆕 New project scaffold | `/ck:bootstrap [auto\|fast]` | → `/ck:plan` → `/ck:cook` |
-| 👋 Tour codebase | `/ck:onboard [focus]` | → `/ck:scout` / `/ck:ask` |
 | ❓ Codebase Q&A (read-only) | `/ck:ask <question>` | (standalone) |
 | 🔍 Find files / symbols | `/ck:scout <prompt> [-ext]` | (standalone) |
 | 🌐 External research | `/ck:research <topic>` | → `/ck:plan` |
@@ -323,13 +322,11 @@ Specialized journeys with single-command entry points.
 | 📚 Init docs | `/ck:docs init` | (one-shot) |
 | 📚 Update docs | `/ck:docs update` | (after feature) |
 | 📚 Docs summary | `/ck:docs summarize` | (read-only) |
-| ✍️ Marketing copy | `/ck:content [fast\|good\|enhance\|cro]` | (standalone) |
-| 🔎 SEO work | `/ck:seo [audit\|keywords\|schema] <target>` | → `/ck:content cro` |
+| 🔎 SEO work | `/ck:seo [audit\|keywords\|schema] <target>` | → `/ck:plan cro` |
 | 💳 SePay payment | `/ck:sepay <tasks>` | → `/ck:test` |
 | 🔌 Use MCP server | `/ck:use-mcp <server-name>` | (standalone) |
 | 👥 Parallel team | `/ck:team <template> [...]` | (orchestration) |
 | 🎛 Controlled orchestration | `/ck:flow <task>` · `/ck:fix --flow` · `/ck:review --flow` | (gated fan-out/pipeline) |
-| 🧩 Create / edit skill | `/ck:cc-skill [create\|add\|optimize\|fix-logs]` | (extend ClauKit) |
 | 📝 Write journal | `/ck:journal` | (end-of-session) |
 | 📊 Recent changes | `/ck:watzup` | (start-of-session) |
 | 📤 Git commit | `/ck:git cm` | (or `cp` to push) |
@@ -349,7 +346,7 @@ Specialized journeys with single-command entry points.
 
 **Gated pipelines**: `/ck:refactor` and `/ck:cook` enforce pre-flight + verification gates. Don't bypass — they exist because skipping them caused incidents.
 
-**Dispatcher commands** (positional args, no dash): `/ck:plan`, `/ck:fix`, `/ck:git`, `/ck:docs`, `/ck:cc-skill`, `/ck:seo`, `/ck:content`, `/ck:design`, `/ck:bootstrap`, `/ck:scout`. Combinable `--flags`: `/ck:fix` (`--auto/--review/--quick/--parallel/--flow`), `/ck:review` (`--flow`).
+**Dispatcher commands** (positional args, no dash): `/ck:plan`, `/ck:fix`, `/ck:git`, `/ck:docs`, `/ck:seo`, `/ck:design`, `/ck:bootstrap`, `/ck:scout`. Combinable `--flags`: `/ck:fix` (`--auto/--review/--quick/--parallel/--flow`), `/ck:review` (`--flow`).
 
 **Controlled orchestration**: `/ck:flow` re-creates Claude Code's dynamic-workflow model on ClauKit's own controllable primitives (markdown recipes + Agent-tool fan-out/pipeline over the 21 agents, 4-axis inheritance, gated + cost-previewed) — it does **NOT** use the native `ultracode` runtime. Use it (or `/ck:fix --flow` / `/ck:review --flow`) for deterministic audits, migrations, and cross-checked reviews; use `/ck:team` when workstreams need persistent sessions + discussion.
 
@@ -498,9 +495,9 @@ ClauKit isn't for everyone. If you want an editor with AI baked in → use [Curs
 claukit/
 ├── .claude/                    # Claude Code configuration
 │   ├── agents/                 # Specialized agent definitions (21 agents)
-│   ├── commands/               # Slash command implementations (60 commands)
+│   ├── commands/               # Slash command implementations (52 commands)
 │   ├── hooks/                  # Git hooks and scripts
-│   ├── skills/                 # Specialized skills library (74 skills)
+│   ├── skills/                 # Specialized skills library (71 skills)
 │   ├── workflows/              # Development workflow definitions
 │   ├── settings.json           # Claude Code settings
 │   ├── metadata.json           # Project metadata
@@ -552,8 +549,6 @@ All dispatcher commands use **positional args** (no dash prefix) for mode select
 | `/ck:ask` | `<question>` |
 | `/ck:bootstrap` | `[auto\|fast]` |
 | `/ck:brainstorm` | `<topic>` |
-| `/ck:cc-skill` | `[add\|create\|optimize\|fix-logs] <args>` |
-| `/ck:content` | `[fast\|good\|enhance\|cro] <request>` |
 | `/ck:cook` | `[task or plan-path] [--fast\|--auto\|--from-plan\|--no-test]` |
 | `/ck:debug` | `<issue>` |
 | `/ck:design` | `[fast\|good\|3d\|screenshot\|describe\|ui-ux-pro-max] <request>` |
@@ -562,7 +557,6 @@ All dispatcher commands use **positional args** (no dash prefix) for mode select
 | `/ck:fix` | `[ci\|logs\|test\|types\|ui] [--auto] [--review] [--quick] [--parallel] <issue>` |
 | `/ck:git` | `[cm\|cp\|pr\|merge]` |
 | `/ck:journal` | `(no args)` |
-| `/ck:onboard` | `[optional-focus-area]` |
 | `/ck:plan` | `[fast\|hard\|two\|ci\|cro] <task> [-o md\|html]` · `<plan.md> -o html` (convert existing plan → HTML) |
 | `/ck:refactor` | `<refactor-pattern>` |
 | `/ck:research` | `<topic>` |
@@ -675,7 +669,7 @@ Cursor and Windsurf are agentic IDEs — they replace your editor. ClauKit is a 
 <details>
 <summary><strong>How do I automate my Claude Code workflow with ClauKit?</strong></summary>
 
-ClauKit ships 60 commands that codify common Claude Code workflows: `/ck:plan` → `/ck:cook` → `/ck:test` → `/ck:review` → `/ck:git pr`. Each command activates the right skill + agent automatically. For full visual workflow maps see [Use Cases & Workflows](#use-cases--workflows) — covers greenfield, onboarding, feature build, bug fix, refactor, and daily session loops.
+ClauKit ships 52 commands that codify common Claude Code workflows: `/ck:plan` → `/ck:cook` → `/ck:test` → `/ck:review` → `/ck:git pr`. Each command activates the right skill + agent automatically. For full visual workflow maps see [Use Cases & Workflows](#use-cases--workflows) — covers greenfield, onboarding, feature build, bug fix, refactor, and daily session loops.
 
 </details>
 
@@ -761,7 +755,7 @@ eligibility in SERP.
     {
       "@type": "Question",
       "name": "How do I automate my Claude Code workflow with ClauKit?",
-      "acceptedAnswer": { "@type": "Answer", "text": "ClauKit ships 60 commands that codify common Claude Code workflows: /ck:plan → /ck:cook → /ck:test → /ck:review → /ck:git pr. Each command activates the right skill + agent automatically. Visual workflow maps in the Use Cases & Workflows section cover greenfield, onboarding, feature build, bug fix, refactor, and daily session loops." }
+      "acceptedAnswer": { "@type": "Answer", "text": "ClauKit ships 52 commands that codify common Claude Code workflows: /ck:plan → /ck:cook → /ck:test → /ck:review → /ck:git pr. Each command activates the right skill + agent automatically. Visual workflow maps in the Use Cases & Workflows section cover greenfield, onboarding, feature build, bug fix, refactor, and daily session loops." }
     },
     {
       "@type": "Question",

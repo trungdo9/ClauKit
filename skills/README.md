@@ -41,7 +41,6 @@ This repository includes a diverse collection of example skills demonstrating di
 - **theme-factory** - Style artifacts with 10 pre-set professional themes or generate custom themes on-the-fly
 
 ## Meta Skills
-- **skill-creator** - Guide for creating effective skills that extend Claude's capabilities
 - **template-skill** - A basic template to use as a starting point for new skills
 
 # Document Skills

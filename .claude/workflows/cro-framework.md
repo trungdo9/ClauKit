@@ -1,6 +1,6 @@
 # Conversion Optimization Framework (25 Points)
 
-Single source of truth for Conversion Rate Optimization knowledge used by `/ck:content cro` and `/ck:plan cro`. Knowledge-level reference — independent of command implementation.
+Single source of truth for Conversion Rate Optimization knowledge used by `/ck:plan cro`. Knowledge-level reference — independent of command implementation.
 
 ## The 25 Principles
 
@@ -40,7 +40,6 @@ This file is shared by both engineer and marketing kits.
 - `/mk:campaign` Phase 6 (Edit) CRO track — load before auditing
 
 **Engineer kit (`/ck:`):**
-- `/ck:content cro` — apply framework to optimize **existing** copy
 - `/ck:plan cro` — create CRO **plan** with framework-driven recommendations
 
 **Agents:** `copywriter` (specialists), `content-strategist` (marketing kit)

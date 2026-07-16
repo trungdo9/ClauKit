@@ -87,4 +87,4 @@ See `references/`:
 
 ## Cross-links
 
-`[[bootstrap]]`, `[[skill-creator]]`, `[[code-review]]`
+`[[bootstrap]]`, `[[code-review]]`

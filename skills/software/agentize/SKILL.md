@@ -14,7 +14,7 @@ Take an existing library, service, or codebase and **expose it to AI agents**. T
 1. A **CLI** — human-runnable, scriptable, the unit AI agents shell out to.
 2. An **MCP server** — structured tool surface for Claude / OpenAI / other MCP clients.
 
-Distinct from `[[orchestrate]]` (which delegates to existing agents) and `[[skill-creator]]` (which writes knowledge docs). This skill is about exposing *executable* capability.
+Distinct from `[[orchestrate]]` (which delegates to existing agents) and knowledge-doc skills (which capture methodology). This skill is about exposing *executable* capability.
 
 ## When to Use
 
@@ -100,4 +100,4 @@ See `references/`:
 
 ## Cross-links
 
-`[[mcp-manager]]`, `[[skill-creator]]`, `[[context-engineering]]`, `[[orchestrate]]`
+`[[mcp-manager]]`, `[[context-engineering]]`, `[[orchestrate]]`

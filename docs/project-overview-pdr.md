@@ -103,10 +103,6 @@ Provide a production-ready template that:
 - `/ck:design screenshot [image]` - Design from screenshots
 - `/ck:design describe [image]` - Describe design from images
 - `/ck:design ui-ux-pro-max` - Advanced UI/UX design
-- `/ck:content fast [request]` - Quick copywriting
-- `/ck:content good [request]` - High-quality content creation
-- `/ck:content enhance [issues]` - Copy improvement
-- `/ck:content cro [issues]` - Conversion optimization
 
 **Documentation**:
 - `/ck:docs init` - Create initial documentation
@@ -130,11 +126,7 @@ Provide a production-ready template that:
 - `/ck:scout [prompt] [scale]` - Parallel codebase exploration
 - `/ck:scout -ext [prompt]` - Codebase exploration with external tools
 
-**Skills & Integration**:
-- `/ck:cc-skill add` - Add reference to existing skill
-- `/ck:cc-skill create` - Create new skill
-- `/ck:cc-skill optimize` - Optimize skills
-- `/ck:cc-skill fix-logs` - Fix skill from logs
+**Integration**:
 - `/ck:use-mcp` - Use MCP servers
 
 ### 3. Workflow System

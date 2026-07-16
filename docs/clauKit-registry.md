@@ -2,7 +2,7 @@
 
 **Last Updated**: 2026-06-08 (WordPress integration — `skills/integrations/` added: `wordpress-rest` + `mcp-wordpress`; reconciled prior 128/127 skills off-by-one to table-derived total)
 **Scope**: Single source of truth for every Skill, Agent, and Command in this project.
-**Counts**: 129 skills (129 active + 0 scaffold) · 31 agents · 72 commands · **232 total entries**
+**Counts**: 126 skills (126 active + 0 scaffold) · 31 agents · 64 commands · **221 total entries**
 
 Replaces previous `skills-catalog.md` (skills only). One file, all three resource types, with duplicate/overlap detection.
 
@@ -26,7 +26,7 @@ Replaces previous `skills-catalog.md` (skills only). One file, all three resourc
 
 ---
 
-## 1 · Skills (74)
+## 1 · Skills (71)
 
 ### Global (1) — `.claude/skills/global/`
 
@@ -94,7 +94,7 @@ Replaces previous `skills-catalog.md` (skills only). One file, all three resourc
 | `signup` | ✅ | `marketing/signup/` | |
 | `sms` | ✅ | `marketing/sms/` | |
 | `social-content` | ✅ | `marketing/social-content/` | |
-| `user-onboarding` | ✅ | `marketing/user-onboarding/` | renamed from `onboarding` (collision with software/onboarding) |
+| `user-onboarding` | ✅ | `marketing/user-onboarding/` | renamed from `onboarding` |
 
 **ClauKit-authored (2):**
 
@@ -121,7 +121,7 @@ Replaces previous `skills-catalog.md` (skills only). One file, all three resourc
 | `wordpress-rest` | ✅ | `integrations/wordpress-rest/` | WordPress REST client — publish/update posts & pages (draft→publish), media, taxonomies, Yoast/RankMath SEO meta, audit. Env-only auth, idempotent, draft-default. Adapted (consumer) from WordPress agent-skills (GPL v2+, attributed in TPN). |
 | `mcp-wordpress` | ✅ | `integrations/mcp-wordpress/` | WordPress MCP wrapper (BYO server) with curl fallback to `wordpress-rest`. |
 
-### Software · Top-level standalone (40)
+### Software · Top-level standalone (37)
 
 All 40 are active (`dynamic-workflow` added 2026-06-03, paired with `/ck:flow`; baseline 39 active as of 2026-05-30) (10 scaffolds filled in earlier batch; `predict` merged into `planning` and removed — see section 5; `chrome-devtools` added 2026-05-16; `ask` re-added 2026-05-16 as knowledge skill complementing the `/ask` command; `brainstorm` re-added 2026-05-16 as knowledge skill complementing the `/brainstorm` command + `brainstormer` agent; `node-specialist` added 2026-05-29 sourced from VoltAgent/awesome-claude-code-subagents). `nextjs-developer` added 2026-05-30 sourced from VoltAgent/awesome-claude-code-subagents; `web-frameworks` removed (Next.js refs migrated, turborepo/remix-icon dropped). `typescript-pro` added 2026-05-30 sourced from VoltAgent/awesome-claude-code-subagents (subcategorized under `software/development/`).
 
@@ -144,10 +144,8 @@ All 40 are active (`dynamic-workflow` added 2026-06-03, paired with `/ck:flow`; 
 | `dynamic-workflow` 🔁 | ✅ | `software/dynamic-workflow/` | Controllable re-creation of the dynamic-workflow model — fan-out/pipeline over the 21 agents, 4-axis inheritance, gated + cost-previewed; paired with `/ck:flow` (re-creates patterns, never native ultracode) |
 | `find-skills` | ✅ | `software/find-skills/` | |
 | `gkg` | ✅ | `software/gkg/` | Text → semantic knowledge graph (NLP) |
-| `llms` | ✅ | `software/llms/` | |
 | `markdown-novel-viewer` | ✅ | `software/markdown-novel-viewer/` | |
 | `mintlify` | ✅ | `software/mintlify/` | |
-| `onboarding` 🔁 | ✅ | `software/onboarding/` | 6-phase codebase tour methodology — paired with `/ck:onboard` |
 | `payment-integration` | ✅ | `software/payment-integration/` | |
 | `refactor` 🔁 | ✅ | `software/refactor/` | Large mechanical refactor (rename · extract · migrate · codemod) — 7-phase pipeline w/ atomic commits + rollback; paired with `/ck:refactor` |
 | `planning` 🔁 | ✅ | `software/planning/` | Now includes "Predictive planning" subsection (merged from removed `predict` scaffold) |
@@ -161,7 +159,6 @@ All 40 are active (`dynamic-workflow` added 2026-06-03, paired with `/ck:flow`; 
 | `sequential-thinking` | ✅ | `software/sequential-thinking/` | |
 | `team` 🔁 | ✅ | `software/team/` | Parallel multi-session orchestration — spawns independent Claude Code teammates (templates: research/cook/review/debug); paired with `/team` command |
 | `show-off` | ✅ | `software/show-off/` | |
-| `skill-creator` | ✅ | `software/skill-creator/` | |
 | `tech-graph` | ✅ | `software/tech-graph/` | |
 | `template-skill` | ✅ | `software/template-skill/` | (still a 5-LOC stub — see open issue) |
 | `security` 🔁 | ✅ | `software/security/` | Renamed from `vulnerability-scanner` 2026-05-29 — path updated to match `software/security/SKILL.md` on disk |
@@ -284,18 +281,17 @@ All 40 are active (`dynamic-workflow` added 2026-06-03, paired with `/ck:flow`; 
 
 ---
 
-## 3 · Commands (60)
+## 3 · Commands (52)
 
 All commands are ✅ active. Grouped by namespace. **Prefix `ck:` applied 2026-05-17** — every command lives under `.claude/commands/ck/`, invoked as `/ck:<name>` (e.g. `/ck:cook`, `/ck:fix ci`). **`/orchestrate` removed 2026-05-17** (superseded by `/ck:team`). **Flag-style variants applied 2026-05-17** — sibling variants of the same command (e.g. fast/hard/auto/good/ext) collapsed into flags rather than `:nested` namespace; namespaced commands now reserved for genuinely-distinct actions (e.g. `/ck:fix ci`, `/ck:plan two`).
 
-### Top-level (22) — single-action + flagged-variant entrypoints
+### Top-level (20) — single-action + flagged-variant entrypoints
 
 | Command | Description |
 |---|---|
 | `/ck:ask` | Answer technical and architectural questions |
 | `/ck:bootstrap [auto\|fast]` 🔁 | Bootstrap a new project — default: step-by-step · `auto`: minimal Q&A · `fast`: low-interaction parallel |
 | `/ck:brainstorm` 🔁 | Brainstorm a feature |
-| `/ck:content [fast\|good\|enhance\|cro]` 🔁 | Write creative & smart copy — `fast`: copywriter only · `good`: researcher+planner+copywriter |
 | `/ck:cook` 🔁 | Drive feature spec → production (full lifecycle: research, plan, code, test, review) |
 | `/ck:debug` 🔁 | Debugging technical issues |
 | `/ck:design [fast\|good] [3d\|screenshot\|describe\|ui-ux-pro-max]` 🔁 | Design UI/UX — workflow flags: `fast` (minimal) · `good` (research-driven). Output-type flags: `3d` · `screenshot` · `describe` · `ui-ux-pro-max` (Style Intelligence) |
@@ -303,7 +299,6 @@ All commands are ✅ active. Grouped by namespace. **Prefix `ck:` applied 2026-0
 | `/ck:flow [save\|list]` 🔁 | Controllable orchestration — plan phases, cost preview, fan-out/pipeline over the 21 agents, 4-axis inheritance, gated (re-creates dynamic workflows; never native ultracode). Paired with `dynamic-workflow` skill |
 | `/ck:fix [--auto] [--review] [--quick] [--parallel] [--flow]` 🔁 | Analyze and fix issues — combinable flags: `--auto` · `--review` · `--quick` · `--parallel` · `--flow` (orchestrated: gates as agent stages + adversarial-verify root cause before implement) |
 | `/ck:journal` 🔁 | Write journal entries |
-| `/ck:onboard` 🔁 | Guided 6-phase codebase tour for new/returning devs (10-min orientation) |
 | `/ck:plan [fast\|hard\|two\|ci\|cro] [-o md\|html]` 🔁 | Intelligent plan creation — router (auto-detect) · `fast`: no research · `hard`: research-heavy · `-o html`: also render self-contained `plan.html` view (md stays source of truth) · `/ck:plan <path>.md -o html`: convert an existing plan's markdown → `plan.html` (no re-plan) |
 | `/ck:refactor` 🔁 | Large mechanical refactor — rename · extract · migrate · codemod. 7-phase pipeline w/ atomic-commit + rollback gates |
 | `/ck:research` 🔁 | Technical research — technology evaluation, best practices, solution design (uses `research` skill) |
@@ -314,13 +309,6 @@ All commands are ✅ active. Grouped by namespace. **Prefix `ck:` applied 2026-0
 | `/ck:use-mcp` 🔁 | Utilize MCP server tools |
 | `/ck:watzup` | Review recent changes, wrap up work |
 | `/ck:xia` 🔁 | Port & refactor feature from public GitHub repo |
-
-### `content` variants (2) 🔁 copywriter — specialized actions
-
-| Command | Description |
-|---|---|
-| `/ck:content cro` | CRO content optimization |
-| `/ck:content enhance` | Analyze + enhance copy |
 
 ### `docs` (dispatcher, 3) 🔁 docs-manager
 
@@ -396,15 +384,6 @@ All commands under `/mk:` namespace. Each hard-fails if `plans/marketing-context
 | `/mk:nurture` | 5-phase lifecycle nurture (calendar → bigquery) |
 | `/mk:video` | 6-phase AI video (script → distribute) |
 
-### `cc-skill` (dispatcher, 4) 🔁 skill-creator
-
-| Invocation | Description |
-|---|---|
-| `/ck:cc-skill add` | Add files/scripts to a skill |
-| `/ck:cc-skill create` | Create new skill |
-| `/ck:cc-skill fix-logs` | Fix skill from logs |
-| `/ck:cc-skill optimize` | Optimize existing skill (plan-first) |
-
 ---
 
 ## 4 · Duplicate / Overlap Detection
@@ -424,9 +403,8 @@ These are the *intended* trios where Skill = knowledge, Agent = persona, Command
 **Batch 3** (5 trios): `git`, `xia`, `journal`, `fix`, `ask`
 **Batch 4** (1 trio): `seo` (dispatcher with 3 flags: `/ck:seo audit`, `/ck:seo keywords`, `/ck:seo schema`) — extracted detailed pipelines/templates from commands into `seo/references/{audit-checklist,keyword-research,schema-templates}.md`. Commands dropped 840→109 lines (−87%); single source of truth = skill + references. Collapsed from `seo:*` namespace to flag-style dispatcher 2026-05-18.
 **Batch 5** (4 cleanups): `content/cro` + `plan/cro` (cross-command CRO duplicate), `design/3d` (plan-structure duplicate), `design/*` (skill-activation boilerplate), `skill/*` (input-handling boilerplate).
-- **CRO framework** — 25-point Conversion Optimization Framework extracted to [.claude/workflows/cro-framework.md](../../.claude/workflows/cro-framework.md). Both `/ck:content cro` and `/ck:plan cro` reference it instead of duplicating.
+- **CRO framework** — 25-point Conversion Optimization Framework extracted to [.claude/workflows/cro-framework.md](../../.claude/workflows/cro-framework.md). `/ck:plan cro` references it instead of duplicating.
 - **`design/*`** — removed repeated `aesthetic`+`frontend-design` skill-activation block from 5 commands (`ui-ux-designer` agent already auto-activates these). `design/3d`, `design/screenshot`, `design/describe` now reference `planning` skill for plan structure.
-- **`cc-skill`** — collapsed 4 subcommands (`/ck:cc-skill add|create|optimize|fix-logs`) into a single dispatcher `/ck:cc-skill` with positional action arg (mirrors `/ck:git` pattern). Skill-creator canonical; `optimize` references `planning` skill for plan structure.
 
 Notable extensions:
 - `bootstrap` skill extended with **"Canonical Bootstrap Workflow"** (10-phase pipeline) — `/ck:bootstrap`, `/ck:bootstrap auto`, `/ck:bootstrap fast` only document variant differences.
@@ -435,7 +413,7 @@ Notable extensions:
 - `docs-manager` agent + `journal-writer` agent serve as canonical sources (no dedicated knowledge skill exists for those concepts).
 - `git-manager` agent retains haiku-optimized 2-3 tool execution workflow as agent-specific knowledge (skill = conventional-commits methodology).
 
-Other trios (`testing` → covered by `web-testing`/`chrome-devtools`, `design` → `frontend-design`, `mcp` → `use-mcp`, `skill-management` → `skill-creator`, `database` → `databases`, `content`, `seo`, `security`, `orchestrate`, `code`, `watchup`) may follow this pattern in future passes.
+Other trios (`testing` → covered by `web-testing`/`chrome-devtools`, `design` → `frontend-design`, `mcp` → `use-mcp`, `database` → `databases`, `seo`, `security`, `orchestrate`, `code`, `watchup`) may follow this pattern in future passes.
 
 | Concept | Skill | Agent | Command |
 |---|---|---|---|
@@ -444,9 +422,9 @@ Other trios (`testing` → covered by `web-testing`/`chrome-devtools`, `design` 
 | Code review | `code-review` | `code-reviewer` | `/ck:review` |
 | Debugging | `debugging` | `debugger` | `/ck:debug` |
 | Testing | `web-testing` (developer toolkit), `test-automation` (QA/automation engineering) | `tester` | `/ck:test`, `/ck:fix test` |
-| Docs | `mintlify`, `llms`, `markdown-novel-viewer`, `tech-graph`, `document-skills/*` | `docs-manager` | `/ck:docs [init\|update\|summarize]` |
+| Docs | `mintlify`, `markdown-novel-viewer`, `tech-graph`, `document-skills/*` | `docs-manager` | `/ck:docs [init\|update\|summarize]` |
 | Design | 10 design skills | `ui-ux-designer` | `/ck:design` |
-| Content | `show-off` | `copywriter` | `/ck:content` |
+| Content | `show-off` | `copywriter` | – (marketing kit: `/mk:content`) |
 | SEO/GEO | `seo`, `geo` | – (agent removed 2026-05-17) | `/ck:seo [audit\|keywords\|schema]` |
 | Git | `git`, `worktree` | `git-manager` | `/ck:git [cm\|cp\|pr\|merge]` |
 | Bootstrap | `bootstrap` (knowledge) | – | `/ck:bootstrap` |
@@ -454,12 +432,11 @@ Other trios (`testing` → covered by `web-testing`/`chrome-devtools`, `design` 
 | Security | `security`, `cti-expert` | `security-auditor` | `/ck:review`, `/ck:security` |
 | Payments | `payment-integration` | `integration-agent` | `/ck:sepay` |
 | MCP | – | `mcp-manager` | `/ck:use-mcp` |
-| Skill management | `skill-creator`, `find-skills`, `template-skill` | – | `/ck:cc-skill` |
+| Skill management | `find-skills`, `template-skill` | – | – |
 | Database | `postgresql`, `supabase` | `database-admin` | – |
 | Journal | – | `journal-writer` | `/ck:journal` |
 | Brainstorm (7-phase advisory: Scout→Discovery→Research→Analysis→Debate→Consensus→Finalize→`planner`) | `brainstorm` (5-pillar methodology + 7-phase process) | `brainstormer` | `/ck:brainstorm` |
 | Team (parallel multi-session) | `team` (templates: research/cook/review/debug) | – | `/ck:team` |
-| Onboarding (6-phase codebase tour) | `onboarding` | – | `/ck:onboard` |
 | Refactor (7-phase mechanical change pipeline) | `refactor` | – (uses `scout`, `tester`, `code-reviewer`, `git-manager`) | `/ck:refactor` |
 | Discoverability (local-first tool finder) | – (uses `find-skills` skill for external fallback) | – | `/ck:find` |
 | Fix | – | (uses tester/debugger) | `/ck:fix` |
@@ -468,7 +445,7 @@ Other trios (`testing` → covered by `web-testing`/`chrome-devtools`, `design` 
 | Cook (feature lifecycle) | `cook` (5-stage gated methodology) | (uses team) | `/ck:cook` |
 | Problem-solving | `problem-solving` | – | – |
 | Sequential thinking | `sequential-thinking` | – | – |
-| Misc skills (knowledge only) | `preview`, `llms`, `markdown-novel-viewer`, `mintlify`, `tech-graph`, `cti-expert`, design subskills | – | – |
+| Misc skills (knowledge only) | `preview`, `markdown-novel-viewer`, `mintlify`, `tech-graph`, `cti-expert`, design subskills | – | – |
 | Scaffold methodology (knowledge only, future) | 12 scaffolds | – | – |
 
 ### 4c · Naming inconsistencies — RESOLVED 2026-05-16

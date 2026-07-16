@@ -100,7 +100,7 @@ You are an expert in conversion optimization. Analyze the content based on `$ARG
 
 **CRO Framework:** [.claude/workflows/cro-framework.md](.claude/workflows/cro-framework.md) — single source of truth for the 25-point CRO principles.
 
-**Distinct from `/ck:content cro`** (which **rewrites** copy directly), this command produces a **CRO plan document** with framework-driven recommendations. Wait for user approval before implementation.
+This command produces a **CRO plan document** with framework-driven recommendations — not a direct copy rewrite. Wait for user approval before implementation.
 
 Workflow:
 - Screenshots / videos → `ai-multimodal` skill extracts detailed description.

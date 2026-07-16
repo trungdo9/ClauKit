@@ -114,13 +114,11 @@ spark-dev/
 | Development | `/ck:plan`, `/ck:cook`, `/ck:test`, `/ck:ask`, `/ck:bootstrap`, `/ck:brainstorm`, `/ck:team` |
 | Debugging | `/ck:debug`, `/ck:fix`, `/ck:fix ci`, `/ck:fix test`, `/ck:fix types`, `/ck:fix logs`, `/ck:fix ui` |
 | Design | `/ck:design fast`, `/ck:design good`, `/ck:design 3d`, `/ck:design screenshot`, `/ck:design describe`, `/ck:design ui-ux-pro-max` |
-| Content | `/ck:content fast`, `/ck:content good`, `/ck:content enhance`, `/ck:content cro` |
 | Documentation | `/ck:docs init`, `/ck:docs update`, `/ck:docs summarize` |
 | SEO | `/ck:seo audit`, `/ck:seo keywords`, `/ck:seo schema` |
 | Git Operations | `/ck:git cm`, `/ck:git cp`, `/ck:git pr`, `/ck:git merge` |
 | Planning | `/ck:plan fast`, `/ck:plan hard`, `/ck:plan two`, `/ck:plan ci`, `/ck:plan cro` |
 | Session | `/ck:watzup`, `/ck:journal`, `/ck:scout`, `/ck:scout -ext` |
-| Skills | `/ck:cc-skill add`, `/ck:cc-skill create`, `/ck:cc-skill optimize`, `/ck:cc-skill fix-logs` |
 | Integration | `/ck:sepay`, `/ck:use-mcp` |
 | Review | `/ck:review` |
 
