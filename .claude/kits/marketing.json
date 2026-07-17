@@ -11,7 +11,8 @@
     "skills": [
       ".claude/skills/marketing/",
       ".claude/skills/automation/",
-      ".claude/skills/integrations/"
+      ".claude/skills/integrations/",
+      ".claude/skills/software/obsidian/"
     ],
     "workflows": [
       ".claude/workflows/marketing-workflow.md",
@@ -32,7 +33,6 @@
   "requires": {
     "shared": [
       ".claude/agents/engineering/planner.md",
-      ".claude/agents/engineering/mcp-manager.md",
       ".claude/skills/software/planning/references/html-output.md"
     ]
   }

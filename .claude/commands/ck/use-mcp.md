@@ -2,33 +2,18 @@
 description: Utilize tools of Model Context Protocol (MCP) servers
 argument-hint: [task]
 ---
-Execute MCP operations via **Gemini CLI** to preserve context budget.
+Execute MCP operations natively — modern Claude Code defers MCP tool schemas (loaded on demand), so no context-preservation detour is needed for discovery.
 
 ## Execution Steps
 
-1. **Execute task via Gemini CLI** (using stdin pipe for MCP support):
-   ```bash
-   # IMPORTANT: Use stdin piping, NOT -p flag (deprecated, skips MCP init)
-   echo "$ARGUMENTS. Return JSON only per GEMINI.md instructions." | gemini -y -m gemini-2.5-flash
-   ```
+1. **Call MCP tools directly** for: $ARGUMENTS
+   - Discover the connected servers' relevant tools and call the minimal set that accomplishes the task.
 
-2. **Fallback to mcp-manager subagent** (if Gemini CLI unavailable):
-   - Use `mcp-manager` subagent to discover and execute tools
-   - If the subagent got issues with the scripts of `mcp-management` skill, use `mcp-builder` skill to fix them
-   - **DO NOT** create ANY new scripts
-   - The subagent can only use MCP tools if any to achieve this task
-   - If the subagent can't find any suitable tools, just report it back to the main agent to move on to the next step
+2. **Isolate verbose results**: when the task returns large payloads (bulk pagination, batch screenshots, long resource dumps), wrap the MCP calls in a `general-purpose` subagent and return only a concise summary + artifact paths to keep the main context clean.
+
+3. **No suitable tool** → report which servers/tools were checked, then move on.
 
 ## Important Notes
 
-- **MUST use stdin piping** - the deprecated `-p` flag skips MCP initialization
-- Use `-y` flag to auto-approve tool execution
-- **GEMINI.md auto-loaded**: Gemini CLI automatically loads `GEMINI.md` from project root, enforcing JSON-only response format
-- **Parseable output**: Responses are structured JSON: `{"server":"name","tool":"name","success":true,"result":<data>,"error":null}`
-
-## Anti-Pattern (DO NOT USE)
-
-```bash
-# BROKEN - deprecated -p flag skips MCP server connections!
-gemini -y -m gemini-2.5-flash -p "..."
-```
+- **DO NOT** create ANY new scripts or modify MCP configs.
+- Server needs auth → direct the user to `/mcp` (interactive session) to authorize.

@@ -38,15 +38,7 @@ Read output ONCE. Extract: `LINES`, `FILES`, `SECRETS`.
 
 ### TOOL 2 — Generate Commit Message
 
-**Decision from Tool 1 metrics:**
-
-- **A) Simple** (`LINES ≤ 30 AND FILES ≤ 3`) → Skip Tool 2. Create message yourself from Tool 1 stat output using conventional format from `git` skill.
-- **B) Complex** (`LINES > 30 OR FILES > 3`) → Delegate to Gemini:
-  ```bash
-  gemini -y -p "Create conventional commit from this diff: $(git diff --cached | head -300). Format: type(scope): description. Types: feat|fix|docs|chore|refactor|perf|test|build|ci. <72 chars. Focus on WHAT changed. No AI attribution." --model gemini-2.5-flash
-  ```
-
-**Fallback** if gemini unavailable → create message yourself (silent fallback).
+Create the message yourself from Tool 1's stat output, using the Conventional Commits format from the `git` skill: `type(scope): description`, <72 chars, imperative present tense, no trailing period. For a large/complex diff (`LINES > 30 OR FILES > 3`), inspect `git diff --cached | head -300` first if you need more context to pick the right type/scope; otherwise the Tool 1 `--stat` output is enough.
 
 ### TOOL 3 — Commit + Push (compound)
 
@@ -90,14 +82,11 @@ Keep output <1k chars. No explanations.
 | No changes staged | "❌ No changes to commit" | Exit cleanly |
 | Merge conflicts | "❌ Conflicts in: [files]" | Suggest `git status` → manual resolution |
 | Push rejected | "⚠ Push rejected (out of sync)" | Suggest `git pull --rebase` |
-| Gemini unavailable | Create message yourself | Silent fallback |
 
 ## Token Optimization Rationale
 
-- Gemini Flash 2.5: $0.075/$0.30 per 1M tokens · Haiku 4.5: $1/$5 per 1M
-- For 100-line diffs, Gemini = **13× cheaper** for analysis
-- Haiku orchestrates, Gemini does heavy lifting
-- Target: 2-3 tool calls · 5-8K tokens · 10-15s execution · ~$0.015/commit (vs $0.078 baseline = **81% cheaper**)
+- Runs on Haiku with a trust-the-workflow discipline: no exploration phase, all context gathered in Tool 1's single compound command.
+- Target: 2-3 tool calls · 5-8K tokens · 10-15s execution per commit.
 
 ## Critical Instructions for Haiku
 

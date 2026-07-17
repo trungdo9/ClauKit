@@ -17,17 +17,17 @@ Port a feature from an external public GitHub repository into the current codeba
 
 ## Methodology
 
-**Activate the `xia` skill** ([.claude/skills/software/xia/SKILL.md](.claude/skills/software/xia/SKILL.md)) and follow its 5-phase workflow strictly:
+**Activate the `port` skill** ([.claude/skills/software/port/SKILL.md](.claude/skills/software/port/SKILL.md)) and follow its 5-phase workflow strictly:
 1. Fetch & inspect (license check FIRST)
 2. Compare with local codebase
 3. Port (only `--improve` mode)
 4. Refactor for fit (only `--improve` mode)
 5. Verify
 
-The `xia` skill is the single source of truth for port-and-refactor methodology, including:
+The `port` skill is the single source of truth for port-and-refactor methodology, including:
 - License compatibility rules (refuse GPL/AGPL unless local also is)
 - Provenance header requirement (`// Adapted from <repo_url>@<sha>:<path> (<license>)`)
-- Phase outputs (`xia-<repo>-{inspect,compare,port}.md`)
+- Phase outputs (`port-<repo>-{inspect,compare,port}.md`)
 - Guardrails (no drive-by deps · no silent secrets · trust local conventions)
 
 ## Mode-Specific Behavior
@@ -48,12 +48,12 @@ Before Phase 3 (any file write), confirm with user:
 
 ## Report Locations
 
-Save to `plans/<plan-name>/reports/xia-<repo>-{inspect,compare,port}.md`. If no active plan → `plans/xia-adhoc-YYYYMMDD-HHmm/reports/`. Use `bash -c 'date +%y%m%d-%H%M'` for the date.
+Save to `plans/<plan-name>/reports/port-<repo>-{inspect,compare,port}.md`. If no active plan → `plans/port-adhoc-YYYYMMDD-HHmm/reports/`. Use `bash -c 'date +%y%m%d-%H%M'` for the date.
 
 ## Important
 
-- All methodology rules + guardrails → `xia` skill (skill enforces license-first, provenance headers, no-drive-by-deps).
+- All methodology rules + guardrails → `port` skill (skill enforces license-first, provenance headers, no-drive-by-deps).
 - Port is not "done" until `/ck:test` (or `tester` agent) passes — surface this to user explicitly.
 - Concise grammar in reports. List unresolved questions at end.
 
-**Related:** `scout-external` agent (locate source files), `code-reviewer` agent (Phase 4), `tester` agent / `/test` (Phase 5), `git-manager` agent (commit port).
+**Related:** `scout` agent (locate source files), `code-reviewer` agent (Phase 4), `tester` agent / `/test` (Phase 5), `git-manager` agent (commit port).

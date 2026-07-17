@@ -14,14 +14,14 @@ ClauKit is an opinionated multi-agent orchestration framework that runs inside C
 ClauKit/
 ├── .claude/                    # Claude Code configuration (what `ck init` copies)
 │   ├── agents/
-│   │   ├── engineering/        # 19 engineer-kit agent definitions
+│   │   ├── engineering/        # 17 engineer-kit agent definitions
 │   │   └── marketing/          # 11 marketing-kit agent definitions
 │   ├── commands/
-│   │   ├── ck/                 # 25 engineer-kit command files (/ck:<name>)
+│   │   ├── ck/                 # 26 engineer-kit command files (/ck:<name>)
 │   │   └── mk/                 # 12 marketing-kit command files (/mk:<name>)
 │   ├── hooks/                  # Git hooks and scripts (scout-block.js dispatcher)
 │   ├── kits/                   # Kit manifests (*.json) — engineer/marketing/both
-│   ├── skills/                 # 126 SKILL.md files — see § Skills Library below
+│   ├── skills/                 # 128 SKILL.md files — see § Skills Library below
 │   ├── workflows/              # Development workflow definitions (*.md)
 │   ├── settings.json           # Claude Code settings
 │   ├── metadata.json           # Installed-project metadata (kit, version)
@@ -71,11 +71,11 @@ ClauKit/
 
 ### 1. Agent Orchestration System
 
-**Claude Code Agents** (`.claude/agents/` — 30 total, two folders, no `specialists/`, `operations/`, or `research/` subfolders):
+**Claude Code Agents** (`.claude/agents/` — 28 total, two folders, no `specialists/`, `operations/`, or `research/` subfolders):
 
 | Folder | Count | Agents |
 |--------|------:|--------|
-| `engineering/` (engineer kit) | 19 | `backend-developer`, `brainstormer`, `code-reviewer`, `database-admin`, `debugger`, `docs-manager`, `frontend-developer`, `git-manager`, `integration-agent`, `journal-writer`, `mcp-manager`, `performance-agent`, `planner`, `project-manager`, `researcher`, `scout`, `scout-external`, `security-auditor`, `tester` |
+| `engineering/` (engineer kit) | 17 | `backend-developer`, `brainstormer`, `code-reviewer`, `database-admin`, `debugger`, `docs-manager`, `frontend-developer`, `git-manager`, `integration-agent`, `journal-writer`, `performance-agent`, `planner`, `project-manager`, `researcher`, `scout`, `security-auditor`, `tester` |
 | `marketing/` (marketing kit) | 11 | `campaign-manager`, `content-strategist`, `copywriter`, `crm-specialist`, `email-specialist`, `market-researcher`, `seo-content`, `seo-geo`, `seo-schema`, `seo-technical`, `video-producer` |
 
 Notes:
@@ -87,18 +87,18 @@ Notes:
 
 ### 2. Slash Commands System
 
-**Command files**: 25 under `.claude/commands/ck/` (`/ck:<name>`) + 12 under `.claude/commands/mk/` (`/mk:<name>`) = 37 files. `docs/clauKit-registry.md` counts "commands" differently (dispatcher sub-actions like `/ck:fix ci` counted separately) — its header/§3/§6 figures (64/52/72) currently disagree with each other; treat the registry's § 3 tables as the itemized source of truth until that's reconciled.
+**Command files**: 25 under `.claude/commands/ck/` (`/ck:<name>`) + 12 under `.claude/commands/mk/` (`/mk:<name>`) = 37 files. `docs/clauKit-registry.md` counts "commands" differently (dispatcher sub-actions like `/ck:fix ci` counted separately) — its header/§1/§3/§6 figures are now reconciled to **52** logical commands (= 208 total entries with 128 skills + 28 agents). The registry's § 3 tables remain the itemized source of truth.
 
 | Namespace | Commands |
 |-----------|----------|
-| `/ck:` (engineer kit, 25 files) | `ask`, `bootstrap`, `brainstorm`, `cook`, `debug`, `design`, `docs`, `find`, `fix`, `flow`, `git`, `journal`, `plan`, `refactor`, `research`, `review`, `scout`, `security`, `seo`, `sepay`, `team`, `test`, `use-mcp`, `watzup`, `xia` |
+| `/ck:` (engineer kit, 25 files) | `ask`, `bootstrap`, `brainstorm`, `claude-md`, `cook`, `debug`, `design`, `docs`, `find`, `fix`, `flow`, `git`, `journal`, `plan`, `port`, `refactor`, `research`, `review`, `scout`, `security`, `sepay`, `team`, `test`, `use-mcp`, `watzup` |
 | `/mk:` (marketing kit, 12 files) | `ads`, `campaign`, `content`, `cro`, `email`, `growth`, `leads`, `nurture`, `plan`, `research`, `seo`, `video` |
 
-Several `/ck:` commands are dispatchers with positional-arg variants (no dash), e.g. `/ck:fix [ci|logs|test|types|ui]`, `/ck:git [cm|cp|pr|merge]`, `/ck:plan [fast|hard|two|ci|cro]`, `/ck:docs [init|update|summarize]`, `/ck:seo [audit|keywords|schema]`. `/ck:fix` also takes combinable flags: `--auto --review --quick --parallel --flow`.
+Several `/ck:` commands are dispatchers with positional-arg variants (no dash), e.g. `/ck:fix [ci|logs|test|types|ui]`, `/ck:git [cm|cp|pr|merge]`, `/ck:plan [fast|hard|two|ci|cro]`, `/ck:docs [init|update|summarize]`. `/ck:fix` also takes combinable flags: `--auto --review --quick --parallel --flow`.
 
 ### 3. Skills Library
 
-**Skills Organization** (`.claude/skills/` — 126 `SKILL.md` files across 5 top-level groups):
+**Skills Organization** (`.claude/skills/` — 128 `SKILL.md` files across 5 top-level groups):
 
 | Group | Count | Notes |
 |-------|------:|-------|
@@ -106,7 +106,7 @@ Several `/ck:` commands are dispatchers with positional-arg variants (no dash), 
 | `marketing/` | 50 | 25 claude-seo engine skills + 23 coreyhaines31-sourced + 2 ClauKit-authored (`product-marketing`, `kit-builder`) |
 | `automation/` | 6 | MCP wrappers: `marketing-orchestrator`, `mcp-ga4`, `mcp-gsc`, `mcp-sendgrid`, `mcp-resend`, `mcp-reviewweb` |
 | `integrations/` | 2 | `wordpress-rest`, `mcp-wordpress` |
-| `software/` | 67 | Top-level standalone (37) + subcategorized: `ai/` (3), `database/` (2), `design/` (9), `development/` (9), `document-skills/` (4), `git/` (2), `infrastructure/` (1) |
+| `software/` | 69 | Top-level standalone (37) + subcategorized: `ai/` (3), `database/` (2), `design/` (9), `development/` (11), `document-skills/` (4), `git/` (2), `infrastructure/` (1) |
 
 No `ffmpeg`, `shopify`, or `csharp-expert` skills exist. Image/video generation and editing route through the `ai-multimodal` skill (stale `imagemagick` references were purged 2026-07-16 along with the earlier-deleted `media-processing` skill). C#/.NET work is covered by the `csharp-developer` skill (`software/development/csharp-developer/`), not `csharp-expert`.
 
@@ -214,10 +214,10 @@ type(scope): description
 
 Not regenerated this pass — no `repomix-output.xml` is committed to the repo (generated on demand by `/ck:docs update`, gitignored). Run `repomix` locally for current token/file counts rather than trusting stale numbers here.
 
-**Verified counts** (via `ls`/`find` against the filesystem, 2026-07-16):
-- Agent definitions: 30 (19 engineering + 11 marketing)
-- Command files: 37 (25 `ck/` + 12 `mk/`)
-- Skill files: 126 `SKILL.md`
+**Verified counts** (via `ls`/`find` against the filesystem, 2026-07-17):
+- Agent definitions: 28 (17 engineering + 11 marketing)
+- Command files: 38 (26 `ck/` + 12 `mk/`)
+- Skill files: 128 `SKILL.md`
 - Workflow files: 5 (`primary-workflow.md`, `development-rules.md`, `orchestration-protocol.md`, `documentation-management.md`, plus `cro-framework.md`/`fix-pipeline.md` references)
 
 ## Integration Capabilities

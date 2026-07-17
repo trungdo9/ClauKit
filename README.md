@@ -1,6 +1,6 @@
 # ClauKit — The Opinionated Multi-Agent Orchestration Framework for Claude Code
 
-*126 skills · 30 agents · 52 gated commands · atomic-commit safety · MCP-ready · 3 installable kits*
+*128 skills · 28 agents · 52 gated commands · atomic-commit safety · MCP-ready · 3 installable kits*
 
 [![GitHub stars](https://img.shields.io/github/stars/trungdo9/ClauKit?style=social)](https://github.com/trungdo9/ClauKit/stargazers)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
@@ -9,7 +9,7 @@
 
 Claude Code gives you the primitives — but no opinions on how to combine them. You're left to invent your own workflows, manage parallel agents by hand, and hope you don't `git push` a broken refactor. Most Claude Code templates throw a thousand skills at the wall and call it a day.
 
-**ClauKit is the opinionated alternative.** 126 curated skills, 30 specialized agents, 52 gated commands — each one earns its place. Built-in pre-flight checks block destructive operations. Multi-agent orchestration via `/ck:team` and `/ck:flow` runs parallel Claude Code work safely. **3 installable kits** — engineer (default), marketing, both.
+**ClauKit is the opinionated alternative.** 128 curated skills, 28 specialized agents, 52 gated commands — each one earns its place. Built-in pre-flight checks block destructive operations. Multi-agent orchestration via `/ck:team` and `/ck:flow` runs parallel Claude Code work safely. **3 installable kits** — engineer (default), marketing, both.
 
 > Plan once. `/clear` context. Cook with confidence. That's the ClauKit workflow.
 
@@ -17,7 +17,7 @@ Claude Code gives you the primitives — but no opinions on how to combine them.
 
 - **Gated pipelines, not gambling.** `/ck:refactor` and `/ck:cook` enforce pre-flight gates — clean working tree, tests green, not on `main`. See [`.claude/workflows/primary-workflow.md`](./.claude/workflows/primary-workflow.md). Skip the gates and the command refuses to run.
 - **Trio architecture — one concept, one entry point.** Every skill (knowledge) maps to an agent (persona) and a command (`/ck:<name>` trigger). No tool roulette. Full map in [`docs/clauKit-registry.md`](./docs/clauKit-registry.md).
-- **Curated, not crawled.** 126 skills hand-selected for AI dev workflows — research, planning, refactoring, testing, code review, SEO, payments. Each maintained, each documented, each in the registry. No abandoned scaffolds.
+- **Curated, not crawled.** 128 skills hand-selected for AI dev workflows — research, planning, refactoring, testing, code review, SEO, payments. Each maintained, each documented, each in the registry. No abandoned scaffolds.
 
 ## Quick Start
 
@@ -245,7 +245,7 @@ Found a feature in someone else's repo, want to bring it in (and improve / adapt
 
 ```mermaid
 flowchart LR
-    A[Spotted feature<br/>in GitHub repo] --> B["/ck:xia &lt;url&gt;"]
+    A[Spotted feature<br/>in GitHub repo] --> B["/ck:port &lt;url&gt;"]
     B --> C[External scout<br/>+ analyze]
     C --> D["/ck:plan adapt to<br/>local conventions"]
     D --> E["/ck:cook"]
@@ -275,7 +275,7 @@ flowchart LR
     H --> I["/ck:git cm or cp"]
 ```
 
-**Tip**: `/ck:find` is your meta-helper across 126 skills + 52 commands. Use it whenever you think "there's probably a ClauKit tool for this".
+**Tip**: `/ck:find` is your meta-helper across 128 skills + 52 commands. Use it whenever you think "there's probably a ClauKit tool for this".
 
 ---
 
@@ -306,7 +306,7 @@ Specialized journeys with single-command entry points.
 |---|---|---|
 | 🆕 New project scaffold | `/ck:bootstrap [auto\|fast]` | → `/ck:plan` → `/ck:cook` |
 | ❓ Codebase Q&A (read-only) | `/ck:ask <question>` | (standalone) |
-| 🔍 Find files / symbols | `/ck:scout <prompt> [-ext]` | (standalone) |
+| 🔍 Find files / symbols | `/ck:scout <prompt>` | (standalone) |
 | 🌐 External research | `/ck:research <topic>` | → `/ck:plan` |
 | 💡 Architectural debate | `/ck:brainstorm <topic>` | → `/ck:plan` |
 | 📋 Plan implementation | `/ck:plan [fast\|hard\|two\|ci\|cro] [-o md\|html]` | → `/clear` → `/ck:cook` |
@@ -316,13 +316,13 @@ Specialized journeys with single-command entry points.
 | 🐛 Debug issue | `/ck:debug <issue>` | → `/ck:fix` |
 | 🔧 Fix issue | `/ck:fix [ci\|logs\|test\|types\|ui]` | → `/ck:test` |
 | 🔄 Large refactor | `/ck:refactor <pattern>` | → `/ck:test` → `/ck:review` |
-| 📦 Port from GitHub | `/ck:xia <url> [--improve\|--compare]` | → `/ck:cook` |
+| 📦 Port from GitHub | `/ck:port <url> [--improve\|--compare]` | → `/ck:cook` |
 | 🎨 UI / UX design | `/ck:design [fast\|good\|3d\|...]` | → `/ck:cook` |
 | 🖼 Fix UI issue | `/ck:fix ui` | → `/ck:test` |
 | 📚 Init docs | `/ck:docs init` | (one-shot) |
 | 📚 Update docs | `/ck:docs update` | (after feature) |
 | 📚 Docs summary | `/ck:docs summarize` | (read-only) |
-| 🔎 SEO work | `/ck:seo [audit\|keywords\|schema] <target>` | → `/ck:plan cro` |
+| 📐 CLAUDE.md create / audit / slim | `/ck:claude-md [init\|verify\|refactor]` | (standalone) |
 | 💳 SePay payment | `/ck:sepay <tasks>` | → `/ck:test` |
 | 🔌 Use MCP server | `/ck:use-mcp <server-name>` | (standalone) |
 | 👥 Parallel team | `/ck:team <template> [...]` | (orchestration) |
@@ -346,7 +346,7 @@ Specialized journeys with single-command entry points.
 
 **Gated pipelines**: `/ck:refactor` and `/ck:cook` enforce pre-flight + verification gates. Don't bypass — they exist because skipping them caused incidents.
 
-**Dispatcher commands** (positional args, no dash): `/ck:plan`, `/ck:fix`, `/ck:git`, `/ck:docs`, `/ck:seo`, `/ck:design`, `/ck:bootstrap`, `/ck:scout`. Combinable `--flags`: `/ck:fix` (`--auto/--review/--quick/--parallel/--flow`), `/ck:review` (`--flow`).
+**Dispatcher commands** (positional args, no dash): `/ck:plan`, `/ck:fix`, `/ck:git`, `/ck:docs`, `/ck:design`, `/ck:bootstrap`, `/ck:scout`. Combinable `--flags`: `/ck:cook` (`--fast/--auto/--from-plan/--no-test` — `--auto` is the only mode that runs Deploy), `/ck:fix` (`--auto/--review/--quick/--parallel/--flow`), `/ck:review` (`--flow`).
 
 **Controlled orchestration**: `/ck:flow` re-creates Claude Code's dynamic-workflow model on ClauKit's own controllable primitives (markdown recipes + Agent-tool fan-out/pipeline over the 21 agents, 4-axis inheritance, gated + cost-previewed) — it does **NOT** use the native `ultracode` runtime. Use it (or `/ck:fix --flow` / `/ck:review --flow`) for deterministic audits, migrations, and cross-checked reviews; use `/ck:team` when workstreams need persistent sessions + discussion.
 
@@ -494,10 +494,10 @@ ClauKit isn't for everyone. If you want an editor with AI baked in → use [Curs
 ```
 claukit/
 ├── .claude/                    # Claude Code configuration
-│   ├── agents/                 # Specialized agent definitions (30 agents: 19 engineering/ + 11 marketing/)
+│   ├── agents/                 # Specialized agent definitions (28 agents: 17 engineering/ + 11 marketing/)
 │   ├── commands/               # Slash command implementations (52 commands)
 │   ├── hooks/                  # Git hooks and scripts
-│   ├── skills/                 # Specialized skills library (126 skills)
+│   ├── skills/                 # Specialized skills library (128 skills)
 │   ├── workflows/              # Development workflow definitions
 │   ├── settings.json           # Claude Code settings
 │   ├── metadata.json           # Project metadata
@@ -536,21 +536,22 @@ claukit/
 | Development | `frontend-developer`, `backend-developer` |
 | Quality | `tester`, `code-reviewer`, `debugger`, `performance-agent`, `security-auditor` |
 | Documentation | `docs-manager`, `journal-writer` |
-| Operations | `git-manager`, `project-manager`, `database-admin`, `mcp-manager`, `integration-agent` |
-| Implementation | `scout`, `scout-external` |
+| Operations | `git-manager`, `project-manager`, `database-admin`, `integration-agent` |
+| Implementation | `scout` |
 
 Marketing kit (11): `campaign-manager`, `content-strategist`, `copywriter`, `crm-specialist`, `email-specialist`, `market-researcher`, `seo-content`, `seo-geo`, `seo-schema`, `seo-technical`, `video-producer` — see [`skills/marketing/README.md`](./skills/marketing/README.md).
 
 ### Slash Commands (25)
 
-All dispatcher commands use **positional args** (no dash prefix) for mode selection. Only `/ck:fix` uses `--flags` for combinable modifiers.
+All dispatcher commands use **positional args** (no dash prefix) for mode selection. Only `/ck:fix` and `/ck:cook` use `--flags` for combinable modifiers.
 
 | Command | Modes / Usage |
 |---------|---------------|
 | `/ck:ask` | `<question>` |
 | `/ck:bootstrap` | `[auto\|fast]` |
 | `/ck:brainstorm` | `<topic>` |
-| `/ck:cook` | `[task or plan-path] [--fast\|--auto\|--from-plan\|--no-test]` |
+| `/ck:claude-md` | `[init\|verify\|refactor] [path]` |
+| `/ck:cook` | `[task or plan-path] [--fast] [--auto] [--from-plan] [--no-test]` (composable; `--auto` runs autonomously incl. Deploy — other modes end ready-to-merge) |
 | `/ck:debug` | `<issue>` |
 | `/ck:design` | `[fast\|good\|3d\|screenshot\|describe\|ui-ux-pro-max] <request>` |
 | `/ck:docs` | `[init\|update\|summarize]` |
@@ -560,18 +561,17 @@ All dispatcher commands use **positional args** (no dash prefix) for mode select
 | `/ck:git` | `[cm\|cp\|pr\|merge]` |
 | `/ck:journal` | `(no args)` |
 | `/ck:plan` | `[fast\|hard\|two\|ci\|cro] <task> [-o md\|html]` · `<plan.md> -o html` (convert existing plan → HTML) |
+| `/ck:port` | `<github-url> [feature] [--improve\|--compare]` |
 | `/ck:refactor` | `<refactor-pattern>` |
 | `/ck:research` | `<topic>` |
 | `/ck:review` | `[tasks-or-prompt] [--flow]` |
-| `/ck:scout` | `<prompt> [scale] [-ext]` |
+| `/ck:scout` | `<prompt> [scale]` |
 | `/ck:security` | `[scope] [--en]` |
-| `/ck:seo` | `[audit\|keywords\|schema] <target>` |
 | `/ck:sepay` | `<tasks>` |
 | `/ck:team` | `<template> [context] [--devs\|--reviewers\|--researchers\|--debuggers N]` |
 | `/ck:test` | `(no args)` |
 | `/ck:use-mcp` | `<server-name>` |
 | `/ck:watzup` | `(no args)` |
-| `/ck:xia` | `<github-url> [feature] [--improve\|--compare]` |
 
 ### Workflows
 
@@ -630,14 +630,14 @@ All documentation is maintained in `./docs`:
 <details>
 <summary><strong>What is ClauKit and how is it different from aggregate Claude Code templates?</strong></summary>
 
-ClauKit is an opinionated multi-agent orchestration framework for Claude Code with 126 curated skills, 30 agents, and 52 gated commands. Unlike aggregate Claude Code templates (often 1000+ skills, kitchen-sink approach), ClauKit hand-selects each skill, enforces pre-flight safety gates on destructive operations, and ships a trio architecture (skill + agent + command) so every concept has exactly one entry point. See the [comparison table](#claukit-vs-other-ai-coding-tools) for side-by-side capabilities.
+ClauKit is an opinionated multi-agent orchestration framework for Claude Code with 128 curated skills, 28 agents, and 52 gated commands. Unlike aggregate Claude Code templates (often 1000+ skills, kitchen-sink approach), ClauKit hand-selects each skill, enforces pre-flight safety gates on destructive operations, and ships a trio architecture (skill + agent + command) so every concept has exactly one entry point. See the [comparison table](#claukit-vs-other-ai-coding-tools) for side-by-side capabilities.
 
 </details>
 
 <details>
 <summary><strong>How do I write a good CLAUDE.md file with ClauKit?</strong></summary>
 
-CLAUDE.md best practices in ClauKit: keep workflows in `.claude/workflows/` (referenced from CLAUDE.md), point to `docs/clauKit-registry.md` as single source of truth for available tools, and enforce the trio rule (skill = knowledge, agent = persona, command = trigger). See this repo's [CLAUDE.md](./CLAUDE.md) as a working example. To bootstrap a new project's CLAUDE.md, run `/ck:docs init`.
+CLAUDE.md best practices in ClauKit: keep workflows in `.claude/workflows/` (referenced from CLAUDE.md), point to `docs/clauKit-registry.md` as single source of truth for available tools, and enforce the trio rule (skill = knowledge, agent = persona, command = trigger). See this repo's [CLAUDE.md](./CLAUDE.md) as a working example. To bootstrap a new project's CLAUDE.md, run `/ck:claude-md init`; audit an existing one with `/ck:claude-md verify`, slim a bloated one with `/ck:claude-md refactor`.
 
 </details>
 
@@ -658,7 +658,7 @@ Each `/ck:team` session writes atomic commits to its own branch or worktree, wit
 <details>
 <summary><strong>Does ClauKit support MCP (Model Context Protocol) servers?</strong></summary>
 
-Yes. Run `/ck:use-mcp <server-name>` to integrate any MCP server (GitHub, Atlassian, Linear, Notion, Slack, custom). Configuration template at [`.claude/.mcp.json.example`](./.claude/.mcp.json.example). The `mcp-manager` agent handles server discovery and tool selection automatically based on task context.
+Yes. Run `/ck:use-mcp <server-name>` to integrate any MCP server (GitHub, Atlassian, Linear, Notion, Slack, custom). Configuration template at [`.claude/.mcp.json.example`](./.claude/.mcp.json.example). Claude Code loads MCP tool schemas on demand (deferred), and `/ck:use-mcp` calls them natively — isolating any verbose calls in a `general-purpose` subagent to keep the main context clean.
 
 </details>
 
@@ -713,7 +713,7 @@ eligibility in SERP.
   "name": "ClauKit",
   "applicationCategory": "DeveloperApplication",
   "operatingSystem": "Cross-platform",
-  "description": "Opinionated multi-agent orchestration framework for Claude Code with 126 curated skills, 30 agents, and 52 gated commands.",
+  "description": "Opinionated multi-agent orchestration framework for Claude Code with 128 curated skills, 28 agents, and 52 gated commands.",
   "url": "https://github.com/trungdo9/ClauKit",
   "license": "https://opensource.org/licenses/MIT",
   "author": { "@type": "Person", "name": "trungdo9" },
@@ -728,12 +728,12 @@ eligibility in SERP.
     {
       "@type": "Question",
       "name": "What is ClauKit and how is it different from aggregate Claude Code templates?",
-      "acceptedAnswer": { "@type": "Answer", "text": "ClauKit is an opinionated multi-agent orchestration framework for Claude Code with 126 curated skills, 30 agents, and 52 gated commands. Unlike aggregate Claude Code templates (often 1000+ skills, kitchen-sink approach), ClauKit hand-selects each skill, enforces pre-flight safety gates on destructive operations, and ships a trio architecture (skill + agent + command)." }
+      "acceptedAnswer": { "@type": "Answer", "text": "ClauKit is an opinionated multi-agent orchestration framework for Claude Code with 128 curated skills, 28 agents, and 52 gated commands. Unlike aggregate Claude Code templates (often 1000+ skills, kitchen-sink approach), ClauKit hand-selects each skill, enforces pre-flight safety gates on destructive operations, and ships a trio architecture (skill + agent + command)." }
     },
     {
       "@type": "Question",
       "name": "How do I write a good CLAUDE.md file with ClauKit?",
-      "acceptedAnswer": { "@type": "Answer", "text": "Keep workflows in .claude/workflows/ (referenced from CLAUDE.md), point to docs/clauKit-registry.md as single source of truth for available tools, and enforce the trio rule (skill = knowledge, agent = persona, command = trigger). To bootstrap a new project's CLAUDE.md, run /ck:docs init." }
+      "acceptedAnswer": { "@type": "Answer", "text": "Keep workflows in .claude/workflows/ (referenced from CLAUDE.md), point to docs/clauKit-registry.md as single source of truth for available tools, and enforce the trio rule (skill = knowledge, agent = persona, command = trigger). To bootstrap a new project's CLAUDE.md, run /ck:claude-md init; audit with /ck:claude-md verify, slim down with /ck:claude-md refactor." }
     },
     {
       "@type": "Question",
@@ -748,7 +748,7 @@ eligibility in SERP.
     {
       "@type": "Question",
       "name": "Does ClauKit support MCP (Model Context Protocol) servers?",
-      "acceptedAnswer": { "@type": "Answer", "text": "Yes. Run /ck:use-mcp <server-name> to integrate any MCP server (GitHub, Atlassian, Linear, Notion, Slack, custom). Configuration template at .claude/.mcp.json.example. The mcp-manager agent handles server discovery and tool selection automatically based on task context." }
+      "acceptedAnswer": { "@type": "Answer", "text": "Yes. Run /ck:use-mcp <server-name> to integrate any MCP server (GitHub, Atlassian, Linear, Notion, Slack, custom). Configuration template at .claude/.mcp.json.example. Claude Code loads MCP tool schemas on demand (deferred), and /ck:use-mcp calls them natively, isolating any verbose calls in a general-purpose subagent to keep the main context clean." }
     },
     {
       "@type": "Question",

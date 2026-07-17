@@ -1,11 +1,11 @@
 ---
-description: ⚡⚡ Scout codebase for files needed (-ext: external agentic tools like gemini/opencode)
-argument-hint: [user-prompt] [scale] [-ext]
+description: ⚡⚡ Scout codebase for files needed (parallel Explore subagents)
+argument-hint: [user-prompt] [scale]
 ---
 
 ## Purpose
 
-Search the codebase for files needed to complete the task using a fast, token efficient agent.
+Search the codebase for files needed to complete the task using fast, token-efficient parallel subagents.
 
 ## Variables
 
@@ -13,46 +13,15 @@ USER_PROMPT: $1
 SCALE: $2 (defaults to 3)
 REPORT_OUTPUT_DIR: `plans/<plan-name>/reports/scout-report.md`
 
-## Mode dispatch (inspect `$ARGUMENTS` for flag)
+## Workflow — internal Explore subagents
 
-| Flag | Mode |
-|---|---|
-| *(none)* | **internal** — spawn `Explore` subagents in parallel |
-| `-ext` | **external** — use `gemini`/`opencode` (1M+ context); fallback to `Explore` |
-
-## Default mode (no flag) — internal Explore subagents
-
-- Write a prompt for 'SCALE' number of agents to the `Task` tool that will immediately call the `Bash` tool to run these commands to kick off your agents to conduct the search: spawn many `Explore` subagents to search the codebase in parallel based on the user's prompt.
+- Spawn `SCALE` `Explore` subagents in parallel via the `Task` tool to search the codebase based on the user's prompt.
 
 **How to prompt the agents:**
-- IMPORTANT: Kick these agents off in parallel using the `Task` tool, analyze and divide folders for each agent to scout intelligently and quickly.
-- IMPORTANT: Instruct the agents to quickly search the codebase for files needed to complete the task. This isn't about a full blown search, just a quick search to find the files needed to complete the task.
-- Instruct the subagent to use a timeout of 3 minutes for each agent's bash call. Skip any agents that don't return within the timeout, don't restart them.
-
-## `-ext` mode — external agentic tools
-
-Utilize external agentic tools to scout given directories or explore the codebase for files needed to complete the task using a fast, token efficient agent.
-
-RELEVANT_FILE_OUTPUT_DIR: `plans/<plan-name>/reports/`
-
-**Workflow:**
-- Write a prompt for 'SCALE' number of agents to the `Task` tool that will immediately call the `Bash` tool to run these commands to kick off your agents to conduct the search:
-  - `gemini -p "[prompt]" --model gemini-2.5-flash-preview-09-2025` (if count <= 3)
-  - `opencode run "[prompt]" --model opencode/grok-code` (if count > 3 and count < 6)
-  - if count >= 6, spawn `Explore` subagents to search the codebase in parallel
-
-**Why use external agentic tools?**
-- External agentic tools are faster and more efficient when using LLMs with large context windows (1M+ tokens).
-
-**How to prompt the agents:**
-- If `gemini` or `opencode` is not available, ask the user if they want to install it:
-  - If **yes**, install it (if there are permission issues, instruct the user to install it manually, including authentication steps)
-  - If **no**, use the default `Explore` subagents.
-- IMPORTANT: Kick these agents off in parallel using the `Task` tool, analyze and divide folders for each agent to scout intelligently and quickly.
-- IMPORTANT: These agents are calling OTHER agentic coding tools to search the codebase. DO NOT call any search tools yourself.
-- IMPORTANT: That means with the `Task` tool, you'll immediately call the Bash tool to run the respective agentic coding tool (gemini, opencode, claude, etc.)
-- IMPORTANT: Instruct the agents to quickly search the codebase for files needed to complete the task. This isn't about a full blown search, just a quick search to find the files needed to complete the task.
-- Instruct the subagent to use a timeout of 3 minutes for each agent's bash call. Skip any agents that don't return within the timeout, don't restart them.
+- IMPORTANT: Kick these agents off in parallel using the `Task` tool; analyze and divide folders so each agent scouts a distinct scope — no overlap, complete coverage.
+- IMPORTANT: Instruct the agents to quickly locate the files needed for the task — a targeted search, not a full-blown crawl.
+- Use a 3-minute timeout per agent. Skip any agent that doesn't return within the timeout; do NOT restart it.
+- Deduplicate and synthesize the returned paths into an organized list; note any coverage gaps from timeouts.
 
 ## How to write reports
 

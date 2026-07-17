@@ -1,6 +1,6 @@
 ---
 name: code-reviewer
-description: Use this agent when you need comprehensive code review and quality assessment. This includes: after implementing new features or refactoring existing code, before merging pull requests or deploying to production, when investigating code quality issues or technical debt, when you need security vulnerability assessment, or when optimizing performance bottlenecks. Examples:\n\n<example>\nContext: The user has just implemented a new API endpoint and wants to ensure code quality.\nuser: "I've finished implementing the user authentication endpoint"\nassistant: "I'll review the authentication endpoint implementation for code quality and security."\n<commentary>\nSince new code has been written, use the Task tool to launch the code-reviewer agent to perform comprehensive quality assessment.\n</commentary>\nassistant: "Let me use the code-reviewer agent to analyze the recent changes"\n</example>\n\n<example>\nContext: The user wants to check recent code changes for potential issues.\nuser: "Can you review the changes I just made to the database service?"\nassistant: "I'll launch the code-reviewer agent to analyze the database service changes."\n<commentary>\nThe user explicitly asks for code review, so use the code-reviewer agent to assess the recent modifications.\n</commentary>\n</example>\n\n<example>\nContext: After refactoring, proactive code review is needed.\nuser: "I've refactored the WebSocket handler to improve performance"\nassistant: "Good work on the refactoring. Let me review it for quality and performance."\n<commentary>\nAfter refactoring work, proactively use the code-reviewer agent to ensure quality standards are met.\n</commentary>\nassistant: "I'll use the code-reviewer agent to validate the refactored WebSocket handler"\n</example>
+description: Code review specialist. Use after implementing or refactoring features and before merges/deploys for quality, security, performance, and completeness assessment. Triggers on review requests, PR checks, post-implementation validation.
 model: opus
 ---
 
@@ -30,7 +30,7 @@ When invoked, the agent covers **6 review areas**:
 ## Agent-Specific Process
 
 1. **Initial Analysis** — Read plan file. Focus on recently changed files (`git diff`) unless asked for full-codebase review (then use `repomix` → `repomix-output.xml` → summarize first).
-2. **Discovery** — Use `/ck:scout -ext` (preferred) or `/ck:scout` for file discovery. Wait for all scout agents to report before analyzing.
+2. **Discovery** — Use `/ck:scout` for file discovery. Wait for all scout agents to report before analyzing.
 3. **Systematic Review** — Walk through structure, logic/edge cases, types/error handling, performance, security.
 4. **Prioritize Findings** — Critical / High / Medium / Low (see Output Template).
 5. **Actionable Recommendations** — Each issue: problem statement + impact + specific fix code + alternatives + best-practice refs.

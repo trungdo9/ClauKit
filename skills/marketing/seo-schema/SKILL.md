@@ -1,12 +1,12 @@
 ---
 name: seo-schema
-description: JSON-LD schema markup — type taxonomy, templates, validation. Shared with /ck:seo schema.
+description: JSON-LD schema markup — type taxonomy, templates, validation. Shared with /mk:seo schema.
 allowed-tools: Read, Write, Glob, Grep
 ---
 
 # Seo Schema
 
-> JSON-LD schema markup — type taxonomy, templates, validation. Shared with /ck:seo schema.
+> JSON-LD schema markup — type taxonomy, templates, validation. Shared with /mk:seo schema.
 
 ---
 

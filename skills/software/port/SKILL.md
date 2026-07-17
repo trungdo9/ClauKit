@@ -1,11 +1,11 @@
 ---
-name: xia
-description: Port and refactor a feature from a public GitHub repo into the local codebase. Use when user wants to copy/adapt an existing implementation (auth flow, payment integration, UI component, algorithm, etc.) from another repo rather than build from scratch. Triggers on `/ck:xia` or phrases like "port from", "borrow this feature", "copy from repo X".
+name: port
+description: Port and refactor a feature from a public GitHub repo into the local codebase. Use when user wants to copy/adapt an existing implementation (auth flow, payment integration, UI component, algorithm, etc.) from another repo rather than build from scratch. Triggers on `/ck:port` or phrases like "port from", "borrow this feature", "copy from repo X".
 category: Planning & Research
 status: active
 ---
 
-# Xia — Port & Refactor
+# Port & Refactor
 
 ## Purpose
 
@@ -14,7 +14,7 @@ Safely extract a feature from an external GitHub repository and integrate it int
 ## When to Use
 
 - User points at a public GitHub repo and asks to "port", "borrow", "lift", "adapt", or "copy" a feature.
-- User runs `/ck:xia <github-url> [feature]` with or without `--improve` / `--compare`.
+- User runs `/ck:port <github-url> [feature]` with or without `--improve` / `--compare`.
 - A planning step concluded that a proven open-source implementation is a better starting point than green-field code.
 
 **Do NOT use** when:
@@ -36,9 +36,9 @@ Safely extract a feature from an external GitHub repository and integrate it int
 
 1. Validate `repo_url` is a public GitHub URL. If not, stop and ask user.
 2. Read `LICENSE` via `gh api repos/<owner>/<name>/contents/LICENSE` or `gh repo view`. Flag GPL / AGPL / non-permissive licenses to user **before** copying anything.
-3. List repo tree: `gh api repos/<owner>/<name>/ck:git/trees/HEAD?recursive=1` (or shallow-clone to `/tmp/xia-<repo>-<sha>/` if tree is large).
+3. List repo tree: `gh api repos/<owner>/<name>/ck:git/trees/HEAD?recursive=1` (or shallow-clone to `/tmp/port-<repo>-<sha>/` if tree is large).
 4. Delegate to `scout-external` (or `Explore`) agent: locate the file(s) implementing `feature`. Return paths + a 1-line "what each file does" map.
-5. Save inspection report to `plans/<plan-name>/reports/xia-<repo>-inspect.md`.
+5. Save inspection report to `plans/<plan-name>/reports/port-<repo>-inspect.md`.
 
 ### Phase 2 — Compare with local codebase (always)
 
@@ -47,7 +47,7 @@ Safely extract a feature from an external GitHub repository and integrate it int
    - **Dependencies** — what does source pull in that local doesn't? Note version skew.
    - **Patterns** — class vs function, hooks vs class components, sync vs async, etc.
    - **Boundaries** — does source assume infra (Redis, Postgres, message queue) that local lacks?
-8. Write `xia-<repo>-compare.md` with: file-level diff plan, dep deltas, refactor checklist, **risk callouts**.
+8. Write `port-<repo>-compare.md` with: file-level diff plan, dep deltas, refactor checklist, **risk callouts**.
 
 **If `--compare` mode:** stop here. Report to user. Do not modify any local file.
 
@@ -73,15 +73,15 @@ Safely extract a feature from an external GitHub repository and integrate it int
 
 15. Run type-check / lint / build commands locally.
 16. Instruct user to run `/ck:test` (or run `tester` agent) — port is not "done" until tests pass.
-17. Write final report to `plans/<plan-name>/reports/xia-<repo>-port.md` covering: files added/modified, deps added, refactors applied, remaining TODOs, license note.
+17. Write final report to `plans/<plan-name>/reports/port-<repo>-port.md` covering: files added/modified, deps added, refactors applied, remaining TODOs, license note.
 
 ## Output Locations
 
-- Inspection: `plans/<plan-name>/reports/xia-<repo>-inspect.md`
-- Comparison: `plans/<plan-name>/reports/xia-<repo>-compare.md`
-- Final port report: `plans/<plan-name>/reports/xia-<repo>-port.md`
+- Inspection: `plans/<plan-name>/reports/port-<repo>-inspect.md`
+- Comparison: `plans/<plan-name>/reports/port-<repo>-compare.md`
+- Final port report: `plans/<plan-name>/reports/port-<repo>-port.md`
 
-If no active plan, drop reports into `plans/xia-adhoc-YYYYMMDD-HHmm/reports/`.
+If no active plan, drop reports into `plans/port-adhoc-YYYYMMDD-HHmm/reports/`.
 
 ## Guardrails
 

@@ -47,5 +47,5 @@ If `<request>` does not clearly identify:
 
 - `/ck:cook` — when work is a feature, not mechanical
 - `/ck:fix` — when work is bug fix
-- `/ck:xia` — when porting refactored version from external repo
+- `/ck:port` — when porting refactored version from external repo
 - `code-reviewer`, `tester`, `git-manager`, `scout` agents

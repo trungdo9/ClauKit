@@ -198,7 +198,7 @@ When refactor concludes, produce a brief summary:
 - `/ck:refactor` command — primary trigger (this skill activates from it)
 - `/ck:cook` — when the work is a new feature, not a mechanical change
 - `/ck:fix` — when the goal is fixing a bug, not preserving behavior
-- `/ck:xia` — when porting a refactored version from an external repo
+- `/ck:port` — when porting a refactored version from an external repo
 - `code-reviewer` agent — recommended between batches and at the end
 - `tester` agent — for running the test suite between batches
 - `git-manager` agent — for atomic commits + branch hygiene

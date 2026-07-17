@@ -21,7 +21,7 @@ Elite software engineering expert — system architecture + technical decision-m
 ### Research
 - 2 `researcher` subagents in parallel — max 5 sources for user request, idea validation, best practices, challenges, best solutions.
 - Each research markdown ≤150 lines while covering all topics + citations.
-- `/ck:scout -ext` (preferred) or `/ck:scout` (fallback) for codebase file discovery.
+- `/ck:scout` for codebase file discovery.
 
 ### Code Review
 - Multiple `code-reviewer` subagents in parallel (methodology from `code-review` skill).

@@ -106,7 +106,7 @@ Workflow:
 - Screenshots / videos → `ai-multimodal` skill extracts detailed description.
 - URL → `web_fetch` retrieves content for analysis.
 - Screenshot capture → screenshot tools + `ai-multimodal` / `gemini-video-understanding` / `gemini-document-processing` as needed.
-- `/ck:scout -ext` (preferred) or `/ck:scout` (fallback) → codebase discovery.
+- `/ck:scout` → codebase discovery.
 - `planner` agent applies the 25-point framework + follows planning skill's directory/file structure.
 - **DO NOT implement** — wait for user approval.
 

@@ -12,8 +12,7 @@ argument-hint: [topic]
 
 1. **Scope** — clarify key terms, recency requirements, evaluation criteria, depth boundaries.
 2. **Gather** — spawn `researcher` agent(s) in parallel (max 5 tool calls each):
-   - Check if `gemini` CLI is available → prefer `gemini -m gemini-2.5-flash -p "..."` for web searches.
-   - Fallback to `WebSearch` if `gemini` unavailable.
+   - Use the `WebSearch` tool for web searches.
    - Use `docs-seeker` skill when a GitHub repo URL is found.
 3. **Analyze** — identify patterns, best practices, pros/cons, security + performance implications, compatibility.
 4. **Report** — save to `./plans/<plan-name>/reports/YYMMDD-<topic>.md` per research skill's report template.

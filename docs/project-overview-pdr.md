@@ -64,12 +64,12 @@ Provide a production-ready template that:
 
 ### 1. Multi-Agent Orchestration System
 
-**Agent Types** (30 total — 19 engineering + 11 marketing, `.claude/agents/{engineering,marketing}/`):
+**Agent Types** (28 total — 17 engineering + 11 marketing, `.claude/agents/{engineering,marketing}/`):
 - **Planning Agents**: `planner`, `researcher`, `brainstormer`
-- **Implementation Agents**: `scout`, `scout-external`, `frontend-developer`, `backend-developer`
+- **Implementation Agents**: `scout`, `frontend-developer`, `backend-developer`
 - **Quality Agents**: `tester`, `code-reviewer`, `debugger`, `performance-agent`, `security-auditor`
 - **Documentation Agents**: `docs-manager`, `journal-writer`
-- **Management Agents**: `project-manager`, `git-manager`, `database-admin`, `mcp-manager`, `integration-agent`
+- **Management Agents**: `project-manager`, `git-manager`, `database-admin`, `integration-agent`
 - **Marketing Agents** (marketing kit only, 11): `campaign-manager`, `content-strategist`, `copywriter`, `crm-specialist`, `email-specialist`, `market-researcher`, `seo-content`, `seo-geo`, `seo-schema`, `seo-technical`, `video-producer`
 
 No `csharp-expert` agent exists — C#/.NET is covered by the `csharp-developer` skill, not a dedicated agent.
@@ -113,11 +113,6 @@ No `csharp-expert` agent exists — C#/.NET is covered by the `csharp-developer`
 - `/ck:docs update` - Update existing documentation
 - `/ck:docs summarize` - Generate codebase summaries
 
-**SEO**:
-- `/ck:seo audit` - Comprehensive SEO audit
-- `/ck:seo keywords` - Keyword research and analysis
-- `/ck:seo schema` - Schema markup generation
-
 **Git Operations**:
 - `/ck:git cm` - Stage and commit changes
 - `/ck:git cp` - Stage, commit, and push
@@ -128,7 +123,6 @@ No `csharp-expert` agent exists — C#/.NET is covered by the `csharp-developer`
 - `/ck:watzup` - Review recent changes and status
 - `/ck:journal` - Development journal entries
 - `/ck:scout [prompt] [scale]` - Parallel codebase exploration
-- `/ck:scout -ext [prompt]` - Codebase exploration with external tools
 
 **Integration**:
 - `/ck:use-mcp` - Use MCP servers
@@ -140,7 +134,7 @@ No `csharp-expert` agent exists — C#/.NET is covered by the `csharp-developer`
 
 **Refactor & Migration**:
 - `/ck:refactor <pattern>` - Large mechanical refactor (rename/extract/migrate/codemod), gated + atomic-commit
-- `/ck:xia <github-url>` - Port & refactor a feature from a public GitHub repo
+- `/ck:port <github-url>` - Port & refactor a feature from a public GitHub repo
 
 **Orchestration**:
 - `/ck:team <template>` - Persistent multi-session teammates (templates: research/cook/review/debug)

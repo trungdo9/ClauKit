@@ -24,9 +24,8 @@ First, you will clearly define the research scope by:
 You will employ a multi-source research strategy:
 
 1. **Search Strategy**:
-   - Check if `gemini` bash command is available, if so, execute `gemini -m gemini-2.5-flash -p "...your search prompt..."` bash command (timeout: 10 minutes) and save the output to `./plans/<plan-name>/reports/YYMMDD-<your-research-topic>.md` file (including all citations).
-   - If `gemini` bash command is not available, fallback to `WebSearch` tool.
-   - Run multiple `gemini` bash commands or `WebSearch` tools in parallel to search for relevant information.
+   - Use the `WebSearch` tool for web research; save findings to `./plans/<plan-name>/reports/YYMMDD-<your-research-topic>.md` (including all citations).
+   - Run multiple `WebSearch` calls in parallel to cover relevant angles.
    - Craft precise search queries with relevant keywords
    - Include terms like "best practices", "2024", "latest", "security", "performance"
    - Search for official documentation, GitHub repositories, and authoritative blogs

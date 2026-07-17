@@ -160,5 +160,5 @@ res.set('ETag', generateETag(response));
 
 ## Related Skills
 
-- `react-native-best-practices` skill for React Native optimization
+- `react-specialist` skill for React/React Native optimization
 - `debugging` skill for performance debugging

@@ -1,8 +1,8 @@
 # ClauKit Registry
 
-**Last Updated**: 2026-07-16 (`ui-ux-designer` agent removed — design work rerouted to `frontend-developer` + design skills; stale `imagemagick` skill refs purged; `copywriter` agent relocated `engineering/` → `marketing/` — see § 5)
+**Last Updated**: 2026-07-17 (**Gemini purge** — `scout-external` agent removed (Gemini/OpenCode CLI orchestration retired; `/ck:scout` is now internal-Explore-only), Gemini offload paths stripped from `research` skill + `/ck:research` + `git-manager` + `/ck:use-mcp` (all now Claude-native). Gemini retained only in `software/ai/` skills (`ai-multimodal`/`ai-artist`) where it is a genuine capability. Earlier same-day: `mcp-manager` agent removed; `researcher` → sonnet, `journal-writer` → haiku; `tester`/`database-admin`/`project-manager` slimmed to thin personas; long agent descriptions trimmed to trigger-style.)
 **Scope**: Single source of truth for every Skill, Agent, and Command in this project.
-**Counts**: 126 skills (126 active + 0 scaffold) · 30 agents · 64 commands · **220 total entries**
+**Counts**: 128 skills (128 active + 0 scaffold) · 28 agents · 52 commands · **208 total entries**
 
 Replaces previous `skills-catalog.md` (skills only). One file, all three resource types, with duplicate/overlap detection.
 
@@ -26,7 +26,7 @@ Replaces previous `skills-catalog.md` (skills only). One file, all three resourc
 
 ---
 
-## 1 · Skills (71)
+## 1 · Skills (128)
 
 ### Global (1) — `.claude/skills/global/`
 
@@ -121,7 +121,7 @@ Replaces previous `skills-catalog.md` (skills only). One file, all three resourc
 | `wordpress-rest` | ✅ | `integrations/wordpress-rest/` | WordPress REST client — publish/update posts & pages (draft→publish), media, taxonomies, Yoast/RankMath SEO meta, audit. Env-only auth, idempotent, draft-default. Adapted (consumer) from WordPress agent-skills (GPL v2+, attributed in TPN). |
 | `mcp-wordpress` | ✅ | `integrations/mcp-wordpress/` | WordPress MCP wrapper (BYO server) with curl fallback to `wordpress-rest`. |
 
-### Software · Top-level standalone (37)
+### Software · Top-level standalone (39)
 
 All 40 are active (`dynamic-workflow` added 2026-06-03, paired with `/ck:flow`; baseline 39 active as of 2026-05-30) (10 scaffolds filled in earlier batch; `predict` merged into `planning` and removed — see section 5; `chrome-devtools` added 2026-05-16; `ask` re-added 2026-05-16 as knowledge skill complementing the `/ask` command; `brainstorm` re-added 2026-05-16 as knowledge skill complementing the `/brainstorm` command + `brainstormer` agent; `node-specialist` added 2026-05-29 sourced from VoltAgent/awesome-claude-code-subagents). `nextjs-developer` added 2026-05-30 sourced from VoltAgent/awesome-claude-code-subagents; `web-frameworks` removed (Next.js refs migrated, turborepo/remix-icon dropped). `typescript-pro` added 2026-05-30 sourced from VoltAgent/awesome-claude-code-subagents (subcategorized under `software/development/`).
 
@@ -133,6 +133,7 @@ All 40 are active (`dynamic-workflow` added 2026-06-03, paired with `/ck:flow`; 
 | `agentize` | ✅ | `software/agentize/` | Convert codebase to CLI + MCP server for AI agents |
 | `brainstorm` 🔁 | ✅ | `software/brainstorm/` | Architecture/solution advisory methodology — 5 pillars, 7-phase process, YAGNI/KISS/DRY, brutally-honest alternatives debate |
 | `ck-graphify` | ✅ | `software/ck-graphify/` | AST → queryable code graph (syntactic) |
+| `claude-md` 🔁 | ✅ | `software/claude-md/` | CLAUDE.md lifecycle — init (from ground truth, no phantom commands) · verify (9-point audit, Critical/High/Medium/Low) · refactor (behavior-preserving slim-down, directive inventory 1:1); paired with `/ck:claude-md`, added 2026-07-17 |
 | `code-review` 🔁 | ✅ | `software/code-review/` | 4 practices — pre-review edge-case scout, receiving feedback (no performative agreement), requesting code-reviewer subagent, verification gates (evidence before claims) |
 | `coding-level` | ✅ | `software/coding-level/` | Developer proficiency (0-5) → output tuning |
 | `context-engineering` | ✅ | `software/context-engineering/` | Curate token flow into AI agents (6-layer model) |
@@ -146,6 +147,7 @@ All 40 are active (`dynamic-workflow` added 2026-06-03, paired with `/ck:flow`; 
 | `gkg` | ✅ | `software/gkg/` | Text → semantic knowledge graph (NLP) |
 | `markdown-novel-viewer` | ✅ | `software/markdown-novel-viewer/` | |
 | `mintlify` | ✅ | `software/mintlify/` | |
+| `obsidian` | ✅ | `software/obsidian/` | Obsidian vault authoring — wikilinks/embeds/callouts/block refs, typed YAML frontmatter (merge-never-overwrite), link-integrity on rename/move, optional live-vault MCP (Local REST API ≥ 4.1.3, CVE-gated); 4 lazy-loaded references; knowledge-only (no agent/command), registered 2026-07-17 |
 | `payment-integration` | ✅ | `software/payment-integration/` | |
 | `refactor` 🔁 | ✅ | `software/refactor/` | Large mechanical refactor (rename · extract · migrate · codemod) — 7-phase pipeline w/ atomic commits + rollback; paired with `/ck:refactor` |
 | `planning` 🔁 | ✅ | `software/planning/` | Now includes "Predictive planning" subsection (merged from removed `predict` scaffold) |
@@ -163,7 +165,7 @@ All 40 are active (`dynamic-workflow` added 2026-06-03, paired with `/ck:flow`; 
 | `template-skill` | ✅ | `software/template-skill/` | (still a 5-LOC stub — see open issue) |
 | `security` 🔁 | ✅ | `software/security/` | Renamed from `vulnerability-scanner` 2026-05-29 — path updated to match `software/security/SKILL.md` on disk |
 | `web-testing` | ✅ | `software/web-testing/` (developer toolkit; Playwright deep-dive lives in `test-automation`) | |
-| `xia` 🔁 | ✅ | `software/xia/` (port & refactor from GitHub) | |
+| `port` 🔁 | ✅ | `software/port/` (port & refactor from GitHub) | |
 
 ### Software · Subcategorized
 
@@ -236,7 +238,7 @@ All 40 are active (`dynamic-workflow` added 2026-06-03, paired with `/ck:flow`; 
 
 ---
 
-## 2 · Agents (30)
+## 2 · Agents (28)
 
 ### `marketing/` (11) — marketing kit
 
@@ -254,7 +256,7 @@ All 40 are active (`dynamic-workflow` added 2026-06-03, paired with `/ck:flow`; 
 | `seo-technical` | ✅ | sonnet | `marketing/seo-technical.md` |
 | `video-producer` | ✅ | sonnet | `marketing/video-producer.md` |
 
-### `engineering/` (19) — engineer kit
+### `engineering/` (17) — engineer kit
 
 | Name | Status | Model | File |
 |---|:---:|---|---|
@@ -267,14 +269,12 @@ All 40 are active (`dynamic-workflow` added 2026-06-03, paired with `/ck:flow`; 
 | `frontend-developer` | ✅ | sonnet | `engineering/frontend-developer.md` |
 | `git-manager` 🔁 | ✅ | haiku | `engineering/git-manager.md` |
 | `integration-agent` 🔁 | ✅ | sonnet | `engineering/integration-agent.md` |
-| `journal-writer` 🔁 | ✅ | sonnet | `engineering/journal-writer.md` |
-| `mcp-manager` 🔁 | ✅ | haiku | `engineering/mcp-manager.md` |
+| `journal-writer` 🔁 | ✅ | haiku | `engineering/journal-writer.md` |
 | `performance-agent` | ✅ | sonnet | `engineering/performance-agent.md` |
 | `planner` 🔁 | ✅ | opus | `engineering/planner.md` |
 | `project-manager` | ✅ | haiku | `engineering/project-manager.md` |
-| `researcher` 🔁 | ✅ | haiku | `engineering/researcher.md` |
+| `researcher` 🔁 | ✅ | sonnet | `engineering/researcher.md` |
 | `scout` 🔁 | ✅ | haiku | `engineering/scout.md` |
-| `scout-external` 🔁 | ✅ | haiku | `engineering/scout-external.md` |
 | `security-auditor` 🔁 | ✅ | inherit | `engineering/security-auditor.md` |
 | `tester` 🔁 | ✅ | sonnet | `engineering/tester.md` |
 
@@ -301,13 +301,21 @@ All commands are ✅ active. Grouped by namespace. **Prefix `ck:` applied 2026-0
 | `/ck:plan [fast\|hard\|two\|ci\|cro] [-o md\|html]` 🔁 | Intelligent plan creation — router (auto-detect) · `fast`: no research · `hard`: research-heavy · `-o html`: also render self-contained `plan.html` view (md stays source of truth) · `/ck:plan <path>.md -o html`: convert an existing plan's markdown → `plan.html` (no re-plan) |
 | `/ck:refactor` 🔁 | Large mechanical refactor — rename · extract · migrate · codemod. 7-phase pipeline w/ atomic-commit + rollback gates |
 | `/ck:research` 🔁 | Technical research — technology evaluation, best practices, solution design (uses `research` skill) |
-| `/ck:scout [-ext]` 🔁 | Scout codebase — default: internal Explore subagents · `-ext`: external gemini/opencode |
+| `/ck:scout` 🔁 | Scout codebase — parallel internal Explore subagents |
 | `/ck:security [scope] [--en]` 🔁 | Security audit — OWASP 2025, 21 rules, SMALL/LARGE, bilingual |
 | `/ck:team` 🔁 | Orchestrate parallel multi-session collaboration with independent Claude Code teammates (paired with `team` skill) |
 | `/ck:test` 🔁 | Run tests locally, analyze report |
 | `/ck:use-mcp` 🔁 | Utilize MCP server tools |
 | `/ck:watzup` | Review recent changes, wrap up work |
-| `/ck:xia` 🔁 | Port & refactor feature from public GitHub repo |
+| `/ck:port` 🔁 | Port & refactor feature from public GitHub repo |
+
+### `claude-md` (dispatcher, 3) 🔁 docs-manager + `claude-md` skill
+
+| Command | Description |
+|---|---|
+| `/ck:claude-md init [path]` | Create CLAUDE.md from ground truth (gate: must not exist) |
+| `/ck:claude-md verify [path]` | Read-only 9-point audit → PASS/FAIL report |
+| `/ck:claude-md refactor [path]` | Behavior-preserving slim-down (gates: clean git, verify first, directive inventory 1:1) |
 
 ### `docs` (dispatcher, 3) 🔁 docs-manager
 
@@ -356,14 +364,6 @@ All commands are ✅ active. Grouped by namespace. **Prefix `ck:` applied 2026-0
 |---|---|
 | `/ck:review [--flow]` | Scan + analyze codebase — `--flow`: orchestrated dimension fan-out (bugs/security/perf) → adversarial-verify per finding → confirmed-only report |
 
-### `seo` (dispatcher, 3) 🔁 seo skill
-
-| Command | Description |
-|---|---|
-| `/ck:seo audit <url>` | SEO audit URL |
-| `/ck:seo keywords <topic>` | Keyword research |
-| `/ck:seo schema <type>` | JSON-LD schema |
-
 ### `mk` (dispatcher, 12) 🔁 marketing kit — NEW in v2.0.0
 
 All commands under `/mk:` namespace. Each hard-fails if `plans/marketing-context.md` is missing.
@@ -408,7 +408,6 @@ These are the *intended* trios where Skill = knowledge, Agent = persona, Command
 Notable extensions:
 - `bootstrap` skill extended with **"Canonical Bootstrap Workflow"** (10-phase pipeline) — `/ck:bootstrap`, `/ck:bootstrap auto`, `/ck:bootstrap fast` only document variant differences.
 - `fix` family — no skill/agent existed → created [.claude/workflows/fix-pipeline.md](../../.claude/workflows/fix-pipeline.md) as canonical 7-stage pipeline; 8 commands (`/ck:fix`, `/ck:fix --quick`, `/ck:fix --review`, `/ck:fix logs`, `/ck:fix ci`, `/ck:fix test`, `/ck:fix types`, `/ck:fix ui`) reference it + document variant deltas.
-- `scout-external` agent references `scout` agent as canonical methodology — variant-only differences (external Gemini/OpenCode vs internal Explore).
 - `docs-manager` agent + `journal-writer` agent serve as canonical sources (no dedicated knowledge skill exists for those concepts).
 - `git-manager` agent retains haiku-optimized 2-3 tool execution workflow as agent-specific knowledge (skill = conventional-commits methodology).
 
@@ -417,20 +416,21 @@ Other trios (`testing` → covered by `web-testing`/`chrome-devtools`, `design` 
 | Concept | Skill | Agent | Command |
 |---|---|---|---|
 | Planning | `planning` | `planner` | `/ck:plan` |
-| Research / Scout | `research` | `researcher`, `scout`, `scout-external` | `/ck:research`, `/ck:scout`, `/ck:scout -ext` |
+| Research / Scout | `research` | `researcher`, `scout` | `/ck:research`, `/ck:scout` |
 | Code review | `code-review` | `code-reviewer` | `/ck:review` |
 | Debugging | `debugging` | `debugger` | `/ck:debug` |
 | Testing | `web-testing` (developer toolkit), `test-automation` (QA/automation engineering) | `tester` | `/ck:test`, `/ck:fix test` |
-| Docs | `mintlify`, `markdown-novel-viewer`, `tech-graph`, `document-skills/*` | `docs-manager` | `/ck:docs [init\|update\|summarize]` |
+| Docs | `mintlify`, `markdown-novel-viewer`, `obsidian`, `tech-graph`, `document-skills/*` | `docs-manager` | `/ck:docs [init\|update\|summarize]` |
+| CLAUDE.md lifecycle | `claude-md` | `docs-manager` (reused — no new agent) | `/ck:claude-md [init\|verify\|refactor]` |
 | Design | 10 design skills | `frontend-developer` (agent `ui-ux-designer` removed 2026-07-16) | `/ck:design` |
 | Content | `show-off` | `copywriter` (marketing kit) | – (marketing kit: `/mk:content`) |
-| SEO/GEO | `seo`, `geo` | – (agent removed 2026-05-17) | `/ck:seo [audit\|keywords\|schema]` |
+| SEO/GEO | `seo`, `geo` | – (agent removed 2026-05-17) | – (marketing kit: `/mk:seo`) |
 | Git | `git`, `worktree` | `git-manager` | `/ck:git [cm\|cp\|pr\|merge]` |
 | Bootstrap | `bootstrap` (knowledge) | – | `/ck:bootstrap` |
-| Port & Refactor | `xia` | (uses `scout-external`, `code-reviewer`) | `/ck:xia` |
+| Port & Refactor | `port` | (uses `scout`, `code-reviewer`) | `/ck:port` |
 | Security | `security`, `cti-expert` | `security-auditor` | `/ck:review`, `/ck:security` |
 | Payments | `payment-integration` | `integration-agent` | `/ck:sepay` |
-| MCP | – | `mcp-manager` | `/ck:use-mcp` |
+| MCP | – | – (native deferred MCP-tool loading; isolate verbose calls in `general-purpose` subagent) | `/ck:use-mcp` |
 | Skill management | `find-skills`, `template-skill` | – | – |
 | Database | `postgresql`, `supabase` | `database-admin` | – |
 | Journal | – | `journal-writer` | `/ck:journal` |
@@ -444,7 +444,7 @@ Other trios (`testing` → covered by `web-testing`/`chrome-devtools`, `design` 
 | Cook (feature lifecycle) | `cook` (5-stage gated methodology) | (uses team) | `/ck:cook` |
 | Problem-solving | `problem-solving` | – | – |
 | Sequential thinking | `sequential-thinking` | – | – |
-| Misc skills (knowledge only) | `preview`, `markdown-novel-viewer`, `mintlify`, `tech-graph`, `cti-expert`, design subskills | – | – |
+| Misc skills (knowledge only) | `preview`, `markdown-novel-viewer`, `mintlify`, `obsidian`, `tech-graph`, `cti-expert`, design subskills | – | – |
 | Scaffold methodology (knowledge only, future) | 12 scaffolds | – | – |
 
 ### 4c · Naming inconsistencies — RESOLVED 2026-05-16
@@ -480,6 +480,11 @@ Verification: `for f in $(find .claude/skills -name SKILL.md); do …` returns z
 ---
 
 ## 5 · Removed (cumulative)
+
+### Agent audit (2026-07-17)
+
+- **`scout-external` agent removed** — Gemini/OpenCode CLI orchestration retired as part of the Gemini purge. `/ck:scout` is now internal-`Explore`-only (the `-ext` flag is gone). Gemini offload paths also stripped from the `research` skill, `/ck:research`, `git-manager` (Tool 2 always self-generates the commit message), and `/ck:use-mcp` (native MCP only). Gemini is retained only in `software/ai/` skills (`ai-multimodal`/`ai-artist`) where it provides a genuine capability (image generation, TTS, long-context video) with no Claude-native equivalent. Refs purged from `docs/*`, `README.md`, and the `debugger`/`docs-manager`/`code-reviewer` agents + `plan`/`review`/`port` commands.
+- **`mcp-manager` agent removed** — its reason for existing (keep main context clean during MCP discovery) is obsolete: modern Claude Code defers MCP tool schemas (loaded on demand via tool search), and its Gemini-CLI fallback path referenced a non-existent `mcp-management` skill + `cli.ts` script (dead code). Verbose MCP result isolation, when needed, now uses a `general-purpose` subagent. `/ck:use-mcp` rewritten to call MCP tools natively. Refs purged from `kits/marketing.json`, `docs/{project-overview-pdr,system-architecture,codebase-summary}.md`.
 
 ### v2 cleanup (2026-05-16, earlier batch)
 
@@ -558,15 +563,15 @@ Verification: `for f in $(find .claude/skills -name SKILL.md); do …` returns z
 | Skills · `global/` | 1 | 0 | 1 |
 | Skills · `marketing/` | 50 | 0 | 50 |
 | Skills · `automation/` | 6 | 0 | 6 |
-| Skills · `software/` | 67 | 0 | 67 |
+| Skills · `software/` | 69 | 0 | 69 |
 | Skills · `integrations/` (NEW) | 2 | 0 | 2 |
 | Skills · removed (v2.0.0: old `geo`, old `seo/references`) | — | — | — |
-| **Skills total** | **126** | **0** | **126** |
-| Agents · `engineering/` | 19 | 0 | 19 |
+| **Skills total** | **128** | **0** | **128** |
+| Agents · `engineering/` | 17 | 0 | 17 |
 | Agents · `marketing/` | 11 | 0 | 11 |
-| **Agents total** | **30** | **0** | **30** |
-| Commands | 72 | 0 | 72 |
-| **Grand total entries** | | | **228** |
+| **Agents total** | **28** | **0** | **28** |
+| Commands (logical, per § 3 row scheme) | 52 | 0 | 52 |
+| **Grand total entries** | | | **208** |
 
 ## 7 · Open Issues
 

@@ -62,9 +62,9 @@ ClauKit implements a multi-agent AI orchestration architecture where specialized
 
 #### 2.1 Agent Types
 
-**30 Specialized Agents** — 19 in `.claude/agents/engineering/` (engineer kit) + 11 in `.claude/agents/marketing/` (marketing kit). No `specialists/`, `operations/`, or `research/` subfolders exist; both pools are flat.
+**28 Specialized Agents** — 17 in `.claude/agents/engineering/` (engineer kit) + 11 in `.claude/agents/marketing/` (marketing kit). No `specialists/`, `operations/`, or `research/` subfolders exist; both pools are flat.
 
-**Engineering (19)**:
+**Engineering (17)**:
 
 | Category | Agent | Purpose |
 |----------|-------|---------|
@@ -83,10 +83,8 @@ ClauKit implements a multi-agent AI orchestration architecture where specialized
 | Operations | `git-manager` | Version control operations |
 | Operations | `project-manager` | Progress tracking |
 | Operations | `database-admin` | Database operations |
-| Operations | `mcp-manager` | MCP server management |
 | Operations | `integration-agent` | Third-party API / payment / webhook integration |
-| Implementation | `scout` | Codebase exploration |
-| Implementation | `scout-external` | External tool exploration (Gemini/OpenCode) |
+| Implementation | `scout` | Codebase exploration (parallel Explore subagents) |
 
 **Marketing (11, only with `--kit marketing`/`both`)**: `campaign-manager`, `content-strategist`, `copywriter`, `crm-specialist`, `email-specialist`, `market-researcher`, `seo-content`, `seo-geo`, `seo-schema`, `seo-technical`, `video-producer`.
 
@@ -113,8 +111,8 @@ No `mode` or `temperature` field is used in current agent frontmatter (only `nam
 
 **Model Selection** (per `docs/clauKit-registry.md` § 2):
 - `opus` — advanced reasoning: `planner`, `brainstormer`, `code-reviewer`, `debugger`
-- `sonnet` — default, most agents (`frontend-developer`, `backend-developer`, `tester`, `docs-manager`, `journal-writer`, `database-admin`, `performance-agent`, `integration-agent`, and all 11 marketing agents)
-- `haiku` — token-efficient, narrow-scope agents: `git-manager`, `mcp-manager`, `project-manager`, `researcher`, `scout`, `scout-external`
+- `sonnet` — default, most agents (`frontend-developer`, `backend-developer`, `tester`, `docs-manager`, `researcher`, `database-admin`, `performance-agent`, `integration-agent`, and all 11 marketing agents)
+- `haiku` — token-efficient, narrow-scope agents: `git-manager`, `journal-writer`, `project-manager`, `scout`
 - `inherit` — takes the calling session's model: `security-auditor`
 
 #### 2.3 Agent Communication Protocol
@@ -164,13 +162,12 @@ Issues, blockers, or questions
 | Debugging | `/ck:debug`, `/ck:fix [ci\|logs\|test\|types\|ui]`, `/ck:fix [--auto\|--review\|--quick\|--parallel\|--flow]` |
 | Design | `/ck:design [fast\|good] [3d\|screenshot\|describe\|ui-ux-pro-max]` |
 | Documentation | `/ck:docs [init\|update\|summarize]` |
-| SEO (engineer kit) | `/ck:seo [audit\|keywords\|schema]` |
 | Security | `/ck:security [scope] [--en]` |
 | Orchestration | `/ck:flow [save\|list]`, `/ck:team` |
 | Git Operations | `/ck:git [cm\|cp\|pr\|merge]` |
 | Planning | `/ck:plan [fast\|hard\|two\|ci\|cro] [-o md\|html]` |
-| Refactor / Port | `/ck:refactor`, `/ck:xia` |
-| Project Management | `/ck:watzup`, `/ck:journal`, `/ck:scout [-ext]`, `/ck:find` |
+| Refactor / Port | `/ck:refactor`, `/ck:port` |
+| Project Management | `/ck:watzup`, `/ck:journal`, `/ck:scout`, `/ck:find` |
 | Integration | `/ck:sepay`, `/ck:use-mcp` |
 | Code Review | `/ck:review [--flow]` |
 | Research | `/ck:research` |
@@ -276,12 +273,12 @@ Re-creates Claude Code's dynamic-workflow model on ClauKit primitives — 4-axis
         └── examples.md
 ```
 
-**126 skills across 5 groups** (see `docs/clauKit-registry.md` § 1 for the full itemized list):
+**128 skills across 5 groups** (see `docs/clauKit-registry.md` § 1 for the full itemized list):
 - **`global/`** (1): `docs-seeker`
 - **`marketing/`** (50): claude-seo engine (`seo`, `seo-audit`, `seo-technical`, `seo-content`, `seo-schema`, `seo-geo`, +19 more `seo-*`), coreyhaines31-sourced (`copywriting`, `cro`, `ads`, `emails`, `analytics`, +18 more), ClauKit-authored (`product-marketing`, `kit-builder`)
 - **`automation/`** (6): `marketing-orchestrator`, `mcp-ga4`, `mcp-gsc`, `mcp-sendgrid`, `mcp-resend`, `mcp-reviewweb`
 - **`integrations/`** (2): `wordpress-rest`, `mcp-wordpress`
-- **`software/`** (67): top-level standalone (`git`, `worktree`, `research`, `planning`, `cook`, `refactor`, `debugging`, `code-review`, `dynamic-workflow`, `team`, `xia`, `chrome-devtools`, `agent-browser`, `security`, `cti-expert`, `problem-solving`, `sequential-thinking`, …) + subcategorized: `ai/` (`ai-artist`, `ai-multimodal`, `remotion`), `database/` (`postgresql`, `supabase`), `design/` (`aesthetic`, `frontend-design`, `ui-ux-pro-max`, `threejs`, …), `development/` (`csharp-developer`, `node-specialist`, `python-pro`, `react-specialist`, `nextjs-developer`, `typescript-pro`, `bootstrap`, `test-automation`, …), `document-skills/` (`docx`, `pdf`, `pptx`, `xlsx`), `git/`, `infrastructure/` (`docker-expert`)
+- **`software/`** (69): top-level standalone (`git`, `worktree`, `research`, `planning`, `cook`, `refactor`, `debugging`, `code-review`, `dynamic-workflow`, `obsidian`, `claude-md`, `team`, `port`, `chrome-devtools`, `agent-browser`, `security`, `cti-expert`, `problem-solving`, `sequential-thinking`, …) + subcategorized: `ai/` (`ai-artist`, `ai-multimodal`, `remotion`), `database/` (`postgresql`, `supabase`), `design/` (`aesthetic`, `frontend-design`, `ui-ux-pro-max`, `threejs`, …), `development/` (`csharp-developer`, `node-specialist`, `python-pro`, `react-specialist`, `nextjs-developer`, `typescript-pro`, `bootstrap`, `test-automation`, …), `document-skills/` (`docx`, `pdf`, `pptx`, `xlsx`), `git/`, `infrastructure/` (`docker-expert`)
 
 No `ffmpeg`, `shopify`, `mongodb`, `turborepo`, `csharp-expert`, or `security-audit` skills exist — these were either never real or have been superseded (`security-audit` → `security`; C# coverage → `csharp-developer`; image/video work → `ai-multimodal`). Verify any skill name against the registry before citing it.
 

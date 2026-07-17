@@ -18,6 +18,7 @@ Think harder to drive the following feature end-to-end. Follow the cook skill me
 **IMPORTANT:** Remind these rules in subagent communication:
 - Sacrifice grammar for the sake of concision when writing reports.
 - In reports, list any unresolved questions at the end, if any.
+- **Cite or it didn't happen (anti-hallucination):** every factual claim in a report — a file exists, a function behaves X, a test passed, a bug is at line N — MUST carry evidence: a `file:line` reference or verbatim command/test output. Searched and found nothing → write "not found", never infer it exists. Uncertain → mark `[UNVERIFIED]` and say what check would confirm it. No `file:line` and no output = a guess; drop it or flag it, never state it as fact.
 
 ## Argument & Mode Resolution
 
@@ -85,8 +86,9 @@ Follow the `code-review` skill ([.claude/skills/software/code-review/SKILL.md](.
 
 * Optional for complex changes: `/ck:scout edge cases for <feature>` → hand report to reviewer.
 * Dispatch `code-reviewer` per the skill's "Requesting Review" protocol; it emits Critical / High / Medium / Low.
-* **Gate decision:** `--auto` passes if `Critical = 0 AND High = 0`, else falls back to user approval. Default / `--fast`: always user approval.
-* Critical/High findings: fix → re-run Test → re-review until clean (loop cap applies). Apply the skill's Verification Gates before claiming "fixed".
+* **Adversarial verify (before any fix):** each Critical/High finding must survive an independent skeptic before it enters the fix loop. Dispatch the `debugger` agent (NOT the reviewer that raised it — `debugger` owns reproduction) prompted to *refute* the finding — reproduce it at the cited `file:line`, confirm the failing input→output, check it isn't already handled. Verdict `CONFIRMED` (with repro evidence) → proceed to fix. `REFUTED` / can't-reproduce → drop the finding, log why. Default-to-refuted when the `debugger` is uncertain. This is the [Adversarial verify quality pattern](../../../README.md); a fix loop is expensive (loop cap = 3), so never spend a cycle on a phantom bug.
+* **Gate decision:** `--auto` passes if `Critical = 0 AND High = 0` (counting CONFIRMED findings only), else falls back to user approval. Default / `--fast`: always user approval.
+* Confirmed Critical/High findings: fix → re-run Test → re-review until clean (loop cap applies). Apply the skill's Verification Gates before claiming "fixed".
 
 ### Docs
 
