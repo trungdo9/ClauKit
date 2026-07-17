@@ -1,6 +1,6 @@
 ---
 description: ⚡⚡⚡ Drive a feature spec through research, plan, code, test, review
-argument-hint: [task or plan-path] [--fast|--auto|--from-plan|--no-test]
+argument-hint: [task or plan-path] [--fast] [--auto] [--from-plan] [--no-test]
 ---
 
 Think harder to drive the following feature end-to-end. Follow the cook skill methodology, the Orchestration Protocol, Core Responsibilities, Subagents Team and Development Rules:
@@ -29,15 +29,15 @@ Think harder to drive the following feature end-to-end. Follow the cook skill me
 
 | Flag | Effect |
 |---|---|
-| (default) | Full pipeline; user approval gates between stages |
+| (default) | Full pipeline; user approval gates between stages; ends ready-to-merge (Deploy = manual hand-off) |
 | `--fast` | Skip Research stage; instruct planner: codebase-context only, no external research. Gate + plan + test + review kept |
-| `--auto` | Skip user approval gates; gate fields filled best-effort with `[ASSUMED]` logging; review auto-approves if `Critical = 0 AND High = 0` |
+| `--auto` | Skip user approval gates; gate fields filled best-effort with `[ASSUMED]` logging; review auto-approves if `Critical = 0 AND High = 0`; only mode that runs Deploy |
 | `--from-plan` | Skip Research + Plan stages; extract the 5 gate items from the plan file, `[ASSUMED]`-log any missing (auto-set when arg is a plan path) |
 | `--no-test` | Skip Test stage; **log waiver** per cook skill gating rule |
 
 **Guard:** `--auto` + `--no-test` cannot combine — auto-approval relies on tests; a test waiver requires human sign-off. Fall back to interactive approval and tell the user why.
 
-**Loop cap (all modes):** max **3 fix cycles per gate** (Test, Review). On the 3rd failure: halt, run `[[retro]]` on spec/scope, ask the user.
+**Loop cap (all modes):** max **3 fix cycles per gate** (Test, Review). On the 3rd failure: halt, run the `retro` skill ([.claude/skills/software/retro/SKILL.md](.claude/skills/software/retro/SKILL.md)) on spec/scope, ask the user.
 
 ## Workflow
 
@@ -52,7 +52,7 @@ Stages are named; numbering lives in the cook skill (source of truth).
 
 ### Research
 
-**Skip if `--fast` or `--from-plan`.**
+**Skip if `--fast` or `--from-plan`.** Command-level extension — not a numbered stage in the cook skill; feeds the skill's Stage 1 (Plan).
 
 * Spawn `researcher` agent(s) + `scout` agent in parallel; reports → `plans/<plan>/reports/`. Consolidate findings.
 
@@ -60,9 +60,9 @@ Stages are named; numbering lives in the cook skill (source of truth).
 
 **Skip if `--from-plan`.**
 
-* Delegate to `planner` agent → plan in `./plans/<YYMMDD-HHMM>-<slug>/plan` (timestamp via `bash -c 'date +%y%m%d-%H%M'`). Plan must cite impact diff, files to change, risks.
+* Delegate to `planner` agent → plan in `./plans/<YYMMDD-HHMM>-<slug>/plan.md` (timestamp via `bash -c 'date +%y%m%d-%H%M'`). Plan must cite impact diff, files to change, risks.
 * **Gate**: user reviews the plan before coding (skip prompt in `--auto`).
-* On approval, offer the context-reset path: user runs `/clear` then `/ck:cook <plan-path>` to implement with a fresh context (framework default: "Plan once, `/clear`, cook"). Continuing in-session is fine for small features.
+* On approval, offer the context-reset path: user runs `/clear` then `/ck:cook <plan-path>` to implement with a fresh context (framework default: "Plan once, `/clear`, cook"). Continuing in-session is fine for small features. In `--auto`: skip the offer, continue in-session.
 
 ### Implement
 
@@ -93,11 +93,19 @@ Follow the `code-review` skill ([.claude/skills/software/code-review/SKILL.md](.
 **On approval (or auto-approve):** `project-manager` (plan progress + `./docs/project-roadmap.md`) and `docs-manager` (`./docs/*` if affected) in parallel.
 **On rejection:** clarify issues with user → fix → loop back to Test.
 
+### Deploy
+
+**Runs only in `--auto` mode.** Default / `--fast`: end at ready-to-merge; list manual deploy steps in the Report instead.
+
+* Per cook skill Stage 6: commit + push via `git-manager`, then run the project's **documented** release/deploy process (deploy script, CI release workflow, or `./docs/deployment-guide.md`).
+* No documented deploy path found → skip, **log waiver**, surface manual steps in the Report. Never guess a deploy procedure.
+* Post-deploy: smoke check + document rollback path. Smoke fails → execute rollback first, then debug (loop cap applies).
+
 ### Report
 
 * **Acceptance-criteria checklist (mandatory):** table of each Gate criterion → verification evidence (test output, command result). No completion claim without it (code-review skill Iron Law).
 * Instruct user how to use the feature (env vars, keys, config). Default: one question at a time; in `--auto`, bundle everything into the report — never block.
-* Summarize changes; suggest next steps. Offer commit + push → `git-manager`.
+* Summarize changes; suggest next steps. Offer commit + push → `git-manager` (already done if Deploy ran). If Deploy was skipped (non-auto): list the manual deploy steps.
 * List unresolved questions at the end.
 
 ## Mode Quick Reference

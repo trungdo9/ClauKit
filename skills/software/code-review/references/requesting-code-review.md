@@ -50,8 +50,8 @@ Use Task tool with `code-reviewer` type, fill template at `code-reviewer.md`
 
 **3. Act on feedback:**
 - Fix Critical issues immediately
-- Fix Important issues before proceeding
-- Note Minor issues for later
+- Fix High issues before proceeding
+- Note Medium/Low issues for later
 - Push back if reviewer is wrong (with reasoning)
 
 ## Example
@@ -65,7 +65,7 @@ BASE_SHA=a7981ec  HEAD_SHA=3df7661
   PLAN_OR_REQUIREMENTS: Task 2 from docs/plans/deployment-plan.md
   DESCRIPTION: verification and repair functions for conversation index
 
-[Returns] Issues — Important: missing progress indicators · Minor: magic number 100
+[Returns] Issues — High: missing progress indicators · Low: magic number 100
 You: [fix progress indicators] → continue Task 3
 ```
 
@@ -77,7 +77,7 @@ You: [fix progress indicators] → continue Task 3
 
 ## Red Flags
 
-**Never:** skip review because "it's simple" · ignore Critical issues · proceed with unfixed Important issues · argue with valid technical feedback.
+**Never:** skip review because "it's simple" · ignore Critical issues · proceed with unfixed High issues · argue with valid technical feedback.
 
 **If reviewer is wrong:** push back with technical reasoning, show code/tests proving it works, request clarification.
 

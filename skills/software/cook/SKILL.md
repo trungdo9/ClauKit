@@ -93,7 +93,7 @@ Same stages map cleanly to GitLab CI, Buildkite, CircleCI, or a Makefile — met
 
 ## Anti-Patterns
 
-- **Stage 5 first**: deploying then writing tests. Cook order is non-negotiable; if you must hot-fix, do it outside cook.
+- **Stage 6 first**: deploying then writing tests. Cook order is non-negotiable; if you must hot-fix, do it outside cook.
 - **All stages in one PR**: huge diff, impossible review. Split per stage where reasonable, or at least segment commits by stage.
 - **No waiver log**: skipping gates silently. Force the waiver to be visible (PR comment, plan checkbox).
 - **Planning on a vague spec**: filling the 5 Stage-0 fields by probability instead of asking. If a field is unknowable from the task, ask ONE question — don't guess.

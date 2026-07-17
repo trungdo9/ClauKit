@@ -66,7 +66,7 @@ Forbidden: "You're absolutely right!", "Great point!", "Thanks for [anything]", 
 
 1. Get SHAs: `BASE_SHA=$(git rev-parse HEAD~1)` and `HEAD_SHA=$(git rev-parse HEAD)`.
 2. Dispatch code-reviewer subagent via Task tool with: WHAT_WAS_IMPLEMENTED, PLAN_OR_REQUIREMENTS, BASE_SHA, HEAD_SHA, DESCRIPTION.
-3. Act on feedback: fix Critical immediately, Important before proceeding, note Minor.
+3. Act on feedback: fix Critical immediately, High before proceeding, note Medium/Low for later.
 
 ## Common Use Cases
 
