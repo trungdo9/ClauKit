@@ -3,7 +3,10 @@
   "description": "Combined Engineer + Marketing Kit — /ck: and /mk: namespaces",
   "namespace": "both",
   "version": "1.0.0",
-  "extends": ["engineer", "marketing"],
+  "extends": [
+    "engineer",
+    "marketing"
+  ],
   "paths": {
     "agents": [
       ".claude/agents/engineering/",
@@ -28,6 +31,7 @@
       ".claude/workflows/fix-pipeline.md",
       ".claude/workflows/cro-framework.md",
       ".claude/workflows/marketing-workflow.md",
+      ".claude/workflows/seo-workflow.md",
       ".claude/workflows/sales-workflow.md",
       ".claude/workflows/crm-workflow.md",
       ".claude/workflows/video-workflow.md",

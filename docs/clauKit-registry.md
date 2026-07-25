@@ -1,8 +1,10 @@
 # ClauKit Registry
 
-**Last Updated**: 2026-07-17 (**Gemini purge** — `scout-external` agent removed (Gemini/OpenCode CLI orchestration retired; `/ck:scout` is now internal-Explore-only), Gemini offload paths stripped from `research` skill + `/ck:research` + `git-manager` + `/ck:use-mcp` (all now Claude-native). Gemini retained only in `software/ai/` skills (`ai-multimodal`/`ai-artist`) where it is a genuine capability. Earlier same-day: `mcp-manager` agent removed; `researcher` → sonnet, `journal-writer` → haiku; `tester`/`database-admin`/`project-manager` slimmed to thin personas; long agent descriptions trimmed to trigger-style.)
+**Last Updated**: 2026-07-25 (**SEO campaign workflow closed** — new `.claude/workflows/seo-workflow.md` (7-phase closed loop: gate → baseline audit+metrics → plan [hard stop] → batch write → publish [draft-default] → distribute → measure [GSC/GA4, 2–4 wk bake] → optimize scale/refresh/kill loop). `/mk:seo` gains `campaign` action; `seo-writer` agent + `seo-writing` skill gain `campaign` mode; `seo-flow` gains SEO Campaign recipe; wired into marketing/both kit manifests (workflows 5→6) + `marketing-workflow.md` Phase 5 delegation + MARKETING.md Flow 3c.)
+
+**Prior**: 2026-07-23 (**seo-writing pipeline added** — new ClauKit-authored `seo-writing` skill (6-stage article-production pipeline ported from a production n8n workflow: strategy → outline → write → optimize → media → publish; 7 references + 100-article WordPress playbook), new `seo-writer` orchestrator agent, `/mk:seo` gains `plan` + `write` actions. 6 previously-stub SEO skills filled with real content; agents upgraded pipeline-stage-specific. Counts: skills 128→129, agents 28→29.) · 2026-07-17 (**Gemini purge** — `scout-external` agent removed (Gemini/OpenCode CLI orchestration retired; `/ck:scout` is now internal-Explore-only), Gemini offload paths stripped from `research` skill + `/ck:research` + `git-manager` + `/ck:use-mcp` (all now Claude-native). Gemini retained only in `software/ai/` skills (`ai-multimodal`/`ai-artist`) where it is a genuine capability. Earlier same-day: `mcp-manager` agent removed; `researcher` → sonnet, `journal-writer` → haiku; `tester`/`database-admin`/`project-manager` slimmed to thin personas; long agent descriptions trimmed to trigger-style.)
 **Scope**: Single source of truth for every Skill, Agent, and Command in this project.
-**Counts**: 128 skills (128 active + 0 scaffold) · 28 agents · 52 commands · **208 total entries**
+**Counts**: 129 skills (129 active + 0 scaffold) · 29 agents · 52 commands · **210 total entries**
 
 Replaces previous `skills-catalog.md` (skills only). One file, all three resource types, with duplicate/overlap detection.
 
@@ -36,9 +38,9 @@ Replaces previous `skills-catalog.md` (skills only). One file, all three resourc
 
 > Note: `global/common/` does NOT contain a SKILL.md (only `README.md` + `api_key_helper.py`). It is a shared utility folder, not a skill. Earlier catalog listed it incorrectly — removed.
 
-### Marketing (50) — `.claude/skills/marketing/`
+### Marketing (51) — `.claude/skills/marketing/`
 
-**Claude-SEO engine (25 — imported from `AgriciDaniel/claude-seo`, replaces old `seo`/`geo`):**
+**Claude-SEO engine (25 — imported from `AgriciDaniel/claude-seo`, replaces old `seo`/`geo`) + 1 ClauKit-authored pipeline (`seo-writing`):**
 
 | Name | Status | Folder | Source |
 |---|:---:|---|---|
@@ -67,6 +69,7 @@ Replaces previous `skills-catalog.md` (skills only). One file, all three resourc
 | `seo-dataforseo` | ✅ | `marketing/seo-dataforseo/` | claude-seo |
 | `seo-google` | ✅ | `marketing/seo-google/` | claude-seo |
 | `seo-image-gen` | ✅ | `marketing/seo-image-gen/` | claude-seo |
+| `seo-writing` | ✅ | `marketing/seo-writing/` | ClauKit-authored — 6-stage article-production pipeline (ported from n8n). 7 references + 100-article WP playbook. Paired with `seo-writer` agent + `/mk:seo write\|plan` |
 
 **Coreyhaines31 (23 — imported from `coreyhaines31/marketingskills`, curated subset):**
 
@@ -240,7 +243,7 @@ All 40 are active (`dynamic-workflow` added 2026-06-03, paired with `/ck:flow`; 
 
 ## 2 · Agents (28)
 
-### `marketing/` (11) — marketing kit
+### `marketing/` (12) — marketing kit
 
 | Name | Status | Model | File |
 |---|:---:|---|---|
@@ -252,6 +255,7 @@ All 40 are active (`dynamic-workflow` added 2026-06-03, paired with `/ck:flow`; 
 | `market-researcher` | ✅ | sonnet | `marketing/market-researcher.md` |
 | `seo-content` | ✅ | sonnet | `marketing/seo-content.md` |
 | `seo-geo` | ✅ | sonnet | `marketing/seo-geo.md` |
+| `seo-writer` | ✅ | sonnet | `marketing/seo-writer.md` (orchestrates the `seo-writing` 6-stage pipeline end-to-end; paired with `/mk:seo write\|plan\|campaign` — `campaign` adds the seo-workflow.md measure/optimize loop) |
 | `seo-schema` | ✅ | sonnet | `marketing/seo-schema.md` |
 | `seo-technical` | ✅ | sonnet | `marketing/seo-technical.md` |
 | `video-producer` | ✅ | sonnet | `marketing/video-producer.md` |
@@ -371,7 +375,7 @@ All commands under `/mk:` namespace. Each hard-fails if `plans/marketing-context
 | Command | Description |
 |---|---|
 | `/mk:plan [fast\|full] [-o md\|html]` | Bootstrap or update marketing context (ICP, positioning, voice) · `-o html`: also render `marketing-context.html` view · `<path>.md -o html`: convert existing context → HTML |
-| `/mk:seo [audit\|keywords\|ai\|programmatic\|schema]` | SEO via AgriciDaniel/claude-seo engine (25 sub-skills parallel) |
+| `/mk:seo [audit\|keywords\|ai\|programmatic\|schema\|plan\|write\|campaign]` | SEO via claude-seo engine (audit/keywords/ai/programmatic/schema) + `plan`/`write` = full 6-stage article-production pipeline (`seo-writing` skill + `seo-writer` agent) + `campaign` = 7-phase closed loop per `.claude/workflows/seo-workflow.md` (baseline → plan → write → publish → measure → optimize); draft-default publishing |
 | `/mk:content [blog\|social\|video\|copy]` | Content creation |
 | `/mk:email [campaign\|cold\|drip\|sms]` | Email & SMS |
 | `/mk:ads [google\|meta\|creative\|ab-test]` | Paid advertising |
@@ -561,17 +565,17 @@ Verification: `for f in $(find .claude/skills -name SKILL.md); do …` returns z
 | Pool | Active | Scaffold | Total |
 |---|---:|---:|---:|
 | Skills · `global/` | 1 | 0 | 1 |
-| Skills · `marketing/` | 50 | 0 | 50 |
+| Skills · `marketing/` | 51 | 0 | 51 |
 | Skills · `automation/` | 6 | 0 | 6 |
 | Skills · `software/` | 69 | 0 | 69 |
 | Skills · `integrations/` (NEW) | 2 | 0 | 2 |
 | Skills · removed (v2.0.0: old `geo`, old `seo/references`) | — | — | — |
-| **Skills total** | **128** | **0** | **128** |
+| **Skills total** | **129** | **0** | **129** |
 | Agents · `engineering/` | 17 | 0 | 17 |
-| Agents · `marketing/` | 11 | 0 | 11 |
-| **Agents total** | **28** | **0** | **28** |
+| Agents · `marketing/` | 12 | 0 | 12 |
+| **Agents total** | **29** | **0** | **29** |
 | Commands (logical, per § 3 row scheme) | 52 | 0 | 52 |
-| **Grand total entries** | | | **208** |
+| **Grand total entries** | | | **210** |
 
 ## 7 · Open Issues
 

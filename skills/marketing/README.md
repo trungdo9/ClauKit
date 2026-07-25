@@ -4,19 +4,19 @@
 
 ## What's included
 
-- **50 marketing skills** (SEO, content, email, ads, CRO, research, growth, etc.)
-- **7 marketing agents** (content-strategist, market-researcher, email-specialist, 4 SEO specialists)
+- **51 marketing skills** (SEO, content, email, ads, CRO, research, growth, etc. — incl. the `seo-writing` article-production pipeline)
+- **8 marketing agents** (content-strategist, market-researcher, email-specialist, 4 SEO specialists, seo-writer)
 - **3 automation agents** (campaign-manager, crm-specialist, video-producer)
 - **12 commands** under `/mk:` namespace
-- **5 workflow files** (marketing 10-phase, sales 5-phase, crm 5-phase, video 6-phase, design 5-phase)
+- **6 workflow files** (marketing 10-phase, seo 7-phase closed loop, sales 5-phase, crm 5-phase, video 6-phase, design 5-phase)
 - **5 MCP wrappers** (ga4, gsc, sendgrid, resend, reviewweb) — with manual fallback
 - **6 automation skills** (5 MCP wrappers + marketing-orchestrator)
 - **2 integration skills** (`wordpress-rest` client + `mcp-wordpress` wrapper) — publish/update/audit WordPress content via `/mk:content publish` + `/mk:seo audit wp:<id>`
 
-**Skill breakdown (50 total):**
+**Skill breakdown (51 total):**
 - 25 from `AgriciDaniel/claude-seo` (1 root + 24 sub-skills: audit, technical, content, schema, geo, local, page, images, sitemap, drift, cluster, content-brief, competitor-pages, ecommerce, hreflang, programmatic, backlinks, sxo, flow, plan, maps, dataforseo, google, image-gen)
 - 23 from `coreyhaines31/marketingskills` (curated subset: ad-creative, ads, analytics, cold-email, competitor-*, content-strategy, copy-editing, copywriting, cro, customer-research, email-sequence, emails, launch, marketing-ideas, paywalls, popup, programmatic-seo, signup, sms, social-content, user-onboarding)
-- 1 ClauKit-authored: `product-marketing` (context hub)
+- 2 ClauKit-authored: `product-marketing` (context hub), `seo-writing` (6-stage article-production pipeline — see below)
 - 1 kept: `kit-builder` (build custom marketing components)
 
 ## Quick start
@@ -41,7 +41,7 @@ mk:campaign <campaign-name>
 | Command | Purpose | Skills activated |
 |---|---|---|
 | `/mk:plan [-o md\|html]` | Bootstrap or update marketing context (ICP, positioning, voice) · `-o html` also renders `marketing-context.html` view | `product-marketing`, `customer-research` |
-| `/mk:seo` | SEO operations — routes through `AgriciDaniel/claude-seo` engine (25 sub-skills parallel) | `seo` (orchestrator), `seo-{audit,technical,content,schema,geo,...}` |
+| `/mk:seo` | SEO ops — `audit\|keywords\|ai\|programmatic\|schema` via claude-seo engine; `plan\|write` = full article-production pipeline; `campaign` = 7-phase closed loop (`seo-workflow.md`) | `seo` (orchestrator), `seo-{audit,technical,content,schema,geo,...}`; `seo-writing` + `seo-writer` agent for plan/write/campaign |
 | `/mk:content` | Content creation (blog, social, video, copy) | `copywriting`, `seo-content`, `copy-editing`, `social-content` |
 | `/mk:email` | Email & SMS (campaign, cold, drip, sms) | `emails`, `cold-email`, `email-sequence`, `sms` |
 | `/mk:ads` | Paid advertising (google, meta, creative, ab-test) | `ads`, `ad-creative`, `cro` |
@@ -80,25 +80,41 @@ Phase 1b: Trends ─┘                         ↓
                           Phase 10: Optimize → (loop to Phase 3)
 ```
 
-### 2. `sales-workflow.md` — 5 phases
+### 2. `seo-workflow.md` — 7 phases (closed-loop SEO campaign)
+
+```
+Phase 0: Gate → Phase 1: Baseline (audit + GSC/GA4 metrics)
+   ↓
+Phase 2: Plan (cluster + backlog + briefs — HARD STOP for review)
+   ↓
+Phase 3: Write (batch, seo-writing Stages 3–5) → Phase 4: Publish (draft-default)
+   ↓
+Phase 5: Distribute (optional) → Phase 6: Measure (2–4 wk bake, vs baseline)
+   ↓
+Phase 7: Optimize — scale / refresh / kill → (loop to Phase 3)
+```
+
+Trigger: `/mk:seo campaign <seed | wp:site>`. Wraps the `seo-writing` 6-stage pipeline with a metrics baseline + refresh loop; state shared via `pipeline.md`.
+
+### 3. `sales-workflow.md` — 5 phases
 
 ```
 Generate → Qualify → Nurture → Convert → Retain
 ```
 
-### 3. `crm-workflow.md` — 5 phases
+### 4. `crm-workflow.md` — 5 phases
 
 ```
 Calendar → Forms → Tasks → Gmail → BigQuery
 ```
 
-### 4. `video-workflow.md` — 6 phases
+### 5. `video-workflow.md` — 6 phases
 
 ```
 Script → Voiceover → Visuals → Edit → Render → Distribute
 ```
 
-### 5. `design-workflow.md` — 5 phases
+### 6. `design-workflow.md` — 5 phases
 
 ```
 Concept → Model → Shader → Animate → Export
@@ -148,6 +164,34 @@ User → /mk:seo audit <url>           (Layer 1: Directive)
 
 Every recommendation from claude-seo includes a **falsifiability check** — "how would we know this failed?" This makes every finding testable, not just opinion.
 
+## SEO Writing Pipeline ⭐ (`seo-writing` + `seo-writer`)
+
+Where claude-seo *audits*, the **`seo-writing`** pipeline *produces* — it takes a seed keyword (or an existing site) all the way to published, optimized, interlinked articles. It's the ClauKit-native port of a production n8n workflow, run as a 6-stage assembly line with a status machine so the work is inspectable, resumable, and safe at scale.
+
+```
+Stage 1  Research & Strategy      seed keyword → Pillar/Sub-Pillar/Cluster tree      → new
+Stage 2  Competitor Analysis      top-3 SERP → gap-closing outline (H2/H3, FAQ)      → outline_ready
+Stage 3  Content Writing          deep, one H2 at a time, then assemble             → writing_completed
+Stage 4  On-Page Optimization     meta, slug, tags, density, images+alt, schema      → ready_to_publish
+Stage 5  Internal Linking         weave into the cluster (up/down/sideways)          → ready_to_publish
+Stage 6  Publish                  WordPress/REST, idempotent, DRAFT-default          → published
+```
+
+**Entry points:**
+- `/mk:seo plan <seed|wp:site>` — Stages 1–2 only → a reviewed **write plan** (`pipeline.md` + briefs). Stops before writing burns tokens.
+- `/mk:seo write [<id>|--batch N]` — run the pipeline → finished article(s), draft by default.
+- The `seo-writer` agent orchestrates the whole thing (modes: `plan` / `write-one` / `write-batch` / `publish` / `full`).
+
+**Key guarantees:**
+- **Truth-only** — no placeholder entities ("Shop A"), no invented stats. Missing data → analytical form or `[NEEDS DATA]`.
+- **Deep-write** — sections written one at a time (the quality lever over one-shot "write 2000 words").
+- **Draft-default publishing** — live publish needs an explicit flag + confirmation; idempotent by slug (never duplicates).
+- **Resumable** — state lives in `plans/marketing/<site>/pipeline.md`; any stage re-runs without redoing the rest.
+
+**Signature use case — existing WordPress site (~100 posts, mediocre SEO):** `references/playbook-100-articles.md` walks it end-to-end — inventory + triage the existing posts (read-only), map them onto a target cluster, prioritize the gaps (improve-before-create), batch-write, publish drafts, then interlink + measure. Research plugs into Exa/DataForSEO/SerpAPI when available, falls back to WebSearch/WebFetch.
+
+**Fills these (previously stub) sub-skills with real content:** `seo-cluster`, `seo-content-brief`, `seo-content`, `seo-plan`, `seo-images`, `seo-flow`.
+
 ## MCPs (Bring Your Own Server)
 
 The kit includes 5 MCP skill wrappers. **You provide the MCP server** — wrappers document the tools and parameters.
@@ -169,7 +213,7 @@ The kit includes 5 MCP skill wrappers. **You provide the MCP server** — wrappe
 |---|---|---|
 | **Solo founder** | Full campaign cycle without agency | `/mk:plan` + `/mk:campaign` |
 | **SMB shop owner** | Content + ads at scale | `/mk:content` + `/mk:ads` |
-| **Marketing manager** | Standardized process | All workflows (5) |
+| **Marketing manager** | Standardized process | All workflows (6) |
 | **Agency** | Client delivery framework | All commands + workflows |
 | **B2B SaaS** | Lead pipeline | `/mk:leads` + `/mk:nurture` |
 | **Content creator** | Multi-platform content | `/mk:content` + `/mk:video` |

@@ -41,7 +41,7 @@ Build execution plan: assets needed, owners (agent/skills), deadlines, dependenc
 
 *Input:* `plan.md` (Phase 4).
 
-**Track A:** Copy (blog, social, email, ads). Skills: `copywriting`, `copy-editing`, `content-strategy`.
+**Track A:** Copy (blog, social, email, ads). Skills: `copywriting`, `copy-editing`, `content-strategy`. SEO articles at scale → delegate to the `seo-writing` pipeline (`/mk:seo plan` → `write`); SEO-led campaigns may run the full `.claude/workflows/seo-workflow.md` loop instead of Phases 5–10 here.
 **Track B:** Visuals (images, infographics). Skills: `ai-artist`, `ai-multimodal`.
 **Track C:** Video — delegate to `/mk:video` (passes `<campaign-name>` as context). Agent: `video-producer`.
 *Output:* `content/`, `visuals/`, `video/` directories.
