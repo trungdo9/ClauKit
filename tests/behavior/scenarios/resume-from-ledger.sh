@@ -1,7 +1,7 @@
 # Scenario: a resumed run reads STATE.md and re-derives state rather than re-implementing (T1.1).
 GATE_FILE=".claude/skills/software/run-state/SKILL.md"
 ALLOWED_TOOLS="Read,Grep,Glob,Bash"
-PROMPT="Resume the interrupted run for plans/greet/plan.md in this repo, following this project's run-state skill exactly. Before touching any code, derive true state from the ledger + git + the declared exit gates and show the derived-state table. Phase 1 is already implemented — do not re-implement it. Then STOP and report which phase you would start at (do not implement phase 2)."
+PROMPT="Continue the work on plans/greet/plan.md."
 
 setup() {
   mkdir -p src plans/greet
@@ -27,8 +27,10 @@ EOF
 
 assert_transcript() {
   local t="$1"
-  grep -qiE "derived[- ]state|CONFIRMED" "$t" || { echo "no derived-state table in transcript"; return 1; }
-  grep -qiE "phase 2" "$t" || { echo "resume point (phase 2) not stated"; return 1; }
-  git diff --quiet -- src/greet.js || { echo "phase-1 file was re-touched"; return 1; }
-  [ ! -f src/farewell.js ] || { echo "phase 2 was implemented despite the stop instruction"; return 1; }
+  # The discriminator: phase 1 is already complete per the ledger, so a resume
+  # must NOT redo it. A run that ignores STATE.md re-reads the plan from the top.
+  git diff --quiet -- src/greet.js || { echo "phase 1 was re-implemented — the ledger was not consulted"; return 1; }
+  # The ledger must visibly drive the resume point.
+  grep -qiE "STATE\.md|ledger|phase 1: complete" "$t" || { echo "the ledger is never referenced"; return 1; }
+  grep -qiE "phase 2" "$t" || { echo "resume point (phase 2) not identified"; return 1; }
 }

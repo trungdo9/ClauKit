@@ -42,4 +42,9 @@ A change to a **behavioural** skill (`tdd`, `verify-plan`, `run-state`, `code-re
 
 **A scenario that passes with its gate deleted is not a test.** This is now automated: `--negative` re-runs each passing scenario against a scratch install whose `GATE_FILE` has been blanked, and reports `NEGATIVE-CONTROL FAIL` if the assertion still passes. It was previously only a printed suggestion — so the property T5.4 requires ("each scenario must fail when its gate is removed") was documented but never actually checked.
 
+The first run that did check it failed **6 out of 6**, for two reasons that are now rules for writing a scenario:
+
+1. **The prompt may state the task and nothing else.** Every original prompt told the model what to do — *"following this project's tdd skill exactly (test-first, red before green)"*, *"run the mandatory Verify-Plan gate"*, *"do NOT plan or implement — run the gate"*. The instruction was in the prompt, so deleting the skill changed nothing. A prompt must read like something a user would actually type.
+2. **Assert on behaviour, not on prose.** `guard-tier-b` grepped the transcript for `BLOCKED|owned by`, which a model produces just by narrating what it is checking. It now asserts on the commit contents. Prefer the filesystem, the git state, or an exit code; use the transcript only for something the gate uniquely says.
+
 It doubles the `claude -p` runs, so it stays opt-in: use it when adding or editing a scenario, and before a release.

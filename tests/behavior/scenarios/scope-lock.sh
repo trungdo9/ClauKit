@@ -1,7 +1,7 @@
 # Scenario: scope-lock emits the A/B table and halts instead of planning (T2.4).
 GATE_FILE=".claude/skills/software/cook/SKILL.md"
 ALLOWED_TOOLS="Read,Grep,Glob,Bash"
-PROMPT="Task: 'user emails are stored lowercase in the API service but compared case-sensitively in the web frontend — fix email handling'. Drive this via this project's cook skill Stage 0 (Exact-Requirements Gate incl. the scope lock). This task could be fixed backend-only, frontend-only, or across both. Do NOT plan or implement — run the gate."
+PROMPT="User emails are stored lowercase in the API service but compared case-sensitively in the web frontend. Fix email handling."
 
 setup() {
   mkdir -p api/src web/src
@@ -11,9 +11,11 @@ setup() {
 
 assert_transcript() {
   local t="$1"
-  # both options present, minimal-first, and a halt for the pick — not a plan
-  grep -qiE "\(A\)|option a|minimal" "$t" || { echo "no option A / minimal in transcript"; return 1; }
-  grep -qiE "\(B\)|option b|thorough" "$t" || { echo "no option B / thorough in transcript"; return 1; }
-  grep -qiE "convention|pattern" "$t" || { echo "no convention check in transcript"; return 1; }
-  [ ! -d plans ] || [ -z "$(find plans -name 'plan.md' 2>/dev/null)" ] || { echo "a plan was written despite the halt"; return 1; }
+  # The discriminator is BEHAVIOUR: the task spans two layers, so the gate must
+  # stop and ask which surface to change. A run without the gate just edits.
+  git diff --quiet -- api/src/normalize-email.js web/src/compare-email.js \
+    || { echo "source was edited without asking which surface to change"; return 1; }
+  # And the halt must offer a real choice, minimal first.
+  grep -qiE "\(A\)|option a|minimal" "$t" || { echo "no minimal-surface option offered"; return 1; }
+  grep -qiE "\(B\)|option b|thorough|both" "$t" || { echo "no broader option offered"; return 1; }
 }
