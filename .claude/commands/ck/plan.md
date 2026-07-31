@@ -113,12 +113,11 @@ Workflow:
 
 ## `verify <path>` — falsify an existing plan (⚡⚡)
 
-**Input:** path to an existing `plan.md`. Activate the `verify-plan` skill ([.claude/skills/software/verify-plan/SKILL.md](.claude/skills/software/verify-plan/SKILL.md)) — single source of truth for the method.
+**Input:** path to an existing `plan.md`.
 
-1. Read the plan; **extract every factual claim** (root cause · current behaviour · data/row counts · code-path · "already done" status).
-2. Prove or disprove each with `git log`/`git blame`/`git show`, direct file reads, **read-only** queries. Verification is read-only — no edits, no writes.
-3. Emit the fixed table → `plans/<plan>/reports/plan-verification.md`: `# · Claim · Verdict (CONFIRMED/REFUTED/UNVERIFIABLE) · Evidence (file:line, git ref, or verbatim output) · Impact if wrong`.
-4. Verdict line: **plan SAFE TO EXECUTE** (no REFUTED load-bearing claims) or **plan REFUTED — back to planner** (name the broken claims). Append the gate result to `plans/<plan>/STATE.md`.
+→ **Method is canonical in the [`verify-plan` skill](../../skills/software/verify-plan/SKILL.md)** — claim extraction, the evidence sources, the output table and the SAFE-TO-EXECUTE / back-to-planner verdict. Not restated here; this file named that skill the single source of truth, and restating it is how the two versions diverge.
+
+Command-only: the run is **read-only** (no edits, no writes), the table lands at `plans/<plan>/reports/plan-verification.md`, and the gate result is appended to `plans/<plan>/STATE.md`.
 
 **Auto-invoked** by `/ck:cook --from-plan` (Stage 0.5); use standalone before executing any plan you didn't write this session.
 

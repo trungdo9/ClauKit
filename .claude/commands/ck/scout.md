@@ -27,10 +27,9 @@ REPORT_OUTPUT_DIR: `plans/<plan-name>/reports/scout-report.md`
 
 When the task names **more than one repository** (a cross-repo trace: core/api/web, backend + frontend checkouts, etc.):
 
-- Dispatch **one read-only `scout` agent per repo, concurrently in a single message** — never one agent roaming several checkouts, never serial tracing through the main context.
-- Each agent returns `file:line` **plus the data shape it observes at that boundary** (parameter/return/payload types as actually seen — the shape is what makes cross-repo mismatches visible; a bare `int[]` where an object was expected is a real defect class).
-- The main agent reconciles into **one cross-repo trace table**: where the value originates, each hop (`repo → file:line → shape`), and where it diverges from expectation. This table feeds `verify-plan`'s evidence column directly.
-- Constraint: the main session performs **zero `Read`/`Bash` calls against the non-primary repos** — everything arrives through the per-repo scouts.
+→ **Dispatch shape is canonical in [`orchestration-protocol.md` § Multi-repo](../../workflows/orchestration-protocol.md)** — one read-only agent per repo, concurrent in a single message, the observed-shape requirement, and the zero-calls-against-non-primary-repos constraint. Not restated here.
+
+Command-only: the per-repo agent is `scout` (already Edit/Write-free), and the reconciled cross-repo trace table feeds `verify-plan`'s evidence column directly.
 
 ## How to write reports
 

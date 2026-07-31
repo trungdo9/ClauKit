@@ -52,4 +52,4 @@
 - Contract changes (payload shapes, status codes) are verified against the consumer's actual parsing (`scout` per repo, shapes reported), not against the producer's intent.
 
 ## Behavioural-Skill Governance
-- A change to a **behavioural** skill (`tdd`, `verify-plan`, `run-state`, `code-review`, `debugging`, `cook`) requires a `tests/behavior/` scenario run before/after the change (see `tests/behavior/README.md`). Reference skills — the ones that document capability rather than shape behaviour — are exempt.
+- A change to a **behavioural** skill (`tdd`, `verify-plan`, `run-state`, `code-review`, `debugging`, `cook`) requires running the project's behavioural-eval scenario for that gate before and after the change — and the scenario must **fail with its gate removed**, or it is measuring the model's general competence rather than your rule. Reference skills — the ones that document capability rather than shape behaviour — are exempt. *(ClauKit's own harness lives in `tests/behavior/`, which is repo-internal and not shipped by any kit; a consuming project supplies its own.)*

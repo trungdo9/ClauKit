@@ -135,16 +135,13 @@ Each variant follows the **Fix Pipeline** ([.claude/workflows/fix-pipeline.md](.
 
 ### `tdd` — production-symptom red-green (⚡⚡)
 
-**Input:** a production symptom (bug report, incident, wrong output) — NOT an already-failing suite (that's `test`). Activate the `tdd` skill ([.claude/skills/software/tdd/SKILL.md](.claude/skills/software/tdd/SKILL.md)) — Iron Law: **no production code without a failing test first**. The autonomous bug loop:
+**Input:** a production symptom (bug report, incident, wrong output) — NOT an already-failing suite (that's `test`).
 
 <issues>{ISSUES}</issues>
 
-- **Step 0 — toolchain**: prove the runner actually runs (dangling venv symlinks, missing deps, specs that block the runner). **Never conclude from a suite that could not run.**
-- **Step 1 — red**: write the smallest test reproducing the **exact production symptom**; run it; **show the failure output** (must fail for the expected reason). No source edit before this.
-- **Step 2 — baseline**: run the full suite once; record pre-existing/flaky failures so regressions stay distinguishable. **Baseline = base commit checked out in a separate worktree (`node scripts/ck/wt-new.js baseline --base <sha>`), never `git stash`** — a stash-based baseline silently no-ops and the failure is invisible when it happens.
-- **Step 3 — loop**: implement → targeted test + full sweep → read failures → iterate without check-ins. Never weaken or skip assertions to get green; a test that looks wrong gets explained before it gets changed.
-- **Step 4 — prove**: paste final output; confirm the pre-existing failure set is unchanged; state root cause vs symptom. Append `gate tdd → PASS (evidence: <suite output>)` to `plans/<plan>/STATE.md`.
-- **Escalate only** on a data change needing approval or an unrepairable env blocker.
+→ **The loop is canonical in the [`tdd` skill](../../skills/software/tdd/SKILL.md)**: toolchain proof → red test with pasted failure → baseline → green sweep → prove. Iron Law: no production code without a failing test first. The **baseline rule** (base commit in a separate worktree, never `git stash`, because a stash-based baseline silently no-ops) is stated there once — this command does not restate it.
+
+Command-only: run the baseline worktree with `node scripts/ck/wt-new.js baseline --base <sha>`, append `gate tdd → PASS (evidence: <suite output>)` to `plans/<plan>/STATE.md`, and **escalate only** on a data change needing approval or an unrepairable env blocker.
 
 **Distinct from `test`:** different inputs — `test` starts from a red suite; `tdd` starts from a production symptom and *creates* the red test. Both stay.
 

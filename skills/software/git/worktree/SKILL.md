@@ -31,7 +31,7 @@ Each constraint cites the incident that earned it:
 4. **Never run `npm ci`/frozen installs at the repo root from a subagent** — same incident. The `guard-destructive` hook refuses a frozen install when `node_modules` resolves to a symlink.
 5. **`git clean -fdx` destroys git-ignored scratch** (including per-worktree caches and any ignored ledger) — blocked at Tier A; delete explicit paths only.
 6. **Remove worktrees when done** (`wt-clean.js`) — ~20GB of stale worktrees accumulated silently.
-7. **Baseline questions ("is this failure pre-existing?") are answered by checking out the base commit in a separate worktree — never by `git stash`** — a stash-based baseline silently no-oped and corrupted a commit message.
+7. **never by `git stash`** — rule and rationale live once in the [`tdd` skill](../../tdd/SKILL.md) § Baseline.
 
 ## When to Use
 

@@ -14,40 +14,29 @@ FLAGS: `--no-handoff` (skip declared handoff steps — WIP PR mid-ticket) · `--
 
 Dispatch to the matching operation based on {ACTION}. Use `git-manager` agent for all git/GitHub work. The `git` skill is the canonical knowledge (scoped commits, finish-branch, delivery-tail semantics); this command is the trigger.
 
+→ **Three protocols are canonical in the [`git` skill](../../skills/software/git/SKILL.md)** and are deliberately not restated here — this file declared that skill their owner one line above, and a protocol written down twice drifts:
+> **Scoped Commits** · **Finish-Branch Protocol** · **Delivery Tail — execution semantics**
+
+Only the dispatch differences live below.
+
 ### `cm` — commit only (scoped) / `cp` — commit + push
 
-**Never stage the whole tree.** The scoped-commit protocol (git skill "Scoped Commits" is the source of truth):
+→ git skill § **Scoped Commits**. Manifest comes from `node .claude/hooks/file-claims.js list` (the `MINE` rows). `cp` additionally pushes.
 
-1. **Derive the session manifest from the claim registry** — `node .claude/hooks/file-claims.js list` → the `MINE` rows are the files this session edited (machine-derived; survives compaction). Registry unavailable/empty → fall back to asking the user which files are theirs; never fall back to `-A`.
-2. `git status --porcelain` + `git stash list`; diff against the manifest. **Report foreign WIP explicitly**, attributed to the owning session where known (`FOREIGN` rows). Foreign WIP is never staged.
-3. `git add <manifest paths>` — explicit paths only; never `-A`, `.` or `commit -am` (the guard-destructive hook denies these when another live session holds claims).
-4. Re-check your edits are still present in the staged diff (concurrent-editor churn).
-5. Lint + targeted tests on the staged scope; abort red.
-6. Conventional commit (`type(scope): description`); prefix the ticket ID if the branch or plan names one. `cp` additionally pushes.
-
-### `pr` — finish the branch: verify → self-review → draft PR → handoff tail → teardown
+### `pr` — non-interactive finish: verify → self-review → draft PR → declared tail → teardown
 
 TO_BRANCH: {ARG1} (defaults to `main`) · FROM_BRANCH: {ARG2} (defaults to current branch)
 
-1. **Verify first (Iron Law):** tests + typecheck green — run them, paste the result. Red → stop; a PR is a claim the work is done.
-2. **Self-review the diff, scoped to session files only** (manifest from step `cm`.1): read `git diff <TO_BRANCH>...HEAD`, confirm no unrequested artifacts, no secrets, no foreign WIP.
-3. **PR description from the pipeline's own artifacts** via the `pr-body.md` template ([.claude/skills/software/git/references/pr-body.md](.claude/skills/software/git/references/pr-body.md)) + its fill contract — every placeholder transcribed from an upstream artifact, never composed at PR time. Zero `{{...}}` may survive; a section with nothing to say gets an explicit negative (`Tradeoffs: none — <reason>`). A project may override the template via its CLAUDE.md.
-4. **Open the PR draft-default** (`gh pr create --draft` / `glab mr create --draft`). `--ready` opts out. Reviewer time is expensive; a wrong root cause reaching "ready" is how bad merges happen. Update an existing PR's body **in place, never append**.
-5. **Run the project's declared handoff steps, in declaration order** — the optional `## Delivery tail` block in the project's CLAUDE.md (see git skill "Delivery Tail" semantics). Execute via `node scripts/ck/delivery-tail.js` — a deterministic executor (no LLM: declared steps carry `run` + `done-when`), the single code path, re-runnable standalone after an interruption. A tail runs only once approved on this machine (`--approve`); an unseen or edited declaration is refused with the steps printed, because `CLAUDE.md` is tracked and a merged PR could otherwise add steps that run unattended. Review with `--dry-run`, which resolves placeholders and prints the exact commands without executing. **ClauKit declares no steps of its own: absent/empty block ⇒ no tail, no notice.** `--no-handoff` skips this step.
-6. **Worktree teardown** via `node scripts/ck/wt-clean.js <path>` once the PR is open (if this run provisioned one; path is in `STATE.md`).
+→ git skill § **Finish-Branch Protocol** for the ordering, the Iron-Law gate, draft-default, the `pr-body.md` fill contract and the auth-failure paste-ready rule.
+→ git skill § **Delivery Tail** for step 5's semantics. Runner: `node scripts/ck/delivery-tail.js` (`--dry-run` to review, `--approve` to arm).
 
-**Auth failure → do not retry.** `gh`/`glab` unauthenticated or token invalid: emit a **paste-ready block** — PR title · full body · source branch · target branch · the exact `gh pr create`/`glab mr create` command — then exit cleanly (steps 5–6 still run where possible). Never let a finished feature die at the auth step; zero retry attempts.
+Flags: `--ready` opens the PR undrafted · `--no-handoff` skips the tail (a WIP PR mid-ticket).
 
-### `finish` — verify → menu → done
+### `finish` — interactive: verify → menu → done
 
-1. Tests green first (Iron Law) — run, paste result.
-2. Detect environment: normal repo / named-branch worktree / detached HEAD.
-3. Present the menu and wait:
-   - **merge locally** (into TO_BRANCH, `--ff-only` preferred)
-   - **push + PR** (→ `pr` action above)
-   - **keep as-is** (report branch + how to resume)
-   On detached HEAD: only push+PR (after creating a branch) or keep-as-is.
-4. After the pick: execute; if a worktree is done with, offer `wt-clean.js`.
+Same protocol, with a stop for the pick instead of going straight to a PR:
+- **merge locally** (into TO_BRANCH, `--ff-only` preferred) · **push + PR** (→ `pr` above) · **keep as-is** (report branch + how to resume)
+- On detached HEAD the local-merge option is not offered.
 
 ### `merge` — merge PR or branch (interactive)
 Detect context, then **ask the user** to confirm the merge strategy before acting:

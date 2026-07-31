@@ -67,21 +67,21 @@ Dedup → confirmed-only report (main-session orchestrator, gated/inspectable)
 
 **Opt-in** — default `/ck:review` stays single-reviewer; this is a genuine ~4× on the review stage. **Auto-suggest it only above a risk threshold**: >~200 changed lines, >3 files, or the diff touches auth / payments / migrations / a cross-service boundary.
 
-Fan out **4 reviewers concurrently in one message**, each with a distinct lens (perspective diversity beats redundancy — lens table is canonical in the `code-review` skill):
+Fan out **4 reviewers concurrently in one message**, each with a distinct lens.
 
-| Lens | Prompt core | Tier |
-|---|---|---|
-| **ADVERSARY** | assume the implementation is wrong; prove it from the actual diff + live queries, not the description | escalate on risky diffs |
-| **FIDELITY** | diff new logic against legacy behavior on the base branch (`git show`/`git log`); list every behavioral divergence, intended or not | standard |
-| **BLAST RADIUS** | cascade deletes, dropped status/permission guards, route-level auth gaps, duplicate keys, non-atomic mutation sequences, cross-service deploy-order hazards | cheap, narrow prompt |
-| **CONVENTION** | does the change respect the codebase's own architectural patterns? (pair with the scope-lock convention check: planned intent vs shipped reality) | cheap, narrow prompt |
+→ **The lens table, the context rules and the reconcile step are canonical in [`code-review` skill § Multi-Lens Review](../../skills/software/code-review/SKILL.md).** They are not restated here: duplicating them into two documents is how they drift apart, and this file already named that skill as their owner.
 
-**Context rules (non-negotiable):**
-- **The falsifier gets no reasoning.** Each lens receives **the diff and the requirement — never the implementer's explanation of why it is correct**. A reviewer handed the rationale grades the rationale, not the code. Fresh context, no memory of the implementation attempts.
-- Each lens reads the **review-package file** (`node scripts/ck/review-package.js <BASE> [HEAD] --plan <plan>`) — a path, not an inline diff; the main context grows by four short finding lists, not four diffs.
-- **Admissibility:** every finding must cite `file:line`, a git ref, or verbatim output. **No evidence → discarded as a hallucination** (a subagent once invented a flag).
+Command-only additions:
 
-**Then reconcile (main session):** cross-check the four reports against each other; flag disagreements explicitly; rank surviving findings Critical/High/Medium; route Critical/High through the existing adversarial-verify step before any fix.
+| Lens | Model tier for the dispatch |
+|---|---|
+| **ADVERSARY** | escalate on risky diffs |
+| **FIDELITY** | standard |
+| **BLAST RADIUS** | cheap, narrow prompt |
+| **CONVENTION** | cheap, narrow prompt |
+
+- Build the package first: `node scripts/ck/review-package.js <BASE> [HEAD] --plan <plan>` — hand each lens the **path**, never an inline diff.
+- Composable with `--flow`; the reconcile step runs in the main session.
 
 **Examples:** `/ck:review --lenses` · `/ck:review --lenses --flow plans/<plan>` 
 
