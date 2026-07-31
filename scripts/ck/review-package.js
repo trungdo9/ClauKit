@@ -17,7 +17,7 @@
 const fs = require('fs');
 const os = require('os');
 const path = require('path');
-const { sh, die } = require('./lib/common');
+const { git, assertRef, die } = require('./lib/common');
 const { resolveWorkspace } = require('./run-workspace');
 
 function main() {
@@ -31,18 +31,23 @@ function main() {
   const [base, headArg] = argv;
   if (!base) die('usage: review-package.js <BASE> [HEAD] [--plan <plan-dir>]\n  BASE must be explicit — HEAD~1 silently truncates a multi-commit phase.');
   const head = headArg || 'HEAD';
+  assertRef(base, 'BASE');
+  assertRef(head, 'HEAD');
 
   let baseSha, headSha;
   try {
-    baseSha = sh(`git rev-parse --short ${base}`);
-    headSha = sh(`git rev-parse --short ${head}`);
+    baseSha = git(['rev-parse', '--short', base]);
+    headSha = git(['rev-parse', '--short', head]);
   } catch (e) {
     die(`cannot resolve refs: ${e.message}`);
   }
 
-  const log = sh(`git log --oneline ${baseSha}..${headSha}`);
-  const stat = sh(`git diff --stat ${baseSha}..${headSha}`);
-  const diff = sh(`git diff -U10 ${baseSha}..${headSha}`, { maxBuffer: 64 * 1024 * 1024 });
+  // baseSha/headSha are hex at this point, but they still travel as single
+  // argv elements — no shell is involved anywhere in this file.
+  const range = `${baseSha}..${headSha}`;
+  const log = git(['log', '--oneline', range]);
+  const stat = git(['diff', '--stat', range]);
+  const diff = git(['diff', '-U10', range]);
 
   const body = [
     `# Review package — ${baseSha}..${headSha}`,

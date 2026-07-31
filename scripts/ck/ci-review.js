@@ -20,7 +20,7 @@
 
 const fs = require('fs');
 const path = require('path');
-const { sh, run, repoRoot, die } = require('./lib/common');
+const { git, assertRef, run, repoRoot, die } = require('./lib/common');
 
 const ALLOWED_TOOLS = 'Read,Grep,Glob,Bash(git diff:*),Bash(git log:*),Bash(git show:*)';
 
@@ -37,11 +37,16 @@ function main() {
   const root = repoRoot();
   if (!root) die('not inside a git repository');
 
+  // Refs here come from CI context (`origin/${{ github.base_ref }}`), i.e. from
+  // whoever opened the PR. argv only — never a shell string.
+  assertRef(base, 'BASE');
+  assertRef(head, 'HEAD');
+
   let baseSha, headSha, stat;
   try {
-    baseSha = sh(`git rev-parse --short ${base}`, { cwd: root });
-    headSha = sh(`git rev-parse --short ${head}`, { cwd: root });
-    stat = sh(`git diff --stat ${baseSha}...${headSha}`, { cwd: root });
+    baseSha = git(['rev-parse', '--short', base], { cwd: root });
+    headSha = git(['rev-parse', '--short', head], { cwd: root });
+    stat = git(['diff', '--stat', `${baseSha}...${headSha}`], { cwd: root });
   } catch (e) {
     die(`cannot resolve diff range: ${e.message}`);
   }

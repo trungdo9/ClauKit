@@ -29,7 +29,7 @@
 
 const fs = require('fs');
 const path = require('path');
-const { sh, run, repoRoot, die, ok, info, detectPm, readJson } = require('./lib/common');
+const { git, assertRef, run, repoRoot, die, ok, info, detectPm, readJson } = require('./lib/common');
 
 function parseArgs(argv) {
   const args = { flags: new Set(), opts: {} };
@@ -74,8 +74,9 @@ function main() {
   }
   if (fs.existsSync(wtPath)) die(`target already exists: ${wtPath} (pick another id or run wt-clean.js first)`);
 
-  const base = args.opts.base || 'HEAD';
-  const baseSha = sh(`git rev-parse ${base}`, { cwd: mainRoot });
+  // --base can arrive from a STATE.md line or a branch name; argv only.
+  const base = assertRef(args.opts.base || 'HEAD', '--base');
+  const baseSha = git(['rev-parse', base], { cwd: mainRoot });
   const branch = `wt/${args.id}`;
 
   // --- create ---
