@@ -12,12 +12,14 @@
  * metadata-writer, github-client, cli-parser).
  */
 
+const fs = require("fs");
 const path = require("path");
 const packageJson = require("../package.json");
 
 const { resolveKit, getKitPaths, resolveSourcePath, checkKitPathsAvailable, printKitList } = require("./lib/kit-resolver");
 const { copyPath } = require("./lib/file-copier");
 const { writeMetadata } = require("./lib/metadata-writer");
+const { mergeSettings } = require("./lib/settings-merge");
 const { fetchLatestVersion, compareVersions } = require("./lib/github-client");
 const { parseArgs, showHelp } = require("./lib/cli-parser");
 
@@ -58,12 +60,26 @@ function initCommand(options = {}) {
     else if (result === "skipped") skipped++;
   }
 
+  // An existing settings.json is skipped by the copy loop, which used to leave
+  // newly-installed hooks wired to nothing. Merge the missing entries in
+  // additively rather than making the user choose between --force (which
+  // replaces their permissions and env) and a silently inert install.
+  const settingsRel = ".claude/settings.json";
+  const projectSettings = path.join(projectRoot, settingsRel);
+  if (fs.existsSync(projectSettings)) {
+    const added = mergeSettings(resolveSourcePath(settingsRel), projectSettings);
+    if (added.length) {
+      console.log(`\n   🔗 wired into your existing ${settingsRel}:`);
+      for (const a of added) console.log(`      + ${a}`);
+    }
+  }
+
   writeMetadata(projectRoot, packageJson, kit);
 
   console.log(`\n✅ Kit '${kit.name}' installed!`);
   console.log(`   ${copied} paths copied · ${skipped} skipped`);
   if (skipped > 0 && !options.force) {
-    console.log(`\n   💡 Use --force to overwrite existing files.`);
+    console.log(`\n   💡 Use --force to overwrite existing files (your own files in those directories are kept).`);
   }
 }
 
