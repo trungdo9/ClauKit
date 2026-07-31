@@ -319,3 +319,110 @@ for (const cmd of SUBSHELL_DENY) {
     assert.strictEqual(runGuard(cmd).status, 2, `expected DENY for: ${cmd}`);
   });
 }
+
+// ---------- remaining bypasses from the multi-lens review ----------
+
+const BYPASS_DENY = [
+  // `-a` is `-u` plus git-ignored files; the check looked only for `u`.
+  'git stash -a',
+  'git stash --all',
+  'git stash push --all',
+  // whole-tree checkout/restore reached by a flag or the root pathspec
+  'git checkout -f other-branch',
+  'git checkout --force feature',
+  'git restore --worktree :/',
+  'git checkout :/',
+  // `rm -R` is the POSIX/BSD spelling `man rm` shows first
+  'rm -Rf .',
+  'rm --recursive --force .',
+  // the escape hatch binds to the segment it prefixes, not the whole command
+  'CK_ALLOW_DESTRUCTIVE=1 npm ci && git reset --hard',
+  'echo CK_ALLOW_DESTRUCTIVE=1 && git reset --hard',
+  // DROP beyond TABLE
+  'psql -c "DROP DATABASE prod"',
+  'psql -c "DROP SCHEMA public CASCADE"',
+  // specified as Tier A from the start, never implemented
+  'psql -c "INSERT INTO users VALUES (1,2)"',
+];
+
+for (const cmd of BYPASS_DENY) {
+  test(`bypass closed: ${cmd}`, () => {
+    const res = runGuard(cmd);
+    assert.strictEqual(res.status, 2, `expected DENY for: ${cmd}\n${res.stderr}`);
+  });
+}
+
+test('rm -rf on the filesystem root denies (it contains every worktree)', () => {
+  const res = runGuard('rm -rf /');
+  assert.strictEqual(res.status, 2, res.stderr);
+  assert.match(res.stderr, /filesystem root/);
+});
+
+test('rm -rf on the home directory denies, including ~ and $HOME', () => {
+  for (const target of ['~', '$HOME', '${HOME}']) {
+    const res = runGuard(`rm -rf ${target}`);
+    assert.strictEqual(res.status, 2, `expected DENY for rm -rf ${target}\n${res.stderr}`);
+    assert.match(res.stderr, /home directory/);
+  }
+});
+
+test('the escape hatch still works when it prefixes the destructive segment', () => {
+  assert.strictEqual(runGuard('CK_ALLOW_DESTRUCTIVE=1 git reset --hard').status, 0);
+});
+
+test('git clean -nf is a dry run and passes', () => {
+  assert.strictEqual(runGuard('git clean -nf').status, 0);
+  assert.strictEqual(runGuard('git clean -fn').status, 0);
+});
+
+test('benign rm and stash forms still pass', () => {
+  for (const cmd of ['rm -rf ./build', 'rm -f a.txt', 'git stash list', 'git stash push -- src/a.ts', 'git checkout main', 'git checkout -b feat/x']) {
+    const res = runGuard(cmd);
+    assert.strictEqual(res.status, 0, `expected ALLOW for: ${cmd}\n${res.stderr}`);
+  }
+});
+
+test('tier B: :/ and a bare glob are whole-tree staging shapes', () => {
+  const { tierBShape } = require(HOOK);
+  assert.ok(tierBShape('git add :/'), 'git add :/ must be a Tier B shape');
+  assert.ok(tierBShape('git add *'), 'git add * must be a Tier B shape');
+  assert.strictEqual(tierBShape('git add src/a.ts'), null);
+});
+
+// Tier B used to deny on ANY foreign claim, so it blocked ops that provably
+// could not reach the file — the false-positive class that pushes people to
+// `git add :/`, which is itself now guarded.
+test('tier B ignores foreign claims the op cannot reach', () => {
+  const sub = path.join(repo, 'docs');
+  fs.mkdirSync(sub, { recursive: true });
+  fs.writeFileSync(path.join(sub, 'mine.md'), 'x\n');
+  fs.mkdirSync(path.join(repo, 'src'), { recursive: true });
+
+  // Foreign session created an UNTRACKED file under src/.
+  const theirNew = path.join('src', 'their-new.js');
+  fs.writeFileSync(path.join(repo, theirNew), 'y\n');
+  seedClaim('other-session', theirNew);
+
+  // `git add -u` stages tracked modifications only — it cannot stage an
+  // untracked file, so there is nothing of theirs to protect.
+  assert.strictEqual(runGuard('git add -u').status, 0, 'add -u cannot reach an untracked file');
+
+  // `git add .` from docs/ cannot reach src/ either.
+  assert.strictEqual(runGuard('git add .', { cwd: sub }).status, 0, 'add . in docs/ cannot reach src/');
+
+  // But the whole-tree shapes still deny — those genuinely sweep it up.
+  assert.strictEqual(runGuard('git add -A').status, 2, 'add -A does reach it');
+  assert.strictEqual(runGuard('git add :/').status, 2, 'add :/ does reach it');
+});
+
+test('tier B still denies a tracked foreign modification for add -u', () => {
+  const theirTracked = path.join('src', 'their-tracked.js');
+  fs.writeFileSync(path.join(repo, theirTracked), 'v1\n');
+  git(['add', theirTracked]);
+  git(['commit', '-qm', 'add their tracked file']);
+  fs.writeFileSync(path.join(repo, theirTracked), 'v2\n');
+  seedClaim('other-session', theirTracked);
+  const res = runGuard('git add -u');
+  assert.strictEqual(res.status, 2, `add -u does sweep a tracked modification\n${res.stderr}`);
+  assert.match(res.stderr, /their-tracked\.js/);
+});

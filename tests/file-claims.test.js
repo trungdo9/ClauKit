@@ -124,3 +124,23 @@ test('file outside the worktree is ignored', () => {
   assert.strictEqual(res.status, 0);
   assert.ok(!readClaims(repo).some(c => c.session === 'session-C'));
 });
+
+// `git status --porcelain` collapses an untracked directory to `?? src/`, so a
+// claim on a file inside it never matched the dirty set and was pruned as
+// "clean" — losing exactly the files a concurrent session had just created.
+test('a claim inside a NEW untracked directory survives pruning', () => {
+  const dir = path.join(repo, 'brand-new-dir');
+  fs.mkdirSync(dir, { recursive: true });
+  const rel = 'brand-new-dir/fresh.ts';
+  fs.writeFileSync(path.join(repo, rel), 'export const x = 1;\n');
+  const res = runHook({
+    session_id: 'session-D',
+    cwd: repo,
+    tool_name: 'Write',
+    tool_input: { file_path: path.join(repo, rel) },
+  });
+  assert.strictEqual(res.status, 0);
+  const live = readClaims(repo);
+  assert.ok(live.some(c => c.session === 'session-D' && c.file === rel),
+    `claim on a file in a new untracked directory must survive; got ${JSON.stringify(live)}`);
+});

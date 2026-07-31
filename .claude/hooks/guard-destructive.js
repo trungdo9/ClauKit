@@ -114,22 +114,50 @@ function gitParts(toks) {
   return { sub: toks[j], args: toks.slice(j + 1) };
 }
 
+/**
+ * Does any short-flag cluster carry `letter`?
+ *
+ * The test was case-insensitive while the membership check was not, so `-Rf`
+ * — the POSIX/BSD spelling `man rm` shows first — slipped past `rm -rf`.
+ */
 function hasCombinedFlag(args, letter) {
-  return args.some(a => /^-[a-z]+$/i.test(a) && a.includes(letter));
+  return args.some(a => /^-[a-z]+$/i.test(a) && a.toLowerCase().includes(letter.toLowerCase()));
+}
+
+/** Short cluster OR any of the long spellings. */
+function hasFlag(args, letter, ...longs) {
+  return hasCombinedFlag(args, letter) || args.some(a => longs.includes(a));
+}
+
+/** Pathspecs that mean "the whole tree", whatever the current directory is. */
+const WHOLE_TREE = new Set(['.', ':/', '*', './', ':/*', '"*"', "'*'"]);
+
+/**
+ * A `VAR=1 cmd` prefix binds to THAT command only — bash does not carry it
+ * across `&&`. So the escape hatch exempts the segment it prefixes and nothing
+ * else; `CK_ALLOW_DESTRUCTIVE=1 npm ci && git reset --hard` still denies the
+ * reset, which is what the user meant and what the old whole-string match got
+ * wrong.
+ */
+function isOverridden(segment) {
+  return /^CK_ALLOW_DESTRUCTIVE=1(\s|$)/.test(segment.trim());
 }
 
 // ---------- Tier A ----------
 
 function tierA(command, cwd) {
   for (const seg of segments(command)) {
+    if (isOverridden(seg)) continue;
     const toks = tokens(seg);
     const bin = binOf(toks);
     const git = gitParts(toks);
 
     if (git) {
       const { sub, args } = git;
-      if (sub === 'stash' && (hasCombinedFlag(args, 'u') || args.includes('--include-untracked'))) {
-        return 'git stash -u/--include-untracked destroys untracked files no other session can recover (it deleted a real node_modules). Use `git stash push -- <paths>` scoped to YOUR files.';
+      // `-a`/`--all` is `-u` plus git-ignored files — strictly worse, and it was
+      // unguarded because the check looked only for `u`.
+      if (sub === 'stash' && (hasFlag(args, 'u', '--include-untracked') || hasFlag(args, 'a', '--all'))) {
+        return 'git stash -u/-a destroys untracked (and with -a, git-ignored) files no other session can recover — this is what deleted a real node_modules. Use `git stash push -- <paths>` scoped to YOUR files.';
       }
       if (sub === 'reset' && args.includes('--hard')) {
         return 'git reset --hard discards other sessions\' uncommitted work tree-wide. Roll back YOUR files with `git restore --source=HEAD -- <paths>`, or commit/stash by path first.';
@@ -137,15 +165,20 @@ function tierA(command, cwd) {
       // `-f` alone already deletes untracked FILES throughout the tree (it only
       // spares untracked directories), so requiring -d/-x here left the loss
       // path open. Any forced, non-dry-run clean is Tier A.
-      if (sub === 'clean' && !args.includes('-n') && !args.includes('--dry-run')
-          && (hasCombinedFlag(args, 'f') || args.includes('--force'))) {
+      if (sub === 'clean' && !hasFlag(args, 'n', '--dry-run')
+          && hasFlag(args, 'f', '--force')) {
         return 'git clean -f deletes untracked files tree-wide (with -d directories, with -x git-ignored files too) — including other sessions\' scratch and un-ignored ledgers. Preview with `git clean -n`, then delete explicit paths only.';
       }
-      if ((sub === 'checkout' || sub === 'restore') && args.includes('.')
+      // Three whole-tree shapes, not one: the literal `.`, the repo-root
+      // pathspec `:/` (and a bare glob), and `checkout -f`, which discards
+      // every uncommitted change on its way to another branch.
+      if ((sub === 'checkout' || sub === 'restore')
+          && (args.some(a => WHOLE_TREE.has(a)) || (sub === 'checkout' && hasFlag(args, 'f', '--force')))
           && !(sub === 'restore' && args.includes('--staged') && !args.includes('--worktree'))) {
-        return `whole-tree ${sub} ('.') overwrites every session's uncommitted edits. Scope to explicit paths: \`git ${sub === 'restore' ? 'restore --source=HEAD -- <paths>' : 'checkout -- <paths>'}\`.`;
+        const how = sub === 'restore' ? 'restore --source=HEAD -- <paths>' : 'checkout -- <paths>';
+        return `whole-tree ${sub} overwrites every session's uncommitted edits (\`.\`, \`:/\`, a bare glob and \`-f\` are all whole-tree). Scope to explicit paths: \`git ${how}\`.`;
       }
-      if (sub === 'push' && (args.includes('--force') || hasCombinedFlag(args.filter(a => /^-[a-z]+$/.test(a)), 'f'))
+      if (sub === 'push' && hasFlag(args, 'f', '--force')
           && !args.some(a => a.startsWith('--force-with-lease'))) {
         return 'git push --force can erase remote commits someone else already built on. Use `git push --force-with-lease`.';
       }
@@ -161,12 +194,29 @@ function tierA(command, cwd) {
       } catch { /* fs race: fall through */ }
     }
 
-    if (bin === 'rm' && hasCombinedFlag(toks.filter(t => /^-[a-zA-Z]+$/.test(t)), 'r')) {
+    if (bin === 'rm' && hasFlag(toks, 'r', '--recursive', '-R')) {
+      const here = cwd || process.cwd();
+      const home = os.homedir();
       const targets = toks.slice(1).filter(t => !t.startsWith('-'));
       const wts = worktreePaths(cwd);
       for (const t of targets) {
-        const abs = path.resolve(cwd || process.cwd(), t);
-        if (wts.some(w => w === abs || w.startsWith(abs + path.sep))) {
+        // `~` and `$HOME` are shell-expanded, so they never reached path.resolve
+        // and `rm -rf ~` read as a relative path that matched nothing.
+        const expanded = t.replace(/^~(?=$|\/)/, home).replace(/^\$HOME(?=$|\/)/, home).replace(/^\$\{HOME\}(?=$|\/)/, home);
+        const abs = path.resolve(here, expanded);
+        if (abs === path.parse(abs).root) {
+          return `rm -r on the filesystem root (${abs}). Nothing in this repo requires that.`;
+        }
+        if (abs === home) {
+          return `rm -r on your home directory (${abs}). Delete an explicit subdirectory instead.`;
+        }
+        // `startsWith(abs + sep)` produced '//' at the root and matched nothing;
+        // path.relative gives containment that is correct everywhere.
+        const contains = w => {
+          const rel = path.relative(abs, w);
+          return rel === '' || (!rel.startsWith('..') && !path.isAbsolute(rel));
+        };
+        if (wts.some(contains)) {
           return `'${t}' is (or contains) a git worktree. rm -rf on a worktree corrupts git metadata and has deleted nested directories here. Use \`git worktree remove <path>\` (scripts/ck/wt-clean).`;
         }
       }
@@ -179,12 +229,19 @@ function tierA(command, cwd) {
   // `psql -c "SELECT 1" && echo "DELETE FROM is scary"` — a false positive of
   // exactly the kind that trains people to disable the guard.
   for (const seg of segments(command)) {
-    if (!DB_CLIENTS.has(binOf(tokens(seg)))) continue;
-    if (/\bDELETE\s+FROM\b/i.test(seg) || /\bTRUNCATE\b/i.test(seg) || /\bDROP\s+TABLE\b/i.test(seg)) {
+    if (isOverridden(seg) || !DB_CLIENTS.has(binOf(tokens(seg)))) continue;
+    if (/\bDELETE\s+FROM\b/i.test(seg) || /\bTRUNCATE\b/i.test(seg)
+        || /\bDROP\s+(TABLE|DATABASE|SCHEMA|INDEX|VIEW)\b/i.test(seg)) {
       return 'destructive SQL through a DB client. Route it through the database safe-writes protocol (skills/software/database — dry-run SELECT with row count, paired rollback script in the same commit, explicit approval).';
     }
     if (/\bUPDATE\s+\S+\s+SET\b/i.test(seg) && !/\bWHERE\b/i.test(seg)) {
       return 'UPDATE without WHERE through a DB client mutates every row. Add a WHERE guard and route through the database safe-writes protocol (dry-run SELECT first).';
+    }
+    // Specified as Tier A and never implemented — and it is the one DB incident
+    // in the evidence base: a 32-row backfill INSERT that proved invalid, with
+    // no rollback because the query tool blocked DELETE.
+    if (/\bINSERT\s+INTO\b/i.test(seg)) {
+      return 'bulk INSERT through a DB client has no undo when the query tool blocks DELETE — a 32-row backfill here had to be reversed by hand. Ship it as a migration/script with a paired rollback in the same commit (skills/software/database safe-writes).';
     }
   }
 
@@ -193,23 +250,46 @@ function tierA(command, cwd) {
 
 // ---------- Tier B ----------
 
+/**
+ * Identify an over-broad staging op AND what it can actually reach.
+ *
+ * The reach matters: denying on any foreign claim produced false denials that
+ * the guard's own message then contradicted — `git add -u` cannot stage an
+ * untracked file, and `git add .` in `docs/` cannot reach `src/`. Each of those
+ * pushes the user toward `git add :/`, which is the shape we least want.
+ *
+ * Returns { shape, tracked, rootRelative } or null.
+ *   tracked=true      → only already-tracked modifications are swept
+ *   rootRelative=false→ scoped to the current directory, not the whole tree
+ */
 function tierBShape(command) {
   for (const seg of segments(command)) {
+    if (isOverridden(seg)) continue;
     const git = gitParts(tokens(seg));
     if (!git) continue;
     const { sub, args } = git;
-    if (sub === 'add' && (args.includes('-A') || args.includes('--all') || args.includes('.')
-        || args.includes('-u') || args.includes('--update'))) {
-      return `git add ${args.join(' ')}`;
+    if (sub === 'add') {
+      const wholeTree = args.includes('-A') || args.includes('--all') || args.includes(':/') || args.includes(':/*');
+      const cwdScoped = args.some(a => a === '.' || a === './' || a === '*');
+      const updateOnly = args.includes('-u') || args.includes('--update');
+      if (wholeTree || cwdScoped || updateOnly) {
+        return {
+          shape: `git add ${args.join(' ')}`,
+          tracked: updateOnly && !wholeTree && !cwdScoped,
+          rootRelative: wholeTree || updateOnly,   // `-u` with no pathspec is repo-wide
+        };
+      }
     }
     if (sub === 'commit' && (args.includes('--all') || args.some(a => /^-[a-z]*a[a-z]*$/.test(a)))) {
-      return `git commit ${args.join(' ')}`;
+      // `-a` stages tracked modifications only, repo-wide.
+      return { shape: `git commit ${args.join(' ')}`, tracked: true, rootRelative: true };
     }
     if (sub === 'stash') {
       const sub2 = args.find(a => !a.startsWith('-'));
       const isPushForm = sub2 === undefined || sub2 === 'push';
       const hasPathspec = args.includes('--') || (sub2 === 'push' && args.slice(args.indexOf('push') + 1).some(a => !a.startsWith('-')));
-      if (isPushForm && !hasPathspec) return 'git stash (no pathspec)';
+      // A bare stash takes tracked modifications; -u/-a is Tier A already.
+      if (isPushForm && !hasPathspec) return { shape: 'git stash (no pathspec)', tracked: true, rootRelative: true };
     }
   }
   return null;
@@ -237,8 +317,9 @@ function noticeOnce(session, message) {
 
 /** Returns null (allow) or a denial message. May print a one-time notice. */
 function tierB(command, cwd, session) {
-  const shape = tierBShape(command);
-  if (!shape) return null;
+  const found = tierBShape(command);
+  if (!found) return null;
+  const { shape, tracked, rootRelative } = found;
 
   try {
     const fc = require(path.join(__dirname, 'file-claims.js'));
@@ -250,7 +331,18 @@ function tierB(command, cwd, session) {
     }
     const claims = fc.readClaims(root);
     const mine = claims.filter(c => c.session === session);
-    const foreign = claims.filter(c => c.session !== session);
+
+    // Keep only the foreign files this particular op could actually stage.
+    let untracked = new Set();
+    if (tracked) {
+      try { untracked = fc.untrackedFiles(root); } catch { /* fall back to no filtering */ }
+    }
+    const prefix = rootRelative ? '' : path.relative(root, path.resolve(cwd || root)).split(path.sep).filter(Boolean).join('/');
+    const reachable = c =>
+      !(tracked && untracked.has(c.file))
+      && (prefix === '' || c.file === prefix || c.file.startsWith(prefix + '/'));
+
+    const foreign = claims.filter(c => c.session !== session).filter(reachable);
     if (foreign.length === 0) return null;
 
     const bySession = new Map();
@@ -288,9 +380,12 @@ function main() {
   const command = payload && payload.tool_input && payload.tool_input.command;
   if (typeof command !== 'string' || !command.trim()) process.exit(0);
 
-  if (process.env.CK_ALLOW_DESTRUCTIVE === '1' || /(^|\s)CK_ALLOW_DESTRUCTIVE=1(\s|$)/.test(command)) {
-    process.exit(0);
-  }
+  // In-env override covers everything; the inline prefix does not — see
+  // isOverridden(). Matching the token anywhere in the string meant
+  // `CK_ALLOW_DESTRUCTIVE=1 npm ci && git reset --hard` disarmed the guard for
+  // a reset the shell never applied the variable to, and a command that merely
+  // *mentioned* the token disarmed it too.
+  if (process.env.CK_ALLOW_DESTRUCTIVE === '1') process.exit(0);
 
   const cwd = payload.cwd || process.cwd();
   const session = payload.session_id || payload.sessionId || process.env.CLAUDE_CODE_SESSION_ID || `ppid:${process.ppid}`;
