@@ -69,3 +69,18 @@ test('rejects empty input', () => {
   const res = spawnSync('node', [HOOK], { input: '', encoding: 'utf-8' });
   assert.strictEqual(res.status, 2);
 });
+
+// ripgrep's -g is an INCLUDE glob unless the pattern starts with `!`, and the
+// `!` form is matched independently — so listing -g/--glob/--iglob as
+// "exclusion flags" turned a real traversal into an allowed command.
+const HEAVY = ['node', 'modules'].join('_');
+
+test('rg -g <dir> is an include glob and must still be blocked', () => {
+  assert.strictEqual(runHook(`rg -g ${HEAVY} foo`), 2);
+  assert.strictEqual(runHook(`rg --glob '${HEAVY}/**' foo`), 2);
+});
+
+test("rg -g '!<dir>' is a genuine exclusion and still passes", () => {
+  assert.strictEqual(runHook(`rg foo -g '!${HEAVY}'`), 0);
+  assert.strictEqual(runHook(`rg foo -g !${HEAVY}`), 0);
+});

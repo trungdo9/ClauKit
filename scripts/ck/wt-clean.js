@@ -47,10 +47,14 @@ function main() {
 
   const target = argv.find(a => !a.startsWith('--'));
   if (!target) die('usage: wt-clean.js <path> [--force] | --list');
-  const abs = path.resolve(target);
+  // `git worktree list` prints canonical paths; path.resolve does not resolve
+  // symlinks, so a legitimate target reached through /tmp on macOS
+  // (/tmp -> /private/tmp) was refused as "not a worktree".
+  const real = p => { try { return require('fs').realpathSync(p); } catch { return path.resolve(p); } };
+  const abs = real(path.resolve(target));
 
-  if (abs === main_) die(`refusing to remove the MAIN worktree: ${abs}`);
-  if (!wts.includes(abs)) {
+  if (abs === real(main_)) die(`refusing to remove the MAIN worktree: ${abs}`);
+  if (!wts.map(real).includes(abs)) {
     die(`refusing: '${abs}' is not a worktree of this repository.\n  Known worktrees:\n    ${wts.join('\n    ')}\n  (wt-clean never rm -rf's arbitrary paths — that shape deleted real nested directories.)`);
   }
 

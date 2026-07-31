@@ -29,7 +29,11 @@ const SLASH_DIRS = /(^|\/)(\.git|dist|build)\//;
 
 // Flags whose FOLLOWING token is an exclusion pattern, per command family.
 const GREP_FAMILY = new Set(['grep', 'egrep', 'fgrep', 'rg', 'ag', 'ack']);
-const GREP_EXCLUDE_FLAGS = new Set(['-v', '--invert-match', '--exclude', '--exclude-dir', '--ignore', '--ignore-dir', '-g', '--glob', '--iglob']);
+// NOTE: `-g`/`--glob`/`--iglob` are deliberately ABSENT. ripgrep's -g is an
+// INCLUDE glob unless the pattern starts with `!`, and the `!` form is already
+// handled on its own below — so listing them here turned `rg -g node_modules …`
+// (a real traversal) into an allowed command.
+const GREP_EXCLUDE_FLAGS = new Set(['-v', '--invert-match', '--exclude', '--exclude-dir', '--ignore', '--ignore-dir']);
 const FIND_EXCLUDE_FLAGS = new Set(['-path', '-ipath', '-name', '-iname', '-not']);
 // Inline `--flag=value` prefixes that mark the value as an exclusion (any command).
 const INLINE_EXCLUDE_PREFIX = /^(--exclude(-dir|-from)?|--ignore(-dir|-pattern)?|--glob|--iglob|-g)=/;

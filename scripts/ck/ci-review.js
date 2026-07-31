@@ -96,6 +96,14 @@ function main() {
       console.error(`\n[ci-review] gh comment failed — paste-ready fallback:\n  gh pr comment ${postPr} --body-file <(cat <<'EOF'\n${review}\nEOF\n)`);
     }
   }
+
+  // The verdict never reached the exit code, so a CI step went green on a
+  // review whose body said FAIL — the one signal the wrapper actually gates on.
+  // Opt-in, so adding the workflow does not start blocking merges unannounced.
+  if (argv.includes('--fail-on-verdict') && /VERDICT:\s*FAIL/i.test(review)) {
+    console.error('\n[ci-review] review verdict is FAIL — exiting non-zero (--fail-on-verdict).');
+    process.exit(1);
+  }
 }
 
 main();

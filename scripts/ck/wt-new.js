@@ -66,10 +66,16 @@ function main() {
   if (!mainRoot) die('not inside a git repository');
 
   // --- placement: absolute, outside the repo root ---
-  const parent = path.resolve(args.opts.dir || path.dirname(mainRoot));
+  // realpath both sides: the check compared lexical paths, so `--dir ~/wt` where
+  // ~/wt is a symlink INTO the repo passed it and put the worktree physically
+  // inside the working tree — the very shape whose later rm -rf deleted real
+  // nested directories.
+  const real = p => { try { return fs.realpathSync(p); } catch { return path.resolve(p); } };
+  const parent = real(path.resolve(args.opts.dir || path.dirname(mainRoot)));
+  const realMain = real(mainRoot);
   const wtPath = path.join(parent, `${path.basename(mainRoot)}-wt-${args.id}`);
   if (!path.isAbsolute(wtPath)) die(`worktree path must be absolute, got: ${wtPath}`);
-  if ((wtPath + path.sep).startsWith(mainRoot + path.sep)) {
+  if ((wtPath + path.sep).startsWith(realMain + path.sep)) {
     die(`refusing to nest the worktree inside the repo root.\n  repo:     ${mainRoot}\n  worktree: ${wtPath}\n  A nested worktree + a later rm -rf deleted real nested directories. Use --dir to pick a location outside the repo.`);
   }
   if (fs.existsSync(wtPath)) die(`target already exists: ${wtPath} (pick another id or run wt-clean.js first)`);
