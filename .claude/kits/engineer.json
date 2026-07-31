@@ -7,8 +7,13 @@
     "agents": [
       ".claude/agents/engineering/"
     ],
-    "commands": [".claude/commands/ck/"],
-    "skills": [".claude/skills/software/", ".claude/skills/global/"],
+    "commands": [
+      ".claude/commands/ck/"
+    ],
+    "skills": [
+      ".claude/skills/software/",
+      ".claude/skills/global/"
+    ],
     "workflows": [
       ".claude/workflows/primary-workflow.md",
       ".claude/workflows/development-rules.md",
@@ -16,6 +21,14 @@
       ".claude/workflows/documentation-management.md",
       ".claude/workflows/fix-pipeline.md",
       ".claude/workflows/cro-framework.md"
+    ],
+    "hooks": [
+      ".claude/hooks/"
+    ],
+    "statusline": [
+      ".claude/statusline.js",
+      ".claude/statusline.sh",
+      ".claude/statusline.ps1"
     ],
     "config": [
       ".claude/settings.json",

@@ -39,6 +39,14 @@
       ".claude/workflows/marketing-rules.md",
       ".claude/workflows/automation-rules.md"
     ],
+    "hooks": [
+      ".claude/hooks/"
+    ],
+    "statusline": [
+      ".claude/statusline.js",
+      ".claude/statusline.sh",
+      ".claude/statusline.ps1"
+    ],
     "config": [
       ".claude/settings.json",
       ".claude/mcp.json",

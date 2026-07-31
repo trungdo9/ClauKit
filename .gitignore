@@ -57,6 +57,10 @@ GoogleService-Info.plist
 repomix-output.xml
 .serena/cache
 plans/**/*
+!plans/**/
+!plans/**/plan.md
+!plans/**/phase-*.md
+!plans/**/STATE.md
 screenshots/*
 docs/screenshots/*
 docs/journals/*
@@ -68,3 +72,8 @@ prompt.md
 
 # Gemini CLI settings (symlink to .claude/.mcp.json)
 .gemini/settings.json
+
+# ClauKit concurrency substrate (per-worktree file-claim registry, T1.2b)
+.claude/.ck-file-claims.jsonl
+# ClauKit smoke-gate cache (per-base-commit test results, T1.6/R8)
+.claude/.ck-smoke-cache.json
