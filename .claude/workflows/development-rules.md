@@ -40,3 +40,16 @@
 - Implement features according to specifications
 - Handle edge cases and error scenarios
 - **DO NOT** create new enhanced files, update to the existing files directly.
+- **No unrequested artifacts** (standing constraint): do not create files the user did not ask for — no backfill SQL, no scratch scripts, no helper docs — in a branch destined for a PR. Need one anyway → name it and ask first. (Scratch belongs in `plans/<plan>/reports/` or the session scratchpad, never the PR branch.)
+
+## Testing Discipline
+- **Bug fixes are test-first by default** (`tdd` skill): red test reproducing the exact production symptom → verify red (paste output) → fix → verify green + full sweep. A waiver (time-critical hotfix, unreachable runner) must be logged in the plan/PR and in `STATE.md`.
+- Baseline for "is this failure pre-existing?" = base commit in a separate worktree (`scripts/ck/wt-new.js`), **never `git stash`** (silently no-ops).
+
+## Cross-Service Changes
+- A caller must not ship before the dependency endpoint is deployed — **state the required deploy order in the commit/PR description** (which side ships first, and why it is safe in between).
+- Migrations run behind a feature flag with the legacy path preserved until cutover; removal of the legacy path is its own, later change.
+- Contract changes (payload shapes, status codes) are verified against the consumer's actual parsing (`scout` per repo, shapes reported), not against the producer's intent.
+
+## Behavioural-Skill Governance
+- A change to a **behavioural** skill (`tdd`, `verify-plan`, `run-state`, `code-review`, `debugging`, `cook`) requires a `tests/behavior/` scenario run before/after the change (see `tests/behavior/README.md`). Reference skills — the ones that document capability rather than shape behaviour — are exempt.

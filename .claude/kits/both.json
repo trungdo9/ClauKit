@@ -25,6 +25,7 @@
     ],
     "workflows": [
       ".claude/workflows/primary-workflow.md",
+      ".claude/workflows/skill-activation.md",
       ".claude/workflows/development-rules.md",
       ".claude/workflows/orchestration-protocol.md",
       ".claude/workflows/documentation-management.md",
@@ -41,6 +42,9 @@
     ],
     "hooks": [
       ".claude/hooks/"
+    ],
+    "scripts": [
+      "scripts/ck/"
     ],
     "statusline": [
       ".claude/statusline.js",

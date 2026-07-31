@@ -15,7 +15,7 @@
 
 **Skill breakdown (51 total):**
 - 25 from `AgriciDaniel/claude-seo` (1 root + 24 sub-skills: audit, technical, content, schema, geo, local, page, images, sitemap, drift, cluster, content-brief, competitor-pages, ecommerce, hreflang, programmatic, backlinks, sxo, flow, plan, maps, dataforseo, google, image-gen)
-- 23 from `coreyhaines31/marketingskills` (curated subset: ad-creative, ads, analytics, cold-email, competitor-*, content-strategy, copy-editing, copywriting, cro, customer-research, email-sequence, emails, launch, marketing-ideas, paywalls, popup, programmatic-seo, signup, sms, social-content, user-onboarding)
+- 22 from `coreyhaines31/marketingskills` (curated subset: ad-creative, ads, analytics, cold-email, competitor-*, content-strategy, copy-editing, copywriting, cro, customer-research, email-sequence, emails, launch, marketing-ideas, paywalls, popup, signup, sms, social-content, user-onboarding; `programmatic-seo` removed 2026-07-31 — confirmed duplicate of claude-seo's `seo-programmatic`, which stays)
 - 2 ClauKit-authored: `product-marketing` (context hub), `seo-writing` (6-stage article-production pipeline — see below)
 - 1 kept: `kit-builder` (build custom marketing components)
 

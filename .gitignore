@@ -59,8 +59,13 @@ repomix-output.xml
 plans/**/*
 !plans/**/
 !plans/**/plan.md
-!plans/**/phase-*.md
+!plans/*/phase-*.md
 !plans/**/STATE.md
+# Reports are linked from plan.md — an ignored report is a 404 in the PR body.
+!plans/**/reports/*.md
+# …except the two that a script regenerates from git on demand.
+plans/**/reports/review-package-*.md
+plans/**/reports/*-brief-*.md
 screenshots/*
 docs/screenshots/*
 docs/journals/*

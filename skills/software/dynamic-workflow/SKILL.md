@@ -46,7 +46,7 @@ The differentiator vs plain subagent fan-out: parent workflow → child agent �
 1. **context/output** — every stage reads/writes the shared `plans/<plan>/reports/` dir; a child reads the parent's handoff file. No re-discovery.
 2. **persona** — a stage routes to `code-reviewer`/`debugger`/`scout`/`planner`/`tester`/etc. via Agent `subagent_type`. Zero new agent code — the 21 existing agents ARE the persona library.
 3. **config/gate** — development-rules pre-flight + every parent gate apply to every stage; a child stage **cannot silently skip** a gate.
-4. **model/budget** — a stage inherits the parent model or overrides it (e.g. parent `opus`, verify-skeptics `haiku`). Cost estimate shown pre-run; **no injected hard cap** — the user decides.
+4. **model/budget** — a stage inherits the parent model or overrides it (e.g. parent `opus`, verify-skeptics `haiku`). **Always name the model explicitly per stage** — tier by work shape per [model-tiering.md](../context-engineering/references/model-tiering.md) (single source: matrix, turn-count-beats-token-price, 529 one-tier fallback, dead-agent diff check). Cost estimate shown pre-run; **no injected hard cap** — the user decides.
 
 ## Quality Patterns
 

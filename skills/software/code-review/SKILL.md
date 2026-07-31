@@ -64,9 +64,27 @@ Forbidden: "You're absolutely right!", "Great point!", "Thanks for [anything]", 
 
 ## Requesting Review (Summary)
 
-1. Get SHAs: `BASE_SHA=$(git rev-parse HEAD~1)` and `HEAD_SHA=$(git rev-parse HEAD)`.
-2. Dispatch code-reviewer subagent via Task tool with: WHAT_WAS_IMPLEMENTED, PLAN_OR_REQUIREMENTS, BASE_SHA, HEAD_SHA, DESCRIPTION.
+1. Get SHAs: `BASE_SHA=$(git rev-parse HEAD~1)` and `HEAD_SHA=$(git rev-parse HEAD)`. For a multi-commit phase, BASE is the phase's recorded base from `STATE.md` — never assume `HEAD~1`.
+2. Dispatch code-reviewer subagent via Task tool with: WHAT_WAS_IMPLEMENTED, PLAN_OR_REQUIREMENTS, BASE_SHA, HEAD_SHA, DESCRIPTION. Hand the diff as a **file** (`scripts/ck/review-package.js`), not inline.
 3. Act on feedback: fix Critical immediately, High before proceeding, note Medium/Low for later.
+
+## Multi-Lens Review (canonical lens table)
+
+For high-risk diffs (>~200 lines, >3 files, or auth/payments/migrations/cross-service), fan out 4 independent reviewers, one lens each — perspective diversity catches what redundancy can't:
+
+| Lens | Looks for |
+|---|---|
+| **ADVERSARY** | assume the implementation is wrong; prove it from the actual diff and live queries, not the description |
+| **FIDELITY** | new logic vs legacy behavior on the base branch (`git show`/`git log`); every behavioral divergence, intended or not |
+| **BLAST RADIUS** | cascade deletes, dropped status/permission guards, route-level auth gaps, duplicate keys, non-atomic mutation sequences, cross-service deploy-order hazards |
+| **CONVENTION** | does the change respect the codebase's own architectural patterns? (a real fix violated an enforced host-separation pattern no reviewer was looking for) |
+
+**Independence rules:**
+- **The falsifier gets no reasoning** — each lens receives the diff + the requirement, never the implementer's explanation of why it is correct. A reviewer handed the rationale grades the rationale, not the code.
+- **Admissibility:** every finding cites `file:line`, a git ref, or verbatim output. No evidence → discarded as a hallucination.
+- **Reconcile:** cross-check lens reports against each other, flag disagreements explicitly, rank Critical/High/Medium, route Critical/High through adversarial verify before fixing.
+
+Trigger: `/ck:review --lenses` (opt-in; default review stays single-reviewer).
 
 ## Common Use Cases
 

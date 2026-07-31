@@ -74,6 +74,15 @@ Enterprise-grade features and deployment options.
 
 ## Current Development Focus
 
+### 0. Durability–Evidence–Cost upgrade — SHIPPED 2026-07-31 (plan `260730-1359-clauKit-upgrade`)
+Closed the gap between documented behaviour and what 295 real sessions needed:
+- **Durability**: `run-state` ledger (`plans/<plan>/STATE.md`) + resume protocol; interruption-proof multi-phase runs
+- **Safety**: `guard-destructive` (2-tier, claim-aware) + `file-claims` hooks; scout-block precision fix; smoke-gated worktree fleet (`wt-new`/`wt-doctor`/`wt-clean`); scoped commits; DB safe-writes protocol
+- **Evidence**: `verify-plan` falsification gate, `tdd` red-green discipline, scope-lock, remote-truth + baseline verification rows, multi-lens review, `pr-body.md` fill contract
+- **Cost**: fresh-implementer-per-phase, artifacts-as-files scripts, model-tiering matrix + 529 fallback, headless `ci-review`/`delivery-tail`
+- **Verification**: `node:test` harness (92 tests) + behavioral eval harness (6 scenarios, `tests/behavior/`) + governance rule for behavioural skills
+- Remaining follow-ups: run the full behavioral sweep pre-release (5 scenarios pending, `guard-tier-b` verified live); measure a representative `/ck:cook` token cost before/after Phase 3 (Part H verification)
+
 ### 1. Agent System Enhancement
 - Document and optimize existing 16 agents
 - Expand agent capabilities based on usage patterns

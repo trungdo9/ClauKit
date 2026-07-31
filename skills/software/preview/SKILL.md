@@ -1,6 +1,6 @@
 ---
 name: preview
-description: Create presentations (Marp, reveal.js) or view/render markdown documents visually
+description: Create presentations and slide decks (Marp, reveal.js, Quarto) from markdown or notebooks
 category: Documentation & Content
 status: active
 ---
@@ -8,16 +8,15 @@ status: active
 # Preview
 
 ## Purpose
-Transform markdown or notebooks into slide decks (Marp, reveal.js, Quarto) or render markdown documents as formatted HTML for visual review before publishing. Separates content authoring from presentation design.
+Transform markdown or notebooks into slide decks (Marp, reveal.js, Quarto). Separates content authoring from presentation design. **Presentations only** — for viewing/serving plain markdown documents as formatted HTML, use the `markdown-novel-viewer` skill (scope split 2026-07-31; the render-markdown half previously duplicated here now lives only there).
 
 ## When to Use
 - Converting markdown slides for talks, demos, or team presentations
 - Creating animated "how-to" visuals (step-by-step with transitions)
-- Rendering README/documentation for visual review before deployment
 - Building interactive notebooks with executable code (Quarto with R/Python)
 - Generating PDFs or HTML slides for sharing with non-technical audiences
 
-**Do NOT use when**: Building interactive web apps (use a framework), creating video tutorials (use video editing software), or needing real-time collaboration (use Google Slides/Figma).
+**Do NOT use when**: Viewing/rendering markdown documents (use `markdown-novel-viewer`), building interactive web apps (use a framework), creating video tutorials (use video editing software), or needing real-time collaboration (use Google Slides/Figma).
 
 ## Workflow
 1. **Choose tool** — Marp (simple markdown → slides), reveal.js (advanced HTML/CSS control), or Quarto (scientific/data-driven content)

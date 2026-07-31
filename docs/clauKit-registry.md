@@ -1,10 +1,10 @@
 # ClauKit Registry
 
-**Last Updated**: 2026-07-25 (**SEO campaign workflow closed** — new `.claude/workflows/seo-workflow.md` (7-phase closed loop: gate → baseline audit+metrics → plan [hard stop] → batch write → publish [draft-default] → distribute → measure [GSC/GA4, 2–4 wk bake] → optimize scale/refresh/kill loop). `/mk:seo` gains `campaign` action; `seo-writer` agent + `seo-writing` skill gain `campaign` mode; `seo-flow` gains SEO Campaign recipe; wired into marketing/both kit manifests (workflows 5→6) + `marketing-workflow.md` Phase 5 delegation + MARKETING.md Flow 3c.)
+**Last Updated**: 2026-07-31 (**Durability–Evidence–Cost upgrade** (plan `260730-1359-clauKit-upgrade`) — 3 new skills (`run-state` durable ledger · `verify-plan` falsification gate · `tdd` red-green discipline), 2 new hooks (`guard-destructive` 2-tier conflict-aware guard · `file-claims` per-worktree claim registry; `scout-block` rewritten precise, single implementation), 8 new `scripts/ck/` (worktree fleet `wt-new`/`wt-doctor`/`wt-clean` w/ smoke gate · context hygiene `phase-brief`/`review-package`/`run-workspace` · headless `ci-review` + deterministic `delivery-tail`), 1 new workflow (`skill-activation.md` hard gate), `primary-workflow.md` rewritten to 13 gated stages (Exact-Requirements Gate surfaced — closes G25), `/ck:git` gains `finish` + scoped-commit + draft-default PR + declared delivery tail (empty default) + `pr-body.md` fill contract, `/ck:plan verify`, `/ck:fix tdd`, `/ck:review --lenses`, multi-repo `/ck:scout`, model-tiering matrix + 529 fallback, DB safe-writes protocol, node:test harness (`npm test`, 109 tests) + behavioral eval harness (`tests/behavior/`, 6 scenarios). **Removed:** `programmatic-seo` (duplicate of `seo-programmatic`); `preview` narrowed to presentations-only (render-markdown → `markdown-novel-viewer`). Counts: skills 129→131, agents 29, commands 53, workflows 14→15, total entries 211→213.)
 
-**Prior**: 2026-07-23 (**seo-writing pipeline added** — new ClauKit-authored `seo-writing` skill (6-stage article-production pipeline ported from a production n8n workflow: strategy → outline → write → optimize → media → publish; 7 references + 100-article WordPress playbook), new `seo-writer` orchestrator agent, `/mk:seo` gains `plan` + `write` actions. 6 previously-stub SEO skills filled with real content; agents upgraded pipeline-stage-specific. Counts: skills 128→129, agents 28→29.) · 2026-07-17 (**Gemini purge** — `scout-external` agent removed (Gemini/OpenCode CLI orchestration retired; `/ck:scout` is now internal-Explore-only), Gemini offload paths stripped from `research` skill + `/ck:research` + `git-manager` + `/ck:use-mcp` (all now Claude-native). Gemini retained only in `software/ai/` skills (`ai-multimodal`/`ai-artist`) where it is a genuine capability. Earlier same-day: `mcp-manager` agent removed; `researcher` → sonnet, `journal-writer` → haiku; `tester`/`database-admin`/`project-manager` slimmed to thin personas; long agent descriptions trimmed to trigger-style.)
+**Prior**: 2026-07-31 (**`/ck:claude-md analyze` added** — read-only per-section token-cost profile of a CLAUDE.md (lines/chars/~tokens per `##` section, classify DIRECTIVE/POINTER/PROSE/DUP/FILLER, ranked KEEP/EXTRACT/DEDUPE/DROP recommendations + projected savings); alias `optimize` = analyze + offer `refactor`; `claude-md` dispatcher 3→4 actions. Counts: commands 52→53, total entries 210→211.) · 2026-07-25 (**SEO campaign workflow closed** — new `.claude/workflows/seo-workflow.md` (7-phase closed loop: gate → baseline audit+metrics → plan [hard stop] → batch write → publish [draft-default] → distribute → measure [GSC/GA4, 2–4 wk bake] → optimize scale/refresh/kill loop). `/mk:seo` gains `campaign` action; `seo-writer` agent + `seo-writing` skill gain `campaign` mode; `seo-flow` gains SEO Campaign recipe; wired into marketing/both kit manifests (workflows 5→6) + `marketing-workflow.md` Phase 5 delegation + MARKETING.md Flow 3c.) · 2026-07-23 (**seo-writing pipeline added** — new ClauKit-authored `seo-writing` skill (6-stage article-production pipeline ported from a production n8n workflow: strategy → outline → write → optimize → media → publish; 7 references + 100-article WordPress playbook), new `seo-writer` orchestrator agent, `/mk:seo` gains `plan` + `write` actions. 6 previously-stub SEO skills filled with real content; agents upgraded pipeline-stage-specific. Counts: skills 128→129, agents 28→29.) · 2026-07-17 (**Gemini purge** — `scout-external` agent removed (Gemini/OpenCode CLI orchestration retired; `/ck:scout` is now internal-Explore-only), Gemini offload paths stripped from `research` skill + `/ck:research` + `git-manager` + `/ck:use-mcp` (all now Claude-native). Gemini retained only in `software/ai/` skills (`ai-multimodal`/`ai-artist`) where it is a genuine capability. Earlier same-day: `mcp-manager` agent removed; `researcher` → sonnet, `journal-writer` → haiku; `tester`/`database-admin`/`project-manager` slimmed to thin personas; long agent descriptions trimmed to trigger-style.)
 **Scope**: Single source of truth for every Skill, Agent, and Command in this project.
-**Counts**: 129 skills (129 active + 0 scaffold) · 29 agents · 52 commands · **210 total entries**
+**Counts**: 131 skills (131 active + 0 scaffold) · 29 agents · 53 commands · **213 total entries**
 
 Replaces previous `skills-catalog.md` (skills only). One file, all three resource types, with duplicate/overlap detection.
 
@@ -28,7 +28,7 @@ Replaces previous `skills-catalog.md` (skills only). One file, all three resourc
 
 ---
 
-## 1 · Skills (128)
+## 1 · Skills (131)
 
 ### Global (1) — `.claude/skills/global/`
 
@@ -38,7 +38,7 @@ Replaces previous `skills-catalog.md` (skills only). One file, all three resourc
 
 > Note: `global/common/` does NOT contain a SKILL.md (only `README.md` + `api_key_helper.py`). It is a shared utility folder, not a skill. Earlier catalog listed it incorrectly — removed.
 
-### Marketing (51) — `.claude/skills/marketing/`
+### Marketing (50) — `.claude/skills/marketing/`
 
 **Claude-SEO engine (25 — imported from `AgriciDaniel/claude-seo`, replaces old `seo`/`geo`) + 1 ClauKit-authored pipeline (`seo-writing`):**
 
@@ -93,7 +93,6 @@ Replaces previous `skills-catalog.md` (skills only). One file, all three resourc
 | `marketing-ideas` | ✅ | `marketing/marketing-ideas/` | |
 | `paywalls` | ✅ | `marketing/paywalls/` | |
 | `popup` | ✅ | `marketing/popup/` | |
-| `programmatic-seo` | ✅ | `marketing/programmatic-seo/` | |
 | `signup` | ✅ | `marketing/signup/` | |
 | `sms` | ✅ | `marketing/sms/` | |
 | `social-content` | ✅ | `marketing/social-content/` | |
@@ -124,7 +123,7 @@ Replaces previous `skills-catalog.md` (skills only). One file, all three resourc
 | `wordpress-rest` | ✅ | `integrations/wordpress-rest/` | WordPress REST client — publish/update posts & pages (draft→publish), media, taxonomies, Yoast/RankMath SEO meta, audit. Env-only auth, idempotent, draft-default. Adapted (consumer) from WordPress agent-skills (GPL v2+, attributed in TPN). |
 | `mcp-wordpress` | ✅ | `integrations/mcp-wordpress/` | WordPress MCP wrapper (BYO server) with curl fallback to `wordpress-rest`. |
 
-### Software · Top-level standalone (39)
+### Software · Top-level standalone (42)
 
 All 40 are active (`dynamic-workflow` added 2026-06-03, paired with `/ck:flow`; baseline 39 active as of 2026-05-30) (10 scaffolds filled in earlier batch; `predict` merged into `planning` and removed — see section 5; `chrome-devtools` added 2026-05-16; `ask` re-added 2026-05-16 as knowledge skill complementing the `/ask` command; `brainstorm` re-added 2026-05-16 as knowledge skill complementing the `/brainstorm` command + `brainstormer` agent; `node-specialist` added 2026-05-29 sourced from VoltAgent/awesome-claude-code-subagents). `nextjs-developer` added 2026-05-30 sourced from VoltAgent/awesome-claude-code-subagents; `web-frameworks` removed (Next.js refs migrated, turborepo/remix-icon dropped). `typescript-pro` added 2026-05-30 sourced from VoltAgent/awesome-claude-code-subagents (subcategorized under `software/development/`).
 
@@ -136,7 +135,7 @@ All 40 are active (`dynamic-workflow` added 2026-06-03, paired with `/ck:flow`; 
 | `agentize` | ✅ | `software/agentize/` | Convert codebase to CLI + MCP server for AI agents |
 | `brainstorm` 🔁 | ✅ | `software/brainstorm/` | Architecture/solution advisory methodology — 5 pillars, 7-phase process, YAGNI/KISS/DRY, brutally-honest alternatives debate |
 | `ck-graphify` | ✅ | `software/ck-graphify/` | AST → queryable code graph (syntactic) |
-| `claude-md` 🔁 | ✅ | `software/claude-md/` | CLAUDE.md lifecycle — init (from ground truth, no phantom commands) · verify (9-point audit, Critical/High/Medium/Low) · refactor (behavior-preserving slim-down, directive inventory 1:1); paired with `/ck:claude-md`, added 2026-07-17 |
+| `claude-md` 🔁 | ✅ | `software/claude-md/` | CLAUDE.md lifecycle — init (from ground truth, no phantom commands) · verify (9-point audit, Critical/High/Medium/Low) · analyze (per-section token-cost profile → ranked optimization plan; alias `optimize`) · refactor (behavior-preserving slim-down, directive inventory 1:1); paired with `/ck:claude-md`, added 2026-07-17, analyze added 2026-07-31 |
 | `code-review` 🔁 | ✅ | `software/code-review/` | 4 practices — pre-review edge-case scout, receiving feedback (no performative agreement), requesting code-reviewer subagent, verification gates (evidence before claims) |
 | `coding-level` | ✅ | `software/coding-level/` | Developer proficiency (0-5) → output tuning |
 | `context-engineering` | ✅ | `software/context-engineering/` | Curate token flow into AI agents (6-layer model) |
@@ -155,13 +154,16 @@ All 40 are active (`dynamic-workflow` added 2026-06-03, paired with `/ck:flow`; 
 | `refactor` 🔁 | ✅ | `software/refactor/` | Large mechanical refactor (rename · extract · migrate · codemod) — 7-phase pipeline w/ atomic commits + rollback; paired with `/ck:refactor` |
 | `planning` 🔁 | ✅ | `software/planning/` | Now includes "Predictive planning" subsection (merged from removed `predict` scaffold) |
 | `plans-kanban` | ✅ | `software/plans-kanban/` | Kanban methodology applied to plans/ folder |
-| `preview` | ✅ | `software/preview/` | |
+| `preview` ❗ | ✅ | `software/preview/` | Presentations only (Marp/reveal.js/Quarto) — scope narrowed 2026-07-31; render-markdown half lives in `markdown-novel-viewer` |
 | `problem-solving` | ✅ | `software/problem-solving/` | |
 | `project-organization` | ✅ | `software/project-organization/` | Repo layout / monorepo / naming patterns |
 | `research` 🔁 | ✅ | `software/research/` | |
 | `retro` | ✅ | `software/retro/` | Team retrospective facilitation |
+| `run-state` | ✅ | `software/run-state/` | **Durable per-plan ledger** (`plans/<plan>/STATE.md`) — append-only gate events, resume protocol (re-derive from git + gate re-runs), parallel-session safety. Scope vs `plans-kanban` (plan board/status views) and `project-organization` (repo layout): run-state records *execution* events of one run, not plan management. Added 2026-07-31 |
 | `scenario` | ✅ | `software/scenario/` | Test scenario design (tool-agnostic) |
 | `sequential-thinking` | ✅ | `software/sequential-thinking/` | |
+| `tdd` ❗ | ✅ | `software/tdd/` | **Red-green discipline** — Iron Law (no production code without a failing test first), base-commit-worktree baseline (never `git stash`), rationalization table. Deliberate scope split: `tdd` = discipline · `test-automation` = infra · `web-testing` = browser toolkit · `scenario` = case derivation. Paired with `/ck:fix tdd`. Added 2026-07-31 |
+| `verify-plan` | ✅ | `software/verify-plan/` | **Plan falsification gate** — claim → verdict (CONFIRMED/REFUTED/UNVERIFIABLE) → evidence table; mandatory for `--from-plan` (cook Stage 0.5); paired with `/ck:plan verify`. Added 2026-07-31 |
 | `team` 🔁 | ✅ | `software/team/` | Parallel multi-session orchestration — spawns independent Claude Code teammates (templates: research/cook/review/debug); paired with `/team` command |
 | `show-off` | ✅ | `software/show-off/` | |
 | `tech-graph` | ✅ | `software/tech-graph/` | |
@@ -241,7 +243,7 @@ All 40 are active (`dynamic-workflow` added 2026-06-03, paired with `/ck:flow`; 
 
 ---
 
-## 2 · Agents (28)
+## 2 · Agents (29)
 
 ### `marketing/` (12) — marketing kit
 
@@ -284,7 +286,7 @@ All 40 are active (`dynamic-workflow` added 2026-06-03, paired with `/ck:flow`; 
 
 ---
 
-## 3 · Commands (52)
+## 3 · Commands (53)
 
 All commands are ✅ active. Grouped by namespace. **Prefix `ck:` applied 2026-05-17** — every command lives under `.claude/commands/ck/`, invoked as `/ck:<name>` (e.g. `/ck:cook`, `/ck:fix ci`). **`/orchestrate` removed 2026-05-17** (superseded by `/ck:team`). **Flag-style variants applied 2026-05-17** — sibling variants of the same command (e.g. fast/hard/auto/good/ext) collapsed into flags rather than `:nested` namespace; namespaced commands now reserved for genuinely-distinct actions (e.g. `/ck:fix ci`, `/ck:plan two`).
 
@@ -313,12 +315,13 @@ All commands are ✅ active. Grouped by namespace. **Prefix `ck:` applied 2026-0
 | `/ck:watzup` | Review recent changes, wrap up work |
 | `/ck:port` 🔁 | Port & refactor feature from public GitHub repo |
 
-### `claude-md` (dispatcher, 3) 🔁 docs-manager + `claude-md` skill
+### `claude-md` (dispatcher, 4) 🔁 docs-manager + `claude-md` skill
 
 | Command | Description |
 |---|---|
 | `/ck:claude-md init [path]` | Create CLAUDE.md from ground truth (gate: must not exist) |
 | `/ck:claude-md verify [path]` | Read-only 9-point audit → PASS/FAIL report |
+| `/ck:claude-md analyze [path]` | Read-only per-section token-cost profile → ranked KEEP/EXTRACT/DEDUPE/DROP plan + projected savings (alias `optimize`; apply via `refactor`) |
 | `/ck:claude-md refactor [path]` | Behavior-preserving slim-down (gates: clean git, verify first, directive inventory 1:1) |
 
 ### `docs` (dispatcher, 3) 🔁 docs-manager
@@ -329,24 +332,26 @@ All commands are ✅ active. Grouped by namespace. **Prefix `ck:` applied 2026-0
 | `/ck:docs update [requests]` | Update existing docs |
 | `/ck:docs summarize [topics] [scan?]` | Summary report (read-only) |
 
-### `fix` variants (5) 🔁 tester / debugger — specialized inputs/agents
+### `fix` variants (6) 🔁 tester / debugger — specialized inputs/agents
 
 | Command | Description |
 |---|---|
 | `/ck:fix ci` | Fix CI/GitHub Actions issues |
 | `/ck:fix logs` | Fix from log analysis |
-| `/ck:fix test` | Run tests + fix |
+| `/ck:fix test` | Run tests + fix (input: an already-red suite) |
+| `/ck:fix tdd` | Production-symptom red-green loop (`tdd` skill): toolchain proof → red test w/ pasted failure → base-commit-worktree baseline → green → sweep. Distinct from `test` by input (symptom vs red suite) — both stay (R4) |
 | `/ck:fix types` | Fix type errors |
 | `/ck:fix ui` | Fix UI issues |
 
-### `git` (dispatcher, 4) 🔁 git-manager
+### `git` (dispatcher, 5) 🔁 git-manager
 
 | Command | Description |
 |---|---|
-| `/ck:git cm` | Stage + commit |
-| `/ck:git cp` | Stage + commit + push |
-| `/ck:git pr [to] [from]` | Create pull request |
-| `/ck:git merge [pr#\|branch]` | Merge PR or branch (interactive) |
+| `/ck:git cm` | **Scoped** commit — session manifest from the file-claims registry, foreign WIP reported never staged, explicit paths only (never `-A`) |
+| `/ck:git cp` | Scoped commit + push |
+| `/ck:git pr [to] [from] [--no-handoff] [--ready]` | Finish the branch: verify green → self-review scoped diff → **draft-default** PR (`pr-body.md` fill contract) → project-declared delivery tail (ships empty) → worktree teardown; auth failure ⇒ paste-ready payload, zero retries |
+| `/ck:git merge [pr#\|branch]` | Merge PR or branch (interactive); merged-status claims require `git fetch` + remote-ref evidence |
+| `/ck:git finish` | Verify green → env detect (repo/worktree/detached) → menu: merge locally · push+PR · keep as-is |
 
 ### `sepay` 🔁 integration-agent
 
@@ -354,19 +359,20 @@ All commands are ✅ active. Grouped by namespace. **Prefix `ck:` applied 2026-0
 |---|---|
 | `/ck:sepay` | SePay.vn payment integration |
 
-### `plan` variants (3) 🔁 planner — specialized planning shapes
+### `plan` variants (4) 🔁 planner — specialized planning shapes
 
 | Command | Description |
 |---|---|
 | `/ck:plan ci` | Plan to fix CI issues |
 | `/ck:plan cro` | CRO plan |
 | `/ck:plan two` | Plan w/ 2 approaches |
+| `/ck:plan verify <path>` | Falsify an existing plan (`verify-plan` skill): claim → verdict → evidence table, read-only; SAFE-TO-EXECUTE or back-to-planner verdict. Auto-invoked by `/ck:cook --from-plan` |
 
 ### `review` 🔁 code-reviewer + security-auditor
 
 | Command | Description |
 |---|---|
-| `/ck:review [--flow]` | Scan + analyze codebase — `--flow`: orchestrated dimension fan-out (bugs/security/perf) → adversarial-verify per finding → confirmed-only report |
+| `/ck:review [--flow] [--lenses]` | Scan + analyze codebase — `--flow`: orchestrated dimension fan-out (bugs/security/perf) → adversarial-verify per finding → confirmed-only report · `--lenses` (opt-in, risk-gated): 4 concurrent lenses (ADVERSARY/FIDELITY/BLAST-RADIUS/CONVENTION), falsifier never sees implementer reasoning, evidence-or-discard |
 
 ### `mk` (dispatcher, 12) 🔁 marketing kit — NEW in v2.0.0
 
@@ -425,11 +431,11 @@ Other trios (`testing` → covered by `web-testing`/`chrome-devtools`, `design` 
 | Debugging | `debugging` | `debugger` | `/ck:debug` |
 | Testing | `web-testing` (developer toolkit), `test-automation` (QA/automation engineering) | `tester` | `/ck:test`, `/ck:fix test` |
 | Docs | `mintlify`, `markdown-novel-viewer`, `obsidian`, `tech-graph`, `document-skills/*` | `docs-manager` | `/ck:docs [init\|update\|summarize]` |
-| CLAUDE.md lifecycle | `claude-md` | `docs-manager` (reused — no new agent) | `/ck:claude-md [init\|verify\|refactor]` |
+| CLAUDE.md lifecycle | `claude-md` | `docs-manager` (reused — no new agent) | `/ck:claude-md [init\|verify\|analyze\|refactor]` |
 | Design | 10 design skills | `frontend-developer` (agent `ui-ux-designer` removed 2026-07-16) | `/ck:design` |
 | Content | `show-off` | `copywriter` (marketing kit) | – (marketing kit: `/mk:content`) |
 | SEO/GEO | `seo`, `geo` | – (agent removed 2026-05-17) | – (marketing kit: `/mk:seo`) |
-| Git | `git`, `worktree` | `git-manager` | `/ck:git [cm\|cp\|pr\|merge]` |
+| Git | `git`, `worktree` | `git-manager` | `/ck:git [cm\|cp\|pr\|merge\|finish]` |
 | Bootstrap | `bootstrap` (knowledge) | – | `/ck:bootstrap` |
 | Port & Refactor | `port` | (uses `scout`, `code-reviewer`) | `/ck:port` |
 | Security | `security`, `cti-expert` | `security-auditor` | `/ck:review`, `/ck:security` |
@@ -481,9 +487,28 @@ Verification: `for f in $(find .claude/skills -name SKILL.md); do …` returns z
 - `docs-manager` agent reads from 5+ doc skills — by design.
 - Security: `security` (OWASP 2025 scanner + mindset) + `cti-expert` (threat intel) feed `security-auditor` — distinct scopes.
 
+### 4f · Overlap audit 2026-07-31 (T5.5) — first real use of the ❗ marker
+
+**Resolved duplicate:** `marketing/programmatic-seo` (coreyhaines31 import) vs `marketing/seo-programmatic` (claude-seo import) — same subject, two 50-line stubs. **Kept `seo-programmatic`** (claude-seo is the designated SEO backbone; it also carried the orchestrator parent link — a strict superset). `programmatic-seo` removed; cross-links updated in `/mk:seo` + `skills/marketing/README.md`.
+
+**Resolved overlap:** `software/preview` vs `software/markdown-novel-viewer` — the render-markdown half was duplicated. `preview` narrowed to **presentations only** (flagged ❗ with scope note in §1); markdown viewing/serving is `markdown-novel-viewer`'s alone.
+
+**Checked and NOT duplicates — recorded so this is not re-litigated:**
+- `competitors` / `competitor-profiling` / `competitor-alternatives` — landscape vs single-competitor deep-dive vs comparison-page artifact
+- `emails` / `email-sequence` / `cold-email` — distinct channel shapes
+- `copywriting` / `copy-editing` — create vs refine
+- `ck-graphify` / `gkg` / `tech-graph` — code-AST graph vs text knowledge graph vs SVG diagrams; the shared word "graph" is the only overlap
+- `/ck:fix test` vs `/ck:fix tdd` — failing-suite input vs production-symptom input (R4)
+- `run-state` vs `plans-kanban` / `project-organization` — run-execution ledger vs plan board vs repo layout (flagged in §1 scope notes)
+- `tdd` vs `test-automation` / `web-testing` / `scenario` — discipline vs infra vs toolkit vs case derivation (flagged ❗ in §1)
+
 ---
 
 ## 5 · Removed (cumulative)
+
+### Overlap audit (2026-07-31)
+
+- **`programmatic-seo` skill removed** — confirmed duplicate of `seo-programmatic` (see §4f). Kept the claude-seo import (designated SEO backbone, superset content). Cross-links updated: `/mk:seo` programmatic action now lists only `seo-programmatic`; `skills/marketing/README.md` curated-subset note updated (23→22 coreyhaines31 imports).
 
 ### Agent audit (2026-07-17)
 
@@ -565,17 +590,19 @@ Verification: `for f in $(find .claude/skills -name SKILL.md); do …` returns z
 | Pool | Active | Scaffold | Total |
 |---|---:|---:|---:|
 | Skills · `global/` | 1 | 0 | 1 |
-| Skills · `marketing/` | 51 | 0 | 51 |
+| Skills · `marketing/` | 50 | 0 | 50 |
 | Skills · `automation/` | 6 | 0 | 6 |
-| Skills · `software/` | 69 | 0 | 69 |
-| Skills · `integrations/` (NEW) | 2 | 0 | 2 |
-| Skills · removed (v2.0.0: old `geo`, old `seo/references`) | — | — | — |
-| **Skills total** | **129** | **0** | **129** |
+| Skills · `software/` | 72 | 0 | 72 |
+| Skills · `integrations/` | 2 | 0 | 2 |
+| Skills · removed (v2.0.0: old `geo`, old `seo/references`; 2026-07-31: `programmatic-seo`) | — | — | — |
+| **Skills total** | **131** | **0** | **131** |
 | Agents · `engineering/` | 17 | 0 | 17 |
 | Agents · `marketing/` | 12 | 0 | 12 |
 | **Agents total** | **29** | **0** | **29** |
-| Commands (logical, per § 3 row scheme) | 52 | 0 | 52 |
-| **Grand total entries** | | | **210** |
+| Commands (logical, per § 3 row scheme) | 53 | 0 | 53 |
+| **Grand total entries** | | | **213** |
+
+Adjacent inventories (not registry entries — itemised in **§ 9**): **15 workflows** (`.claude/workflows/*.md`, incl. `skill-activation.md`), **4 hooks**, **8 scripts**, **1 PR-body template** (`git/references/pr-body.md`), **6 behavioral eval scenarios** (`tests/behavior/scenarios/`).
 
 ## 7 · Open Issues
 
@@ -592,3 +619,37 @@ Verification: `for f in $(find .claude/skills -name SKILL.md); do …` returns z
 - **Add a command** → create `.claude/commands/ck/[<ns>/]<name>.md` (always under `ck/` so it invokes as `/<name>` or `/<ns>:<name>`) and add a row to section 3.
 - **Before adding** → search this file: if a row with the same name already exists in another pool, decide whether you're adding (a) knowledge/skill, (b) persona/agent, or (c) trigger/command. Avoid creating a fourth entry for the same concept.
 - **On rename** → update both the SKILL/agent/command file frontmatter AND this registry in the same commit.
+
+---
+
+## 9 · Hooks & Scripts (adjacent inventory)
+
+Not registry *entries* (they are neither skill, agent, nor command), but they are installed by the kit manifests and are load-bearing at runtime, so they are itemised here. **Every path below must appear in `.claude/kits/{engineer,both}.json` or it will not install** — the `hooks`, `scripts`, and `statusline` keys exist for exactly this.
+
+### 9a · Hooks (`.claude/hooks/`) — 4
+
+| Hook | Event · matcher | Role | Failure posture |
+|---|---|---|---|
+| `scout-block` | PreToolUse · `Bash` | Blocks *traversal* of heavy dirs (`node_modules`, `.git/`, `dist/`, `build/`, `__pycache__`). Exclusion contexts (`grep -v`, `--exclude-dir`, `-prune`, `!pattern`) pass — the substring-match false positive is fixed and pinned by regression tests | deny on unparseable input |
+| `guard-destructive` | PreToolUse · `Bash` | Tier A denies irreversible loss (`stash -u`, `reset --hard`, `clean -f[dx]`, whole-tree checkout/restore, force-push sans lease, destructive SQL via a DB client, `npm ci` onto a `node_modules` symlink, `rm -rf` of a known worktree). Tier B denies over-broad staging (`add -A/./-u`, `commit -a[m]`, bare `stash`) **only when the claim registry proves a live foreign session owns a dirty file**. `CK_ALLOW_DESTRUCTIVE=1` overrides | Tier B **fails open**; unparseable payload allows |
+| `file-claims` | PostToolUse · `Write\|Edit` | Per-**worktree** claim registry (`.claude/.ck-file-claims.jsonl`, git-ignored). Self-pruning on read (file clean in `git status` ⇒ claim moot; TTL `CK_CLAIM_TTL`, default 4h; compaction past ~2k lines). Consumed by `guard-destructive` Tier B and by `/ck:git cm` (`file-claims.js list`) so the session manifest is machine-derived, not recalled | always exits 0 |
+| `modularization-hook` | PostToolUse · `Write\|Edit` | Advisory LOC-threshold notice (200) suggesting file splits | advisory only |
+
+`.sh` / `.ps1` siblings of `guard-destructive` are **thin delegates** to the `.js` — one implementation, no cross-language drift. (`scout-block` is the inverse: `.js` dispatches to the platform script.)
+
+### 9b · Scripts (`scripts/ck/`) — 8
+
+| Script | Purpose | Notes |
+|---|---|---|
+| `wt-new` | Provision a worktree: **absolute path outside the repo root**, per-worktree install, then a **smoke gate** (typecheck + suite on the untouched base commit, cached by base SHA) | refuses to install when `node_modules` is a symlink (the exit-216 shape) |
+| `wt-doctor` | Diagnose broken/circular symlinks, dependency version skew, missing dev server/token | non-zero exit = unhealthy; pipelines refuse to proceed |
+| `wt-clean` | Safe teardown via `git worktree remove` + `prune`, reports reclaimed disk | validates the path against `git worktree list`; **never** `rm -rf`; refuses the main worktree |
+| `phase-brief` | Extract one phase's full text from a plan into a uniquely-named file, print the path | artifacts-as-files rule (dispatches carry paths, not pasted prose) |
+| `review-package` | `git log --oneline` + `--stat` + `diff -U10` for BASE..HEAD into one file | never `HEAD~1` as BASE — that silently truncates a multi-commit phase |
+| `run-workspace` | Resolve/create the per-plan artifact dir, print the path | — |
+| `ci-review` | Headless `claude -p` review of a PR diff with a narrow grant; CRITICAL/HIGH/MEDIUM + `file:line` + a fix | wrapper: `.github/workflows/ck-review.yml.template` |
+| `delivery-tail` | **Deterministic executor** for the project-declared post-PR tail (T6.1 step 5) — resolves `{{placeholders}}`, evaluates `done-when`, runs `run`, emits paste-ready payloads on failure. No LLM on this path (zero token cost, no unattended tool grant); `run: mcp <server> <tool>` is the opt-in agent path, granted `mcp__<server>__*` only | ClauKit declares **zero** steps; no `## Delivery tail` block ⇒ no-op, exit 0. `--dry-run` prints resolved commands without executing |
+
+### 9c · Test harness
+
+`npm test` → `node --test tests/` (Node ≥18 built-in, **zero new dependencies** — ClauKit is installed by other projects, so a test framework in `dependencies` would be a cost every consumer pays). Covers both hooks, the worktree scripts, `delivery-tail`, and wraps the legacy shell suites so one command runs everything. Behavioral gates that cannot be verified by reading a diff live in `tests/behavior/scenarios/` (6 scenarios, each required to fail when its gate is removed).

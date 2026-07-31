@@ -124,12 +124,30 @@ Single source of truth: **`docs/clauKit-registry.md`** (skills + agents + comman
 
 ### 5. Hooks System
 
-**Scout Block Hook** (`.claude/hooks/scout-block.js`):
-- Cross-platform Node.js dispatcher (Windows/Unix/WSL auto-detection)
-- Blocks heavy directories: `node_modules`, `__pycache__`, `.git/`, `dist/`, `build/`
-- Improves AI agent response time and token efficiency
+All hooks are single-implementation Node.js (`.sh`/`.ps1` are thin delegates so platforms can't drift). Installed by every kit via the manifests' `hooks` key.
 
-### 6. Statusline Scripts
+**Scout Block** (`.claude/hooks/scout-block.js`, PreToolUse·Bash):
+- Blocks heavy-directory *traversal* (`node_modules`, `__pycache__`, `.git/`, `dist/`, `build/`) as **path segments**, not substrings
+- Whitelists exclusion contexts (`grep -v`, `--exclude-dir`, `find -prune`, `!glob`) — the substring false-positive bug is fixed and regression-tested
+
+**Guard Destructive** (`.claude/hooks/guard-destructive.js`, PreToolUse·Bash):
+- **Tier A (always deny):** `git stash -u`, `reset --hard`, `clean -fd[x]`, whole-tree checkout/restore, force-push without lease, destructive SQL through a DB client, frozen installs onto a `node_modules` symlink, `rm -rf` of a known worktree. Denial names the safe alternative; `CK_ALLOW_DESTRUCTIVE=1` escape hatch
+- **Tier B (deny on live evidence):** whole-tree staging (`git add -A/.`, `commit -am`, bare `stash`) denied **iff** the file-claims registry shows another live session owns an affected file; denial prints the scoped command. Fails open on its own errors
+
+**File Claims** (`.claude/hooks/file-claims.js`, PostToolUse·Write|Edit):
+- Appends one JSONL claim per file mutation to `<worktree>/.claude/.ck-file-claims.jsonl` (per-worktree scope, append-only, no locks)
+- Self-pruning (clean-file check + 4h TTL + compaction); `list` CLI derives the session manifest for `/ck:git cm`
+
+**Modularization** (`.claude/hooks/modularization-hook.js`, PostToolUse·Write|Edit): 200-LOC advisory, non-blocking.
+
+### 6. Scripts (`scripts/ck/`)
+
+Cross-platform Node, zero dependencies, installed via the manifests' `scripts` key:
+- **Worktree fleet:** `wt-new.js` (absolute-path provisioning outside the repo + per-worktree deps + smoke gate on the untouched base commit, cached per base SHA) · `wt-doctor.js` (symlink health, version skew, env keys) · `wt-clean.js` (validated `git worktree remove`, never `rm -rf`)
+- **Context hygiene:** `phase-brief.js` (phase text + Global Constraints → brief file) · `review-package.js` (log + stat + `-U10` diff → one reviewer file) · `run-workspace.js` (per-plan artifact dir)
+- **Headless:** `ci-review.js` (narrow-grant `claude -p` PR review; GitHub Actions wrapper at `.github/workflows/ck-review.yml.template`) · `delivery-tail.js` (executes the project-declared post-PR step list; no declaration = no-op)
+
+### 7. Statusline Scripts
 
 Three implementations for cross-platform statusline:
 - `statusline.sh` — Bash (Unix/Linux/WSL)

@@ -11,14 +11,36 @@ status: active
 
 Leverage `git worktree` to maintain multiple isolated working trees from a single repository, enabling simultaneous work on different branches without stashing/context-switching overhead.
 
+**One worktree per concurrent session.** When more than one Claude session (or a session + a human) works the same repository, each takes its own worktree — two sessions in separate worktrees *physically cannot* stage, stash, or clean each other's files, and the file-claims registry partitions along the same boundary. This removes the hazard `guard-destructive` only mitigates.
+
+## Provisioning — use the scripts, not raw commands
+
+Knowledge alone was not enough: worktrees were a top source of lost work when provisioned by hand. Use the tooling:
+
+- `node scripts/ck/wt-new.js <id>` — absolute path outside the repo, per-worktree deps, **smoke gate** (typecheck + tests on the untouched base commit; hard-fails red; full-suite result cached per base SHA). A session must never start editing in an environment whose baseline is unproven.
+- `node scripts/ck/wt-doctor.js [path]` — diagnoses broken/circular `node_modules` symlink, dependency version skew (declared range vs installed), missing env/API keys. Exit non-zero = unhealthy = do not edit there.
+- `node scripts/ck/wt-clean.js <path>` — teardown via `git worktree remove` with path validation; reports reclaimed disk. `--list` shows stale worktrees and their sizes.
+
+## Non-negotiable constraints
+
+Each constraint cites the incident that earned it:
+
+1. **Absolute paths only, outside the repo root** — a relative-path `git worktree add` nested inside the repo, followed by `rm -rf`, deleted real nested directories.
+2. **Teardown via `git worktree remove`, never `rm -rf`** — same incident; `rm -rf` also leaves corrupt worktree metadata behind.
+3. **Install deps inside the worktree; `node_modules` is NOT shared between worktrees** — a subagent's `npm ci` at the repo root destroyed a shared `node_modules` symlink → `tsc`/`vitest` exit 216, full toolchain rebuild.
+4. **Never run `npm ci`/frozen installs at the repo root from a subagent** — same incident. The `guard-destructive` hook refuses a frozen install when `node_modules` resolves to a symlink.
+5. **`git clean -fdx` destroys git-ignored scratch** (including per-worktree caches and any ignored ledger) — blocked at Tier A; delete explicit paths only.
+6. **Remove worktrees when done** (`wt-clean.js`) — ~20GB of stale worktrees accumulated silently.
+7. **Baseline questions ("is this failure pre-existing?") are answered by checking out the base commit in a separate worktree — never by `git stash`** — a stash-based baseline silently no-oped and corrupted a commit message.
+
 ## When to Use
 
+- **Any run where another session is live in the same tree** (file-claims registry shows foreign claims, or the tree is dirty with work you didn't do) — provision before the first edit
 - Working on parallel features/fixes without stashing current work
 - Emergency hotfixes while mid-refactor on main branch
 - Running tests/builds on multiple branches concurrently
 - Long-lived experimental branches in isolated directories
-- Maintaining separate worktrees for CI/build artifacts
-- CI/CD pipelines that need parallel checkouts on same repo
+- Establishing a trustworthy baseline for a bug fix (base commit, untouched)
 
 **Do NOT use when**: Simple branch switching (use `git checkout`), small single-file edits, or when storage space is critical (each worktree duplicates repo size).
 

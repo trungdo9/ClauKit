@@ -1,12 +1,12 @@
 ---
-description: ⚡⚡ Analyze and fix issues (variants ci logs test types ui · combinable --auto --review --quick --parallel --flow)
-argument-hint: [issues] [ci|logs|test|types|ui] [--auto] [--review] [--quick] [--parallel] [--flow]
+description: ⚡⚡ Analyze and fix issues (variants ci logs test tdd types ui · combinable --auto --review --quick --parallel --flow)
+argument-hint: [issues] [ci|logs|test|tdd|types|ui] [--auto] [--review] [--quick] [--parallel] [--flow]
 ---
 
 ## Variables
 
 ARGS: `$ARGUMENTS` (full input)
-VARIANT: `$1` if it matches one of `ci`, `logs`, `test`, `types`, `ui`; else absent
+VARIANT: `$1` if it matches one of `ci`, `logs`, `test`, `tdd`, `types`, `ui`; else absent
 MODIFIERS: any `--auto`, `--review`, `--quick`, `--parallel`, `--flow` flags (combinable)
 ISSUES: ARGS minus VARIANT and MODIFIERS
 
@@ -58,6 +58,8 @@ Turns the two prose gates into **discrete, inspectable agent stages** ([2.5] Sco
 | Final: summary → ask commit/push → `git-manager` | ✓ | ✓ | ✓ | ✓ |
 
 **Failure loop (circuit breaker):** verification failure → back to [3] (re-diagnose). Max **3 attempts** — on 3rd fail, STOP and escalate to user (suspected architecture issue). Review failure → back to [5] (re-implement + retest).
+
+**Ledger (run-state skill):** append one line to `plans/<plan>/STATE.md` after the Root-Cause Gate ([3.5], the diagnosis + evidence) and after Verify ([6], suite output) — a killed fix run resumes from the ledger, not from recollection. After [3.5], the root cause is itself a falsifiable claim: when it asserts existing behaviour ("X currently does Y"), run the `verify-plan` skill's evidence check on it before implementing.
 
 ### Thinking budget by flag combo
 
@@ -129,7 +131,22 @@ Each variant follows the **Fix Pipeline** ([.claude/workflows/fix-pipeline.md](.
 - **Stage [7]** (review): `code-reviewer` subagent (quick pass).
 - **Failure loop:** back to stage [3] (re-diagnose). Max 3 attempts → escalate to user.
 
-**Distinct:** input = running test suite. `tester` runs BEFORE `debugger` (inverse of other variants).
+**Distinct:** input = running test suite. `tester` runs BEFORE `debugger` (inverse of other variants). For a **production symptom** with no red suite yet, use `tdd` instead.
+
+### `tdd` — production-symptom red-green (⚡⚡)
+
+**Input:** a production symptom (bug report, incident, wrong output) — NOT an already-failing suite (that's `test`). Activate the `tdd` skill ([.claude/skills/software/tdd/SKILL.md](.claude/skills/software/tdd/SKILL.md)) — Iron Law: **no production code without a failing test first**. The autonomous bug loop:
+
+<issues>{ISSUES}</issues>
+
+- **Step 0 — toolchain**: prove the runner actually runs (dangling venv symlinks, missing deps, specs that block the runner). **Never conclude from a suite that could not run.**
+- **Step 1 — red**: write the smallest test reproducing the **exact production symptom**; run it; **show the failure output** (must fail for the expected reason). No source edit before this.
+- **Step 2 — baseline**: run the full suite once; record pre-existing/flaky failures so regressions stay distinguishable. **Baseline = base commit checked out in a separate worktree (`node scripts/ck/wt-new.js baseline --base <sha>`), never `git stash`** — a stash-based baseline silently no-ops and the failure is invisible when it happens.
+- **Step 3 — loop**: implement → targeted test + full sweep → read failures → iterate without check-ins. Never weaken or skip assertions to get green; a test that looks wrong gets explained before it gets changed.
+- **Step 4 — prove**: paste final output; confirm the pre-existing failure set is unchanged; state root cause vs symptom. Append `gate tdd → PASS (evidence: <suite output>)` to `plans/<plan>/STATE.md`.
+- **Escalate only** on a data change needing approval or an unrepairable env blocker.
+
+**Distinct from `test`:** different inputs — `test` starts from a red suite; `tdd` starts from a production symptom and *creates* the red test. Both stay.
 
 ### `types` — typecheck-driven, minimal (⚡)
 

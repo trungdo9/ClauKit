@@ -1,6 +1,6 @@
 ---
-description: ⚡⚡⚡ Plan operations dispatcher (router · fast hard two ci cro · -o md|html)
-argument-hint: [task] [fast|hard|two|ci|cro] [-o md|html]
+description: ⚡⚡⚡ Plan operations dispatcher (router · fast hard two ci cro verify · -o md|html)
+argument-hint: [task] [fast|hard|two|ci|cro|verify] [-o md|html]
 ---
 
 Activate `planning` skill ([.claude/skills/software/planning/SKILL.md](.claude/skills/software/planning/SKILL.md)).
@@ -20,6 +20,7 @@ Activate `planning` skill ([.claude/skills/software/planning/SKILL.md](.claude/s
 | `two` | **2-approaches** — research + plan with ≥2 approaches + trade-offs | Think harder |
 | `ci` | **CI-failure** — plan to fix GitHub Actions failures | Think harder |
 | `cro` | **CRO plan** — Conversion Rate Optimization plan | Think harder |
+| `verify` | **falsify an existing plan** — claim → verdict → evidence table, read-only | Think harder |
 
 ## Output format (`-o`) — orthogonal to mode
 
@@ -109,6 +110,17 @@ Workflow:
 - `/ck:scout` → codebase discovery.
 - `planner` agent applies the 25-point framework + follows planning skill's directory/file structure.
 - **DO NOT implement** — wait for user approval.
+
+## `verify <path>` — falsify an existing plan (⚡⚡)
+
+**Input:** path to an existing `plan.md`. Activate the `verify-plan` skill ([.claude/skills/software/verify-plan/SKILL.md](.claude/skills/software/verify-plan/SKILL.md)) — single source of truth for the method.
+
+1. Read the plan; **extract every factual claim** (root cause · current behaviour · data/row counts · code-path · "already done" status).
+2. Prove or disprove each with `git log`/`git blame`/`git show`, direct file reads, **read-only** queries. Verification is read-only — no edits, no writes.
+3. Emit the fixed table → `plans/<plan>/reports/plan-verification.md`: `# · Claim · Verdict (CONFIRMED/REFUTED/UNVERIFIABLE) · Evidence (file:line, git ref, or verbatim output) · Impact if wrong`.
+4. Verdict line: **plan SAFE TO EXECUTE** (no REFUTED load-bearing claims) or **plan REFUTED — back to planner** (name the broken claims). Append the gate result to `plans/<plan>/STATE.md`.
+
+**Auto-invoked** by `/ck:cook --from-plan` (Stage 0.5); use standalone before executing any plan you didn't write this session.
 
 ## Important Notes
 - **DO NOT implement** — plan only.

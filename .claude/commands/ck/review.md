@@ -1,6 +1,6 @@
 ---
 description: ⚡⚡⚡ Scan & analyze the codebase.
-argument-hint: [tasks-or-prompt] [--flow]
+argument-hint: [tasks-or-prompt] [--flow] [--lenses]
 ---
 
 Think harder to scan + analyze the codebase. Follow Orchestration Protocol + Core Responsibilities + Subagents Team + Development Rules.
@@ -62,6 +62,28 @@ Dedup → confirmed-only report (main-session orchestrator, gated/inspectable)
 - Confirmed-only report avoids alarm-fatigue from unverified findings; dropped findings logged for inspection.
 
 **Examples:** `/ck:review --flow` · `/ck:review --flow src/payments`
+
+## Multi-Lens Variant (`--lenses`, composable with `--flow`)
+
+**Opt-in** — default `/ck:review` stays single-reviewer; this is a genuine ~4× on the review stage. **Auto-suggest it only above a risk threshold**: >~200 changed lines, >3 files, or the diff touches auth / payments / migrations / a cross-service boundary.
+
+Fan out **4 reviewers concurrently in one message**, each with a distinct lens (perspective diversity beats redundancy — lens table is canonical in the `code-review` skill):
+
+| Lens | Prompt core | Tier |
+|---|---|---|
+| **ADVERSARY** | assume the implementation is wrong; prove it from the actual diff + live queries, not the description | escalate on risky diffs |
+| **FIDELITY** | diff new logic against legacy behavior on the base branch (`git show`/`git log`); list every behavioral divergence, intended or not | standard |
+| **BLAST RADIUS** | cascade deletes, dropped status/permission guards, route-level auth gaps, duplicate keys, non-atomic mutation sequences, cross-service deploy-order hazards | cheap, narrow prompt |
+| **CONVENTION** | does the change respect the codebase's own architectural patterns? (pair with the scope-lock convention check: planned intent vs shipped reality) | cheap, narrow prompt |
+
+**Context rules (non-negotiable):**
+- **The falsifier gets no reasoning.** Each lens receives **the diff and the requirement — never the implementer's explanation of why it is correct**. A reviewer handed the rationale grades the rationale, not the code. Fresh context, no memory of the implementation attempts.
+- Each lens reads the **review-package file** (`node scripts/ck/review-package.js <BASE> [HEAD] --plan <plan>`) — a path, not an inline diff; the main context grows by four short finding lists, not four diffs.
+- **Admissibility:** every finding must cite `file:line`, a git ref, or verbatim output. **No evidence → discarded as a hallucination** (a subagent once invented a flag).
+
+**Then reconcile (main session):** cross-check the four reports against each other; flag disagreements explicitly; rank surviving findings Critical/High/Medium; route Critical/High through the existing adversarial-verify step before any fix.
+
+**Examples:** `/ck:review --lenses` · `/ck:review --lenses --flow plans/<plan>` 
 
 ## Notes
 - Concise grammar, list unresolved questions at end.

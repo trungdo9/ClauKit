@@ -34,6 +34,12 @@ If `<request>` does not clearly identify:
 - `code-reviewer` agent — Phase 6 (verification gate) + Phase 7 (final review)
 - `git-manager` agent — Phase 5 (atomic commits with conventional-commit format)
 
+## Environment Pre-flight (before the first edit)
+
+1. `node .claude/hooks/file-claims.js list` → any `FOREIGN` claim = another live session is editing this tree. A large refactor in a shared tree is how batches sweep up foreign work.
+2. If a foreign claim exists **or** the tree is dirty: provision an isolated worktree first — `node scripts/ck/wt-new.js <refactor-slug>`, then `node scripts/ck/wt-doctor.js`; **unhealthy → refuse to proceed**.
+3. Record the worktree path in `plans/<plan>/STATE.md` so a resume lands in the right tree.
+
 ## Hard Rules
 
 - **No behavior change.** If the task changes behavior → STOP, redirect to `/ck:cook`.

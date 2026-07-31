@@ -85,7 +85,7 @@ Per batch:
 1. Apply edits (prefer `Edit` with `replace_all` for trivial rename; AST tool for structural).
 2. Run type-check.
 3. Run tests (at least the affected slice; full suite at milestone batches).
-4. If green → commit (Phase 5). If red → fix within batch OR `git reset --hard` + rethink.
+4. If green → commit (Phase 5). If red → fix within batch OR `git restore --source=HEAD -- <batch paths>` + rethink. (Scoped restore, never a whole-tree hard reset — it rolls back exactly the batch and leaves other sessions' files and untracked scratch untouched.)
 
 ### Phase 5 — Atomic commit per batch
 
