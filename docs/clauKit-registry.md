@@ -1,10 +1,10 @@
 # ClauKit Registry
 
-**Last Updated**: 2026-07-31 (**Durability–Evidence–Cost upgrade** (plan `260730-1359-clauKit-upgrade`) — 3 new skills (`run-state` durable ledger · `verify-plan` falsification gate · `tdd` red-green discipline), 2 new hooks (`guard-destructive` 2-tier conflict-aware guard · `file-claims` per-worktree claim registry; `scout-block` rewritten precise, single implementation), 8 new `scripts/ck/` (worktree fleet `wt-new`/`wt-doctor`/`wt-clean` w/ smoke gate · context hygiene `phase-brief`/`review-package`/`run-workspace` · headless `ci-review` + deterministic `delivery-tail`), 1 new workflow (`skill-activation.md` hard gate), `primary-workflow.md` rewritten to 13 gated stages (Exact-Requirements Gate surfaced — closes G25), `/ck:git` gains `finish` + scoped-commit + draft-default PR + declared delivery tail (empty default) + `pr-body.md` fill contract, `/ck:plan verify`, `/ck:fix tdd`, `/ck:review --lenses`, multi-repo `/ck:scout`, model-tiering matrix + 529 fallback, DB safe-writes protocol, node:test harness (`npm test`, 109 tests) + behavioral eval harness (`tests/behavior/`, 6 scenarios). **Removed:** `programmatic-seo` (duplicate of `seo-programmatic`); `preview` narrowed to presentations-only (render-markdown → `markdown-novel-viewer`). Counts: skills 129→131, agents 29, commands 53, workflows 14→15, total entries 211→213.)
+**Last Updated**: 2026-07-31 (**Durability–Evidence–Cost upgrade** (plan `260730-1359-clauKit-upgrade`) — 3 new skills (`run-state` durable ledger · `verify-plan` falsification gate · `tdd` red-green discipline), 2 new hooks (`guard-destructive` 2-tier conflict-aware guard · `file-claims` per-worktree claim registry; `scout-block` rewritten precise, single implementation), 8 new `scripts/ck/` (worktree fleet `wt-new`/`wt-doctor`/`wt-clean` w/ smoke gate · context hygiene `phase-brief`/`review-package`/`run-workspace` · headless `ci-review` + deterministic `delivery-tail`), 1 new workflow (`skill-activation.md` hard gate), `primary-workflow.md` rewritten to 13 gated stages (Exact-Requirements Gate surfaced — closes G25), `/ck:git` gains `finish` + scoped-commit + draft-default PR + declared delivery tail (empty default) + `pr-body.md` fill contract, `/ck:plan verify`, `/ck:fix tdd`, `/ck:review --lenses`, multi-repo `/ck:scout`, model-tiering matrix + 529 fallback, DB safe-writes protocol, node:test harness (`npm test`, 180 tests) + behavioral eval harness (`tests/behavior/`, 6 scenarios). **Removed:** `programmatic-seo` (duplicate of `seo-programmatic`); `preview` narrowed to presentations-only (render-markdown → `markdown-novel-viewer`). Counts: skills 129→131, agents 29, commands 53→56, workflows 14→15, total entries 211→216.)
 
 **Prior**: 2026-07-31 (**`/ck:claude-md analyze` added** — read-only per-section token-cost profile of a CLAUDE.md (lines/chars/~tokens per `##` section, classify DIRECTIVE/POINTER/PROSE/DUP/FILLER, ranked KEEP/EXTRACT/DEDUPE/DROP recommendations + projected savings); alias `optimize` = analyze + offer `refactor`; `claude-md` dispatcher 3→4 actions. Counts: commands 52→53, total entries 210→211.) · 2026-07-25 (**SEO campaign workflow closed** — new `.claude/workflows/seo-workflow.md` (7-phase closed loop: gate → baseline audit+metrics → plan [hard stop] → batch write → publish [draft-default] → distribute → measure [GSC/GA4, 2–4 wk bake] → optimize scale/refresh/kill loop). `/mk:seo` gains `campaign` action; `seo-writer` agent + `seo-writing` skill gain `campaign` mode; `seo-flow` gains SEO Campaign recipe; wired into marketing/both kit manifests (workflows 5→6) + `marketing-workflow.md` Phase 5 delegation + MARKETING.md Flow 3c.) · 2026-07-23 (**seo-writing pipeline added** — new ClauKit-authored `seo-writing` skill (6-stage article-production pipeline ported from a production n8n workflow: strategy → outline → write → optimize → media → publish; 7 references + 100-article WordPress playbook), new `seo-writer` orchestrator agent, `/mk:seo` gains `plan` + `write` actions. 6 previously-stub SEO skills filled with real content; agents upgraded pipeline-stage-specific. Counts: skills 128→129, agents 28→29.) · 2026-07-17 (**Gemini purge** — `scout-external` agent removed (Gemini/OpenCode CLI orchestration retired; `/ck:scout` is now internal-Explore-only), Gemini offload paths stripped from `research` skill + `/ck:research` + `git-manager` + `/ck:use-mcp` (all now Claude-native). Gemini retained only in `software/ai/` skills (`ai-multimodal`/`ai-artist`) where it is a genuine capability. Earlier same-day: `mcp-manager` agent removed; `researcher` → sonnet, `journal-writer` → haiku; `tester`/`database-admin`/`project-manager` slimmed to thin personas; long agent descriptions trimmed to trigger-style.)
 **Scope**: Single source of truth for every Skill, Agent, and Command in this project.
-**Counts**: 131 skills (131 active + 0 scaffold) · 29 agents · 53 commands · **213 total entries**
+**Counts**: 131 skills (131 active + 0 scaffold) · 29 agents · 56 commands · **216 total entries**
 
 Replaces previous `skills-catalog.md` (skills only). One file, all three resource types, with duplicate/overlap detection.
 
@@ -71,7 +71,7 @@ Replaces previous `skills-catalog.md` (skills only). One file, all three resourc
 | `seo-image-gen` | ✅ | `marketing/seo-image-gen/` | claude-seo |
 | `seo-writing` | ✅ | `marketing/seo-writing/` | ClauKit-authored — 6-stage article-production pipeline (ported from n8n). 7 references + 100-article WP playbook. Paired with `seo-writer` agent + `/mk:seo write\|plan` |
 
-**Coreyhaines31 (23 — imported from `coreyhaines31/marketingskills`, curated subset):**
+**Coreyhaines31 (22 — imported from `coreyhaines31/marketingskills`, curated subset):**
 
 | Name | Status | Folder | Notes |
 |---|:---:|---|---|
@@ -286,7 +286,7 @@ All 40 are active (`dynamic-workflow` added 2026-06-03, paired with `/ck:flow`; 
 
 ---
 
-## 3 · Commands (53)
+## 3 · Commands (56)
 
 All commands are ✅ active. Grouped by namespace. **Prefix `ck:` applied 2026-05-17** — every command lives under `.claude/commands/ck/`, invoked as `/ck:<name>` (e.g. `/ck:cook`, `/ck:fix ci`). **`/orchestrate` removed 2026-05-17** (superseded by `/ck:team`). **Flag-style variants applied 2026-05-17** — sibling variants of the same command (e.g. fast/hard/auto/good/ext) collapsed into flags rather than `:nested` namespace; namespaced commands now reserved for genuinely-distinct actions (e.g. `/ck:fix ci`, `/ck:plan two`).
 
@@ -599,10 +599,10 @@ Verification: `for f in $(find .claude/skills -name SKILL.md); do …` returns z
 | Agents · `engineering/` | 17 | 0 | 17 |
 | Agents · `marketing/` | 12 | 0 | 12 |
 | **Agents total** | **29** | **0** | **29** |
-| Commands (logical, per § 3 row scheme) | 53 | 0 | 53 |
-| **Grand total entries** | | | **213** |
+| Commands (logical, per § 3 row scheme) | 56 | 0 | 56 |
+| **Grand total entries** | | | **216** |
 
-Adjacent inventories (not registry entries — itemised in **§ 9**): **15 workflows** (`.claude/workflows/*.md`, incl. `skill-activation.md`), **4 hooks**, **8 scripts**, **1 PR-body template** (`git/references/pr-body.md`), **6 behavioral eval scenarios** (`tests/behavior/scenarios/`).
+Adjacent inventories (not registry entries — hooks and scripts are itemised in **§ 9**): **15 workflows** (`.claude/workflows/*.md`, incl. `skill-activation.md`), **4 hooks**, **8 scripts**, **1 PR-body template** (`git/references/pr-body.md`), **6 behavioral eval scenarios** (`tests/behavior/scenarios/`).
 
 ## 7 · Open Issues
 

@@ -8,11 +8,11 @@
 
 All 31 tasks landed. Verified **by running the acceptance criteria**, not by reading diffs — where a criterion was prose ("churn drops measurably") it was replaced with an executable one before being checked off.
 
-**Standing evidence** (re-runnable): `npm test` → **109 tests, 108 pass, 0 fail, 1 skip** (the PowerShell suite, correctly skipped on Linux) · `ck init --kit engineer` into an empty repo → 20 paths, every file `settings.json` references present, both PreToolUse hooks exit 0 on a normal command · `node -e "require('./bin/lib/kit-resolver').checkKitPathsAvailable(k)"` → `[]` for all three kits.
+**Standing evidence** (re-runnable): `npm test` → **180 tests, 179 pass, 0 fail, 1 skip** (the PowerShell suite, correctly skipped on Linux) · `ck init --kit engineer` into an empty repo → 20 paths, every file `settings.json` references present, both PreToolUse hooks exit 0 on a normal command · `node -e "require('./bin/lib/kit-resolver').checkKitPathsAvailable(k)"` → `[]` for all three kits.
 
 | Task | State | Verification |
 |---|:---:|---|
-| T1.0 install fix + un-ignore ledger | ✅ | 3 manifests carry `hooks`/`scripts`/`statusline`; preflight clean; `git check-ignore` confirms `STATE.md`+`plan.md` trackable, `reports/` still ignored |
+| T1.0 install fix + un-ignore ledger | ✅ | 3 manifests carry `hooks`/`scripts`/`statusline`; preflight clean; `git check-ignore` confirms `STATE.md`+`plan.md` trackable. **Criterion revised during implementation:** `reports/*.md` is now trackable too — plan.md links to its reports, and an ignored report is a 404 in a PR body (T6.1a). Script-generated `review-package-*` and `*-brief-*` stay ignored |
 | T1.0b test harness | ✅ | `npm test` = `node --test tests/`, zero new deps, shell suites wrapped |
 | T1.1 `run-state` ledger | ✅ | skill + `references/state-schema.md`; wired into cook/flow/fix |
 | T1.2 `guard-destructive` | ✅ | 18 Tier-A + 16 benign + 3 Tier-B cases (plan asked 14/12); `.sh`/`.ps1` are thin delegates — one implementation |
@@ -369,7 +369,7 @@ Override:    CK_ALLOW_DESTRUCTIVE=1 (stages their work into your commit)
 
 - Registered under `hooks.PreToolUse` matcher `Bash` in `.claude/settings.json`, after `scout-block`.
 - **Fail-open on its own errors** (unparseable payload, missing registry, git not available) — a guard that breaks the session is worse than the risk it prevents. Tier A stays deny-on-error; Tier B allows on error and says why.
-- **Acceptance:** unit tests in `tests/` — (a) 14 Tier-A shapes deny with the right message, including `git commit -am`; (b) 12 benign lookalikes pass (`git stash list`, `git add -p`, `git clean -n`, `SELECT … WHERE deleted_at IS NULL`, `DELETE FROM` inside a quoted string); (c) Tier B allows `git add -A` with an empty registry, denies it with a seeded foreign claim, and allows it again once that claim's file is committed.
+- **Acceptance:** unit tests in `tests/` — (a) Tier-A shapes deny with the right message (**`git commit -a[m]` is Tier B, not Tier A** — it is over-broad staging, not irreversible loss; this criterion contradicted the task's own design section and the design section is authoritative); (b) 12 benign lookalikes pass (`git stash list`, `git add -p`, `git clean -n`, `SELECT … WHERE deleted_at IS NULL`, `DELETE FROM` inside a quoted string); (c) Tier B allows `git add -A` with an empty registry, denies it with a seeded foreign claim, and allows it again once that claim's file is committed.
 
 #### T1.2b — `file-claims` PostToolUse hook: the concurrency substrate (G5 companion, enables T1.4)
 - **New:** `.claude/hooks/file-claims.js`, registered on `PostToolUse` matcher `Write|Edit` (alongside the existing `modularization-hook`).

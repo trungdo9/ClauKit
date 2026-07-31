@@ -87,7 +87,7 @@ Notes:
 
 ### 2. Slash Commands System
 
-**Command files**: 25 under `.claude/commands/ck/` (`/ck:<name>`) + 12 under `.claude/commands/mk/` (`/mk:<name>`) = 37 files. `docs/clauKit-registry.md` counts "commands" differently (dispatcher sub-actions like `/ck:fix ci` counted separately) — its header/§1/§3/§6 figures are now reconciled to **52** logical commands (= 208 total entries with 128 skills + 28 agents). The registry's § 3 tables remain the itemized source of truth.
+**Command files**: 25 under `.claude/commands/ck/` (`/ck:<name>`) + 12 under `.claude/commands/mk/` (`/mk:<name>`) = 37 files. `docs/clauKit-registry.md` counts "commands" differently (dispatcher sub-actions like `/ck:fix ci` counted separately) — its header/§1/§3/§6 figures are now reconciled to **56** logical commands (= 216 total entries with 131 skills + 29 agents). The registry's § 3 tables remain the itemized source of truth.
 
 | Namespace | Commands |
 |-----------|----------|
@@ -234,7 +234,7 @@ Not regenerated this pass — no `repomix-output.xml` is committed to the repo (
 
 **Verified counts** (via `ls`/`find` against the filesystem, 2026-07-17):
 - Agent definitions: 28 (17 engineering + 11 marketing)
-- Command files: 38 (26 `ck/` + 12 `mk/`)
+- Command files: 37 (25 `ck/` + 12 `mk/`)
 - Skill files: 128 `SKILL.md`
 - Workflow files: 5 (`primary-workflow.md`, `development-rules.md`, `orchestration-protocol.md`, `documentation-management.md`, plus `cro-framework.md`/`fix-pipeline.md` references)
 
@@ -276,5 +276,5 @@ Kit-specific MCP wrappers live under `.claude/skills/automation/` (GA4, GSC, Sen
 
 ## Unresolved Questions
 
-1. `docs/clauKit-registry.md` command-count convention is internally inconsistent (header says 64, § 3 body sums to 52, § 6 Summary Counts says 72) — needs reconciliation in a future pass; this doc uses the literal file count (37) plus a pointer to that discrepancy instead of picking one.
+1. ~~registry command-count inconsistency~~ — RESOLVED 2026-07-31: header, § 3 and § 6 all read 56 logical commands / 216 entries, verified against the § 3 row count.
 2. `README.md` is 768 lines, exceeding the generic "<300 lines" guidance in `CLAUDE.md` — appears to be a deliberate choice from a recent commit ("docs: split marketing kit guide into MARKETING.md"). Flagging rather than enforcing; needs an explicit decision on whether the rule should carve out an exception for README.
