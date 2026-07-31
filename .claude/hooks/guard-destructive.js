@@ -36,20 +36,39 @@ const DB_CLIENTS = new Set(['psql', 'mysql', 'mariadb', 'sqlite3', 'sqlcmd', 'ms
 
 // ---------- tokenization (shared shape with scout-block.js) ----------
 
+// Anything that executes its stdin. A heredoc feeding one of these is CODE.
+const SHELL_INTERPRETERS = new Set(['bash', 'sh', 'zsh', 'ksh', 'dash', 'ash', 'busybox', 'python', 'python3', 'node', 'perl', 'ruby', 'php']);
+
 /**
- * Heredoc bodies are DATA, never commands. Strip them before analysis.
+ * Resolve heredocs by WHO CONSUMES THEM — the previous blanket strip was a
+ * bypass of the entire guard.
  *
- * Found by dogfooding: `git commit -F - <<'MSG' … MSG` was denied because the
- * commit message *described* `git clean -fdx`. Once newlines became segment
- * separators, every line of a heredoc parsed as its own command — so writing
- * documentation or a commit message about a destructive command tripped the
- * guard, which is precisely the false-positive class that teaches people to
- * disable guards (the scout-block lesson, G6).
+ * History, because both mistakes are instructive:
+ *   1. Newlines were not segment separators, so `git status\ngit reset --hard`
+ *      was only checked up to line 1. Fixed by splitting on newlines.
+ *   2. That made every line of a heredoc parse as a command, so a commit
+ *      message *describing* a destructive command was denied. Fixed by
+ *      stripping heredoc bodies wholesale.
+ *   3. Which meant `bash <<'EOF' … git reset --hard … EOF` — the body of which
+ *      the shell genuinely executes — became invisible. Tier A, gone.
+ *
+ * The distinction is the consumer, not the syntax:
+ *   - `git commit -F - <<'MSG'` / `cat > f <<EOF`  → body is data  → strip
+ *   - `bash <<EOF` / `python <<EOF`                → body is code  → keep as
+ *     separate lines, so each is analysed as its own command
+ *   - `psql <<SQL`                                 → body is code, but the SQL
+ *     rules need the client and the statement in ONE segment → inline it
  */
-function stripHeredocs(command) {
+function resolveHeredocs(command) {
   return command.replace(
-    /<<-?\s*(['"]?)([A-Za-z_]\w*)\1[\s\S]*?^\s*\2\s*$/gm,
-    '<<HEREDOC'
+    /(^|[|&;\r\n])([^\r\n]*?)<<-?\s*(['"]?)([A-Za-z_]\w*)\3([^\r\n]*)\r?\n([\s\S]*?)^[ \t]*\4[ \t]*$/gm,
+    (_m, sep, before, _q, _delim, after, body) => {
+      const owner = binOf(tokens(before));
+      const head = `${sep}${before}${after}`;
+      if (SHELL_INTERPRETERS.has(owner)) return `${head}\n${body}`;      // each line is a command
+      if (DB_CLIENTS.has(owner)) return `${head} ${body.replace(/\s+/g, ' ')}`; // same segment as the client
+      return `${head} <<HEREDOC`;                                        // data: cat, git commit -F, tee…
+    }
   );
 }
 
@@ -63,7 +82,10 @@ function stripHeredocs(command) {
  * hole in the guard.
  */
 function segments(command) {
-  return stripHeredocs(command).split(/[|&;\r\n]+/).map(s => s.trim()).filter(Boolean);
+  return resolveHeredocs(command)
+    .split(/[|&;\r\n]+/)
+    .map(s => s.replace(/^[()\s]+|[()\s]+$/g, '').trim())  // `(cd sub && git reset --hard)` — parens are not part of the argv
+    .filter(Boolean);
 }
 
 function tokens(segment) {

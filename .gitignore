@@ -80,5 +80,6 @@ prompt.md
 
 # ClauKit concurrency substrate (per-worktree file-claim registry, T1.2b)
 .claude/.ck-file-claims.jsonl
+.claude/.ck-tail-approved
 # ClauKit smoke-gate cache (per-base-commit test results, T1.6/R8)
 .claude/.ck-smoke-cache.json

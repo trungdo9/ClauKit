@@ -33,6 +33,13 @@ function runTail(args) {
   return spawnSync('node', [SCRIPT, ...args], { cwd: dir, encoding: 'utf-8' });
 }
 
+/** Execution requires an approved declaration; call after writing CLAUDE.md. */
+function approveTail() {
+  const res = runTail(['--approve']);
+  assert.strictEqual(res.status, 0, res.stderr);
+  return res;
+}
+
 test('no CLAUDE.md → no-op, exit 0, no output', () => {
   const res = runTail([]);
   assert.strictEqual(res.status, 0);
@@ -127,6 +134,7 @@ test('runs steps in order, re-checks done-when, reports DONE', () => {
     '  - done-when: `cat out-b` = `b`',
     '',
   ].join('\n'));
+  approveTail();
   const res = runTail([]);
   assert.strictEqual(res.status, 0, res.stderr);
   assert.match(res.stdout, /DONE: make-a[\s\S]*DONE: make-b/);
@@ -149,6 +157,7 @@ test('a failing step emits a paste-ready payload, continues, and still exits 0',
     '  - run: `echo ok > after-fail`',
     '',
   ].join('\n'));
+  approveTail();
   const res = runTail([]);
   assert.strictEqual(res.status, 0, 'a failed step must never dead-end the tail');
   assert.match(res.stdout, /FAILED: will-fail/);
@@ -165,6 +174,7 @@ test('unresolved {{placeholder}} fails the step instead of running a literal', (
     '  - needs: nope (from the ticket)',
     '',
   ].join('\n'));
+  approveTail();
   const res = runTail([]);
   assert.strictEqual(res.status, 0);
   assert.match(res.stdout, /FAILED: needs-input/);
@@ -182,6 +192,7 @@ test('--plan writes one STATE.md line per step', () => {
     '  - done-when: `cat ledger-out` = `x`',
     '',
   ].join('\n'));
+  approveTail();
   runTail(['--plan', planDir]);
   const state = fs.readFileSync(path.join(planDir, 'STATE.md'), 'utf-8');
   assert.match(state, /finish: tail ledger-step → DONE/);
@@ -198,6 +209,7 @@ test('step names with regex metacharacters are handled literally', () => {
     '  - done-when: `cat meta-out` = `m`',
     '',
   ].join('\n'));
+  approveTail();
   const res = runTail([]);
   assert.strictEqual(res.status, 0);
   assert.match(res.stdout, /DONE: close-issue \[tracker\] \(v2\)/);
@@ -209,4 +221,92 @@ test('parseDoneWhen: expected value, exit-0 form, and bare command', () => {
   assert.deepStrictEqual(parseDoneWhen('`test -f .notified` = ``'), { cmd: 'test -f .notified', expected: null });
   assert.deepStrictEqual(parseDoneWhen('`test -f x`'), { cmd: 'test -f x', expected: null });
   assert.strictEqual(parseDoneWhen(undefined), null);
+});
+
+// ---------- C3 (code review 2026-07-31) ----------
+
+test('a value carrying shell metacharacters is refused, not spliced', () => {
+  const marker = path.join(dir, 'INJECTED');
+  fs.writeFileSync(path.join(dir, 'CLAUDE.md'), [
+    '## Delivery tail',
+    '- **notify**',
+    '  - run: `echo shipped {{who}}`',
+    '',
+  ].join('\n'));
+  approveTail();
+  const res = runTail(['--context', `who=x;touch ${marker}`]);
+  assert.strictEqual(res.status, 0);
+  assert.ok(!fs.existsSync(marker), 'COMMAND INJECTION via --context');
+  assert.match(res.stdout, /refusing to substitute value\(s\) containing shell metacharacters/);
+  assert.match(res.stdout, /TAIL COMPLETE: 0\/1 done, 0 skipped, 1 failed/);
+});
+
+test('an injected branch name never reaches the shell via {{branch}}', () => {
+  const marker = path.join(dir, 'INJECTED-BRANCH');
+  fs.writeFileSync(path.join(dir, 'CLAUDE.md'), [
+    '## Delivery tail',
+    '- **notify**',
+    '  - run: `echo shipped {{branch}}`',
+    '',
+  ].join('\n'));
+  approveTail();
+  spawnSync('git', ['add', '.'], { cwd: dir });
+  spawnSync('git', ['-c', 'user.email=t@t', '-c', 'user.name=t', 'commit', '-qm', 'base'], { cwd: dir });
+  // `${IFS}` matters: git rejects a branch name containing a literal space.
+  const evil = 'x;touch${IFS}' + marker;
+  const cb = spawnSync('git', ['checkout', '-q', '-b', evil], { cwd: dir, encoding: 'utf-8' });
+  assert.strictEqual(cb.status, 0, `git should accept this branch name: ${cb.stderr}`);
+  const res = runTail([]);
+  assert.ok(!fs.existsSync(marker), 'COMMAND INJECTION via {{branch}}');
+  assert.match(res.stdout, /refusing to substitute/);
+  spawnSync('git', ['checkout', '-q', '-'], { cwd: dir });
+});
+
+test('a fenced example block is documentation, not declared steps', () => {
+  const marker = path.join(dir, 'FENCED-RAN');
+  fs.writeFileSync(path.join(dir, 'CLAUDE.md'), [
+    '## Delivery tail',
+    'We do not use the tail yet. The format looks like this:',
+    '',
+    '```markdown',
+    '- **close the tracker issue**',
+    `  - run: \`touch ${marker}\``,
+    '```',
+    '',
+  ].join('\n'));
+  const res = runTail([]);
+  assert.strictEqual(res.status, 0);
+  assert.ok(!fs.existsSync(marker), 'a documented example must never execute');
+  assert.strictEqual((res.stdout + res.stderr).trim(), '', 'nothing is declared, so nothing is said');
+});
+
+test('an unapproved declaration refuses to run and says how to review it', () => {
+  const marker = path.join(dir, 'UNAPPROVED-RAN');
+  fs.writeFileSync(path.join(dir, 'CLAUDE.md'), [
+    '## Delivery tail',
+    '- **exfiltrate**',
+    `  - run: \`touch ${marker}\``,
+    '',
+  ].join('\n'));
+  const res = runTail([]);           // deliberately NOT approved
+  assert.strictEqual(res.status, 0, 'refusal must not dead-end the PR');
+  assert.ok(!fs.existsSync(marker), 'an unapproved step must not execute');
+  assert.match(res.stdout, /REFUSED: this delivery tail/);
+  assert.match(res.stdout, /--approve/);
+  assert.match(res.stdout, /Steps declared: exfiltrate/);
+});
+
+test('approval is content-bound: editing a step re-arms the refusal', () => {
+  const marker = path.join(dir, 'MUTATED-RAN');
+  const write = run => fs.writeFileSync(path.join(dir, 'CLAUDE.md'),
+    ['## Delivery tail', '- **step**', `  - run: \`${run}\``, ''].join('\n'));
+
+  write('echo original > approved-out');
+  approveTail();
+  assert.match(runTail([]).stdout, /DONE: step/);
+
+  write(`touch ${marker}`);           // what a merged PR would do
+  const res = runTail([]);
+  assert.ok(!fs.existsSync(marker), 'a changed step must not run under the old approval');
+  assert.match(res.stdout, /REFUSED/);
 });

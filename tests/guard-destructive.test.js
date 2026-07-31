@@ -270,3 +270,52 @@ test('a real destructive command after a heredoc is still caught', () => {
   const cmd = ["cat <<'EOF' > notes.txt", 'just some notes', 'EOF', 'git reset --hard'].join('\n');
   assert.strictEqual(runGuard(cmd).status, 2, 'stripping heredocs must not blind the rest of the command');
 });
+
+// C1 (code review 2026-07-31): stripping EVERY heredoc body turned the guard
+// off for `bash <<EOF … EOF`, whose body the shell genuinely executes. The
+// distinction is the consumer, not the syntax.
+const HEREDOC_CODE_DENY = [
+  ["bash <<'EOF'", 'git reset --hard', 'EOF'],
+  ['bash <<EOF', 'git clean -fdx', 'EOF'],
+  ["sh <<'EOF'", 'git stash -u', 'EOF'],
+  ['bash -s <<EOF', 'git push --force origin main', 'EOF'],
+  ["zsh <<'EOF'", 'echo hi', 'git checkout .', 'EOF'],
+  ["bash <<-'EOF'", '\tgit reset --hard', 'EOF'],
+  ["psql <<'SQL'", 'DELETE FROM users;', 'SQL'],
+  ["mysql <<'SQL'", 'TRUNCATE TABLE sessions;', 'SQL'],
+];
+
+for (const lines of HEREDOC_CODE_DENY) {
+  test(`heredoc fed to an interpreter is analysed: ${lines[0]} … ${lines[1].trim()}`, () => {
+    const res = runGuard(lines.join('\n'));
+    assert.strictEqual(res.status, 2, `expected DENY — the shell executes this body:\n${lines.join('\n')}`);
+  });
+}
+
+const HEREDOC_DATA_ALLOW = [
+  ["git commit -q -F - <<'MSG'", 'fix: stop recommending git reset --hard', '', 'It used to say git clean -fdx here.', 'MSG'],
+  ["cat > notes.md <<'EOF'", 'run git reset --hard to start over', 'EOF'],
+  ["tee /tmp/x <<'EOF'", 'git clean -fdx', 'EOF'],
+];
+
+for (const lines of HEREDOC_DATA_ALLOW) {
+  test(`heredoc fed to a data sink stays prose: ${lines[0]}`, () => {
+    const res = runGuard(lines.join('\n'));
+    assert.strictEqual(res.status, 0, `expected ALLOW — this body is never executed:\n${res.stderr}`);
+  });
+}
+
+// Grouping parens are shell syntax, not part of the argv — `--hard)` was not
+// matching `--hard`, so the standard monorepo idiom went unguarded.
+const SUBSHELL_DENY = [
+  '(cd sub && git reset --hard)',
+  '(cd sub; git clean -fdx)',
+  '( git stash -u )',
+  'for d in a b; do (cd $d && git clean -fdx); done',
+];
+
+for (const cmd of SUBSHELL_DENY) {
+  test(`subshell grouping still denies: ${cmd}`, () => {
+    assert.strictEqual(runGuard(cmd).status, 2, `expected DENY for: ${cmd}`);
+  });
+}
