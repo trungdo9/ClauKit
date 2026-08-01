@@ -48,3 +48,22 @@ The first run that did check it failed **6 out of 6**, for two reasons that are 
 2. **Assert on behaviour, not on prose.** `guard-tier-b` grepped the transcript for `BLOCKED|owned by`, which a model produces just by narrating what it is checking. It now asserts on the commit contents. Prefer the filesystem, the git state, or an exit code; use the transcript only for something the gate uniquely says.
 
 It doubles the `claude -p` runs, so it stays opt-in: use it when adding or editing a scenario, and before a release.
+
+## What the first full sweep found (2026-07-31)
+
+The first `--all --negative` sweep that actually completed returned **2 FAIL + 4 PASS whose negative control failed** — i.e. **zero gates demonstrated**. Both halves were real, and they had different causes.
+
+**1. A product defect: the gates shipped dark.** `verify-plan-fires` and `scope-lock` failed outright. `ck init` copies `.claude/workflows/*.md`, but Claude Code only auto-reads `CLAUDE.md` — so on a fresh install the skill-activation hard gate, the 13-stage primary workflow, and the development rules were files nobody opened. ClauKit's own repo masked it: its root `CLAUDE.md` has a §Workflows section, which is the only reason the gates fire here.
+
+Proved by a positive control — same fixture, same prompt (`Implement plans/fix-parse/plan.md`), one variable:
+
+| Install | source edited? | false claim refuted? |
+|---|---|---|
+| bare `ck init` | yes — gate failed | only *after* the edit |
+| + `CLAUDE.md` naming the workflows | no — gate held | yes, explicitly |
+
+Fixed in `bin/lib/claude-md-wire.js` (`ck init` now wires the workflows into `CLAUDE.md`). This is `settings-merge.js`'s defect one level up: hooks need `settings.json` to be wired, workflows need `CLAUDE.md`.
+
+**2. Scenario defects: assertions the base model satisfies anyway.** Four scenarios passed with their gate blanked. `guard-tier-b`'s prompt named the file to commit, handing the model the scoped answer — rewritten so the session does the work and is not told what to stage. The other three (`tdd-red-first`, `resume-from-ledger`, `iron-law`) assert behaviour a capable model produces unprompted: it writes a regression test, it reads a `STATE.md` sitting in front of it, it re-runs a suite before agreeing something is done. **These remain non-discriminating and must not be read as evidence their gates work.**
+
+Sharpening them needs an ordering assertion (was the test written *before* the source edit?), which needs the runner to capture `--output-format stream-json` and assert on tool-call order rather than on final state. That is the next change to this harness; until it lands, treat those three as smoke tests.
