@@ -8,6 +8,8 @@
 
 ClauKit is an opinionated multi-agent orchestration framework that runs inside Claude Code. It ships pre-configured agents, slash commands, skills, and gated workflows via `ck init` (installs `.claude/` into any project). Three installable kits: `engineer` (default, `/ck:` namespace), `marketing` (`/mk:` namespace), `both`.
 
+`ck init` also touches two files it does not simply copy, because copying alone leaves them inert: it merges hook entries into an existing `.claude/settings.json` (`bin/lib/settings-merge.js`), and it wires the kit's workflows into the project's root `CLAUDE.md` (`bin/lib/claude-md-wire.js`) — creating a minimal one when absent, appending a `## Workflows` section when present, and doing nothing when the project already references them. Claude Code only auto-reads `CLAUDE.md`, so without that pointer every gate in `.claude/workflows/` is a file nobody opens.
+
 ## Project Structure
 
 ```

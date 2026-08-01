@@ -17,7 +17,7 @@ Activate the `claude-md` skill — it is the single source of truth for methodol
 Dispatch to the matching operation on {TARGET} per the `claude-md` skill.
 
 ### `init` — create CLAUDE.md from scratch (⚡⚡)
-- **Gate**: {TARGET} must NOT exist — if it does, stop and suggest `verify` or `refactor`.
+- **Gate**: {TARGET} must NOT exist — if it does, stop and suggest `verify` or `refactor`. Exception: an installer stub (carries `<!-- ck:workflows -->`, no other section) is expanded in place, §Workflows kept verbatim.
 - Gather ground truth (README, manifests, docs/, .claude/) → draft per Structure Standard → ≤ 60 lines target.
 - Never invent commands or paths; verify each against disk/manifest before writing.
 - Emit the **5 project-specific fill-in blocks** per the skill: Git & PR · DB changes · Verification before claiming done · Cross-service · **Delivery tail (optional, shipped commented-out and inert — the only place vendor names may appear)**.

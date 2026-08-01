@@ -20,6 +20,7 @@ const { resolveKit, getKitPaths, resolveSourcePath, checkKitPathsAvailable, prin
 const { copyPath } = require("./lib/file-copier");
 const { writeMetadata } = require("./lib/metadata-writer");
 const { mergeSettings } = require("./lib/settings-merge");
+const { wireClaudeMd } = require("./lib/claude-md-wire");
 const { fetchLatestVersion, compareVersions } = require("./lib/github-client");
 const { parseArgs, showHelp } = require("./lib/cli-parser");
 
@@ -72,6 +73,17 @@ function initCommand(options = {}) {
       console.log(`\n   🔗 wired into your existing ${settingsRel}:`);
       for (const a of added) console.log(`      + ${a}`);
     }
+  }
+
+  // Workflows are copied above, but Claude Code only auto-reads CLAUDE.md —
+  // without a pointer there, every gate in .claude/workflows/ is a file nobody
+  // opens. Same class of silent breakage as the settings.json merge above.
+  const wired = wireClaudeMd(projectRoot, kit);
+  if (wired.action === "created") {
+    console.log(`\n   📄 CLAUDE.md created — ${wired.count} workflow(s) wired in.`);
+    console.log(`      Run /ck:claude-md init to expand it with your project's specifics.`);
+  } else if (wired.action === "wired") {
+    console.log(`\n   🔗 wired ${wired.count} workflow(s) into your existing CLAUDE.md (§Workflows appended).`);
   }
 
   writeMetadata(projectRoot, packageJson, kit);

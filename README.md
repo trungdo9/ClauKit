@@ -36,6 +36,8 @@ ck init --kit list            # List available kits
 claude
 ```
 
+`ck init` also wires the kit's workflows into your `CLAUDE.md` — creating a minimal one if you have none, appending a `## Workflows` section if you do, and doing nothing if you already reference them. This is load-bearing, not cosmetic: Claude Code only auto-reads `CLAUDE.md`, so without that pointer the gates in `.claude/workflows/` are files nobody opens. Run `/ck:claude-md init` afterwards to expand the stub with your project's build commands, architecture, and constraints.
+
 > Pull latest with `ck update`. Other install paths (npx, clone-as-template, MCP setup) are collapsed below.
 
 <details>
@@ -78,9 +80,34 @@ ck update            # Pull latest version from GitHub
 ck help              # Show help information
 ```
 
-> `ck init` only copies `.claude/`. Other assets shipped in the package (`.opencode/`, `AGENTS.md`, `docs/`, `CLAUDE.md`) are only available via Option 3 (clone-as-template).
+> `ck init` copies `.claude/` plus `scripts/ck/` (the worktree and context-hygiene helpers), merges hook entries into an existing `.claude/settings.json`, and wires the kit's workflows into your root `CLAUDE.md`. Other assets shipped in the package (`.opencode/`, `AGENTS.md`, `docs/`) are only available via Option 3 (clone-as-template).
 
 </details>
+
+---
+
+## What's New — Durability · Evidence · Cost (since v1.3.9)
+
+v1.3.9 was strong on **surface area** and thin exactly where it mattered: the execution loop. This upgrade was derived from **295 real sessions across two end-users** (1,452 + 1,364 messages) — and the measured failures were never "a missing skill". They were runs killed mid-phase that lost all state, code written against plan claims nobody checked, and whole-tree git commands eating a parallel session's work.
+
+So this release adds almost no surface: **0 new agents, 0 new commands.** It hardens the loop that already existed. Full rationale: [`plans/260730-1359-clauKit-upgrade/plan.md`](./plans/260730-1359-clauKit-upgrade/plan.md).
+
+| | v1.3.9 | now |
+|---|---|---|
+| Skills | 129 | **131** — `run-state`, `verify-plan`, `tdd` (duplicate `programmatic-seo` removed) |
+| Agents · command actions | 29 · 53 | 29 · **56** |
+| Workflows | 14 | **15** — `skill-activation` hard gate |
+| Hooks wired in `settings.json` | 2 | **4** — `guard-destructive`, `file-claims` |
+| `scripts/ck/` helpers | 0 | **8** (+ a shared lib) |
+| Automated tests | 2 shell scripts, both for one hook | **185 tests** (`npm test`) + 6 behavioral scenarios |
+
+**Stop losing work.** A durable per-plan ledger (`plans/<plan>/STATE.md`) means a run killed by a spend limit or a crash resumes by *re-deriving* truth from git and re-running gates — never by trusting the plan's own status claims. See [Flow 9](#flow-9---resume-an-interrupted-run). A two-tier `guard-destructive` hook blocks irreversible shapes (`git stash -u`, `reset --hard`, `clean -fdx`, unguarded `DELETE`/`TRUNCATE`) and declines over-broad staging (`git add -A`, `git commit -am`) **only when a claim registry proves another live session owns an affected file** — then prints the scoped command to run instead. A worktree fleet (`wt-new`/`wt-doctor`/`wt-clean`) provisions isolated trees with a smoke gate, so no agent starts editing against an unproven baseline.
+
+**Evidence before code.** `verify-plan` treats a plan as falsifiable hypotheses — every factual claim gets CONFIRMED / REFUTED / UNVERIFIABLE with a `file:line`, git ref, or verbatim output, and no code is written until the table is approved. `tdd` enforces red-before-green, with the baseline taken from a base-commit worktree (a `git stash` baseline silently no-ops). A scope-lock gate forces a minimal-vs-thorough choice *before* planning. `/ck:review --lenses` fans out four reviewers — adversary, fidelity, blast-radius, convention — none of which ever sees the implementer's reasoning.
+
+**Cost.** Implementation moves to a fresh subagent per phase with artifacts handed over **as file paths**, so the orchestrator's context stops accumulating diffs; a model-tiering matrix makes `model=` mandatory on every dispatch; review and the post-PR delivery tail run headless.
+
+> **Verification status — stated plainly.** The 185 unit tests prove the hooks and scripts behave correctly *when called*. They cannot prove a model obeys a gate under pressure, and most of this release is prompt text. That is what `tests/behavior/` exists for, and its first full sweep **failed** — it caught a P0 install defect (workflow gates shipped unreferenced by any `CLAUDE.md`, so they never loaded; now fixed) and found three scenarios that pass even with their gate deleted. Those three are **not** evidence their gates work. Details in [`tests/behavior/README.md`](./tests/behavior/README.md).
 
 ---
 
@@ -296,7 +323,7 @@ Deterministic large-ish fan-out + verification, **under explicit control** — g
 flowchart LR
     A["/ck:flow &lt;task&gt;"] --> B[Plan phases]
     B --> C{Cost preview<br/>gate}
-    C -->|approve| D[Fan-out / pipeline<br/>over 21 agents]
+    C -->|approve| D[Fan-out / pipeline<br/>over 29 agents]
     C -->|abort| Z[Stop]
     D --> E[Adversarial verify<br/>per finding]
     E --> F[Synthesize<br/>confirmed-only report]
@@ -376,7 +403,7 @@ Specialized journeys with single-command entry points.
 
 **Dispatcher commands** (positional args, no dash): `/ck:plan`, `/ck:fix`, `/ck:git`, `/ck:docs`, `/ck:design`, `/ck:bootstrap`, `/ck:scout`. Combinable `--flags`: `/ck:cook` (`--fast/--auto/--from-plan/--no-test` — `--auto` is the only mode that runs Deploy), `/ck:fix` (`--auto/--review/--quick/--parallel/--flow`), `/ck:review` (`--flow`).
 
-**Controlled orchestration**: `/ck:flow` re-creates Claude Code's dynamic-workflow model on ClauKit's own controllable primitives (markdown recipes + Agent-tool fan-out/pipeline over the 21 agents, 4-axis inheritance, gated + cost-previewed) — it does **NOT** use the native `ultracode` runtime. Use it (or `/ck:fix --flow` / `/ck:review --flow`) for deterministic audits, migrations, and cross-checked reviews; use `/ck:team` when workstreams need persistent sessions + discussion.
+**Controlled orchestration**: `/ck:flow` re-creates Claude Code's dynamic-workflow model on ClauKit's own controllable primitives (markdown recipes + Agent-tool fan-out/pipeline over the 29 agents, 4-axis inheritance, gated + cost-previewed) — it does **NOT** use the native `ultracode` runtime. Use it (or `/ck:fix --flow` / `/ck:review --flow`) for deterministic audits, migrations, and cross-checked reviews; use `/ck:team` when workstreams need persistent sessions + discussion.
 
 ## Multi-Agent Orchestration: `/ck:team` vs `/ck:flow`
 
