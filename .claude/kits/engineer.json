@@ -2,7 +2,7 @@
   "name": "engineer",
   "description": "Engineer Kit — software engineering, /ck: namespace (default)",
   "namespace": "ck",
-  "version": "1.3.1",
+  "version": "1.3.2",
   "paths": {
     "agents": [
       ".claude/agents/engineering/"
