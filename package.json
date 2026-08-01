@@ -1,6 +1,6 @@
 {
   "name": "@trungdo9/ClauKit",
-  "version": "1.3.9",
+  "version": "1.4.0",
   "description": "A CLI tool to initialize Claude agents configuration in your project.",
   "main": "index.js",
   "bin": {
@@ -8,7 +8,7 @@
     "claukit": "./bin/ck.js"
   },
   "scripts": {
-    "test": "bash tests/test-scout-block.sh",
+    "test": "node --test tests/",
     "lint": "echo \"Linting passed\"",
     "link-skills": "node scripts/link-skills.js",
     "semantic-release": "semantic-release"
@@ -33,9 +33,9 @@
   "files": [
     "bin/",
     ".claude/",
+    "scripts/ck/",
     "skills/",
     ".opencode/",
-    "plans/",
     "docs/",
     "AGENTS.md",
     "CLAUDE.md",

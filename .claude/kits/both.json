@@ -25,6 +25,7 @@
     ],
     "workflows": [
       ".claude/workflows/primary-workflow.md",
+      ".claude/workflows/skill-activation.md",
       ".claude/workflows/development-rules.md",
       ".claude/workflows/orchestration-protocol.md",
       ".claude/workflows/documentation-management.md",
@@ -39,11 +40,23 @@
       ".claude/workflows/marketing-rules.md",
       ".claude/workflows/automation-rules.md"
     ],
+    "hooks": [
+      ".claude/hooks/"
+    ],
+    "scripts": [
+      "scripts/ck/"
+    ],
+    "statusline": [
+      ".claude/statusline.js",
+      ".claude/statusline.sh",
+      ".claude/statusline.ps1"
+    ],
     "config": [
       ".claude/settings.json",
       ".claude/mcp.json",
       ".claude/.env.example",
-      ".claude/.mcp.json.example"
+      ".claude/.mcp.json.example",
+      ".claude/.gitignore"
     ]
   },
   "requires": {

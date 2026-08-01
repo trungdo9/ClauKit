@@ -74,6 +74,15 @@ Enterprise-grade features and deployment options.
 
 ## Current Development Focus
 
+### 0. Durability–Evidence–Cost upgrade — SHIPPED 2026-07-31 (plan `260730-1359-clauKit-upgrade`)
+Closed the gap between documented behaviour and what 295 real sessions needed:
+- **Durability**: `run-state` ledger (`plans/<plan>/STATE.md`) + resume protocol; interruption-proof multi-phase runs
+- **Safety**: `guard-destructive` (2-tier, claim-aware) + `file-claims` hooks; scout-block precision fix; smoke-gated worktree fleet (`wt-new`/`wt-doctor`/`wt-clean`); scoped commits; DB safe-writes protocol
+- **Evidence**: `verify-plan` falsification gate, `tdd` red-green discipline, scope-lock, remote-truth + baseline verification rows, multi-lens review, `pr-body.md` fill contract
+- **Cost**: fresh-implementer-per-phase, artifacts-as-files scripts, model-tiering matrix + 529 fallback, headless `ci-review`/`delivery-tail`
+- **Verification**: `node:test` harness (92 tests) + behavioral eval harness (6 scenarios, `tests/behavior/`) + governance rule for behavioural skills
+- Remaining follow-ups: run the full behavioral sweep pre-release (5 scenarios pending, `guard-tier-b` verified live); measure a representative `/ck:cook` token cost before/after Phase 3 (Part H verification)
+
 ### 1. Agent System Enhancement
 - Document and optimize existing 16 agents
 - Expand agent capabilities based on usage patterns
@@ -184,7 +193,7 @@ Enterprise-grade features and deployment options.
 - **Relocated** `copywriter` agent `engineering/` → `marketing/` — it's a marketing-kit persona; engineer kit no longer ships it, and `.claude/kits/marketing.json` no longer lists it under `requires.shared`.
 - **Purged** stale `imagemagick` skill references (skill was deleted long ago alongside `media-processing`) — image/video gen and editing now routes through the `ai-multimodal` skill.
 - **Rewrote** `/ck:cook` command: named stages (Gate → Research → Plan → Implement → Test → Review → Docs → Report), loop cap of max 3 fix cycles per gate, `--auto`+`--no-test` combo forbidden, `--from-plan` extracts the 5 gate items from a plan with `[ASSUMED]` logging, `/clear` handoff offered after Plan approval, subagent reports now go to `plans/<plan>/reports/`. Paired `cook` skill (`.claude/skills/software/cook/`) updated to match.
-- Verified ground-truth counts (filesystem, 2026-07-17): 29 agents (18 engineering + 11 marketing), 38 command files (26 `ck/` + 12 `mk/`), 128 `SKILL.md` files (software 69 · marketing 50 · global 1 · automation 6 · integrations 2).
+- Verified ground-truth counts (filesystem, 2026-07-17): 29 agents (17 engineering + 12 marketing), 37 command files (25 `ck/` + 12 `mk/`), 131 `SKILL.md` files (software 69 · marketing 50 · global 1 · automation 6 · integrations 2).
 - **Added** `obsidian` knowledge-only skill (`software/obsidian/` — SKILL.md + 4 lazy-loaded references) teaching Obsidian-flavored markdown (wikilinks, embeds, callouts, block refs), typed YAML frontmatter (merge-never-overwrite), vault conventions + link-integrity on rename/move, and an optional live-vault Local REST API MCP path (plugin ≥ 4.1.3, CVE-gated). No agent/command/runtime code — operates on plain `.md` files with normal tools. Exposed to marketing kit via `.claude/kits/marketing.json`; engineer/both auto-cover through the broad `software/` path.
 
 ### In Development

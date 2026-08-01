@@ -1,6 +1,6 @@
 ---
 description: ⚡⚡⚡ Scan & analyze the codebase.
-argument-hint: [tasks-or-prompt] [--flow]
+argument-hint: [tasks-or-prompt] [--flow] [--lenses]
 ---
 
 Think harder to scan + analyze the codebase. Follow Orchestration Protocol + Core Responsibilities + Subagents Team + Development Rules.
@@ -62,6 +62,28 @@ Dedup → confirmed-only report (main-session orchestrator, gated/inspectable)
 - Confirmed-only report avoids alarm-fatigue from unverified findings; dropped findings logged for inspection.
 
 **Examples:** `/ck:review --flow` · `/ck:review --flow src/payments`
+
+## Multi-Lens Variant (`--lenses`, composable with `--flow`)
+
+**Opt-in** — default `/ck:review` stays single-reviewer; this is a genuine ~4× on the review stage. **Auto-suggest it only above a risk threshold**: >~200 changed lines, >3 files, or the diff touches auth / payments / migrations / a cross-service boundary.
+
+Fan out **4 reviewers concurrently in one message**, each with a distinct lens.
+
+→ **The lens table, the context rules and the reconcile step are canonical in [`code-review` skill § Multi-Lens Review](../../skills/software/code-review/SKILL.md).** They are not restated here: duplicating them into two documents is how they drift apart, and this file already named that skill as their owner.
+
+Command-only additions:
+
+| Lens | Model tier for the dispatch |
+|---|---|
+| **ADVERSARY** | escalate on risky diffs |
+| **FIDELITY** | standard |
+| **BLAST RADIUS** | cheap, narrow prompt |
+| **CONVENTION** | cheap, narrow prompt |
+
+- Build the package first: `node scripts/ck/review-package.js <BASE> [HEAD] --plan <plan>` — hand each lens the **path**, never an inline diff.
+- Composable with `--flow`; the reconcile step runs in the main session.
+
+**Examples:** `/ck:review --lenses` · `/ck:review --lenses --flow plans/<plan>` 
 
 ## Notes
 - Concise grammar, list unresolved questions at end.

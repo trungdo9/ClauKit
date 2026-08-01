@@ -1,30 +1,42 @@
 ---
-description: Git operations dispatcher (flags cm cp pr merge)
-argument-hint: cm | cp | pr [to-branch] [from-branch] | merge [pr-number|target-branch]
+description: Git operations dispatcher (flags cm cp pr merge finish)
+argument-hint: cm | cp | pr [to-branch] [from-branch] [--no-handoff] [--ready] | merge [pr-number|target-branch] | finish
 ---
 
 ## Variables
 
-ACTION: $1 (one of `cm`, `cp`, `pr`, `merge`)
+ACTION: $1 (one of `cm`, `cp`, `pr`, `merge`, `finish`)
 ARG1: $2
 ARG2: $3
+FLAGS: `--no-handoff` (skip declared handoff steps — WIP PR mid-ticket) · `--ready` (open PR non-draft)
 
 ## Workflow
 
-Dispatch to the matching operation based on {ACTION}. Use `git-manager` agent for all git/GitHub work.
+Dispatch to the matching operation based on {ACTION}. Use `git-manager` agent for all git/GitHub work. The `git` skill is the canonical knowledge (scoped commits, finish-branch, delivery-tail semantics); this command is the trigger.
 
-### `cm` — commit only
-- Stage all files and create a meaningful commit based on the changes.
-- **DO NOT push** to remote.
+→ **Three protocols are canonical in the [`git` skill](../../skills/software/git/SKILL.md)** and are deliberately not restated here — this file declared that skill their owner one line above, and a protocol written down twice drifts:
+> **Scoped Commits** · **Finish-Branch Protocol** · **Delivery Tail — execution semantics**
 
-### `cp` — commit + push
-- Stage all files, create a meaningful commit, and push to remote.
+Only the dispatch differences live below.
 
-### `pr` — create pull request
-- TO_BRANCH: {ARG1} (defaults to `main`)
-- FROM_BRANCH: {ARG2} (defaults to current branch)
-- Create a PR from {FROM_BRANCH} → {TO_BRANCH}.
-- If `gh` is not installed/authorized, instruct user to install and authorize GitHub CLI first.
+### `cm` — commit only (scoped) / `cp` — commit + push
+
+→ git skill § **Scoped Commits**. Manifest comes from `node .claude/hooks/file-claims.js list` (the `MINE` rows). `cp` additionally pushes.
+
+### `pr` — non-interactive finish: verify → self-review → draft PR → declared tail → teardown
+
+TO_BRANCH: {ARG1} (defaults to `main`) · FROM_BRANCH: {ARG2} (defaults to current branch)
+
+→ git skill § **Finish-Branch Protocol** for the ordering, the Iron-Law gate, draft-default, the `pr-body.md` fill contract and the auth-failure paste-ready rule.
+→ git skill § **Delivery Tail** for step 5's semantics. Runner: `node scripts/ck/delivery-tail.js` (`--dry-run` to review, `--approve` to arm).
+
+Flags: `--ready` opens the PR undrafted · `--no-handoff` skips the tail (a WIP PR mid-ticket).
+
+### `finish` — interactive: verify → menu → done
+
+Same protocol, with a stop for the pick instead of going straight to a PR:
+- **merge locally** (into TO_BRANCH, `--ff-only` preferred) · **push + PR** (→ `pr` above) · **keep as-is** (report branch + how to resume)
+- On detached HEAD the local-merge option is not offered.
 
 ### `merge` — merge PR or branch (interactive)
 Detect context, then **ask the user** to confirm the merge strategy before acting:
@@ -34,8 +46,10 @@ Detect context, then **ask the user** to confirm the merge strategy before actin
    - **Local merge** — checkout target branch, pull, merge current branch in, push.
 3. Wait for user's choice, then execute.
 4. If {ARG1} is a number → treat as PR number. If a string → treat as target branch.
+5. **Merged-status claims require remote truth:** `git fetch origin` + inspect `origin/<branch>` / `git branch -r --contains` before reporting anything merged — local branch state is not evidence.
 
 ## Notes
-- If {ACTION} is missing or not one of the four above, print usage and exit.
-- For `pr` and `merge`, require `gh` CLI for GitHub operations; otherwise guide the user to install/auth it.
-- **NEVER** force-push, reset hard, or skip hooks unless the user explicitly asks.
+- If {ACTION} is missing or not one of the five above, print usage and exit.
+- Append one `STATE.md` line per delivery-tail step and for the PR itself (run-state skill).
+- **NEVER** force-push, reset hard, or skip hooks unless the user explicitly asks (the guard-destructive hook enforces this).
+- No AI attribution anywhere: commits, PR bodies, trailers (`includeCoAuthoredBy: false` + development rules).

@@ -1,5 +1,41 @@
 # Output Standards & Quality
 
+## Mandatory Plan Blocks (rigor)
+
+### Global Constraints
+One block near the top of `plan.md`: project-wide requirements with **values copied verbatim** — file-size limits, framework versions, naming schemes, forbidden dependencies, target paths. Implicitly part of every phase. Never "see CLAUDE.md" — the value itself, inline, so a phase-scoped implementer cannot miss it.
+
+### Interfaces (per phase)
+```markdown
+**Interfaces**
+- Consumes: `parseClaims(raw: string): Claim[]` (from phase 2, `src/claims/parse.ts`)
+- Produces: `resolveConflicts(claims: Claim[], session: string): Conflict[]` — exported from `src/claims/resolve.ts`
+```
+Exact signatures and types. A fresh implementer reading only its phase learns every neighboring name it must call or provide.
+
+### No Placeholders
+Ban list (each is a plan failure, not shorthand): `TBD` · "add appropriate error handling" · "similar to Phase N" · "write tests for the above" · "handle edge cases". If the plan can't state it concretely, the planning isn't done.
+
+### Exit gate per phase (executable)
+```markdown
+**Exit gate:** `npm test -- claims.test.js` → 12 pass, 0 fail
+```
+A command / test id / query **plus its expected result** — not prose ("tests pass"). These gates are what `run-state` resume re-runs to verify a phase is genuinely complete, and what STATE.md gate lines cite as evidence.
+
+### Scope options table (when the task could span >1 repo/layer)
+| Option | Repos/layers touched | Conventions followed / broken | Recommended |
+|---|---|---|---|
+| A (minimal) | … | … | ✓ |
+| B (thorough) | … | … | |
+Record which option was picked. Produced by cook's scope-lock gate; the rejected option feeds the PR body's Tradeoffs section.
+
+### Self-review checklist (before hand-over)
+- [ ] every requirement maps to a phase (spec coverage)
+- [ ] placeholder scan clean (`grep -inE 'TBD|appropriate|similar to phase' plan.md phase-*.md`)
+- [ ] Interfaces blocks consistent across phases (names/types agree)
+- [ ] every phase gate is a runnable command with a stated expected result
+- [ ] Global Constraints values verbatim, not referenced
+
 ## Task Breakdown
 
 - Transform complex requirements into manageable, actionable tasks

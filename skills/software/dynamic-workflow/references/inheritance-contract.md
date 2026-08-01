@@ -14,7 +14,7 @@ All stages read and write a **shared report directory**: `plans/<plan>/reports/`
 
 ## Axis 2 — persona (the agent bridge)
 
-Each stage routes to one of the **21 existing agents** via the Agent tool's `subagent_type`. **Zero new agent code** — the 21 agents ARE the persona library. The model is implemented purely by pointing `subagent_type` at the right persona.
+Each stage routes to one of the **29 existing agents** via the Agent tool's `subagent_type`. **Zero new agent code** — the 29 agents ARE the persona library. The model is implemented purely by pointing `subagent_type` at the right persona.
 
 | Stage intent | `subagent_type` | Example use |
 |---|---|---|

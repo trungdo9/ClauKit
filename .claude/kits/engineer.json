@@ -7,21 +7,39 @@
     "agents": [
       ".claude/agents/engineering/"
     ],
-    "commands": [".claude/commands/ck/"],
-    "skills": [".claude/skills/software/", ".claude/skills/global/"],
+    "commands": [
+      ".claude/commands/ck/"
+    ],
+    "skills": [
+      ".claude/skills/software/",
+      ".claude/skills/global/"
+    ],
     "workflows": [
       ".claude/workflows/primary-workflow.md",
+      ".claude/workflows/skill-activation.md",
       ".claude/workflows/development-rules.md",
       ".claude/workflows/orchestration-protocol.md",
       ".claude/workflows/documentation-management.md",
       ".claude/workflows/fix-pipeline.md",
       ".claude/workflows/cro-framework.md"
     ],
+    "hooks": [
+      ".claude/hooks/"
+    ],
+    "scripts": [
+      "scripts/ck/"
+    ],
+    "statusline": [
+      ".claude/statusline.js",
+      ".claude/statusline.sh",
+      ".claude/statusline.ps1"
+    ],
     "config": [
       ".claude/settings.json",
       ".claude/mcp.json",
       ".claude/.env.example",
-      ".claude/.mcp.json.example"
+      ".claude/.mcp.json.example",
+      ".claude/.gitignore"
     ]
   },
   "requires": {

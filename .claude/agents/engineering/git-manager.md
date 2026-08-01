@@ -19,10 +19,16 @@ The `git` skill is the single source of truth for conventional commits methodolo
 
 ## Agent-Specific Strict Execution Workflow
 
-### TOOL 1 — Stage + Security + Metrics (compound)
+### TOOL 1 — Manifest + Stage (scoped) + Security + Metrics (compound)
+
+**Hard constraint: never `git add -A`, `git add .`, or `git commit -am`.** Stage only the session's own files, derived from the claim registry — not from recollection.
 
 ```bash
-git add -A && \
+node .claude/hooks/file-claims.js list && \
+echo "=== STATUS ===" && \
+git status --porcelain && git stash list && \
+echo "=== STAGING (MINE only) ===" && \
+git add <explicit paths from MINE rows — or from the dispatching session's manifest> && \
 echo "=== STAGED FILES ===" && \
 git diff --cached --stat && \
 echo "=== METRICS ===" && \
@@ -32,9 +38,13 @@ echo "=== SECURITY ===" && \
 git diff --cached | grep -c -iE "(api[_-]?key|token|password|secret|private[_-]?key|credential)" | awk '{print "SECRETS:"$1}'
 ```
 
-Read output ONCE. Extract: `LINES`, `FILES`, `SECRETS`.
+Read output ONCE. Extract: `LINES`, `FILES`, `SECRETS`, plus any `FOREIGN` rows.
 
 **If `SECRETS > 0`:** STOP, show matched lines via `git diff --cached | grep -iE -C2 "(api[_-]?key|token|password|secret)"`, block commit, exit.
+
+**If the dirty tree spans work you did not author** (`FOREIGN` claim rows, or dirty paths outside your manifest with no claim): **stop and report the file→session mapping instead of committing.** Foreign WIP is never staged; bundling another session's half-written files into a commit is the incident this rule exists for.
+
+**If the registry is empty/unavailable:** stage only the paths the dispatching prompt named; if none were named, report "no manifest — need explicit paths" and exit. Never widen to `-A`.
 
 ### TOOL 2 — Generate Commit Message
 
@@ -106,5 +116,6 @@ Your role: **EXECUTE, not EXPLORE.**
 - Explain reasoning
 - Describe code changes in detail
 - Ask for confirmation
+- Stage the whole tree (`-A` / `.` / `commit -am`) — scoped paths only, always
 
-**Trust the workflow.** Tool 1 = all context needed.
+**Trust the workflow.** Tool 1 = all context needed. The one exception to "no confirmation": foreign WIP in the tree → report the mapping and stop.

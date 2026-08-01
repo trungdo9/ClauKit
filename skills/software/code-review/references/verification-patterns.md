@@ -34,6 +34,18 @@ Companion to `verification-before-completion.md`. Concrete patterns per claim ty
 ❌ "I've written a regression test" (without red-green verification)
 ```
 
+**Merged / deployed status:**
+```
+✅ git fetch origin && git branch -r --contains <sha>  [See: origin/main] "Merged to origin/main"
+❌ "The branch shows merged locally" / "the PR was approved" (stale local state reported as fact — happened twice in the source data)
+```
+
+**Pre-existing failure (baseline):**
+```
+✅ node scripts/ck/wt-new.js baseline --base <sha> → run suite in that worktree → compare failure sets
+❌ git stash → run → stash pop (the stash can silently no-op; the "baseline" is your dirty tree)
+```
+
 **Build:**
 ```
 ✅ [Run build] [See: exit 0] "Build passes"

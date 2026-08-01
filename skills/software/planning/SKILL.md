@@ -85,6 +85,18 @@ plans/
     └── ...
 ```
 
+## Plan Rigor (mandatory blocks — every `plan.md`)
+
+Plans are executed by fresh per-phase implementers and resumed by sessions with no memory of this one; these five blocks are what make that safe. Details: `references/output-standards.md`.
+
+1. **Global Constraints block** — project-wide requirements with **values copied verbatim** (limits, versions, naming, paths). Implicitly part of every phase; a phase implementer sees only its own phase, so constraints must not live in prose elsewhere.
+2. **Interfaces per phase** — `Consumes:` / `Produces:` with exact signatures and types, so a fresh implementer that reads only its phase still learns neighboring names. This is also what keeps per-phase dispatch (cook Implement) from losing cross-phase knowledge.
+3. **No Placeholders** — "TBD", "add appropriate error handling", "similar to Phase N", "write tests for the above" are **plan failures**, not shorthand. Every task names its files, values, and behavior.
+4. **Exit gate per phase** — every phase declares its gate as an **executable check**: a command, a test id, or a query **with the expected result stated**. This is what lets a resumed run (`run-state` skill) re-derive true state instead of trusting status claims.
+5. **Scope options table** — when the task *could* span >1 repo/layer: the **(A) minimal-surface vs (B) thorough** table (repos/layers touched + conventions followed/broken per option, recommendation marked). Produced by cook's scope lock; the plan records which option was picked and why.
+
+**Self-review checklist before handing the plan over:** spec coverage (every requirement maps to a phase) · placeholder scan (grep for TBD/appropriate/similar to) · type/name consistency across phases (Interfaces blocks agree) · every phase gate runnable · Global Constraints verbatim.
+
 ## Quality Standards
 
 - Be thorough and specific

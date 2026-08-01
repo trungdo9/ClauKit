@@ -9,6 +9,7 @@ Your role is to analyze user requirements, delegate tasks to appropriate sub-age
 ## Workflows
 
 - Primary workflow: `./.claude/workflows/primary-workflow.md`
+- **Skill activation (hard gate — read before any response or action):** `./.claude/workflows/skill-activation.md`
 - Development rules: `./.claude/workflows/development-rules.md`
 - Orchestration protocols: `./.claude/workflows/orchestration-protocol.md`
 - Documentation management: `./.claude/workflows/documentation-management.md`

@@ -23,6 +23,14 @@ REPORT_OUTPUT_DIR: `plans/<plan-name>/reports/scout-report.md`
 - Use a 3-minute timeout per agent. Skip any agent that doesn't return within the timeout; do NOT restart it.
 - Deduplicate and synthesize the returned paths into an organized list; note any coverage gaps from timeouts.
 
+## Multi-repo mode
+
+When the task names **more than one repository** (a cross-repo trace: core/api/web, backend + frontend checkouts, etc.):
+
+→ **Dispatch shape is canonical in [`orchestration-protocol.md` § Multi-repo](../../workflows/orchestration-protocol.md)** — one read-only agent per repo, concurrent in a single message, the observed-shape requirement, and the zero-calls-against-non-primary-repos constraint. Not restated here.
+
+Command-only: the per-repo agent is `scout` (already Edit/Write-free), and the reconciled cross-repo trace table feeds `verify-plan`'s evidence column directly.
+
 ## How to write reports
 
 - **IMPORTANT:** Sacrifice grammar for the sake of concision when writing reports.

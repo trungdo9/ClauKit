@@ -1,12 +1,12 @@
 ---
-description: ⚡⚡ Analyze and fix issues (variants ci logs test types ui · combinable --auto --review --quick --parallel --flow)
-argument-hint: [issues] [ci|logs|test|types|ui] [--auto] [--review] [--quick] [--parallel] [--flow]
+description: ⚡⚡ Analyze and fix issues (variants ci logs test tdd types ui · combinable --auto --review --quick --parallel --flow)
+argument-hint: [issues] [ci|logs|test|tdd|types|ui] [--auto] [--review] [--quick] [--parallel] [--flow]
 ---
 
 ## Variables
 
 ARGS: `$ARGUMENTS` (full input)
-VARIANT: `$1` if it matches one of `ci`, `logs`, `test`, `types`, `ui`; else absent
+VARIANT: `$1` if it matches one of `ci`, `logs`, `test`, `tdd`, `types`, `ui`; else absent
 MODIFIERS: any `--auto`, `--review`, `--quick`, `--parallel`, `--flow` flags (combinable)
 ISSUES: ARGS minus VARIANT and MODIFIERS
 
@@ -58,6 +58,8 @@ Turns the two prose gates into **discrete, inspectable agent stages** ([2.5] Sco
 | Final: summary → ask commit/push → `git-manager` | ✓ | ✓ | ✓ | ✓ |
 
 **Failure loop (circuit breaker):** verification failure → back to [3] (re-diagnose). Max **3 attempts** — on 3rd fail, STOP and escalate to user (suspected architecture issue). Review failure → back to [5] (re-implement + retest).
+
+**Ledger (run-state skill):** append one line to `plans/<plan>/STATE.md` after the Root-Cause Gate ([3.5], the diagnosis + evidence) and after Verify ([6], suite output) — a killed fix run resumes from the ledger, not from recollection. After [3.5], the root cause is itself a falsifiable claim: when it asserts existing behaviour ("X currently does Y"), run the `verify-plan` skill's evidence check on it before implementing.
 
 ### Thinking budget by flag combo
 
@@ -129,7 +131,19 @@ Each variant follows the **Fix Pipeline** ([.claude/workflows/fix-pipeline.md](.
 - **Stage [7]** (review): `code-reviewer` subagent (quick pass).
 - **Failure loop:** back to stage [3] (re-diagnose). Max 3 attempts → escalate to user.
 
-**Distinct:** input = running test suite. `tester` runs BEFORE `debugger` (inverse of other variants).
+**Distinct:** input = running test suite. `tester` runs BEFORE `debugger` (inverse of other variants). For a **production symptom** with no red suite yet, use `tdd` instead.
+
+### `tdd` — production-symptom red-green (⚡⚡)
+
+**Input:** a production symptom (bug report, incident, wrong output) — NOT an already-failing suite (that's `test`).
+
+<issues>{ISSUES}</issues>
+
+→ **The loop is canonical in the [`tdd` skill](../../skills/software/tdd/SKILL.md)**: toolchain proof → red test with pasted failure → baseline → green sweep → prove. Iron Law: no production code without a failing test first. The **baseline rule** (base commit in a separate worktree, never `git stash`, because a stash-based baseline silently no-ops) is stated there once — this command does not restate it.
+
+Command-only: run the baseline worktree with `node scripts/ck/wt-new.js baseline --base <sha>`, append `gate tdd → PASS (evidence: <suite output>)` to `plans/<plan>/STATE.md`, and **escalate only** on a data change needing approval or an unrepairable env blocker.
+
+**Distinct from `test`:** different inputs — `test` starts from a red suite; `tdd` starts from a production symptom and *creates* the red test. Both stay.
 
 ### `types` — typecheck-driven, minimal (⚡)
 

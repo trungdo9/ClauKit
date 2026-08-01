@@ -32,7 +32,7 @@ For **campaign** — load `.claude/workflows/seo-workflow.md` and drive the full
 - **`ai`** — AI-search optimization (GEO — ChatGPT, Perplexity, Claude citations)
   - skills: `seo-geo`
 - **`programmatic`** — Programmatic SEO — template pages at scale
-  - skills: `seo-programmatic`, `programmatic-seo`
+  - skills: `seo-programmatic`
 - **`schema`** — JSON-LD schema generation + validation
   - skills: `seo-schema`
 - **`plan`** — Article-production PLAN — seed keyword (or existing site) → topic cluster + prioritized, gap-analyzed writing backlog. Stops for human review before any writing. For an existing WordPress site, runs the inventory→audit→cluster→prioritize playbook.

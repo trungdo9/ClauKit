@@ -56,6 +56,7 @@ EXPLAIN ANALYZE SELECT * FROM users WHERE email = 'alice@example.com';
 - **[postgresql-psql-cli.md](references/postgresql-psql-cli.md)** — psql commands, meta-commands, scripting
 - **[postgresql-performance.md](references/postgresql-performance.md)** — EXPLAIN, query optimization, vacuum, indexes
 - **[postgresql-administration.md](references/postgresql-administration.md)** — User management, backups, replication, maintenance
+- **[safe-writes.md](references/safe-writes.md)** — **the DB write protocol (mandatory for every mutation)**: reviewed script file → dry-run SELECT with exact row count → paired rollback in the same commit → explicit approval → single-statement comment-free SQL → post-evidence re-count
 
 ## Resources
 

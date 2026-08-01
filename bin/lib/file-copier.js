@@ -82,6 +82,27 @@ function copyFileSafe(src, dst) {
   fs.writeFileSync(dst, buf);
 }
 
+/** Files under dst that the kit does not ship — i.e. the user's own. */
+function filesNotShipped(src, dst) {
+  const walk = (dir, base = "") => {
+    let out = [];
+    let entries;
+    try {
+      entries = fs.readdirSync(dir, { withFileTypes: true });
+    } catch {
+      return out;
+    }
+    for (const e of entries) {
+      const rel = base ? `${base}/${e.name}` : e.name;
+      if (e.isDirectory()) out = out.concat(walk(path.join(dir, e.name), rel));
+      else out.push(rel);
+    }
+    return out;
+  };
+  const shipped = new Set(walk(src));
+  return walk(dst).filter((f) => !shipped.has(f));
+}
+
 /**
  * Copy a single path (file or directory).
  * Returns: "copied" | "skipped" | "warned"
@@ -96,16 +117,26 @@ function copyPath(src, dst, options = {}) {
   // de-symlinked location (skills/) while dest keeps the .claude/ layout.
   const relDst = path.relative(process.cwd(), dst);
 
+  const stat = fs.lstatSync(src);
+
   if (fs.existsSync(dst)) {
-    if (options.force) {
-      fs.rmSync(dst, { recursive: true, force: true });
-    } else {
+    if (!options.force) {
       console.log(`   ⚠️  SKIP (exists): ${relDst}`);
       return "skipped";
     }
+    // --force used to `rmSync(dst, {recursive:true})`. Once a kit shipped a
+    // destination OUTSIDE .claude/ (scripts/ck/), that recursively deleted a
+    // top-level user directory — a project's own scripts/ck/deploy.js vanished
+    // with no warning. Overwrite what we ship; never delete what we don't.
+    if (stat.isDirectory()) {
+      const foreign = filesNotShipped(src, dst);
+      copyDirectory(src, dst);
+      console.log(`   ✅ ${relDst} (overwritten)${foreign.length ? ` · kept ${foreign.length} file(s) you own` : ""}`);
+      return "copied";
+    }
+    console.log(`   ⚠️  OVERWRITING: ${relDst}`);
   }
 
-  const stat = fs.lstatSync(src);
   if (stat.isDirectory()) {
     copyDirectory(src, dst);
   } else {

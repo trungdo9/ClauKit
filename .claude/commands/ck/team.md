@@ -19,6 +19,8 @@ argument-hint: <template> [context] [--devs N|--researchers N|--reviewers N|--de
 - Sacrifice grammar for the sake of concision when writing reports.
 - In reports, list any unresolved questions at the end, if any.
 
+**Environment pre-flight (mandatory for `cook` template / any editing teammates):** teammates editing the same tree is the #1 lost-work shape. Provision **one worktree per editing teammate** via `node scripts/ck/wt-new.js <teammate-id>` (smoke-gated), verify each with `node scripts/ck/wt-doctor.js` (**unhealthy → don't dispatch that teammate**), record paths in `plans/<plan>/STATE.md`, and tear down with `node scripts/ck/wt-clean.js <path>` after merge. Read-only teammates (research/review) may share the main tree.
+
 ---
 
 ## Argument & Template Resolution
@@ -106,7 +108,7 @@ Per skill's Failure Recovery section:
 ## Relationship to Other Commands
 
 - **Subagents** — single-session multi-agent delegation via `Agent` tool. Use when work is sequential or fan-out without persistent teammates.
-- `/ck:flow` — gated, inheritance-aware controlled orchestration (fan-out/pipeline over the 21 agents). Prefer it over a team for **deterministic fan-out + verify** (audit / migration / cross-checked review) that needs no discussion or cross-session memory. `/ck:team` is for persistent peers that must talk.
+- `/ck:flow` — gated, inheritance-aware controlled orchestration (fan-out/pipeline over the 29 agents). Prefer it over a team for **deterministic fan-out + verify** (audit / migration / cross-checked review) that needs no discussion or cross-session memory. `/ck:team` is for persistent peers that must talk.
 - `/ck:cook` — gated feature lifecycle (Plan → Code → Test → Docs → Deploy) for a single feature. Use `/ck:team cook` only when 3+ features can be developed in parallel.
 - `/ck:plan` — generates a plan; pair with `/ck:team cook plan.md` to parallelize implementation across devs.
 - `/ck:debug` — single-session debug. Use `/ck:team debug` only when competing hypotheses need head-to-head evaluation.

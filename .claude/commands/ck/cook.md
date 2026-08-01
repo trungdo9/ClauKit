@@ -40,6 +40,14 @@ Think harder to drive the following feature end-to-end. Follow the cook skill me
 
 **Loop cap (all modes):** max **3 fix cycles per gate** (Test, Review). On the 3rd failure: halt, run the `retro` skill ([.claude/skills/software/retro/SKILL.md](.claude/skills/software/retro/SKILL.md)) on spec/scope, ask the user.
 
+## Environment Pre-flight (before the first edit)
+
+Planning and verification are read-only — isolation is needed before the **first edit**, not the first thought. **Detect early, provision late:**
+1. **Detect (free, at start):** `node .claude/hooks/file-claims.js list` → any `FOREIGN` claim means another live session is editing this tree. A dirty `git status --porcelain` containing work you didn't author counts too.
+2. **Provision (before the first edit):** if either fired, create an isolated worktree via `node scripts/ck/wt-new.js <plan-slug>` (worktree skill: absolute path outside the repo, per-worktree deps, smoke gate on the base commit).
+3. Run `node scripts/ck/wt-doctor.js` on the tree you will edit; **unhealthy → refuse to proceed** until the environment is fixed.
+4. Record the worktree path in `plans/<plan>/STATE.md` (run-state skill) so a resume lands in the right tree.
+
 ## Workflow
 
 Stages are named; numbering lives in the cook skill (source of truth).
@@ -48,8 +56,13 @@ Stages are named; numbering lives in the cook skill (source of truth).
 
 * Activate the `cook` skill; run its Stage 0 gate: derive the 5 items (expected output, acceptance criteria, scope boundary, constraints, touchpoints). Missing item → STOP, ask the user ONE question at a time. Mode behavior (`--auto` assumes + logs; `--from-plan` extracts from plan) is defined in the skill.
 * The gate is **UNSKIPPABLE**. `--fast` and `--auto` never bypass it; `--from-plan` satisfies it from the plan file.
+* **Scope lock (item 3, defended):** when the task *could* span >1 repo/layer, emit the skill's A/B minimal-vs-thorough table (repos/layers touched + conventions followed/broken per option) and **halt for the pick** before planning. `--auto`: pick A, `[ASSUMED]`-log. Never create unrequested artifacts in a PR-bound branch.
 * Analyze the skills catalog via `/ck:find` (don't read the full registry); activate what's needed (e.g. `planning`, `research`, `code-review`, `scenario`, `test-automation`).
-* If `--from-plan`: read the plan end-to-end, map dependencies, list ambiguities, then jump to **Implement**.
+* If `--from-plan`: read the plan end-to-end, map dependencies, list ambiguities, then run **Verify-Plan** before **Implement**.
+
+### Verify-Plan (Stage 0.5)
+
+**Mandatory when `--from-plan`; elsewhere run iff the plan asserts ≥1 falsifiable claim about existing behaviour.** Activate the `verify-plan` skill ([.claude/skills/software/verify-plan/SKILL.md](.claude/skills/software/verify-plan/SKILL.md)): extract every factual claim, prove/disprove each with git evidence + read-only queries + file reads, write the table to `plans/<plan>/reports/plan-verification.md`. **No code until the table is approved**; any REFUTED load-bearing claim → back to `planner`. Append the gate result to `STATE.md`.
 
 ### Research
 
@@ -68,10 +81,13 @@ Stages are named; numbering lives in the cook skill (source of truth).
 ### Implement
 
 * Read the plan general overview only; implement phases one by one — do **not** load all phases at once.
+* **Fresh implementer subagent per phase** (cook skill "Implement" section is the contract): main session keeps only the loop, gates, and ledger. Dispatch = 1 line of context + **brief file path** (`node scripts/ck/phase-brief.js <plan> <N>`) + cross-phase interfaces + known ambiguity resolutions + report path. **Never paste session history; keep dispatches <2k chars.** Statuses: `DONE`/`DONE_WITH_CONCERNS`/`NEEDS_CONTEXT`/`BLOCKED`.
 * Frontend (UI, components, pages, styling/design) → `frontend-developer` (activates `aesthetic` + `frontend-design` skills for design work; `ai-multimodal` skill to generate + verify image assets).
 * Backend (APIs, database, server) → `backend-developer`.
+* Never two implementers in parallel on the same tree (worktree per editing agent).
 * `project-manager` updates phase progress in the plan file between phases.
-* After each phase: type-check + compile; resolve syntax errors before continuing.
+* After each phase: type-check + compile; resolve syntax errors before continuing. **Verify the agent produced a diff** (`git diff --stat`) before recording the phase complete — a dead agent reports nothing and changes nothing; append `phase N: agent died (no diff) — redispatch` to `STATE.md` and redispatch.
+* Append one `STATE.md` line per phase (run-state skill): `phase <N>: complete (commits <a7>..<b7>, tests <X/Y>, …)`.
 
 ### Test
 

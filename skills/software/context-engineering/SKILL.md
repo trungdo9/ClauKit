@@ -105,6 +105,7 @@ See `references/`:
 - `langchain-four-bucket-strategy.md` — Write/Select/Compress/Isolate canonical model
 - `neo4j-context-vs-prompt.md` — discipline definition & graph-as-substrate
 - `mem0-context-engineering-guide.md` — practical memory + RAG patterns
+- `model-tiering.md` — **model-tier dispatch matrix** (always name `model` explicitly; turn count beats token price; 529 fallback + dead-agent detection). Referenced by `orchestration-protocol.md` §Agent Selection and `dynamic-workflow` axis 4
 
 ## Cross-links
 

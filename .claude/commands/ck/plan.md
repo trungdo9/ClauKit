@@ -1,6 +1,6 @@
 ---
-description: ⚡⚡⚡ Plan operations dispatcher (router · fast hard two ci cro · -o md|html)
-argument-hint: [task] [fast|hard|two|ci|cro] [-o md|html]
+description: ⚡⚡⚡ Plan operations dispatcher (router · fast hard two ci cro verify · -o md|html)
+argument-hint: [task] [fast|hard|two|ci|cro|verify] [-o md|html]
 ---
 
 Activate `planning` skill ([.claude/skills/software/planning/SKILL.md](.claude/skills/software/planning/SKILL.md)).
@@ -20,6 +20,7 @@ Activate `planning` skill ([.claude/skills/software/planning/SKILL.md](.claude/s
 | `two` | **2-approaches** — research + plan with ≥2 approaches + trade-offs | Think harder |
 | `ci` | **CI-failure** — plan to fix GitHub Actions failures | Think harder |
 | `cro` | **CRO plan** — Conversion Rate Optimization plan | Think harder |
+| `verify` | **falsify an existing plan** — claim → verdict → evidence table, read-only | Think harder |
 
 ## Output format (`-o`) — orthogonal to mode
 
@@ -109,6 +110,16 @@ Workflow:
 - `/ck:scout` → codebase discovery.
 - `planner` agent applies the 25-point framework + follows planning skill's directory/file structure.
 - **DO NOT implement** — wait for user approval.
+
+## `verify <path>` — falsify an existing plan (⚡⚡)
+
+**Input:** path to an existing `plan.md`.
+
+→ **Method is canonical in the [`verify-plan` skill](../../skills/software/verify-plan/SKILL.md)** — claim extraction, the evidence sources, the output table and the SAFE-TO-EXECUTE / back-to-planner verdict. Not restated here; this file named that skill the single source of truth, and restating it is how the two versions diverge.
+
+Command-only: the run is **read-only** (no edits, no writes), the table lands at `plans/<plan>/reports/plan-verification.md`, and the gate result is appended to `plans/<plan>/STATE.md`.
+
+**Auto-invoked** by `/ck:cook --from-plan` (Stage 0.5); use standalone before executing any plan you didn't write this session.
 
 ## Important Notes
 - **DO NOT implement** — plan only.

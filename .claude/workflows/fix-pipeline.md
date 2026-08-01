@@ -25,6 +25,7 @@ Single source of truth for the `/ck:fix` family of commands. Each `/ck:fix*` com
 - `/ck:fix logs` → `./logs.txt` (reproduce + pipe if missing)
 - `/ck:fix ci` → GitHub Actions URL (via `gh` command)
 - `/ck:fix test` → run test suite first, then diagnose failures
+- `/ck:fix tdd` → production symptom (no red suite yet): red test first per the `tdd` skill — Iron Law, no production code without a failing test
 - `/ck:fix types` → run `tsc` / `bun typecheck` / `npx tsc` first
 - `/ck:fix ui` → user-provided UI issue + design guidelines
 
@@ -48,6 +49,7 @@ Single source of truth for the `/ck:fix` family of commands. Each `/ck:fix*` com
 | `--quick` / `--review` / `logs` / `ci` | `debugger` subagent |
 | `--review` (added) | `researcher` subagent (external research) |
 | `test` | `tester` first → `debugger` for failures |
+| `tdd` | `tdd` skill loop: toolchain proof → red test → base-commit-worktree baseline → green → sweep |
 | `types` | direct: run typecheck → fix loop (no agent) |
 | `ui` | `frontend-developer` subagent + `chrome-devtools` skill |
 | `logs` / `ci` (added) | `scout` subagent (locate issues in codebase) |
@@ -64,6 +66,10 @@ Single source of truth for the `/ck:fix` family of commands. Each `/ck:fix*` com
 | 06 · blast radius | What will the fix affect? | List files, callers, tests at risk |
 
 **"Why now" is non-negotiable.** Most bugs don't appear from nowhere — a commit changed data shape, a dependency upgraded, a migration ran halfway. If the agent cannot answer "why now", it is fixing the symptom, not the system. Investigate further before implementing.
+
+**After the gate — falsify the diagnosis (verify-plan):** when the root cause asserts *existing* behaviour ("X currently does Y", row counts, "the legacy path handles Z"), run the `verify-plan` skill's evidence check on it before implementing — a wrong root cause once shipped through 3 merged PRs. Append the gate result to `plans/<plan>/STATE.md` (`run-state` skill).
+
+**Baseline rule (all variants, G19):** "is this failure pre-existing?" is answered from the base commit checked out **in a separate worktree** (`node scripts/ck/wt-new.js baseline --base <sha>`), **never via `git stash`** — see the [`tdd` skill](../skills/software/tdd/SKILL.md) § Baseline for why (the no-op is silent).
 
 **[4] Plan (optional)** — `planner` subagent creates implementation plan. Triggered for:
 - `--review` (always)

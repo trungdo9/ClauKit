@@ -8,6 +8,8 @@
 
 ClauKit is an opinionated multi-agent orchestration framework that runs inside Claude Code. It ships pre-configured agents, slash commands, skills, and gated workflows via `ck init` (installs `.claude/` into any project). Three installable kits: `engineer` (default, `/ck:` namespace), `marketing` (`/mk:` namespace), `both`.
 
+`ck init` also touches two files it does not simply copy, because copying alone leaves them inert: it merges hook entries into an existing `.claude/settings.json` (`bin/lib/settings-merge.js`), and it wires the kit's workflows into the project's root `CLAUDE.md` (`bin/lib/claude-md-wire.js`) — creating a minimal one when absent, appending a `## Workflows` section when present, and doing nothing when the project already references them. Claude Code only auto-reads `CLAUDE.md`, so without that pointer every gate in `.claude/workflows/` is a file nobody opens.
+
 ## Project Structure
 
 ```
@@ -87,7 +89,7 @@ Notes:
 
 ### 2. Slash Commands System
 
-**Command files**: 25 under `.claude/commands/ck/` (`/ck:<name>`) + 12 under `.claude/commands/mk/` (`/mk:<name>`) = 37 files. `docs/clauKit-registry.md` counts "commands" differently (dispatcher sub-actions like `/ck:fix ci` counted separately) — its header/§1/§3/§6 figures are now reconciled to **52** logical commands (= 208 total entries with 128 skills + 28 agents). The registry's § 3 tables remain the itemized source of truth.
+**Command files**: 25 under `.claude/commands/ck/` (`/ck:<name>`) + 12 under `.claude/commands/mk/` (`/mk:<name>`) = 37 files. `docs/clauKit-registry.md` counts "commands" differently (dispatcher sub-actions like `/ck:fix ci` counted separately) — its header/§1/§3/§6 figures are now reconciled to **56** logical commands (= 216 total entries with 131 skills + 29 agents). The registry's § 3 tables remain the itemized source of truth.
 
 | Namespace | Commands |
 |-----------|----------|
@@ -124,12 +126,30 @@ Single source of truth: **`docs/clauKit-registry.md`** (skills + agents + comman
 
 ### 5. Hooks System
 
-**Scout Block Hook** (`.claude/hooks/scout-block.js`):
-- Cross-platform Node.js dispatcher (Windows/Unix/WSL auto-detection)
-- Blocks heavy directories: `node_modules`, `__pycache__`, `.git/`, `dist/`, `build/`
-- Improves AI agent response time and token efficiency
+All hooks are single-implementation Node.js (`.sh`/`.ps1` are thin delegates so platforms can't drift). Installed by every kit via the manifests' `hooks` key.
 
-### 6. Statusline Scripts
+**Scout Block** (`.claude/hooks/scout-block.js`, PreToolUse·Bash):
+- Blocks heavy-directory *traversal* (`node_modules`, `__pycache__`, `.git/`, `dist/`, `build/`) as **path segments**, not substrings
+- Whitelists exclusion contexts (`grep -v`, `--exclude-dir`, `find -prune`, `!glob`) — the substring false-positive bug is fixed and regression-tested
+
+**Guard Destructive** (`.claude/hooks/guard-destructive.js`, PreToolUse·Bash):
+- **Tier A (always deny):** `git stash -u`, `reset --hard`, `clean -fd[x]`, whole-tree checkout/restore, force-push without lease, destructive SQL through a DB client, frozen installs onto a `node_modules` symlink, `rm -rf` of a known worktree. Denial names the safe alternative; `CK_ALLOW_DESTRUCTIVE=1` escape hatch
+- **Tier B (deny on live evidence):** whole-tree staging (`git add -A/.`, `commit -am`, bare `stash`) denied **iff** the file-claims registry shows another live session owns an affected file; denial prints the scoped command. Fails open on its own errors
+
+**File Claims** (`.claude/hooks/file-claims.js`, PostToolUse·Write|Edit):
+- Appends one JSONL claim per file mutation to `<worktree>/.claude/.ck-file-claims.jsonl` (per-worktree scope, append-only, no locks)
+- Self-pruning (clean-file check + 4h TTL + compaction); `list` CLI derives the session manifest for `/ck:git cm`
+
+**Modularization** (`.claude/hooks/modularization-hook.js`, PostToolUse·Write|Edit): 200-LOC advisory, non-blocking.
+
+### 6. Scripts (`scripts/ck/`)
+
+Cross-platform Node, zero dependencies, installed via the manifests' `scripts` key:
+- **Worktree fleet:** `wt-new.js` (absolute-path provisioning outside the repo + per-worktree deps + smoke gate on the untouched base commit, cached per base SHA) · `wt-doctor.js` (symlink health, version skew, env keys) · `wt-clean.js` (validated `git worktree remove`, never `rm -rf`)
+- **Context hygiene:** `phase-brief.js` (phase text + Global Constraints → brief file) · `review-package.js` (log + stat + `-U10` diff → one reviewer file) · `run-workspace.js` (per-plan artifact dir)
+- **Headless:** `ci-review.js` (narrow-grant `claude -p` PR review; GitHub Actions wrapper at `.github/workflows/ck-review.yml.template`) · `delivery-tail.js` (executes the project-declared post-PR step list; no declaration = no-op)
+
+### 7. Statusline Scripts
 
 Three implementations for cross-platform statusline:
 - `statusline.sh` — Bash (Unix/Linux/WSL)
@@ -214,11 +234,11 @@ type(scope): description
 
 Not regenerated this pass — no `repomix-output.xml` is committed to the repo (generated on demand by `/ck:docs update`, gitignored). Run `repomix` locally for current token/file counts rather than trusting stale numbers here.
 
-**Verified counts** (via `ls`/`find` against the filesystem, 2026-07-17):
-- Agent definitions: 28 (17 engineering + 11 marketing)
-- Command files: 38 (26 `ck/` + 12 `mk/`)
-- Skill files: 128 `SKILL.md`
-- Workflow files: 5 (`primary-workflow.md`, `development-rules.md`, `orchestration-protocol.md`, `documentation-management.md`, plus `cro-framework.md`/`fix-pipeline.md` references)
+**Verified counts** (via `ls`/`find` against the filesystem, 2026-08-01):
+- Agent definitions: 29 (17 engineering + 12 marketing)
+- Command files: 37 (25 `ck/` + 12 `mk/`)
+- Skill files: 131 `SKILL.md`
+- Workflow files: 15 in `.claude/workflows/` (7 shipped by the engineer kit + 8 by the marketing kit; `cro-framework.md` shipped by both — see `.claude/kits/*.json`)
 
 ## Integration Capabilities
 
@@ -258,5 +278,5 @@ Kit-specific MCP wrappers live under `.claude/skills/automation/` (GA4, GSC, Sen
 
 ## Unresolved Questions
 
-1. `docs/clauKit-registry.md` command-count convention is internally inconsistent (header says 64, § 3 body sums to 52, § 6 Summary Counts says 72) — needs reconciliation in a future pass; this doc uses the literal file count (37) plus a pointer to that discrepancy instead of picking one.
+1. ~~registry command-count inconsistency~~ — RESOLVED 2026-07-31: header, § 3 and § 6 all read 56 logical commands / 216 entries, verified against the § 3 row count.
 2. `README.md` is 768 lines, exceeding the generic "<300 lines" guidance in `CLAUDE.md` — appears to be a deliberate choice from a recent commit ("docs: split marketing kit guide into MARKETING.md"). Flagging rather than enforcing; needs an explicit decision on whether the rule should carve out an exception for README.

@@ -195,6 +195,14 @@ Present to User
 
 ### 4. Workflow Layer
 
+#### 4.0 Durability & Safety Substrate (added 2026-07-31)
+
+Three mechanisms every gated pipeline builds on:
+
+- **Run ledger** — `plans/<plan>/STATE.md` (`run-state` skill): append-only event log written at every gate transition; a killed run resumes by re-deriving truth from git + re-running the plan's executable exit gates. One ledger per plan; safe under concurrent sessions.
+- **Concurrency substrate** — `file-claims` hook records per-worktree file claims; `guard-destructive` denies whole-tree git ops only when another *live* session owns an affected file; `/ck:git cm` derives its commit manifest from the same registry. One-worktree-per-session (`scripts/ck/wt-new.js`, smoke-gated) removes the shared-tree hazard entirely.
+- **Context hygiene** — artifacts move between agents as **file paths** (`phase-brief.js`, `review-package.js`, `run-workspace.js`); implementation runs in a fresh subagent per phase; models are tiered per dispatch (`context-engineering/references/model-tiering.md`, with 529 one-tier fallback + dead-agent diff detection).
+
 #### 4.1 Orchestration Patterns
 
 **Sequential Chaining**:
@@ -219,7 +227,7 @@ Explore different approaches simultaneously
 
 **Controlled Dynamic Workflow (`/ck:flow`)**:
 ```
-/ck:flow prompt → Phase plan (cost-previewed, gated) → fan-out/pipeline over 21 agents → gate → next phase
+/ck:flow prompt → Phase plan (cost-previewed, gated) → fan-out/pipeline over 29 agents → gate → next phase
 ```
 Re-creates Claude Code's dynamic-workflow model on ClauKit primitives — 4-axis inheritance, phase gates, cost preview; never uses native `ultracode`. Orchestrated variants: `/ck:fix --flow`, `/ck:review --flow`.
 
