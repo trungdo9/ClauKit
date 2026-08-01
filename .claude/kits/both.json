@@ -55,8 +55,7 @@
       ".claude/settings.json",
       ".claude/mcp.json",
       ".claude/.env.example",
-      ".claude/.mcp.json.example",
-      ".claude/.gitignore"
+      ".claude/.mcp.json.example"
     ]
   },
   "requires": {

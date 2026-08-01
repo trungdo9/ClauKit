@@ -21,6 +21,7 @@ const { copyPath } = require("./lib/file-copier");
 const { writeMetadata } = require("./lib/metadata-writer");
 const { mergeSettings } = require("./lib/settings-merge");
 const { wireClaudeMd } = require("./lib/claude-md-wire");
+const { wireGitignore } = require("./lib/gitignore-wire");
 const { fetchLatestVersion, compareVersions } = require("./lib/github-client");
 const { parseArgs, showHelp } = require("./lib/cli-parser");
 
@@ -47,8 +48,18 @@ function initCommand(options = {}) {
     process.exit(1);
   }
 
+  const settingsRel = ".claude/settings.json";
+  const projectSettings = path.join(projectRoot, settingsRel);
+  // The merge below is the ONLY writer of an existing settings.json, `--force`
+  // included. Letting the copy loop overwrite it first and then merging into the
+  // result defeated the merge entirely: the permissions and env the merge exists
+  // to protect were already gone by the time it ran, so `--force` — which users
+  // need for every other directory to refresh — silently ate them.
+  const ownedByMerge = fs.existsSync(projectSettings) ? new Set([settingsRel]) : new Set();
+
   let copied = 0, skipped = 0;
   for (const relPath of getKitPaths(kit)) {
+    if (ownedByMerge.has(relPath)) { skipped++; continue; }
     // Source may resolve to a de-symlinked location (e.g. skills/ instead of
     // .claude/skills/) on a published tarball; destination keeps the manifest
     // path so the project gets the expected .claude/ layout.
@@ -61,12 +72,6 @@ function initCommand(options = {}) {
     else if (result === "skipped") skipped++;
   }
 
-  // An existing settings.json is skipped by the copy loop, which used to leave
-  // newly-installed hooks wired to nothing. Merge the missing entries in
-  // additively rather than making the user choose between --force (which
-  // replaces their permissions and env) and a silently inert install.
-  const settingsRel = ".claude/settings.json";
-  const projectSettings = path.join(projectRoot, settingsRel);
   if (fs.existsSync(projectSettings)) {
     const added = mergeSettings(resolveSourcePath(settingsRel), projectSettings);
     if (added.length) {
@@ -84,6 +89,16 @@ function initCommand(options = {}) {
     console.log(`      Run /ck:claude-md init to expand it with your project's specifics.`);
   } else if (wired.action === "wired") {
     console.log(`\n   🔗 wired ${wired.count} workflow(s) into your existing CLAUDE.md (§Workflows appended).`);
+  }
+
+  // `.claude/.gitignore` cannot be shipped as a file — npm strips every
+  // .gitignore from every tarball — so the rules are merged in from data.
+  const ignored = wireGitignore(projectRoot);
+  if (ignored.action === "created") {
+    console.log(`\n   📄 .claude/.gitignore created — ${ignored.added.length} runtime-state path(s) ignored.`);
+  } else if (ignored.action === "wired") {
+    console.log(`\n   🔗 added ${ignored.added.length} rule(s) to your existing .claude/.gitignore:`);
+    for (const a of ignored.added) console.log(`      + ${a}`);
   }
 
   writeMetadata(projectRoot, packageJson, kit);
