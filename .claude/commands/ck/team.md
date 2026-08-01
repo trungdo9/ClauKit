@@ -19,7 +19,7 @@ argument-hint: <template> [context] [--devs N|--researchers N|--reviewers N|--de
 - Sacrifice grammar for the sake of concision when writing reports.
 - In reports, list any unresolved questions at the end, if any.
 
-**Environment pre-flight (mandatory for `cook` template / any editing teammates):** teammates editing the same tree is the #1 lost-work shape. Provision **one worktree per editing teammate** via `node scripts/ck/wt-new.js <teammate-id>` (smoke-gated), verify each with `node scripts/ck/wt-doctor.js` (**unhealthy → don't dispatch that teammate**), record paths in `plans/<plan>/STATE.md`, and tear down with `node scripts/ck/wt-clean.js <path>` after merge. Read-only teammates (research/review) may share the main tree.
+**Environment pre-flight (mandatory for `cook` template / any editing teammates):** teammates editing the same tree is the #1 lost-work shape. Provision **one worktree per editing teammate** via `node scripts/ck/wt-new.cjs <teammate-id>` (smoke-gated), verify each with `node scripts/ck/wt-doctor.cjs` (**unhealthy → don't dispatch that teammate**), record paths in `plans/<plan>/STATE.md`, and tear down with `node scripts/ck/wt-clean.cjs <path>` after merge. Read-only teammates (research/review) may share the main tree.
 
 ---
 

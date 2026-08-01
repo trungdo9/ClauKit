@@ -688,6 +688,37 @@ Mistakes to avoid
 
 ## Hook Implementation Standards
 
+### Every Node file ClauKit installs is `.cjs` — never `.js`
+
+Hooks, `statusline`, and everything under `scripts/ck/` are CommonJS, and they
+run inside the *user's* project. Node picks a `.js` file's module system from the
+host's nearest `package.json`, so in any project with `"type": "module"` — every
+Vite/Next/modern-ESM app — a shipped `.js` is parsed as an ES module and dies on
+its first line:
+
+```
+ReferenceError: require is not defined in ES module scope
+```
+
+`.cjs` is CommonJS regardless of the host. The rules:
+
+- **Ship shipped Node code as `.cjs`.** `tests/esm-host.test.js` fails the build
+  on any `.js` under `.claude/hooks/` or `scripts/ck/`.
+- **Require it with the extension.** Node's CommonJS resolver tries `.js`,
+  `.json`, `.node` — *not* `.cjs`. `require('./lib/common')` silently stops
+  resolving; write `require('./lib/common.cjs')`.
+- **Renaming one is a migration, not a rename.** Existing installs keep the old
+  file, and their `settings.json` and shipped command docs keep invoking it. See
+  `bin/lib/cjs-migrate.js` and `bin/lib/cjs-migrate-refs.js`.
+
+`bin/` is exempt — it executes inside ClauKit's own package, under ClauKit's
+`package.json`.
+
+**Why this matters beyond the crash:** `scout-block` and `guard-destructive` are
+PreToolUse guards. A guard that cannot load does not block anything, and Claude
+Code does not announce it — so a broken extension turns a safety gate off
+silently. Failing loudly on a `.js` in CI is the only thing that catches it.
+
 ### Scout Block Hook Architecture
 
 **Cross-Platform Design Pattern**:
@@ -698,7 +729,7 @@ Mistakes to avoid
 **File Organization**:
 ```
 .claude/hooks/
-├── scout-block.js        # Node.js dispatcher (cross-platform entry)
+├── scout-block.cjs        # Node.js dispatcher (cross-platform entry)
 └── test-scout-block.sh   # Unix test suite (and test-scout-block.ps1 for Windows)
 ```
 

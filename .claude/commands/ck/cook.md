@@ -43,9 +43,9 @@ Think harder to drive the following feature end-to-end. Follow the cook skill me
 ## Environment Pre-flight (before the first edit)
 
 Planning and verification are read-only — isolation is needed before the **first edit**, not the first thought. **Detect early, provision late:**
-1. **Detect (free, at start):** `node .claude/hooks/file-claims.js list` → any `FOREIGN` claim means another live session is editing this tree. A dirty `git status --porcelain` containing work you didn't author counts too.
-2. **Provision (before the first edit):** if either fired, create an isolated worktree via `node scripts/ck/wt-new.js <plan-slug>` (worktree skill: absolute path outside the repo, per-worktree deps, smoke gate on the base commit).
-3. Run `node scripts/ck/wt-doctor.js` on the tree you will edit; **unhealthy → refuse to proceed** until the environment is fixed.
+1. **Detect (free, at start):** `node .claude/hooks/file-claims.cjs list` → any `FOREIGN` claim means another live session is editing this tree. A dirty `git status --porcelain` containing work you didn't author counts too.
+2. **Provision (before the first edit):** if either fired, create an isolated worktree via `node scripts/ck/wt-new.cjs <plan-slug>` (worktree skill: absolute path outside the repo, per-worktree deps, smoke gate on the base commit).
+3. Run `node scripts/ck/wt-doctor.cjs` on the tree you will edit; **unhealthy → refuse to proceed** until the environment is fixed.
 4. Record the worktree path in `plans/<plan>/STATE.md` (run-state skill) so a resume lands in the right tree.
 
 ## Workflow
@@ -81,7 +81,7 @@ Stages are named; numbering lives in the cook skill (source of truth).
 ### Implement
 
 * Read the plan general overview only; implement phases one by one — do **not** load all phases at once.
-* **Fresh implementer subagent per phase** (cook skill "Implement" section is the contract): main session keeps only the loop, gates, and ledger. Dispatch = 1 line of context + **brief file path** (`node scripts/ck/phase-brief.js <plan> <N>`) + cross-phase interfaces + known ambiguity resolutions + report path. **Never paste session history; keep dispatches <2k chars.** Statuses: `DONE`/`DONE_WITH_CONCERNS`/`NEEDS_CONTEXT`/`BLOCKED`.
+* **Fresh implementer subagent per phase** (cook skill "Implement" section is the contract): main session keeps only the loop, gates, and ledger. Dispatch = 1 line of context + **brief file path** (`node scripts/ck/phase-brief.cjs <plan> <N>`) + cross-phase interfaces + known ambiguity resolutions + report path. **Never paste session history; keep dispatches <2k chars.** Statuses: `DONE`/`DONE_WITH_CONCERNS`/`NEEDS_CONTEXT`/`BLOCKED`.
 * Frontend (UI, components, pages, styling/design) → `frontend-developer` (activates `aesthetic` + `frontend-design` skills for design work; `ai-multimodal` skill to generate + verify image assets).
 * Backend (APIs, database, server) → `backend-developer`.
 * Never two implementers in parallel on the same tree (worktree per editing agent).

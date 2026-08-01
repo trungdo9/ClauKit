@@ -19,7 +19,7 @@ const os = require('node:os');
 const path = require('node:path');
 
 const SCRIPTS = path.join(__dirname, '..', 'scripts', 'ck');
-const { git, assertRef } = require(path.join(SCRIPTS, 'lib', 'common.js'));
+const { git, assertRef } = require(path.join(SCRIPTS, 'lib', 'common.cjs'));
 
 let repo, marker;
 
@@ -58,19 +58,19 @@ function runScript(name, args) {
 }
 
 for (const payload of PAYLOADS('HEAD')) {
-  test(`review-package.js does not execute an injected ref: ${payload}`, () => {
-    runScript('review-package.js', [payload]);
-    assert.ok(!fs.existsSync(marker), `COMMAND INJECTION via review-package.js with ref: ${payload}`);
+  test(`review-package.cjs does not execute an injected ref: ${payload}`, () => {
+    runScript('review-package.cjs', [payload]);
+    assert.ok(!fs.existsSync(marker), `COMMAND INJECTION via review-package.cjs with ref: ${payload}`);
   });
 
-  test(`ci-review.js does not execute an injected ref: ${payload}`, () => {
-    runScript('ci-review.js', [payload, 'HEAD', '--dry-run']);
-    assert.ok(!fs.existsSync(marker), `COMMAND INJECTION via ci-review.js with ref: ${payload}`);
+  test(`ci-review.cjs does not execute an injected ref: ${payload}`, () => {
+    runScript('ci-review.cjs', [payload, 'HEAD', '--dry-run']);
+    assert.ok(!fs.existsSync(marker), `COMMAND INJECTION via ci-review.cjs with ref: ${payload}`);
   });
 
-  test(`wt-new.js does not execute an injected --base: ${payload}`, () => {
-    runScript('wt-new.js', ['probe', '--base', payload, '--skip-install']);
-    assert.ok(!fs.existsSync(marker), `COMMAND INJECTION via wt-new.js with --base: ${payload}`);
+  test(`wt-new.cjs does not execute an injected --base: ${payload}`, () => {
+    runScript('wt-new.cjs', ['probe', '--base', payload, '--skip-install']);
+    assert.ok(!fs.existsSync(marker), `COMMAND INJECTION via wt-new.cjs with --base: ${payload}`);
   });
 }
 
@@ -78,7 +78,7 @@ test('a real branch name carrying metacharacters resolves without executing it',
   const evil = 'x;touch${IFS}' + marker;
   const cb = sh(['git', 'checkout', '-q', '-b', evil], repo);
   assert.strictEqual(cb.status, 0, `git should accept this branch name: ${cb.stderr}`);
-  const res = runScript('review-package.js', [evil]);
+  const res = runScript('review-package.cjs', [evil]);
   assert.ok(!fs.existsSync(marker), 'COMMAND INJECTION via a genuine branch name');
   assert.strictEqual(res.status, 0, `should still produce a package: ${res.stderr}`);
   sh(['git', 'checkout', '-q', '-'], repo);
@@ -93,14 +93,14 @@ test('git() passes argv, so a metacharacter ref is just a bad revision', () => {
 
 test('assertRef rejects a ref that would be read as an option', () => {
   const res = spawnSync('node', ['-e',
-    `const {assertRef}=require(${JSON.stringify(path.join(SCRIPTS, 'lib', 'common.js'))}); assertRef('--upload-pack=touch /tmp/x','BASE')`,
+    `const {assertRef}=require(${JSON.stringify(path.join(SCRIPTS, 'lib', 'common.cjs'))}); assertRef('--upload-pack=touch /tmp/x','BASE')`,
   ], { encoding: 'utf-8' });
   assert.strictEqual(res.status, 1);
   assert.match(res.stderr, /starts with '-'/);
 });
 
-test('review-package.js still works on a normal range', () => {
-  const res = runScript('review-package.js', ['HEAD~1', 'HEAD']);
+test('review-package.cjs still works on a normal range', () => {
+  const res = runScript('review-package.cjs', ['HEAD~1', 'HEAD']);
   assert.strictEqual(res.status, 0, res.stderr);
   const out = res.stdout.trim();
   assert.ok(fs.existsSync(out), `expected a package file at ${out}`);

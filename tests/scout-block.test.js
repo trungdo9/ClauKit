@@ -11,7 +11,7 @@ const assert = require('node:assert');
 const { spawnSync } = require('node:child_process');
 const path = require('node:path');
 
-const HOOK = path.join(__dirname, '..', '.claude', 'hooks', 'scout-block.js');
+const HOOK = path.join(__dirname, '..', '.claude', 'hooks', 'scout-block.cjs');
 
 function runHook(command) {
   const res = spawnSync('node', [HOOK], {

@@ -21,7 +21,7 @@ ClauKit/
 │   ├── commands/
 │   │   ├── ck/                 # 26 engineer-kit command files (/ck:<name>)
 │   │   └── mk/                 # 12 marketing-kit command files (/mk:<name>)
-│   ├── hooks/                  # Git hooks and scripts (scout-block.js dispatcher)
+│   ├── hooks/                  # Git hooks and scripts (scout-block.cjs dispatcher)
 │   ├── kits/                   # Kit manifests (*.json) — engineer/marketing/both
 │   ├── skills/                 # 128 SKILL.md files — see § Skills Library below
 │   ├── workflows/              # Development workflow definitions (*.md)
@@ -128,19 +128,19 @@ Single source of truth: **`docs/clauKit-registry.md`** (skills + agents + comman
 
 All hooks are single-implementation Node.js (`.sh`/`.ps1` are thin delegates so platforms can't drift). Installed by every kit via the manifests' `hooks` key.
 
-**Scout Block** (`.claude/hooks/scout-block.js`, PreToolUse·Bash):
+**Scout Block** (`.claude/hooks/scout-block.cjs`, PreToolUse·Bash):
 - Blocks heavy-directory *traversal* (`node_modules`, `__pycache__`, `.git/`, `dist/`, `build/`) as **path segments**, not substrings
 - Whitelists exclusion contexts (`grep -v`, `--exclude-dir`, `find -prune`, `!glob`) — the substring false-positive bug is fixed and regression-tested
 
-**Guard Destructive** (`.claude/hooks/guard-destructive.js`, PreToolUse·Bash):
+**Guard Destructive** (`.claude/hooks/guard-destructive.cjs`, PreToolUse·Bash):
 - **Tier A (always deny):** `git stash -u`, `reset --hard`, `clean -fd[x]`, whole-tree checkout/restore, force-push without lease, destructive SQL through a DB client, frozen installs onto a `node_modules` symlink, `rm -rf` of a known worktree. Denial names the safe alternative; `CK_ALLOW_DESTRUCTIVE=1` escape hatch
 - **Tier B (deny on live evidence):** whole-tree staging (`git add -A/.`, `commit -am`, bare `stash`) denied **iff** the file-claims registry shows another live session owns an affected file; denial prints the scoped command. Fails open on its own errors
 
-**File Claims** (`.claude/hooks/file-claims.js`, PostToolUse·Write|Edit):
+**File Claims** (`.claude/hooks/file-claims.cjs`, PostToolUse·Write|Edit):
 - Appends one JSONL claim per file mutation to `<worktree>/.claude/.ck-file-claims.jsonl` (per-worktree scope, append-only, no locks)
 - Self-pruning (clean-file check + 4h TTL + compaction); `list` CLI derives the session manifest for `/ck:git cm`
 
-**Modularization** (`.claude/hooks/modularization-hook.js`, PostToolUse·Write|Edit): 200-LOC advisory, non-blocking.
+**Modularization** (`.claude/hooks/modularization-hook.cjs`, PostToolUse·Write|Edit): 200-LOC advisory, non-blocking.
 
 ### 6. Scripts (`scripts/ck/`)
 
@@ -154,7 +154,7 @@ Cross-platform Node, zero dependencies, installed via the manifests' `scripts` k
 Three implementations for cross-platform statusline:
 - `statusline.sh` — Bash (Unix/Linux/WSL)
 - `statusline.ps1` — PowerShell (Windows)
-- `statusline.js` — Node.js (universal fallback)
+- `statusline.cjs` — Node.js (universal fallback)
 
 ## Entry Points
 

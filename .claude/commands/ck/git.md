@@ -21,14 +21,14 @@ Only the dispatch differences live below.
 
 ### `cm` — commit only (scoped) / `cp` — commit + push
 
-→ git skill § **Scoped Commits**. Manifest comes from `node .claude/hooks/file-claims.js list` (the `MINE` rows). `cp` additionally pushes.
+→ git skill § **Scoped Commits**. Manifest comes from `node .claude/hooks/file-claims.cjs list` (the `MINE` rows). `cp` additionally pushes.
 
 ### `pr` — non-interactive finish: verify → self-review → draft PR → declared tail → teardown
 
 TO_BRANCH: {ARG1} (defaults to `main`) · FROM_BRANCH: {ARG2} (defaults to current branch)
 
 → git skill § **Finish-Branch Protocol** for the ordering, the Iron-Law gate, draft-default, the `pr-body.md` fill contract and the auth-failure paste-ready rule.
-→ git skill § **Delivery Tail** for step 5's semantics. Runner: `node scripts/ck/delivery-tail.js` (`--dry-run` to review, `--approve` to arm).
+→ git skill § **Delivery Tail** for step 5's semantics. Runner: `node scripts/ck/delivery-tail.cjs` (`--dry-run` to review, `--approve` to arm).
 
 Flags: `--ready` opens the PR undrafted · `--no-handoff` skips the tail (a WIP PR mid-ticket).
 

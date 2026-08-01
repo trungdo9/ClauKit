@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 /**
- * scout-block.js - PreToolUse guard for heavy-directory traversal
+ * scout-block.cjs - PreToolUse guard for heavy-directory traversal
  *
  * Blocks commands that ACCESS/TRAVERSE heavy directories:
  *   node_modules, __pycache__, .git/, dist/, build/

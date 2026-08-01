@@ -24,7 +24,7 @@ The `git` skill is the single source of truth for conventional commits methodolo
 **Hard constraint: never `git add -A`, `git add .`, or `git commit -am`.** Stage only the session's own files, derived from the claim registry — not from recollection.
 
 ```bash
-node .claude/hooks/file-claims.js list && \
+node .claude/hooks/file-claims.cjs list && \
 echo "=== STATUS ===" && \
 git status --porcelain && git stash list && \
 echo "=== STAGING (MINE only) ===" && \

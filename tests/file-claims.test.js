@@ -1,5 +1,5 @@
 /**
- * Tests for file-claims.js — the per-worktree claim registry (T1.2b).
+ * Tests for file-claims.cjs — the per-worktree claim registry (T1.2b).
  */
 
 const { test, before, after } = require('node:test');
@@ -9,7 +9,7 @@ const fs = require('node:fs');
 const os = require('node:os');
 const path = require('node:path');
 
-const HOOK = path.join(__dirname, '..', '.claude', 'hooks', 'file-claims.js');
+const HOOK = path.join(__dirname, '..', '.claude', 'hooks', 'file-claims.cjs');
 const { readClaims, claimsPath } = require(HOOK);
 
 let repo;

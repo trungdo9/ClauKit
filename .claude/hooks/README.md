@@ -8,8 +8,8 @@ Claude Code hooks automate notifications and actions at specific points in your 
 
 | Hook | File | Type | Description |
 |------|------|------|-------------|
-| **Scout Block** | `scout-block.js` | Automated | Cross-platform hook blocking heavy directories (node_modules, .git, etc.) |
-| **Modularization** | `modularization-hook.js` | Automated | Non-blocking suggestions for files >200 LOC to encourage code modularization |
+| **Scout Block** | `scout-block.cjs` | Automated | Cross-platform hook blocking heavy directories (node_modules, .git, etc.) |
+| **Modularization** | `modularization-hook.cjs` | Automated | Non-blocking suggestions for files >200 LOC to encourage code modularization |
 | **Discord (Auto)** | `discord_notify.sh` | Automated | Auto-sends rich embeds on session/subagent completion |
 | **Discord (Manual)** | `send-discord.sh` | Manual | Sends custom messages to Discord channel |
 | **Telegram** | `telegram_notify.sh` | Automated | Auto-sends detailed notifications on session/subagent completion |
@@ -19,7 +19,7 @@ Claude Code hooks automate notifications and actions at specific points in your 
 **Scout Block Hook** now supports both Windows and Unix systems:
 - **Windows**: Uses PowerShell (`scout-block.ps1`)
 - **Linux/macOS/WSL**: Uses Bash (`scout-block.sh`)
-- **Automatic detection**: `scout-block.js` dispatcher selects the correct implementation
+- **Automatic detection**: `scout-block.cjs` dispatcher selects the correct implementation
 
 No manual configuration needed - the Node.js dispatcher handles platform detection automatically.
 
@@ -70,11 +70,11 @@ Automatically analyzes files after Write/Edit operations and suggests modulariza
 for i in {1..205}; do echo "console.log('Line $i');"; done > /tmp/test-large.js
 
 # Test hook (should output modularization suggestion)
-echo '{"tool_input":{"file_path":"/tmp/test-large.js"}}' | node .claude/hooks/modularization-hook.js
+echo '{"tool_input":{"file_path":"/tmp/test-large.js"}}' | node .claude/hooks/modularization-hook.cjs
 
 # Test with small file (should be silent)
 echo "console.log('test');" > /tmp/test-small.js
-echo '{"tool_input":{"file_path":"/tmp/test-small.js"}}' | node .claude/hooks/modularization-hook.js
+echo '{"tool_input":{"file_path":"/tmp/test-small.js"}}' | node .claude/hooks/modularization-hook.cjs
 ```
 
 **Requirements:**
@@ -157,7 +157,7 @@ echo '{"hookType":"Stop","projectDir":"'$(pwd)'","sessionId":"test","toolsUsed":
 
 ## Scripts
 
-### modularization-hook.js
+### modularization-hook.cjs
 PostToolUse hook for automated code modularization suggestions.
 
 **Triggers:**
@@ -294,8 +294,8 @@ See individual setup guides for detailed security recommendations.
 - Verify installation: `node --version`
 
 **Hook not blocking directories**
-- Verify `.claude/settings.json` uses `node .claude/hooks/scout-block.js`
-- Test manually: `echo '{"tool_input":{"command":"ls node_modules"}}' | node .claude/hooks/scout-block.js`
+- Verify `.claude/settings.json` uses `node .claude/hooks/scout-block.cjs`
+- Test manually: `echo '{"tool_input":{"command":"ls node_modules"}}' | node .claude/hooks/scout-block.cjs`
 - Should exit with code 2 and error message
 
 **Windows PowerShell execution policy errors**

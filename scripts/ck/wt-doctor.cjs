@@ -3,7 +3,7 @@
 /**
  * wt-doctor.js — diagnose the three recurring worktree breakages (T1.6a).
  *
- * Usage: node scripts/ck/wt-doctor.js [worktree-path]   (default: cwd)
+ * Usage: node scripts/ck/wt-doctor.cjs [worktree-path]   (default: cwd)
  *
  * Checks, each named after the incident that earned it:
  *   1. node_modules symlink health — broken or circular symlink (a shared
@@ -18,7 +18,7 @@
 
 const fs = require('fs');
 const path = require('path');
-const { repoRoot, die, readJson } = require('./lib/common');
+const { repoRoot, die, readJson } = require('./lib/common.cjs');
 
 let failures = 0;
 

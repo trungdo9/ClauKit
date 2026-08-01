@@ -41,7 +41,7 @@ const fs = require('fs');
 const path = require('path');
 const crypto = require('crypto');
 const { spawnSync } = require('child_process');
-const { repoRoot } = require('./lib/common');
+const { repoRoot } = require('./lib/common.cjs');
 
 /** Extract the `## Delivery tail` section; returns raw markdown or null. */
 function extractTailBlock(md) {
