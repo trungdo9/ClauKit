@@ -1,6 +1,24 @@
 # Changelog
 
+## [1.4.1](https://github.com/trungdo9/ClauKit/compare/v1.4.0...v1.4.1) (2026-08-01)
+
+**Install fix — v1.4.0 could not be installed from a package.** `ck init` exited 1 before copying anything, on every kit. Upgrade straight to 1.4.1; skip 1.4.0.
+
+### 🐞 Bug Fixes
+
+* **install:** stop shipping `.claude/.gitignore` as a file — npm strips it ([59a09c7](https://github.com/trungdo9/ClauKit/commit/59a09c7)). All three manifests declared it in `paths.config`, but npm strips every `.gitignore` from every tarball, so `checkKitPathsAvailable()` reported it missing and hard-failed the pre-flight. The rules moved into `bin/lib/gitignore-wire.js` and are merged in additively — create when absent, append only what is missing, leave the user's own rules and comments alone. Third instance of the same remedy after `settings-merge.js` (hooks) and `claude-md-wire.js` (workflows).
+* **install:** `--force` no longer replaces an existing `.claude/settings.json` ([59a09c7](https://github.com/trungdo9/ClauKit/commit/59a09c7)). The copy loop overwrote it and the additive merge then ran on the result, so the permissions and env the merge exists to protect were already gone — and `--force` is exactly what an upgrading user needs to refresh every other directory. An existing settings file is now written by the merge alone.
+
+### ✅ Tests
+
+* **packaging:** new `tests/installer-packaging.test.js` asserts the general rule rather than this one instance — **every kit-declared path must survive `npm pack`**. The prior test asserted the right behaviour but ran `bin/ck.js` from the repo, where `.claude/.gitignore` is present on disk, so it passed while the shipped artifact was broken (the same blindness that hid the CLAUDE.md defect in 1.4.0). Both new guards fail with their fix reverted.
+* Installer suite split by concern — settings/`--force`, CLAUDE.md wiring, packaging. 185 → **192 tests**, 191 pass, 0 fail, 1 skip.
+
+Verified end-to-end: packed, installed globally from the tarball, then `ck init --force` over a project carrying its own `CLAUDE.md`, `settings.json`, `.claude/.gitignore` and `scripts/ck/` file — all four survived, the 8 shipped scripts landed, and the three runtime-state paths are git-ignored.
+
 ## [1.4.0](https://github.com/trungdo9/ClauKit/compare/v1.3.6...v1.4.0) (2026-08-01)
+
+> ⚠️ **Do not use — this release cannot be installed.** `ck init` exits 1 on every kit; see 1.4.1.
 
 Durability–Evidence–Cost release (absorbs untagged in-branch bumps 1.3.7–1.3.9). Headline: evidence-gated pipeline (`run-state` ledger · `verify-plan` falsification · `tdd` red-green), worktree fleet, 2-tier destructive-op guard, and a full workflow-verification sweep.
 

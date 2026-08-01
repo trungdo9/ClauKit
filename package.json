@@ -1,6 +1,6 @@
 {
   "name": "@trungdo9/ClauKit",
-  "version": "1.4.0",
+  "version": "1.4.1",
   "description": "A CLI tool to initialize Claude agents configuration in your project.",
   "main": "index.js",
   "bin": {
