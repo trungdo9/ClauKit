@@ -1,5 +1,5 @@
 ---
-description: ⚡⚡⚡ Controllable orchestration — plan phases, fan-out/pipeline over the 21 agents, gated, cost-previewed (re-creates dynamic workflows; never native ultracode)
+description: ⚡⚡⚡ Controllable orchestration — plan phases, fan-out/pipeline over the 29 agents, gated, cost-previewed (re-creates dynamic workflows; never native ultracode)
 argument-hint: [<task> | save <name> | list] [--model <m>] [--dry-run]
 ---
 

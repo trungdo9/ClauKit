@@ -16,7 +16,7 @@ Each row is a thought that precedes a skipped skill. The rebuttal is the rule.
 | The thought | The reality |
 |---|---|
 | "This is just a simple question" | Questions are tasks. `ask`/`brainstorm`/`debugging` exist for questions; answering unaided is how wrong answers ship confidently |
-| "Let me explore the codebase first" | Skills tell you *how* to explore (`scout`, multi-repo dispatch, `ck-graphify`) — exploring first means exploring wrong |
+| "Let me explore the codebase first" | Skills tell you *how* to explore (`/ck:scout`, multi-repo dispatch, `ck-graphify`) — exploring first means exploring wrong |
 | "I remember what this skill says" | Skills evolve; your memory of a skill is a stale copy. Re-read on activation |
 | "The task is urgent, no time for process" | The gates exist because urgent unguided work produced the measured failures; urgency raises the stakes, not the exemption |
 | "No skill covers this exactly" | Run `/ck:find` and say so explicitly if confirmed — an explicit no-skill note is fine; a silent skip is not |

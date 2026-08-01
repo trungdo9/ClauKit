@@ -18,7 +18,7 @@ Confirm with user before each phase transition.
 
 ## Phase 1 — Generate
 
-Cold outreach to ICP. Skills: `cold-email`, `email-specialist`.
+Cold outreach to ICP. Skills: `cold-email`, `email-specialist` agent.
 *Output:* outreach list (`leads-raw.csv` — PII-redacted per automation-rules.md).
 
 ## Phase 2 — Qualify

@@ -19,7 +19,7 @@ Confirm with user before each phase transition.
 
 ## Phase 1 — Script
 
-Hook → problem → solution → proof → CTA. Skills: `copywriting`, `video-producer`.
+Hook → problem → solution → proof → CTA. Skills: `copywriting`, `video-producer` agent.
 *Output:* `script.md` (scene-by-scene, ~60-180s video).
 
 ## Phase 2 — Voiceover
@@ -45,7 +45,7 @@ Final render at target resolutions (1080p, 720p, 9:16 for shorts). Skills: `remo
 
 ## Phase 6 — Distribute
 
-Publish to platforms (YouTube, TikTok, Instagram Reels, LinkedIn). Skills: `social-content`, `video-producer`.
+Publish to platforms (YouTube, TikTok, Instagram Reels, LinkedIn). Skills: `social-content`, `video-producer` agent.
 *Output:* `distribution-log.md` (URLs, platform-specific metadata).
 
 ---

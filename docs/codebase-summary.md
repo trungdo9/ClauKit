@@ -232,11 +232,11 @@ type(scope): description
 
 Not regenerated this pass — no `repomix-output.xml` is committed to the repo (generated on demand by `/ck:docs update`, gitignored). Run `repomix` locally for current token/file counts rather than trusting stale numbers here.
 
-**Verified counts** (via `ls`/`find` against the filesystem, 2026-07-17):
-- Agent definitions: 28 (17 engineering + 11 marketing)
+**Verified counts** (via `ls`/`find` against the filesystem, 2026-08-01):
+- Agent definitions: 29 (17 engineering + 12 marketing)
 - Command files: 37 (25 `ck/` + 12 `mk/`)
-- Skill files: 128 `SKILL.md`
-- Workflow files: 5 (`primary-workflow.md`, `development-rules.md`, `orchestration-protocol.md`, `documentation-management.md`, plus `cro-framework.md`/`fix-pipeline.md` references)
+- Skill files: 131 `SKILL.md`
+- Workflow files: 15 in `.claude/workflows/` (7 shipped by the engineer kit + 8 by the marketing kit; `cro-framework.md` shipped by both — see `.claude/kits/*.json`)
 
 ## Integration Capabilities
 

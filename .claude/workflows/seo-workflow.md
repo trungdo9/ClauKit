@@ -40,7 +40,7 @@ Establish the "before" so Phase 6 has something to compare against.
 
 ## Phase 5 — Distribute (optional)
 
-Amplify + accelerate indexing: submit updated sitemap / request indexing, repurpose to social + email. Skills: `social-content`, `email-campaign`. Skip for pure drip-publishing runs.
+Amplify + accelerate indexing: submit updated sitemap / request indexing, repurpose to social + email. Skills: `social-content`, `emails`. Skip for pure drip-publishing runs.
 *Output:* `promotion-log.md`.
 
 ## Phase 6 — Measure

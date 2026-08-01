@@ -49,14 +49,14 @@ Agent A → Agent B → Agent C → Agent D
 
 ## Controlled Workflow Orchestration
 
-The 4th orchestration layer (above plain fan-out/pipeline): a **gated, inheritance-aware** re-creation of Claude Code's dynamic-workflow model, built on ClauKit primitives — markdown recipes + Agent-tool fan-out/pipeline over the 21 agents. Source of truth: the `dynamic-workflow` skill ([../skills/software/dynamic-workflow/SKILL.md](../skills/software/dynamic-workflow/SKILL.md)). Entry points: `/ck:flow <task>`, plus `/ck:fix --flow` and `/ck:review --flow` variants.
+The 4th orchestration layer (above plain fan-out/pipeline): a **gated, inheritance-aware** re-creation of Claude Code's dynamic-workflow model, built on ClauKit primitives — markdown recipes + Agent-tool fan-out/pipeline over the 29 agents. Source of truth: the `dynamic-workflow` skill ([../skills/software/dynamic-workflow/SKILL.md](../skills/software/dynamic-workflow/SKILL.md)). Entry points: `/ck:flow <task>`, plus `/ck:fix --flow` and `/ck:review --flow` variants.
 
 **It borrows the native feature's PATTERNS** (adversarial verify, judge panel, loop-until-dry, multi-modal sweep, completeness critic) — it does **NOT** call the native `Workflow` runtime or `ultracode`. ClauKit re-creates the model on primitives it fully controls.
 
 **4-axis inheritance contract** (parent workflow → child agent stage → subagent):
 
 1. **context/output** — all stages read/write shared `plans/<plan>/reports/`; a child reads the parent's handoff.
-2. **persona** — a stage routes to one of the 21 agents via Agent `subagent_type`; zero new agent code.
+2. **persona** — a stage routes to one of the 29 agents via Agent `subagent_type`; zero new agent code.
 3. **config/gate** — development-rules pre-flight + every parent gate apply to each stage; a child cannot silently skip a gate.
 4. **model/budget** — a stage inherits or overrides the parent model; cost estimate shown pre-run, no hard cap (user decides).
 
