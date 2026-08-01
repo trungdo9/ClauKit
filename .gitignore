@@ -83,3 +83,10 @@ prompt.md
 .claude/.ck-tail-approved
 # ClauKit smoke-gate cache (per-base-commit test results, T1.6/R8)
 .claude/.ck-smoke-cache.json
+
+# `.claude/skills` is a symlink (junction on Windows) to ./skills, recreated
+# per-platform on checkout — untracked deliberately since 363c416. Ignored here
+# and NOT in `.claude/.gitignore`, which ships with every kit: the installer
+# dereferences the symlink, so a consumer's `.claude/skills/` is real files they
+# may well want in their own history.
+/.claude/skills
