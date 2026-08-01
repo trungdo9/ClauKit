@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 /**
- * guard-destructive.js - PreToolUse guard (matcher: Bash), runs after scout-block.
+ * guard-destructive.cjs - PreToolUse guard (matcher: Bash), runs after scout-block.
  *
  * Two tiers (T1.2 / G5):
  *
@@ -34,7 +34,7 @@ const { execSync } = require('child_process');
 
 const DB_CLIENTS = new Set(['psql', 'mysql', 'mariadb', 'sqlite3', 'sqlcmd', 'mssql-cli', 'clickhouse-client']);
 
-// ---------- tokenization (shared shape with scout-block.js) ----------
+// ---------- tokenization (shared shape with scout-block.cjs) ----------
 
 // Anything that executes its stdin. A heredoc feeding one of these is CODE.
 const SHELL_INTERPRETERS = new Set(['bash', 'sh', 'zsh', 'ksh', 'dash', 'ash', 'busybox', 'python', 'python3', 'node', 'perl', 'ruby', 'php']);
@@ -322,7 +322,7 @@ function tierB(command, cwd, session) {
   const { shape, tracked, rootRelative } = found;
 
   try {
-    const fc = require(path.join(__dirname, 'file-claims.js'));
+    const fc = require(path.join(__dirname, 'file-claims.cjs'));
     const root = fc.worktreeRoot(cwd);
     if (!root) return null;
     if (!fs.existsSync(fc.claimsPath(root))) {

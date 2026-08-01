@@ -57,7 +57,7 @@ test('upgrade path: an existing settings.json gets the new hooks merged in', () 
     permissions: { allow: ['Bash(npm run test:*)'] },
     env: { MY_KEY: 'keep-me' },
     hooks: {
-      PreToolUse: [{ matcher: 'Bash', hooks: [{ type: 'command', command: 'node "$CLAUDE_PROJECT_DIR"/.claude/hooks/scout-block.js' }] }],
+      PreToolUse: [{ matcher: 'Bash', hooks: [{ type: 'command', command: 'node "$CLAUDE_PROJECT_DIR"/.claude/hooks/scout-block.cjs' }] }],
     },
   };
   fs.writeFileSync(path.join(p, '.claude/settings.json'), JSON.stringify(theirs, null, 2));
@@ -68,9 +68,9 @@ test('upgrade path: an existing settings.json gets the new hooks merged in', () 
   const after = JSON.parse(fs.readFileSync(path.join(p, '.claude/settings.json'), 'utf-8'));
   const commands = Object.values(after.hooks).flat().flatMap(g => (g.hooks || []).map(h => h.command)).join(' ');
 
-  assert.match(commands, /guard-destructive\.js/, 'the new PreToolUse guard must be wired, not left inert');
-  assert.match(commands, /file-claims\.js/, 'the claim registry hook must be wired');
-  assert.match(commands, /scout-block\.js/, 'their existing hook must survive');
+  assert.match(commands, /guard-destructive\.cjs/, 'the new PreToolUse guard must be wired, not left inert');
+  assert.match(commands, /file-claims\.cjs/, 'the claim registry hook must be wired');
+  assert.match(commands, /scout-block\.cjs/, 'their existing hook must survive');
   assert.deepStrictEqual(after.permissions, theirs.permissions, 'their permissions must be untouched');
   assert.deepStrictEqual(after.env, theirs.env, 'their env must be untouched');
   assert.match(res.stdout, /wired into your existing/);
@@ -98,8 +98,8 @@ test('--force refreshes shipped dirs but never eats the settings the merge prote
   assert.deepStrictEqual(after.permissions, theirs.permissions, '--force must not replace their permissions');
   assert.deepStrictEqual(after.env, theirs.env, '--force must not replace their env');
   const commands = Object.values(after.hooks || {}).flat().flatMap(g => (g.hooks || []).map(h => h.command)).join(' ');
-  assert.match(commands, /guard-destructive\.js/, 'and the new hooks still get wired');
-  assert.ok(fs.existsSync(path.join(p, 'scripts/ck/wt-new.js')), '--force still refreshes everything else');
+  assert.match(commands, /guard-destructive\.cjs/, 'and the new hooks still get wired');
+  assert.ok(fs.existsSync(path.join(p, 'scripts/ck/wt-new.cjs')), '--force still refreshes everything else');
 });
 
 test('--force overwrites shipped files but keeps files the user owns', () => {
@@ -115,6 +115,6 @@ test('--force overwrites shipped files but keeps files the user owns', () => {
   assert.strictEqual(res.status, 0, res.stderr);
   assert.ok(fs.existsSync(mine), '--force must not delete a user file in a shipped directory');
   assert.ok(fs.existsSync(theirHook), '--force must not delete a user hook');
-  assert.ok(fs.existsSync(path.join(p, 'scripts/ck/wt-new.js')), 'shipped files are still refreshed');
+  assert.ok(fs.existsSync(path.join(p, 'scripts/ck/wt-new.cjs')), 'shipped files are still refreshed');
   assert.match(res.stdout, /kept \d+ file\(s\) you own/);
 });

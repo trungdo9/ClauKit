@@ -31,11 +31,11 @@ Integer stages are the long-standing pipeline; decimal stages are gates inserted
 - User reviews the plan; after approval the user runs `/clear` (context reset between planning and coding — a user step, not a subagent step). Begin coding only after the handoff.
 
 #### 2.5. Environment Pre-flight — `git/worktree`
-- **Detect early (free):** `node .claude/hooks/file-claims.js list` — a FOREIGN claim or dirty work you didn't author = concurrent session. **Provision late:** planning/verification are read-only, so isolation is needed before the **first edit**, not the first thought — and a plan that Verify-Plan proves is a no-op must not have paid for provisioning first.
-- Provision via `node scripts/ck/wt-new.js <slug>` (absolute path outside the repo, per-worktree deps, smoke gate on the untouched base commit) + `node scripts/ck/wt-doctor.js`; **refuse to proceed if unhealthy**. Record the worktree path in `STATE.md`.
+- **Detect early (free):** `node .claude/hooks/file-claims.cjs list` — a FOREIGN claim or dirty work you didn't author = concurrent session. **Provision late:** planning/verification are read-only, so isolation is needed before the **first edit**, not the first thought — and a plan that Verify-Plan proves is a no-op must not have paid for provisioning first.
+- Provision via `node scripts/ck/wt-new.cjs <slug>` (absolute path outside the repo, per-worktree deps, smoke gate on the untouched base commit) + `node scripts/ck/wt-doctor.cjs`; **refuse to proceed if unhealthy**. Record the worktree path in `STATE.md`.
 
 #### 3. Implementation — `cook` (Implement)
-- **Fresh implementer subagent per phase**; main session keeps only the loop, gates, and ledger. Dispatch = 1 context line + brief file path (`scripts/ck/phase-brief.js`) + interfaces + ambiguity resolutions + report path — **never session history, <2k chars** (artifacts as files, `orchestration-protocol.md`).
+- **Fresh implementer subagent per phase**; main session keeps only the loop, gates, and ledger. Dispatch = 1 context line + brief file path (`scripts/ck/phase-brief.cjs`) + interfaces + ambiguity resolutions + report path — **never session history, <2k chars** (artifacts as files, `orchestration-protocol.md`).
 - After each phase: compile/typecheck; verify the agent produced a diff before recording complete; append the phase line to `STATE.md`.
 - **DO NOT** create new enhanced files — update existing files directly.
 

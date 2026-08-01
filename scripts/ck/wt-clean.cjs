@@ -3,8 +3,8 @@
 /**
  * wt-clean.js — safe worktree teardown (T1.6a).
  *
- * Usage: node scripts/ck/wt-clean.js <path> [--force]
- *        node scripts/ck/wt-clean.js --list
+ * Usage: node scripts/ck/wt-clean.cjs <path> [--force]
+ *        node scripts/ck/wt-clean.cjs --list
  *
  * Rules:
  *   - `git worktree remove` with path validation, NEVER rm -rf (an rm -rf
@@ -19,7 +19,7 @@
  */
 
 const path = require('path');
-const { run, repoRoot, worktrees, die, ok, dirSize, fmtBytes } = require('./lib/common');
+const { run, repoRoot, worktrees, die, ok, dirSize, fmtBytes } = require('./lib/common.cjs');
 
 function main() {
   const argv = process.argv.slice(2);

@@ -44,7 +44,7 @@
 
 ## Testing Discipline
 - **Bug fixes are test-first by default** (`tdd` skill): red test reproducing the exact production symptom → verify red (paste output) → fix → verify green + full sweep. A waiver (time-critical hotfix, unreachable runner) must be logged in the plan/PR and in `STATE.md`.
-- Baseline for "is this failure pre-existing?" = base commit in a separate worktree (`scripts/ck/wt-new.js`), **never `git stash`** (silently no-ops).
+- Baseline for "is this failure pre-existing?" = base commit in a separate worktree (`scripts/ck/wt-new.cjs`), **never `git stash`** (silently no-ops).
 
 ## Cross-Service Changes
 - A caller must not ship before the dependency endpoint is deployed — **state the required deploy order in the commit/PR description** (which side ships first, and why it is safe in between).

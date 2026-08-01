@@ -69,7 +69,7 @@ Single source of truth for the `/ck:fix` family of commands. Each `/ck:fix*` com
 
 **After the gate — falsify the diagnosis (verify-plan):** when the root cause asserts *existing* behaviour ("X currently does Y", row counts, "the legacy path handles Z"), run the `verify-plan` skill's evidence check on it before implementing — a wrong root cause once shipped through 3 merged PRs. Append the gate result to `plans/<plan>/STATE.md` (`run-state` skill).
 
-**Baseline rule (all variants, G19):** "is this failure pre-existing?" is answered from the base commit checked out **in a separate worktree** (`node scripts/ck/wt-new.js baseline --base <sha>`), **never via `git stash`** — see the [`tdd` skill](../skills/software/tdd/SKILL.md) § Baseline for why (the no-op is silent).
+**Baseline rule (all variants, G19):** "is this failure pre-existing?" is answered from the base commit checked out **in a separate worktree** (`node scripts/ck/wt-new.cjs baseline --base <sha>`), **never via `git stash`** — see the [`tdd` skill](../skills/software/tdd/SKILL.md) § Baseline for why (the no-op is silent).
 
 **[4] Plan (optional)** — `planner` subagent creates implementation plan. Triggered for:
 - `--review` (always)

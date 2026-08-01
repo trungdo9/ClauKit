@@ -23,7 +23,7 @@ A test written after the code proves the code does what the code does. A test th
 
 ## Baseline rule (non-negotiable)
 
-"Is this failure pre-existing?" is answered by **checking out the base commit in a separate worktree** (`node scripts/ck/wt-new.js baseline --base <sha>`) and running the suite there — **never by `git stash`**. A stash-based baseline **silently no-ops** (dirty state that doesn't stash cleanly, untracked files, partial staging) and there is no error when it happens — a real one produced a commit message that had to be corrected. The failure mode is invisible, so the rule must be absolute.
+"Is this failure pre-existing?" is answered by **checking out the base commit in a separate worktree** (`node scripts/ck/wt-new.cjs baseline --base <sha>`) and running the suite there — **never by `git stash`**. A stash-based baseline **silently no-ops** (dirty state that doesn't stash cleanly, untracked files, partial staging) and there is no error when it happens — a real one produced a commit message that had to be corrected. The failure mode is invisible, so the rule must be absolute.
 
 Record the baseline failure set before step 1; step 4 diffs against it so regressions stay distinguishable from inherited breakage.
 

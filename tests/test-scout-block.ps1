@@ -19,7 +19,7 @@ function Test-ScoutBlock {
         }
     } | ConvertTo-Json -Compress
 
-    $result = $input | node .claude/hooks/scout-block.js 2>$null
+    $result = $input | node .claude/hooks/scout-block.cjs 2>$null
     $exitCode = $LASTEXITCODE
 
     if ($exitCode -eq $ExpectedExit) {

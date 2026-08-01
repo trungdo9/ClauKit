@@ -3,7 +3,7 @@
 /**
  * ci-review.js — provider-agnostic headless PR review (T4.2).
  *
- * Usage: node scripts/ck/ci-review.js <BASE> [HEAD] [--post <pr-number>] [--dry-run]
+ * Usage: node scripts/ck/ci-review.cjs <BASE> [HEAD] [--post <pr-number>] [--dry-run]
  *
  * Runs `claude -p` over the PR diff with a NARROW tool grant
  * (Read, Grep, Bash(git diff:*), Bash(git log:*)) and emits
@@ -20,7 +20,7 @@
 
 const fs = require('fs');
 const path = require('path');
-const { git, assertRef, run, repoRoot, die } = require('./lib/common');
+const { git, assertRef, run, repoRoot, die } = require('./lib/common.cjs');
 
 const ALLOWED_TOOLS = 'Read,Grep,Glob,Bash(git diff:*),Bash(git log:*),Bash(git show:*)';
 

@@ -7,11 +7,11 @@
         "hooks": [
           {
             "type": "command",
-            "command": "node \"$CLAUDE_PROJECT_DIR\"/.claude/hooks/scout-block.js"
+            "command": "node \"$CLAUDE_PROJECT_DIR\"/.claude/hooks/scout-block.cjs"
           },
           {
             "type": "command",
-            "command": "node \"$CLAUDE_PROJECT_DIR\"/.claude/hooks/guard-destructive.js"
+            "command": "node \"$CLAUDE_PROJECT_DIR\"/.claude/hooks/guard-destructive.cjs"
           }
         ]
       }
@@ -22,11 +22,11 @@
         "hooks": [
           {
             "type": "command",
-            "command": "node \"$CLAUDE_PROJECT_DIR\"/.claude/hooks/modularization-hook.js"
+            "command": "node \"$CLAUDE_PROJECT_DIR\"/.claude/hooks/modularization-hook.cjs"
           },
           {
             "type": "command",
-            "command": "node \"$CLAUDE_PROJECT_DIR\"/.claude/hooks/file-claims.js"
+            "command": "node \"$CLAUDE_PROJECT_DIR\"/.claude/hooks/file-claims.cjs"
           }
         ]
       }
@@ -34,7 +34,7 @@
   },
   "statusLine": {
     "type": "command",
-    "command": "node .claude/statusline.js",
+    "command": "node .claude/statusline.cjs",
     "padding": 0
   },
   "permissions": {

@@ -17,9 +17,9 @@ Leverage `git worktree` to maintain multiple isolated working trees from a singl
 
 Knowledge alone was not enough: worktrees were a top source of lost work when provisioned by hand. Use the tooling:
 
-- `node scripts/ck/wt-new.js <id>` — absolute path outside the repo, per-worktree deps, **smoke gate** (typecheck + tests on the untouched base commit; hard-fails red; full-suite result cached per base SHA). A session must never start editing in an environment whose baseline is unproven.
-- `node scripts/ck/wt-doctor.js [path]` — diagnoses broken/circular `node_modules` symlink, dependency version skew (declared range vs installed), missing env/API keys. Exit non-zero = unhealthy = do not edit there.
-- `node scripts/ck/wt-clean.js <path>` — teardown via `git worktree remove` with path validation; reports reclaimed disk. `--list` shows stale worktrees and their sizes.
+- `node scripts/ck/wt-new.cjs <id>` — absolute path outside the repo, per-worktree deps, **smoke gate** (typecheck + tests on the untouched base commit; hard-fails red; full-suite result cached per base SHA). A session must never start editing in an environment whose baseline is unproven.
+- `node scripts/ck/wt-doctor.cjs [path]` — diagnoses broken/circular `node_modules` symlink, dependency version skew (declared range vs installed), missing env/API keys. Exit non-zero = unhealthy = do not edit there.
+- `node scripts/ck/wt-clean.cjs <path>` — teardown via `git worktree remove` with path validation; reports reclaimed disk. `--list` shows stale worktrees and their sizes.
 
 ## Non-negotiable constraints
 

@@ -1,5 +1,5 @@
 /**
- * Tests for guard-destructive.js (T1.2 / G5).
+ * Tests for guard-destructive.cjs (T1.2 / G5).
  *
  * Tier A: irreversible-loss shapes always deny, benign lookalikes pass.
  * Tier B: over-broad staging denies IFF a foreign live claim exists.
@@ -12,8 +12,8 @@ const fs = require('node:fs');
 const os = require('node:os');
 const path = require('node:path');
 
-const HOOK = path.join(__dirname, '..', '.claude', 'hooks', 'guard-destructive.js');
-const CLAIMS = path.join(__dirname, '..', '.claude', 'hooks', 'file-claims.js');
+const HOOK = path.join(__dirname, '..', '.claude', 'hooks', 'guard-destructive.cjs');
+const CLAIMS = path.join(__dirname, '..', '.claude', 'hooks', 'file-claims.cjs');
 
 let repo;
 

@@ -52,7 +52,7 @@ Master Git workflows with conventional commit semantics. Provides structured gui
 
 **A commit contains exactly the files this session edited — never the whole tree.** At 43% multi-clauding, `git add -A`/`git commit -am` doesn't just bundle a coworker's WIP; it can stage another live Claude session's half-written files and strand that session on top of your commit.
 
-1. **Manifest is machine-derived:** `node .claude/hooks/file-claims.js list` — `MINE` rows are this session's files (the file-claims registry survives compaction; recollection does not). Registry unavailable → ask for explicit paths; never widen to `-A`.
+1. **Manifest is machine-derived:** `node .claude/hooks/file-claims.cjs list` — `MINE` rows are this session's files (the file-claims registry survives compaction; recollection does not). Registry unavailable → ask for explicit paths; never widen to `-A`.
 2. **Foreign WIP is reported, never staged:** dirty paths owned by another session (or unclaimed paths you didn't author) go in a file→owner table in the output.
 3. **Stage by explicit path only.** The `guard-destructive` hook denies whole-tree staging when another live session holds claims — the denial prints the scoped command.
 4. Re-check staged content before committing (concurrent-editor churn), lint + targeted tests, then a conventional commit with ticket prefix when the branch/plan names one.
@@ -70,7 +70,7 @@ Master Git workflows with conventional commit semantics. Provides structured gui
 
 ClauKit ships the **mechanism** to run a project-declared post-PR step list, and **declares no steps of its own** — any built-in list would encode one team's tracker vocabulary into a generic kit; most trackers cannot even express another suite's step names. Projects declare steps in an optional `## Delivery tail` CLAUDE.md block (see the `/ck:claude-md` template, the only file where vendor names may appear — commented out): one bullet per step with `run` · `needs` · `done-when` · `on-fail` keys.
 
-The runner (`scripts/ck/delivery-tail.js`, invoked by `/ck:git pr` step 5 and re-runnable standalone after an interruption — same single code path):
+The runner (`scripts/ck/delivery-tail.cjs`, invoked by `/ck:git pr` step 5 and re-runnable standalone after an interruption — same single code path):
 
 - **Deterministic, no agent on the default path.** A declared step carries `run` + `done-when`, so it is executable as-is; the runner substitutes `{{placeholders}}`, runs the commands, and compares results itself. It does **not** spawn an LLM to do that. Three reasons: the step whose whole purpose is surviving spend limits must cost nothing; an outcome parsed out of model prose is less reliable than an exit code; and an unattended tool grant derived from the declaration would be derived from the very text it would be guarding against.
 - **Declaration order.** Steps run in listed order; no reordering.

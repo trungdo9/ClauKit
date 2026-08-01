@@ -47,7 +47,7 @@
       "scripts/ck/"
     ],
     "statusline": [
-      ".claude/statusline.js",
+      ".claude/statusline.cjs",
       ".claude/statusline.sh",
       ".claude/statusline.ps1"
     ],

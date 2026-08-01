@@ -1,5 +1,5 @@
 /**
- * Tests for delivery-tail.js (T4.2/T6.1) — the declared-tail executor.
+ * Tests for delivery-tail.cjs (T4.2/T6.1) — the declared-tail executor.
  *
  * Execution is deterministic (no LLM on this path), so it is fully covered
  * here: no declaration = no-op exit 0, parsing, commented-out samples stay
@@ -15,7 +15,7 @@ const fs = require('node:fs');
 const os = require('node:os');
 const path = require('node:path');
 
-const SCRIPT = path.join(__dirname, '..', 'scripts', 'ck', 'delivery-tail.js');
+const SCRIPT = path.join(__dirname, '..', 'scripts', 'ck', 'delivery-tail.cjs');
 const { extractTailBlock, parseSteps } = require(SCRIPT);
 
 let dir;

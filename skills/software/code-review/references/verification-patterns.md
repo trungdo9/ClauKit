@@ -42,7 +42,7 @@ Companion to `verification-before-completion.md`. Concrete patterns per claim ty
 
 **Pre-existing failure (baseline):**
 ```
-✅ node scripts/ck/wt-new.js baseline --base <sha> → run suite in that worktree → compare failure sets
+✅ node scripts/ck/wt-new.cjs baseline --base <sha> → run suite in that worktree → compare failure sets
 ❌ git stash → run → stash pop (the stash can silently no-op; the "baseline" is your dirty tree)
 ```
 

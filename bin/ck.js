@@ -20,6 +20,8 @@ const { resolveKit, getKitPaths, resolveSourcePath, checkKitPathsAvailable, prin
 const { copyPath } = require("./lib/file-copier");
 const { writeMetadata } = require("./lib/metadata-writer");
 const { mergeSettings } = require("./lib/settings-merge");
+const { migrateCjs } = require("./lib/cjs-migrate");
+const { migrateDocRefs } = require("./lib/cjs-migrate-refs");
 const { wireClaudeMd } = require("./lib/claude-md-wire");
 const { wireGitignore } = require("./lib/gitignore-wire");
 const { fetchLatestVersion, compareVersions } = require("./lib/github-client");
@@ -70,6 +72,26 @@ function initCommand(options = {}) {
     );
     if (result === "copied") copied++;
     else if (result === "skipped") skipped++;
+  }
+
+  // ClauKit's CommonJS files used to ship as `.js`, which Node parses as ESM in
+  // any project with `"type": "module"` — every hook crashed on `require`, and
+  // the two PreToolUse guards failed open. They ship as `.cjs` now; this repairs
+  // the installs that predate the rename. Before mergeSettings, so the merge
+  // sees the rewritten entries rather than adding a second copy of each.
+  const migrated = migrateCjs(projectRoot, resolveSourcePath);
+  // Unconditional, not gated on `migrated.removed`: the files and the docs that
+  // invoke them are fixed by different runs when a partial upgrade happened, and
+  // a doc left pointing at a deleted path is the quiet half of this bug. Reading
+  // ~600 shipped .md/.sh files costs less than the copy loop already spent, and
+  // the sweep only writes when a shipped path actually changed.
+  const staleDocs = migrateDocRefs(projectRoot);
+  if (migrated.restored.length || migrated.rewritten.length || migrated.removed.length || staleDocs.length) {
+    console.log(`\n   🔧 migrated ClauKit's CommonJS files to .cjs (they broke under "type": "module"):`);
+    for (const f of migrated.restored) console.log(`      + installed ${f}`);
+    for (const f of migrated.rewritten) console.log(`      ~ repointed ${f} → .cjs in ${settingsRel}`);
+    for (const f of migrated.removed) console.log(`      - removed stale ${f}`);
+    if (staleDocs.length) console.log(`      ~ updated ${staleDocs.length} shipped doc(s) that invoked the old paths`);
   }
 
   if (fs.existsSync(projectSettings)) {

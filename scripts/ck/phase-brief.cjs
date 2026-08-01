@@ -4,7 +4,7 @@
  * phase-brief.js — extract one phase's full text from a plan into a brief
  * file for a fresh per-phase implementer (T3.2).
  *
- * Usage: node scripts/ck/phase-brief.js <plan-dir-or-plan.md> <phase-number>
+ * Usage: node scripts/ck/phase-brief.cjs <plan-dir-or-plan.md> <phase-number>
  *
  * The brief = the plan's Global Constraints block (implicitly part of every
  * phase) + the phase's complete text (from phase-<N>*.md if present, else the
@@ -16,8 +16,8 @@
 
 const fs = require('fs');
 const path = require('path');
-const { die } = require('./lib/common');
-const { resolveWorkspace } = require('./run-workspace');
+const { die } = require('./lib/common.cjs');
+const { resolveWorkspace } = require('./run-workspace.cjs');
 
 function planDirOf(arg) {
   let dir = path.resolve(arg);

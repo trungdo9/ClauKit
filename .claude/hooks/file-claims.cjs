@@ -1,17 +1,17 @@
 #!/usr/bin/env node
 
 /**
- * file-claims.js - PostToolUse hook (matcher: Write|Edit)
+ * file-claims.cjs - PostToolUse hook (matcher: Write|Edit)
  *
  * The concurrency substrate (T1.2b). Appends one JSONL claim per file
  * mutation to <worktree-root>/.claude/.ck-file-claims.jsonl:
  *   {"session":"<id>","file":"<repo-relative>","ts":<epoch-ms>,"tool":"Edit"}
  *
  * Consumers:
- *   - guard-destructive.js (Tier B): denies whole-tree git ops iff another
+ *   - guard-destructive.cjs (Tier B): denies whole-tree git ops iff another
  *     LIVE session holds a claim on a file the op would touch.
  *   - /ck:git cm: derives the session manifest machine-side (survives
- *     compaction) via `node .claude/hooks/file-claims.js list`.
+ *     compaction) via `node .claude/hooks/file-claims.cjs list`.
  *
  * Design constraints:
  *   - Scoped PER WORKTREE (git rev-parse --show-toplevel) — sessions in
@@ -29,7 +29,7 @@
  * order: payload.session_id → payload.sessionId → env → ppid:<n>.
  *
  * CLI:
- *   node file-claims.js list [--json]   pruned claims, "mine" resolved from
+ *   node file-claims.cjs list [--json]   pruned claims, "mine" resolved from
  *                                       CLAUDE_CODE_SESSION_ID when set
  */
 

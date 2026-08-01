@@ -200,7 +200,7 @@ Present to User
 Three mechanisms every gated pipeline builds on:
 
 - **Run ledger** — `plans/<plan>/STATE.md` (`run-state` skill): append-only event log written at every gate transition; a killed run resumes by re-deriving truth from git + re-running the plan's executable exit gates. One ledger per plan; safe under concurrent sessions.
-- **Concurrency substrate** — `file-claims` hook records per-worktree file claims; `guard-destructive` denies whole-tree git ops only when another *live* session owns an affected file; `/ck:git cm` derives its commit manifest from the same registry. One-worktree-per-session (`scripts/ck/wt-new.js`, smoke-gated) removes the shared-tree hazard entirely.
+- **Concurrency substrate** — `file-claims` hook records per-worktree file claims; `guard-destructive` denies whole-tree git ops only when another *live* session owns an affected file; `/ck:git cm` derives its commit manifest from the same registry. One-worktree-per-session (`scripts/ck/wt-new.cjs`, smoke-gated) removes the shared-tree hazard entirely.
 - **Context hygiene** — artifacts move between agents as **file paths** (`phase-brief.js`, `review-package.js`, `run-workspace.js`); implementation runs in a fresh subagent per phase; models are tiered per dispatch (`context-engineering/references/model-tiering.md`, with 529 one-tier fallback + dead-agent diff detection).
 
 #### 4.1 Orchestration Patterns
@@ -323,7 +323,7 @@ No `ffmpeg`, `shopify`, `mongodb`, `turborepo`, `csharp-expert`, or `security-au
   "hooks": {
     "BeforeBash": [{
       "type": "command",
-      "command": "node ${CLAUDE_PROJECT_DIR}/.claude/hooks/scout-block.js"
+      "command": "node ${CLAUDE_PROJECT_DIR}/.claude/hooks/scout-block.cjs"
     }]
   }
 }

@@ -3,7 +3,7 @@
 /**
  * review-package.js — assemble a reviewer's diff package as ONE file (T3.2).
  *
- * Usage: node scripts/ck/review-package.js <BASE> [HEAD] [--plan <plan-dir>]
+ * Usage: node scripts/ck/review-package.cjs <BASE> [HEAD] [--plan <plan-dir>]
  *
  * Contents: `git log --oneline BASE..HEAD` + `git diff --stat` + `git diff -U10`.
  * Written to the plan's reports/ workspace (or the system temp dir without
@@ -17,8 +17,8 @@
 const fs = require('fs');
 const os = require('os');
 const path = require('path');
-const { git, assertRef, die } = require('./lib/common');
-const { resolveWorkspace } = require('./run-workspace');
+const { git, assertRef, die } = require('./lib/common.cjs');
+const { resolveWorkspace } = require('./run-workspace.cjs');
 
 function main() {
   const argv = process.argv.slice(2);

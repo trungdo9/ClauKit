@@ -3,7 +3,7 @@
 /**
  * wt-new.js — provision a hardened git worktree (T1.6a).
  *
- * Usage: node scripts/ck/wt-new.js <id> [--base <ref>] [--dir <parent>]
+ * Usage: node scripts/ck/wt-new.cjs <id> [--base <ref>] [--dir <parent>]
  *                                       [--skip-install] [--skip-smoke]
  *
  * Guarantees (each earned by a real incident):
@@ -29,7 +29,7 @@
 
 const fs = require('fs');
 const path = require('path');
-const { git, assertRef, run, repoRoot, die, ok, info, detectPm, readJson } = require('./lib/common');
+const { git, assertRef, run, repoRoot, die, ok, info, detectPm, readJson } = require('./lib/common.cjs');
 
 function parseArgs(argv) {
   const args = { flags: new Set(), opts: {} };

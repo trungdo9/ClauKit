@@ -561,7 +561,7 @@ claukit/
 │   ├── .mcp.json.example       # MCP configuration template
 │   ├── statusline.sh           # Bash statusline script
 │   ├── statusline.ps1          # PowerShell statusline script
-│   └── statusline.js           # Node.js statusline script
+│   └── statusline.cjs           # Node.js statusline script
 ├── .opencode/                  # OpenCode CLI configuration
 │   ├── agent/                  # Agent definitions
 │   └── command/                # Command definitions
@@ -655,7 +655,7 @@ Configure in `.claude/settings.json`:
   "hooks": {
     "BeforeBash": [{
       "type": "command",
-      "command": "node ${CLAUDE_PROJECT_DIR}/.claude/hooks/scout-block.js"
+      "command": "node ${CLAUDE_PROJECT_DIR}/.claude/hooks/scout-block.cjs"
     }]
   }
 }
