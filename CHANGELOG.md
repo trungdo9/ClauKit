@@ -1,5 +1,35 @@
 # Changelog
 
+## [1.4.2](https://github.com/trungdo9/ClauKit/compare/v1.4.1...v1.4.2) (2026-08-01)
+
+**ESM fix — every hook was dead in projects with `"type": "module"`, and two safety guards were silently off.** Upgrade with `npx @trungdo9/claukit init`; the repair runs on a plain `init`, no `--force` needed.
+
+### 🐞 Bug Fixes
+
+* **hooks:** ship CommonJS as `.cjs` so hooks survive `"type": "module"` hosts ([e5aeaec](https://github.com/trungdo9/ClauKit/commit/e5aeaec)). Node picks a `.js` file's module system from the **host project's** nearest `package.json`, and ClauKit installs 14 CommonJS files into that host — so in every Vite/Next/modern-ESM project all of them died on their first line with `ReferenceError: require is not defined in ES module scope`. Renamed to `.cjs`, which is CommonJS regardless of the host: 4 hooks, `statusline`, 8 `scripts/ck/` helpers, `lib/common`. `bin/` is unaffected — it runs under ClauKit's own `package.json`.
+* **hooks:** `scout-block` and `guard-destructive` were failing open, not just crashing. Both are PreToolUse guards, so in an ESM project the destructive-command gate had been **absent since install** with nothing announcing it — the reported `/ck:git cp` crash was the visible half of a much quieter defect.
+* **scripts:** relative requires now carry explicit extensions ([e5aeaec](https://github.com/trungdo9/ClauKit/commit/e5aeaec)). Node's CommonJS resolver tries `.js`, `.json`, `.node` — **not** `.cjs` — so the 9 `require('./lib/common')` calls would have silently stopped resolving under the rename.
+
+### 🚀 Features
+
+* **install:** two-stage migration repairs existing installs on a plain `ck init` ([e5aeaec](https://github.com/trungdo9/ClauKit/commit/e5aeaec)). The rename alone would have stranded them: `copyPath` skips a destination directory that already exists, and `settings-merge` only *adds* entries — so an upgrade left the broken `.js` in place, still wired, plus a duplicate entry for the fix. `bin/lib/cjs-migrate.js` installs the missing `.cjs`, repoints `settings.json` (only ever to files that exist), collapses the duplicates and prunes the stale `.js`; `bin/lib/cjs-migrate-refs.js` rewrites shipped docs that still invoke the old paths, such as `/ck:git cm`'s `node .claude/hooks/file-claims.js list`. Requiring `--force` would have meant the projects the bug actually broke stay broken by default. Both stages are idempotent and touch only ClauKit-owned names — a project's own `.claude/hooks/deploy.js` is left alone.
+
+### ✅ Tests
+
+* **esm:** new `tests/esm-host.test.js` installs into a real `"type": "module"` project and *executes* every hook, the statusline and `wt-doctor` there — the shipped-artifact check, not a repo-local one (the same blindness class that hid the 1.4.0 and 1.4.1 defects). It also fails the build on any `.js` under `.claude/hooks/` or `scripts/ck/`, and covers the pre-rename upgrade path without `--force`, asserting the user's own hook survives both the rewrite and the prune. 192 → **199 tests**, 198 pass, 0 fail, 1 skip.
+
+### 📚 Documentation
+
+* **standards:** `docs/code-standards.md` gains the extension rule — shipped Node code is `.cjs`, requires carry the extension, and renaming one is a migration rather than a rename.
+
+### 🧹 Chores
+
+* **engineer:** kit bumped to 1.3.2 ([15737ca](https://github.com/trungdo9/ClauKit/commit/15737ca)) — the manifest's statusline entry moved to `.cjs`.
+
+Verified end-to-end: installed into a fresh `"type": "module"` project and ran all four hooks plus the statusline clean, then repaired a real pre-rename install — 13 `.cjs` restored, 5 `settings.json` entries repointed, 13 stale `.js` removed, 20 shipped docs updated, and the second `init` reported nothing left to migrate.
+
+> Released by hand. The `release.yml` workflow is active on `main` but has never produced a run, so semantic-release did not cut this tag.
+
 ## [1.4.1](https://github.com/trungdo9/ClauKit/compare/v1.4.0...v1.4.1) (2026-08-01)
 
 **Install fix — v1.4.0 could not be installed from a package.** `ck init` exited 1 before copying anything, on every kit. Upgrade straight to 1.4.1; skip 1.4.0.
