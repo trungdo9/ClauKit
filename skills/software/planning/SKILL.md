@@ -68,9 +68,11 @@ Load: `references/forecasting-outcomes.md`
 - Fully respect the `./docs/development-rules.md` file.
 
 **Plan Directory Structure**
+**Plan dir name:** `YYMMDD-HHmm-<slug>` — 6-digit date, from `bash -c 'date +%y%m%d-%H%M'` (PowerShell: `Get-Date -UFormat "%y%m%d-%H%M"`), never from model knowledge. `/ck:cook` resolves plan paths on this form; an 8-digit `YYYYMMDD` dir is a different name and will not be found.
+
 ```
 plans/
-└── YYYYMMDD-HHmm-plan-name/
+└── 260805-1430-plan-name/
     ├── research/
     │   ├── researcher-XX-report.md
     │   └── ...
@@ -95,7 +97,23 @@ Plans are executed by fresh per-phase implementers and resumed by sessions with 
 4. **Exit gate per phase** — every phase declares its gate as an **executable check**: a command, a test id, or a query **with the expected result stated**. This is what lets a resumed run (`run-state` skill) re-derive true state instead of trusting status claims.
 5. **Scope options table** — when the task *could* span >1 repo/layer: the **(A) minimal-surface vs (B) thorough** table (repos/layers touched + conventions followed/broken per option, recommendation marked). Produced by cook's scope lock; the plan records which option was picked and why.
 
-**Self-review checklist before handing the plan over:** spec coverage (every requirement maps to a phase) · placeholder scan (grep for TBD/appropriate/similar to) · type/name consistency across phases (Interfaces blocks agree) · every phase gate runnable · Global Constraints verbatim.
+6. **Plan Completeness block** — the plan's own explicit sign-off, the last section of `plan.md`. Six ticked items; the plan is not finished until it declares itself finished. Exact block: `references/output-standards.md`.
+
+### Hand-over gate (hard) — `plan-lint`
+
+A self-attested checklist is attested by the same agent that wrote the plan, so the checkable half is machine-checked instead:
+
+```
+node scripts/ck/plan-lint.cjs <plan-dir>      # 0 = PASS · 1 = violations · 2 = no plan.md
+```
+
+Verifies: `## Global Constraints` present and non-empty · every phase has a gate stating `<command> → <expected>` (`**Exit gate:**`, `**Acceptance:**` and `**Exit criteria:**` all count) · every phase declares `**Interfaces**` (or `**Interfaces:** none — no cross-phase surface`, a recorded decision rather than silence) · no banned placeholders outside code fences and quotations · the `## Plan Completeness` block exists with all six items ticked. Warns when the plan spans >1 top-level dir with no scope options table.
+
+**Exit 1 ⇒ the plan does not leave the planner.** Do not present it for review, do not implement against it. The two items no script can settle — spec coverage and cross-phase type agreement — stay attestation-only and the tool says so rather than implying it checked them.
+
+Why hard: without `## Global Constraints`, `scripts/ck/phase-brief.cjs` emits a "plan declares no Global Constraints" comment and **exits 0**, so every per-phase implementer works without the verbatim values and the violation only surfaces at review, three gates later. Run against this repo's own flagship plan the gate returns 11 violations — the failure mode is the normal case, not a hypothetical.
+
+**Self-review checklist before handing the plan over:** spec coverage (every requirement maps to a phase) · placeholder scan (grep for TBD/appropriate/similar to) · type/name consistency across phases (Interfaces blocks agree) · every phase gate runnable · Global Constraints verbatim. Then run `plan-lint` — the checklist is the intent, the linter is the gate.
 
 ## Quality Standards
 

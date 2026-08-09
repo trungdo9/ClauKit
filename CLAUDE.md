@@ -32,7 +32,7 @@ Kit manifests: `.claude/kits/*.json`. Adding a new kit = drop a JSON file, no CL
 
 **IMPORTANT:** Analyze the skills catalog and activate the skills that are needed for the task during the process. The **single source of truth** for all skills, agents, and commands (with status + duplicate detection) is `./docs/clauKit-registry.md` — read it whenever you need to know what is available, before suggesting to create a new skill/agent/command (avoid duplicates), or when activating skills for a task.
 **IMPORTANT:** You must follow strictly the development rules in `./.claude/workflows/development-rules.md` file.
-**IMPORTANT:** Before you plan or proceed any implementation, always read the `./README.md` file first to get context.
+**IMPORTANT:** For task context read `./docs/codebase-summary.md` + `./docs/system-architecture.md` — **not** `./README.md`. README is ~47k chars (~12k tokens) and, once read, stays resident and is re-sent on every later turn of the run. Load it **only** when the task changes documentation or the installer/CLI surface it documents.
 **IMPORTANT:** Sacrifice grammar for the sake of concision when writing reports.
 **IMPORTANT:** In reports, list any unresolved questions at the end, if any.
 **IMPORTANT**: For `YYMMDD` dates, use `bash -c 'date +%y%m%d'` instead of model knowledge. Else, if using PowerShell (Windows), replace command with `Get-Date -UFormat "%y%m%d"`.

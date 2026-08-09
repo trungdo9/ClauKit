@@ -37,8 +37,8 @@ If `<request>` does not clearly identify:
 ## Environment Pre-flight (before the first edit)
 
 1. `node .claude/hooks/file-claims.cjs list` → any `FOREIGN` claim = another live session is editing this tree. A large refactor in a shared tree is how batches sweep up foreign work.
-2. If a foreign claim exists **or** the tree is dirty: provision an isolated worktree first — `node scripts/ck/wt-new.cjs <refactor-slug>`, then `node scripts/ck/wt-doctor.cjs`; **unhealthy → refuse to proceed**.
-3. Record the worktree path in `plans/<plan>/STATE.md` so a resume lands in the right tree.
+2. If a foreign claim exists **or** the tree is dirty: **stop and report it.** Commit, land, or hand the tree back before starting — a mechanical refactor cannot be scoped around someone else's in-flight work, and there is no isolation mechanism to hide behind.
+3. Record the baseline before the first edit — `baseline: <X/Y> (<sha7>)` in `plans/<plan>/STATE.md` (`tdd` skill § Baseline) — so a mid-refactor failure is attributable.
 
 ## Hard Rules
 

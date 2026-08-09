@@ -49,6 +49,8 @@ Activation phrases: *"cook this feature"*, *"take this from spec to deploy"*, *"
 
 **Gating rule**: a stage cannot start until the prior gate passes. Skipping is a feature, not a bug — but it must be logged with a reason.
 
+**Closing gate (whichever stage you stop at)**: before any completion claim, answer **every** Stage-0 acceptance criterion with its evidence — a table of criterion → the test output or command result that settles it. A criterion with no evidence row is not met, and the run is not complete. This is `[[code-review]]`'s Iron Law applied to the spec rather than to the diff: Stage 0 exists to make the criteria *verifiable*, and a pipeline that never verifies them has only made a promise. It is stated here rather than inside a stage because Deploy runs only in `--auto` and Docs can be skipped — the check must survive every path through the table. (It lived only in `/ck:cook`'s Report section, so every other consumer of this skill collected acceptance criteria at Stage 0 and never looked at them again.)
+
 **Ledger (cross-cutting, not a stage)**: every gate transition appends one line to `plans/<plan>/STATE.md` per the `[[run-state]]` skill — `phase <N>: gate <name> → PASS|FAIL (evidence: <cmd> → <result>)`. A killed run resumes from the ledger + gate re-runs alone; TodoWrite is a UI mirror, never the record.
 
 **Review stage protocol**: follow `[[code-review]]` skill — get BASE_SHA/HEAD_SHA, optionally scout edge cases first, dispatch `code-reviewer` subagent with WHAT_WAS_IMPLEMENTED + PLAN_OR_REQUIREMENTS + DESCRIPTION. See [`code-review/references/requesting-code-review.md`](../code-review/references/requesting-code-review.md).
@@ -101,7 +103,7 @@ The dispatch contains exactly:
 **Never the session's history.** Keep dispatches <2k chars.
 
 - Statuses: `DONE` · `DONE_WITH_CONCERNS` · `NEEDS_CONTEXT` · `BLOCKED` — never force the same model to retry unchanged.
-- Never dispatch two implementers in parallel on the same tree (one worktree per editing agent — `[[worktree|git/worktree]]`).
+- Never dispatch two implementers in parallel on the same tree — editing phases run sequentially; only read-only agents (research, review) fan out.
 - After each phase: run the phase's declared exit gate, append the `STATE.md` line, and **verify the agent actually changed something** (`git diff`) before recording it complete — "agent reported success" is not evidence; a dead agent leaves no diff.
 
 ## Worked Example (CI: GitHub Actions)
@@ -122,7 +124,7 @@ Same stages map cleanly to GitLab CI, Buildkite, CircleCI, or a Makefile — met
 ## Failure Recovery
 
 - Gate fails → don't proceed; either fix or **explicitly waive** with a reason in the PR/plan (and a `waiver` line in `STATE.md`).
-- **Loop cap + breaker:** max 3 fix cycles per gate (Test, Review). At the 3rd failed cycle, don't just ask the user — **adjudicate each open finding and record the ruling in `STATE.md`** (`[[run-state]]`):
+- **Loop cap + breaker:** max 3 fix cycles per gate (Test, Review), **and ≤5 fix cycles total per feature** — a Review fix that breaks a test hands control to the Test gate with its own fresh budget, so per-gate caps alone permit 9 cycles of ping-pong. Hitting *either* cap: halt, run `[[retro]]` on spec/scope, ask the user. (The feature cap lived only in `/ck:cook` for a while; every other consumer of this skill — `/ck:fix`, `/ck:flow`, a bare activation — therefore had the ping-pong hole open.) At the 3rd failed cycle, don't just ask the user — **adjudicate each open finding and record the ruling in `STATE.md`** (`[[run-state]]`):
   - reviewer wrong / contestable → `parked — <finding> — ruling: <why the code stands>`
   - real but nothing downstream depends on it → parked, marked deferred
   - **real and load-bearing** (a later phase builds on it, or it reveals a plan defect) → `BLOCKED`, stop, surface the finding + the plan text it collides with + the fix history

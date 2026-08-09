@@ -8,6 +8,16 @@
 2. **Announce the activation**: "Using `<skill>` to `<purpose>`" — one line, before the work starts. An unannounced skill is indistinguishable from an unused one.
 3. **Process skills before implementation skills**: gates and methodology (`cook`, `verify-plan`, `tdd`, `planning`, `code-review`, `run-state`) load before domain skills (framework/library references) — the process skill decides whether the implementation skill even runs.
 4. A skill's body is the source of truth while active — do not paraphrase it from memory.
+5. **Some task shapes force a specific gate before anything else.** Rule 3 says process precedes implementation; this says *which* process, read off the shape of the request:
+
+| The task in front of you | The gate that fires first |
+|---|---|
+| Could touch >1 repo or layer | [`cook`](../skills/software/cook/SKILL.md) § Scope lock — present **(A) minimal-surface** and **(B) thorough**, then **halt for the pick**. Editing one side first is the failure this exists to prevent |
+| Implements a plan that asserts existing behaviour | [`verify-plan`](../skills/software/verify-plan/SKILL.md) — no code until the claims are checked |
+| Fixes a reported bug | [`tdd`](../skills/software/tdd/SKILL.md) — red before green |
+| Resumes interrupted work | [`run-state`](../skills/software/run-state/SKILL.md) — read the ledger, re-derive, do not redo |
+
+The first row is here because it was measured. A two-layer email bug got edited on one side with nothing asked — twice — in a behavioural eval: once after reading `fix-pipeline.md`, once without opening any pipeline doc at all. **A gate that lives only in a pipeline document is a gate for the runs that happen to open it**, and a bug report opens nothing. This file and `development-rules.md` are the two documents every run actually loads, which is why the trigger belongs here and the rule stays in the skill.
 
 ## Rationalization table
 

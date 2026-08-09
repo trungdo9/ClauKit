@@ -29,12 +29,30 @@ A command / test id / query **plus its expected result** — not prose ("tests p
 | B (thorough) | … | … | |
 Record which option was picked. Produced by cook's scope-lock gate; the rejected option feeds the PR body's Tradeoffs section.
 
+### Plan Completeness (the plan's sign-off — last section of `plan.md`)
+
+Copy this block verbatim and tick every box. `plan-lint` requires all six, refuses any left unticked, and independently re-verifies four of them from the file — a ticked box cannot stand in for the thing it claims.
+
+```markdown
+## Plan Completeness
+
+- [x] spec coverage — every requirement maps to a phase
+- [x] placeholder scan clean
+- [x] Interfaces blocks consistent across phases
+- [x] every phase gate is a runnable command with a stated expected result
+- [x] Global Constraints values verbatim, not referenced
+- [x] scope option recorded (A minimal / B thorough) — or N/A, single layer
+```
+
+Machine-checked: placeholders · phase gates · Interfaces presence · Global Constraints. Attestation-only: spec coverage · cross-phase type agreement.
+
 ### Self-review checklist (before hand-over)
 - [ ] every requirement maps to a phase (spec coverage)
 - [ ] placeholder scan clean (`grep -inE 'TBD|appropriate|similar to phase' plan.md phase-*.md`)
 - [ ] Interfaces blocks consistent across phases (names/types agree)
 - [ ] every phase gate is a runnable command with a stated expected result
 - [ ] Global Constraints values verbatim, not referenced
+- [ ] `node scripts/ck/plan-lint.cjs <plan-dir>` exits 0 — **hard gate**, the plan does not leave the planner otherwise
 
 ## Task Breakdown
 

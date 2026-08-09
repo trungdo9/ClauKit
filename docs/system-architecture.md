@@ -200,7 +200,7 @@ Present to User
 Three mechanisms every gated pipeline builds on:
 
 - **Run ledger** — `plans/<plan>/STATE.md` (`run-state` skill): append-only event log written at every gate transition; a killed run resumes by re-deriving truth from git + re-running the plan's executable exit gates. One ledger per plan; safe under concurrent sessions.
-- **Concurrency substrate** — `file-claims` hook records per-worktree file claims; `guard-destructive` denies whole-tree git ops only when another *live* session owns an affected file; `/ck:git cm` derives its commit manifest from the same registry. One-worktree-per-session (`scripts/ck/wt-new.cjs`, smoke-gated) removes the shared-tree hazard entirely.
+- **Concurrency substrate** — `file-claims` hook records per-worktree file claims; `guard-destructive` denies whole-tree git ops only when another *live* session owns an affected file; `/ck:git cm` derives its commit manifest from the same registry. Concurrent sessions **coordinate rather than isolate**: pipelines confine edits to unclaimed paths, `/ck:team` hands each editing teammate a disjoint path set and serializes overlaps. (The auto-provisioned worktree fleet was removed 2026-08-05 — it fired on every concurrent session, paid a full dependency install each time, and left stale trees behind.)
 - **Context hygiene** — artifacts move between agents as **file paths** (`phase-brief.js`, `review-package.js`, `run-workspace.js`); implementation runs in a fresh subagent per phase; models are tiered per dispatch (`context-engineering/references/model-tiering.md`, with 529 one-tier fallback + dead-agent diff detection).
 
 #### 4.1 Orchestration Patterns
@@ -281,12 +281,12 @@ Re-creates Claude Code's dynamic-workflow model on ClauKit primitives — 4-axis
         └── examples.md
 ```
 
-**128 skills across 5 groups** (see `docs/clauKit-registry.md` § 1 for the full itemized list):
+**130 skills across 5 groups** (see `docs/clauKit-registry.md` § 1 for the full itemized list):
 - **`global/`** (1): `docs-seeker`
 - **`marketing/`** (50): claude-seo engine (`seo`, `seo-audit`, `seo-technical`, `seo-content`, `seo-schema`, `seo-geo`, +19 more `seo-*`), coreyhaines31-sourced (`copywriting`, `cro`, `ads`, `emails`, `analytics`, +18 more), ClauKit-authored (`product-marketing`, `kit-builder`)
 - **`automation/`** (6): `marketing-orchestrator`, `mcp-ga4`, `mcp-gsc`, `mcp-sendgrid`, `mcp-resend`, `mcp-reviewweb`
 - **`integrations/`** (2): `wordpress-rest`, `mcp-wordpress`
-- **`software/`** (69): top-level standalone (`git`, `worktree`, `research`, `planning`, `cook`, `refactor`, `debugging`, `code-review`, `dynamic-workflow`, `obsidian`, `claude-md`, `team`, `port`, `chrome-devtools`, `agent-browser`, `security`, `cti-expert`, `problem-solving`, `sequential-thinking`, …) + subcategorized: `ai/` (`ai-artist`, `ai-multimodal`, `remotion`), `database/` (`postgresql`, `supabase`), `design/` (`aesthetic`, `frontend-design`, `ui-ux-pro-max`, `threejs`, …), `development/` (`csharp-developer`, `node-specialist`, `python-pro`, `react-specialist`, `nextjs-developer`, `typescript-pro`, `bootstrap`, `test-automation`, …), `document-skills/` (`docx`, `pdf`, `pptx`, `xlsx`), `git/`, `infrastructure/` (`docker-expert`)
+- **`software/`** (71): top-level standalone (`git`, `research`, `planning`, `cook`, `refactor`, `debugging`, `code-review`, `dynamic-workflow`, `obsidian`, `claude-md`, `team`, `port`, `chrome-devtools`, `agent-browser`, `security`, `cti-expert`, `problem-solving`, `sequential-thinking`, …) + subcategorized: `ai/` (`ai-artist`, `ai-multimodal`, `remotion`), `database/` (`postgresql`, `supabase`), `design/` (`aesthetic`, `frontend-design`, `ui-ux-pro-max`, `threejs`, …), `development/` (`csharp-developer`, `node-specialist`, `python-pro`, `react-specialist`, `nextjs-developer`, `typescript-pro`, `bootstrap`, `test-automation`, …), `document-skills/` (`docx`, `pdf`, `pptx`, `xlsx`), `git/`, `infrastructure/` (`docker-expert`)
 
 No `ffmpeg`, `shopify`, `mongodb`, `turborepo`, `csharp-expert`, or `security-audit` skills exist — these were either never real or have been superseded (`security-audit` → `security`; C# coverage → `csharp-developer`; image/video work → `ai-multimodal`). Verify any skill name against the registry before citing it.
 

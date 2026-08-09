@@ -48,7 +48,7 @@ Before Phase 3 (any file write), confirm with user:
 
 ## Report Locations
 
-Save to `plans/<plan-name>/reports/port-<repo>-{inspect,compare,port}.md`. If no active plan → `plans/port-adhoc-YYYYMMDD-HHmm/reports/`. Use `bash -c 'date +%y%m%d-%H%M'` for the date.
+Save to `plans/<plan-name>/reports/port-<repo>-{inspect,compare,port}.md`. If no active plan → `plans/port-adhoc-<YYMMDD-HHmm>/reports/`. Use `bash -c 'date +%y%m%d-%H%M'` for the date (6-digit, matching every other plan dir).
 
 ## Important
 

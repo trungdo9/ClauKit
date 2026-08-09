@@ -20,7 +20,7 @@ A ledger whose header names a different plan belongs to another run — never ap
 | Parked finding | `phase <N>: parked — <finding> — ruling: <why the code stands / deferred>` | loop-cap breaker adjudication (cook Failure Recovery); silent discard is forbidden |
 | Blocked | `phase <N>: BLOCKED — <reason>` | load-bearing finding, plan defect, or unrepairable env blocker; run stops |
 | Resume | `phase <N>: resumed (derived from ledger + gates, <K> phases confirmed)` | after emitting the derived-state table |
-| Environment | `env: worktree <absolute path> (branch <name>, base <sha7>)` | worktree provisioned for this run |
+| Baseline | `baseline: <X/Y> (<sha7>)` | suite run on the untouched tree **before the first edit**; what later failures are diffed against |
 | Model substitution | `env: model fallback <from>→<to> — <reason: 529/overload>` | overload resilience (T6.2) |
 | Dead agent | `phase <N>: agent died (no diff) — redispatch` | a dispatched subagent produced no VCS diff; never record it complete |
 | Delivery-tail step | `finish: tail <step-name> → DONE\|SKIPPED (idempotent)\|FAILED (paste-ready emitted)` | one line per declared handoff step |

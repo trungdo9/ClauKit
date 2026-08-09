@@ -67,11 +67,6 @@ for (const payload of PAYLOADS('HEAD')) {
     runScript('ci-review.cjs', [payload, 'HEAD', '--dry-run']);
     assert.ok(!fs.existsSync(marker), `COMMAND INJECTION via ci-review.cjs with ref: ${payload}`);
   });
-
-  test(`wt-new.cjs does not execute an injected --base: ${payload}`, () => {
-    runScript('wt-new.cjs', ['probe', '--base', payload, '--skip-install']);
-    assert.ok(!fs.existsSync(marker), `COMMAND INJECTION via wt-new.cjs with --base: ${payload}`);
-  });
 }
 
 test('a real branch name carrying metacharacters resolves without executing it', () => {

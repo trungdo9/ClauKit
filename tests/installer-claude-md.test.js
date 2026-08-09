@@ -103,3 +103,87 @@ test('runtime state is git-ignored in the consuming project', () => {
     assert.strictEqual(r.status, 0, `${f} must be ignored in a consuming repo — it carries session ids and conflicts on every merge`);
   }
 });
+
+test('the refuted-premise hard stop reaches CLAUDE.md itself, not just a link', () => {
+  // A behavioural eval caught a run that opened NONE of the linked workflow
+  // files, verified a plan's cited commit, found it was a no-op, silently did
+  // the missing work and shipped the dependent change. CLAUDE.md is the only
+  // text guaranteed to be in context, so a rule that must fire before any
+  // reading has to be stated here — a pointer is not enough.
+  const p = fresh();
+  init(p);
+  const text = fs.readFileSync(path.join(p, 'CLAUDE.md'), 'utf-8');
+  const line = text.split('\n').find((l) => /Hard stop/.test(l));
+  assert.ok(line, 'CLAUDE.md must state the refuted-premise stop, not merely link to it');
+  assert.match(line, /do not quietly do the missing work/i);
+  assert.match(line, /verify-plan/, 'and must point at the skill for the detail');
+  // One line, so tests/behavior ablation removes the rule atomically. Split
+  // across lines, a negative control would strip half of it and measure nothing.
+  assert.strictEqual(text.split('\n').filter((l) => /Hard stop/.test(l)).length, 1);
+});
+
+// --- upgrade path -----------------------------------------------------------
+// "Already wired" was treated as "nothing to add", so a later version's rules
+// reached brand-new installs only. The refuted-premise hard stop — the one rule
+// a positive control proved necessary — never arrived for any existing user.
+
+/** A CLAUDE.md as an older ck version left it: our marker, none of today's rules. */
+function oldWired(p) {
+  fs.writeFileSync(path.join(p, 'CLAUDE.md'),
+    '# CLAUDE.md\n\n## Workflows\n\n<!-- ck:workflows -->\n'
+    + '- Primary workflow: `./.claude/workflows/primary-workflow.md`\n');
+}
+
+test('re-running init on an already-wired project delivers rules it lacks', () => {
+  const p = fresh();
+  oldWired(p);
+  init(p);
+  const text = fs.readFileSync(path.join(p, 'CLAUDE.md'), 'utf-8');
+  assert.match(text, /Hard stop/, 'an existing user must receive the rule, not just new installs');
+  assert.match(text, /fix-pipeline\.md/, 'and workflows the older version did not ship');
+});
+
+test('bringing CLAUDE.md up to date is idempotent', () => {
+  const p = fresh();
+  oldWired(p);
+  init(p); init(p); init(p);
+  const text = fs.readFileSync(path.join(p, 'CLAUDE.md'), 'utf-8');
+  const count = (re) => text.split('\n').filter((l) => re.test(l)).length;
+  assert.strictEqual(count(/Hard stop/), 1, 'a rule must never be appended twice');
+  assert.strictEqual(count(/These workflow files are instructions/), 1);
+  assert.strictEqual(count(/fix-pipeline\.md/), 1);
+});
+
+test("a hand-written CLAUDE.md is not edited, and the gap is reported instead", () => {
+  // The rules only work from CLAUDE.md itself — a file it links to is not read
+  // on the runs they exist for. So the gap is real and cannot be closed by the
+  // pointer the user wrote. Reporting it keeps the choice with the person whose
+  // file it is, rather than silently accepting or silently closing it.
+  const p = fresh();
+  const theirs = '# My project\n\nWe keep our rules in `./.claude/workflows/` — read them.\n';
+  fs.writeFileSync(path.join(p, 'CLAUDE.md'), theirs);
+  const res = init(p);
+  assert.strictEqual(fs.readFileSync(path.join(p, 'CLAUDE.md'), 'utf-8'), theirs,
+    'a file we did not write is not a file we edit');
+  assert.match(res.stdout, /left untouched/);
+  assert.match(res.stdout, /Hard stop/, 'and it must name what is missing, not just that something is');
+});
+
+test('a rule never cites a path its kit does not ship', () => {
+  // The engineer scenarios cannot catch this: they only ever install one kit.
+  // The hard stop was emitted unconditionally, so every marketing install got a
+  // CLAUDE.md pointing at `skills/software/verify-plan/SKILL.md`, which that kit
+  // does not ship — the exact thing `workflowLines` already refuses to do for
+  // workflow pointers ("worse than no pointer"). The rule itself is
+  // self-contained and stays; only its citation is conditional.
+  for (const kit of ['engineer', 'marketing', 'both']) {
+    const p = fresh();
+    spawnSync('node', [CK, 'init', '--kit', kit], { cwd: p, encoding: 'utf-8' });
+    const text = fs.readFileSync(path.join(p, 'CLAUDE.md'), 'utf-8');
+    assert.match(text, /Hard stop/, `${kit}: the rule is worth having in every kit`);
+    for (const cited of text.match(/`\.claude\/[A-Za-z0-9_./-]+\.md`/g) || []) {
+      const rel = cited.replace(/`/g, '');
+      assert.ok(fs.existsSync(path.join(p, rel)), `${kit}: CLAUDE.md cites ${rel}, which this kit does not install`);
+    }
+  }
+});

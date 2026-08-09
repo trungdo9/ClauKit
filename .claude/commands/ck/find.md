@@ -8,7 +8,7 @@ argument-hint: [task-description]
 
 ## Purpose
 
-Given a task description, recommend the best ClauKit tool to use — **local registry first**, external skills ecosystem as fallback. Reduces the discoverability gap across 131 skills + 29 agents + 56 commands (see `docs/clauKit-registry.md` for exact counts).
+Given a task description, recommend the best ClauKit tool to use — **local registry first**, external skills ecosystem as fallback. Reduces the discoverability gap across 130 skills + 29 agents + 56 commands (see `docs/clauKit-registry.md` for exact counts).
 
 ## Workflow
 

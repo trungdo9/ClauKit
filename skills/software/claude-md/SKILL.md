@@ -45,7 +45,7 @@ What belongs in CLAUDE.md: build/test/lint commands, architecture one-liners, ha
    - `## DB changes` — which DSNs exist (dev/staging/prod), who approves mutations, where migration scripts live (protocol itself: `database` skill safe-writes).
    - `## Verification before claiming done` — the project's own "done" commands (test/typecheck/build) with expected results, verbatim.
    - `## Cross-service` — which services call which; the deploy-order rule instances for THIS project.
-   - `## Delivery tail (optional)` — post-PR steps, **shipped commented-out and inert**: one bullet per step, sub-bullets `run:` / `needs:` / `done-when:` / `on-fail:` (markdown sub-bullets, not YAML — `done-when` = command + expected result, same shape as plan exit gates). Commented-out samples for common trackers/VCS hosts live here, never in any skill. Absent/empty ⇒ `/ck:git pr` ends at draft PR + teardown.
+   - `## Delivery tail (optional)` — post-PR steps, **shipped commented-out and inert**: one bullet per step, sub-bullets `run:` / `needs:` / `done-when:` / `on-fail:` (markdown sub-bullets, not YAML — `done-when` = command + expected result, same shape as plan exit gates). Commented-out samples for common trackers/VCS hosts live here, never in any skill. Absent/empty ⇒ `/ck:git pr` ends at the draft PR.
 6. Output ≤ 60 lines unless the project genuinely demands more (the 5 blocks above count against the budget — keep them terse); report final line + est. token count.
 
 ## Operation `verify` — read-only audit

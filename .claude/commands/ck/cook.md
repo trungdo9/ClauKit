@@ -38,15 +38,34 @@ Think harder to drive the following feature end-to-end. Follow the cook skill me
 
 **Guard:** `--auto` + `--no-test` cannot combine — auto-approval relies on tests; a test waiver requires human sign-off. Fall back to interactive approval and tell the user why.
 
-**Loop cap (all modes):** max **3 fix cycles per gate** (Test, Review). On the 3rd failure: halt, run the `retro` skill ([.claude/skills/software/retro/SKILL.md](.claude/skills/software/retro/SKILL.md)) on spec/scope, ask the user.
+**Loop caps (all modes):** the per-gate cap, the per-feature cap, the breaker at the 3rd failed cycle and the `retro` halt all live in the [`cook` skill](../../skills/software/cook/SKILL.md) § Loop cap + breaker — one home, because a cap stated in two places drifts, and this pair already had: the command carried a feature-level cap the skill did not, so every other consumer of that skill ran without it.
+
+## Dispatch Tiers (Rule 0 — every dispatch names a model)
+
+An omitted `model` inherits the session's tier and silently defeats tiering; a dispatch without one **is a review finding**. Source of truth: [model-tiering.md](../../skills/software/context-engineering/references/model-tiering.md).
+
+| Stage | Agent | `model` |
+|---|---|---|
+| Research | `researcher` · `scout` | `sonnet` · `haiku` |
+| Plan | `planner` | `opus` |
+| Verify-Plan | `debugger` (read-only, writes the evidence table) | `sonnet` |
+| Implement | `backend-developer` / `frontend-developer` | `haiku` when the brief carries complete code; else `sonnet` |
+| Implement (bookkeeping) | `project-manager` | `haiku` |
+| Test | `tester` | `sonnet` |
+| Review (per cycle) | `code-reviewer` | `sonnet` |
+| Review (**final whole-branch**, or diff >200 lines / >3 files / auth·payments·migrations) | `code-reviewer` | `opus` |
+| Adversarial verify | `debugger` | `sonnet` |
+| Docs | `docs-manager` | `haiku` |
+| Deploy / commits | `git-manager` | `haiku` |
+
+**Tier the loop, not the dispatch.** Review is the only multiplicative gate — `cycles × (1 reviewer + N findings + 1 test re-run)` — so these three agents (`code-reviewer`, `debugger`, `tester`) set the run's cost, not `planner`. Escalate on a **verdict** (`UNVERIFIABLE` Critical, or a root cause that survived one sonnet pass), never on the schedule. Batch adversarial verify **by file**, not by finding.
 
 ## Environment Pre-flight (before the first edit)
 
-Planning and verification are read-only — isolation is needed before the **first edit**, not the first thought. **Detect early, provision late:**
+Planning and verification are read-only — the check belongs before the **first edit**, not the first thought.
 1. **Detect (free, at start):** `node .claude/hooks/file-claims.cjs list` → any `FOREIGN` claim means another live session is editing this tree. A dirty `git status --porcelain` containing work you didn't author counts too.
-2. **Provision (before the first edit):** if either fired, create an isolated worktree via `node scripts/ck/wt-new.cjs <plan-slug>` (worktree skill: absolute path outside the repo, per-worktree deps, smoke gate on the base commit).
-3. Run `node scripts/ck/wt-doctor.cjs` on the tree you will edit; **unhealthy → refuse to proceed** until the environment is fixed.
-4. Record the worktree path in `plans/<plan>/STATE.md` (run-state skill) so a resume lands in the right tree.
+2. **Baseline (before the first edit):** run the suite on the untouched tree and append `baseline: <X/Y> (<sha7>)` to `plans/<plan>/STATE.md` (run-state skill). This is what makes "is this failure pre-existing?" answerable later. **Red where green is expected, or a runner that cannot run ⇒ stop before the first edit** and report — see the [`tdd` skill](../../skills/software/tdd/SKILL.md) § Baseline.
+3. **On overlap, coordinate — don't isolate:** do not edit a file another live session claims. Confine edits to unclaimed paths; if the task cannot avoid a claimed file, **stop and report which session owns it** instead of racing. `guard-destructive` Tier B declines whole-tree staging while a foreign claim is live.
 
 ## Workflow
 
@@ -84,25 +103,31 @@ Stages are named; numbering lives in the cook skill (source of truth).
 * **Fresh implementer subagent per phase** (cook skill "Implement" section is the contract): main session keeps only the loop, gates, and ledger. Dispatch = 1 line of context + **brief file path** (`node scripts/ck/phase-brief.cjs <plan> <N>`) + cross-phase interfaces + known ambiguity resolutions + report path. **Never paste session history; keep dispatches <2k chars.** Statuses: `DONE`/`DONE_WITH_CONCERNS`/`NEEDS_CONTEXT`/`BLOCKED`.
 * Frontend (UI, components, pages, styling/design) → `frontend-developer` (activates `aesthetic` + `frontend-design` skills for design work; `ai-multimodal` skill to generate + verify image assets).
 * Backend (APIs, database, server) → `backend-developer`.
-* Never two implementers in parallel on the same tree (worktree per editing agent).
+* Never two implementers in parallel on the same tree — dispatch editing phases sequentially.
 * `project-manager` updates phase progress in the plan file between phases.
 * After each phase: type-check + compile; resolve syntax errors before continuing. **Verify the agent produced a diff** (`git diff --stat`) before recording the phase complete — a dead agent reports nothing and changes nothing; append `phase N: agent died (no diff) — redispatch` to `STATE.md` and redispatch.
-* Append one `STATE.md` line per phase (run-state skill): `phase <N>: complete (commits <a7>..<b7>, tests <X/Y>, …)`.
+* **Commit every phase** — `git` skill § **Per-Phase Commits** is the contract:
+  1. before dispatch: `git rev-parse --short HEAD` → append `phase <N>: started (base <sha7>)`;
+  2. exit gate green → scoped commit via `git-manager` (`model: haiku`; manifest from the claim registry, never `-A`) **on the current branch** (§ Branch Policy — no `checkout -b`);
+  3. then append `phase <N>: complete (commits <a7>..<b7>, tests <X/Y>, …)`.
+
+  Not optional bookkeeping: `run-state` resume re-derives state from `git log <base>..HEAD`, and Review's BASE is the phase's recorded `started (base <sha7>)` — with nothing committed a killed run re-implements finished work and `review-package.cjs` has no range to package. The user's approval gates **push** and **PR**, not these local checkpoints.
 
 ### Test
 
 **Skip if `--no-test` (waiver logged in plan file).**
 
 * Real tests: happy path + negative + recovery. **No mocks-to-pass, no fake data.**
-* `tester` runs the suite. On failure: `debugger` finds root cause → implementer fixes → re-run. 100% pass required; loop cap applies.
+* `tester` (`model: sonnet`) runs the suite. On failure: `debugger` (`sonnet`) finds root cause → implementer fixes → re-run. 100% pass required; loop cap applies (3 per gate, 5 per feature). A failure that survives one sonnet pass escalates one tier — a second identical dispatch does not.
 
 ### Review
 
 Follow the `code-review` skill ([.claude/skills/software/code-review/SKILL.md](.claude/skills/software/code-review/SKILL.md)) — single source of truth for the review protocol (SHAs, dispatch fields, edge-case scouting, verification gates).
 
 * Optional for complex changes: `/ck:scout edge cases for <feature>` → hand report to reviewer.
-* Dispatch `code-reviewer` per the skill's "Requesting Review" protocol; it emits Critical / High / Medium / Low.
-* **Adversarial verify (before any fix):** each Critical/High finding must survive an independent skeptic before it enters the fix loop. Dispatch the `debugger` agent (NOT the reviewer that raised it — `debugger` owns reproduction) prompted to *refute* the finding — reproduce it at the cited `file:line`, confirm the failing input→output, check it isn't already handled. Verdict `CONFIRMED` (with repro evidence) → proceed to fix. `REFUTED` / can't-reproduce → drop the finding, log why. Default-to-refuted when the `debugger` is uncertain. This is the [Adversarial verify quality pattern](../../../README.md); a fix loop is expensive (loop cap = 3), so never spend a cycle on a phantom bug.
+* **BASE comes from the ledger, never `HEAD~1`:** use the first implemented phase's recorded `started (base <sha7>)` (Implement step 1) → `node scripts/ck/review-package.cjs <BASE> HEAD --plan <plan-dir>`, hand the reviewer the **file path**. `HEAD~1` silently truncates a multi-commit phase.
+* Dispatch `code-reviewer` per the skill's "Requesting Review" protocol; it emits Critical / High / Medium / Low. **Tier:** `sonnet` per fix cycle; `opus` for the **final whole-branch review** and for a high-risk diff (>200 lines, >3 files, or auth/payments/migrations/cross-service).
+* **Adversarial verify (before any fix):** each Critical/High finding must survive an independent skeptic before it enters the fix loop. Dispatch the `debugger` agent (`model: sonnet`; NOT the reviewer that raised it — `debugger` owns reproduction), **batched by file** — several findings in one file are one dispatch, since N dispatches re-read the same file N times — prompted to *refute* the finding — reproduce it at the cited `file:line`, confirm the failing input→output, check it isn't already handled. Verdict `CONFIRMED` (with repro evidence) → proceed to fix. `REFUTED` / can't-reproduce → drop the finding, log why. Default-to-refuted when the `debugger` is uncertain. This is the adversarial-verify pattern; a fix loop is expensive (loop cap = 3), so never spend a cycle on a phantom bug.
 * **Gate decision:** `--auto` passes if `Critical = 0 AND High = 0` (counting CONFIRMED findings only), else falls back to user approval. Default / `--fast`: always user approval.
 * Confirmed Critical/High findings: fix → re-run Test → re-review until clean (loop cap applies). Apply the skill's Verification Gates before claiming "fixed".
 
@@ -121,7 +146,7 @@ Follow the `code-review` skill ([.claude/skills/software/code-review/SKILL.md](.
 
 ### Report
 
-* **Acceptance-criteria checklist (mandatory):** table of each Gate criterion → verification evidence (test output, command result). No completion claim without it (code-review skill Iron Law).
+* **Acceptance-criteria checklist (mandatory):** run the [`cook` skill](../../skills/software/cook/SKILL.md) § Closing gate — every Stage-0 criterion answered with the test output or command result that settles it. No completion claim without it.
 * Instruct user how to use the feature (env vars, keys, config). Default: one question at a time; in `--auto`, bundle everything into the report — never block.
 * Summarize changes; suggest next steps. Offer commit + push → `git-manager` (already done if Deploy ran). If Deploy was skipped (non-auto): list the manual deploy steps.
 * List unresolved questions at the end.

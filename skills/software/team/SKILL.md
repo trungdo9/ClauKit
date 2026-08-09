@@ -60,6 +60,17 @@ Activation phrases: *"spin up a team to..."*, *"run these workstreams in paralle
 - `/ck:team review --reviewers 2`
 - `/ck:team debug "race condition in payment flow" --plan-approval`
 
+## Shared-Tree Protocol (canonical)
+
+Teammates editing the same working tree is the **#1 lost-work shape** in the source data. ClauKit does not hand each teammate its own worktree — that was tried and retired (auto-provisioning fired on nearly every run, each tree paid a full dependency install, and stale trees accumulated). The replacement is **partition, don't isolate**:
+
+1. **Declare disjoint path sets before dispatch.** Each editing teammate owns a set of paths no other editing teammate may touch. Record the partition in `plans/<plan>/STATE.md` so a resume re-establishes it.
+2. **Overlap ⇒ serialize.** Two teammates whose sets would intersect run one after the other, not in parallel. Parallelism is the thing you give up, not correctness.
+3. **`node .claude/hooks/file-claims.cjs list` is the live check.** A `FOREIGN` claim inside your partition means the partition is already violated: stop and re-partition, never push through.
+4. **Read-only teammates are exempt.** Research and review teammates share the tree freely — they claim nothing.
+
+Because each editing teammate stages only its own paths, `guard-destructive` Tier B stays quiet; a Tier B denial during a team run is a signal the partition leaked, not a nuisance to override.
+
 ## Requirements
 
 Agent Teams must be enabled in your Claude Code environment:

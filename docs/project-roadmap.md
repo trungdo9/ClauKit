@@ -77,11 +77,16 @@ Enterprise-grade features and deployment options.
 ### 0. Durability–Evidence–Cost upgrade — SHIPPED 2026-07-31 (plan `260730-1359-clauKit-upgrade`)
 Closed the gap between documented behaviour and what 295 real sessions needed:
 - **Durability**: `run-state` ledger (`plans/<plan>/STATE.md`) + resume protocol; interruption-proof multi-phase runs
-- **Safety**: `guard-destructive` (2-tier, claim-aware) + `file-claims` hooks; scout-block precision fix; smoke-gated worktree fleet (`wt-new`/`wt-doctor`/`wt-clean`); scoped commits; DB safe-writes protocol
+- **Safety**: `guard-destructive` (2-tier, claim-aware) + `file-claims` hooks; scout-block precision fix; smoke-gated worktree fleet (`wt-new`/`wt-doctor`/`wt-clean`) — **removed 2026-08-05**, see below; scoped commits; DB safe-writes protocol
 - **Evidence**: `verify-plan` falsification gate, `tdd` red-green discipline, scope-lock, remote-truth + baseline verification rows, multi-lens review, `pr-body.md` fill contract
 - **Cost**: fresh-implementer-per-phase, artifacts-as-files scripts, model-tiering matrix + 529 fallback, headless `ci-review`/`delivery-tail`
 - **Verification**: `node:test` harness (92 tests) + behavioral eval harness (6 scenarios, `tests/behavior/`) + governance rule for behavioural skills
 - Remaining follow-ups: run the full behavioral sweep pre-release (5 scenarios pending, `guard-tier-b` verified live); measure a representative `/ck:cook` token cost before/after Phase 3 (Part H verification)
+
+#### 0a. Worktree fleet retired — 2026-08-05
+T1.6 (`wt-new`/`wt-doctor`/`wt-clean` + the `git/worktree` skill) is **removed**. In real multi-session use the auto-provisioning gate fired on every concurrent session, each worktree paid a full dependency install, and stale trees accumulated because teardown depended on a session reaching its finish step. Replaced by **coordination, not isolation** (file-claims registry + disjoint path sets + serialized overlaps) and a **baseline-first** rule in `tdd` (suite on the untouched tree before the first edit, recorded in `STATE.md`; scratch-branch fallback when already dirty; `git stash` still forbidden). `guard-destructive`'s worktree/symlink Tier A rules stay — they protect worktrees the user creates.
+- **What this cost, stated plainly:** parallel *editing* teammates in `/ck:team` are gone as a capability (overlapping path sets now serialize), and `/ck:refactor` halts on a shared tree rather than forking one. Read-only fan-out is unaffected. The `wt-doctor` health gate is replaced by a red-baseline halt, not dropped.
+- **Upgrade path:** `ck init` removes the leftover files from existing installs only where a content digest proves ClauKit shipped that exact file, and only after refreshing the docs that invoke it. A file you wrote or edited is reported, never touched.
 
 ### 1. Agent System Enhancement
 - Document and optimize existing 16 agents

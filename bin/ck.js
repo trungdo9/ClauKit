@@ -22,6 +22,7 @@ const { writeMetadata } = require("./lib/metadata-writer");
 const { mergeSettings } = require("./lib/settings-merge");
 const { migrateCjs } = require("./lib/cjs-migrate");
 const { migrateDocRefs } = require("./lib/cjs-migrate-refs");
+const { syncRetired } = require("./lib/retired-files");
 const { wireClaudeMd } = require("./lib/claude-md-wire");
 const { wireGitignore } = require("./lib/gitignore-wire");
 const { fetchLatestVersion, compareVersions } = require("./lib/github-client");
@@ -86,11 +87,25 @@ function initCommand(options = {}) {
   // ~600 shipped .md/.sh files costs less than the copy loop already spent, and
   // the sweep only writes when a shipped path actually changed.
   const staleDocs = migrateDocRefs(projectRoot);
-  if (migrated.restored.length || migrated.rewritten.length || migrated.removed.length || staleDocs.length) {
+  // A file dropped from the package survives in every project that installed an
+  // earlier version, because the copy loop only ever writes. This removes them —
+  // but only where a content digest proves ClauKit shipped that exact file, and
+  // only after the docs that invoke it have been refreshed. See lib/retired-files.js.
+  const retired = syncRetired(projectRoot, resolveSourcePath);
+  if (retired.refreshed.length || retired.removed.length || retired.kept.length || retired.failed.length) {
+    console.log(`\n   🧹 retired feature cleanup:`);
+    for (const f of retired.refreshed) console.log(`      ~ refreshed ${f} (it still described a removed feature)`);
+    for (const f of retired.removed) console.log(`      - removed ${f}`);
+    for (const k of retired.kept) console.log(`      ! kept ${k.path} — ${k.why}`);
+    for (const f of retired.failed) console.log(`      ✗ ${f}`);
+  }
+  if (migrated.restored.length || migrated.rewritten.length || migrated.removed.length
+      || migrated.kept.length || staleDocs.length) {
     console.log(`\n   🔧 migrated ClauKit's CommonJS files to .cjs (they broke under "type": "module"):`);
     for (const f of migrated.restored) console.log(`      + installed ${f}`);
     for (const f of migrated.rewritten) console.log(`      ~ repointed ${f} → .cjs in ${settingsRel}`);
     for (const f of migrated.removed) console.log(`      - removed stale ${f}`);
+    for (const k of migrated.kept) console.log(`      ! kept ${k.path} — ${k.why}`);
     if (staleDocs.length) console.log(`      ~ updated ${staleDocs.length} shipped doc(s) that invoked the old paths`);
   }
 
@@ -111,6 +126,16 @@ function initCommand(options = {}) {
     console.log(`      Run /ck:claude-md init to expand it with your project's specifics.`);
   } else if (wired.action === "wired") {
     console.log(`\n   🔗 wired ${wired.count} workflow(s) into your existing CLAUDE.md (§Workflows appended).`);
+  } else if (wired.action === "updated") {
+    console.log(`\n   🔗 CLAUDE.md brought up to date — ${wired.count} missing entr(ies) added, nothing rewritten.`);
+  }
+  if (wired.missingRules && wired.missingRules.length) {
+    // Their CLAUDE.md is hand-written, so it is not ours to edit — but these
+    // rules only work from CLAUDE.md itself, never from a file it links to.
+    console.log(`\n   ⚠ your CLAUDE.md references the workflows in your own words, so it was left untouched.`);
+    console.log(`      ${wired.missingRules.length} rule(s) that only work from CLAUDE.md itself are missing:`);
+    for (const r of wired.missingRules) console.log(`        • ${r.slice(0, 96).replace(/\*\*/g, "")}…`);
+    console.log(`      Paste them in, or let \`/ck:claude-md verify\` do it.`);
   }
 
   // `.claude/.gitignore` cannot be shipped as a file — npm strips every

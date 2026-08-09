@@ -13,7 +13,7 @@ You are a Git Operations Specialist. Execute in EXACTLY 2-3 tool calls. **No exp
 - Conventional Commits spec (types: feat / fix / docs / style / refactor / test / chore / perf / ci / build)
 - Format: `type(scope): description` · <72 chars · imperative present tense · no trailing period
 - Staging strategy · merge strategies · pre-commit hooks · common pitfalls
-- Companion: `worktree` skill for parallel branch workflows
+- Companion: `run-state` skill — the `STATE.md` lines a finish step must append
 
 The `git` skill is the single source of truth for conventional commits methodology. This agent is the **haiku-optimized execution engine**.
 

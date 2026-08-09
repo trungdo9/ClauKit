@@ -3,8 +3,6 @@
  * Node-only, zero dependencies, cross-platform.
  */
 
-const fs = require('fs');
-const path = require('path');
 const { execSync, spawnSync } = require('child_process');
 
 function sh(cmd, opts = {}) {
@@ -57,66 +55,9 @@ function repoRoot(cwd) {
   }
 }
 
-/** All worktree roots known to git; first entry is the main worktree. */
-function worktrees(cwd) {
-  const out = sh('git worktree list --porcelain', { cwd: cwd || process.cwd() });
-  return out.split('\n').filter(l => l.startsWith('worktree ')).map(l => path.resolve(l.slice(9).trim()));
-}
-
 function die(msg, code = 1) {
   console.error(`✗ ${msg}`);
   process.exit(code);
 }
 
-function ok(msg) {
-  console.log(`✓ ${msg}`);
-}
-
-function info(msg) {
-  console.log(`  ${msg}`);
-}
-
-/** Directory size in bytes via fs walk (du is not portable). */
-function dirSize(p) {
-  let total = 0;
-  let entries;
-  try {
-    entries = fs.readdirSync(p, { withFileTypes: true });
-  } catch {
-    return 0;
-  }
-  for (const e of entries) {
-    const full = path.join(p, e.name);
-    try {
-      if (e.isSymbolicLink()) continue;
-      if (e.isDirectory()) total += dirSize(full);
-      else total += fs.statSync(full).size;
-    } catch { /* transient */ }
-  }
-  return total;
-}
-
-function fmtBytes(n) {
-  if (n > 1024 * 1024 * 1024) return (n / (1024 * 1024 * 1024)).toFixed(1) + ' GB';
-  if (n > 1024 * 1024) return (n / (1024 * 1024)).toFixed(1) + ' MB';
-  return Math.round(n / 1024) + ' KB';
-}
-
-/** Detect package manager from lockfiles. Returns {pm, installCmd} or null. */
-function detectPm(dir) {
-  if (!fs.existsSync(path.join(dir, 'package.json'))) return null;
-  if (fs.existsSync(path.join(dir, 'pnpm-lock.yaml'))) return { pm: 'pnpm', installCmd: ['pnpm', 'install', '--frozen-lockfile'] };
-  if (fs.existsSync(path.join(dir, 'package-lock.json'))) return { pm: 'npm', installCmd: ['npm', 'ci'] };
-  if (fs.existsSync(path.join(dir, 'yarn.lock'))) return { pm: 'yarn', installCmd: ['yarn', 'install', '--frozen-lockfile'] };
-  return { pm: 'npm', installCmd: ['npm', 'install'] };
-}
-
-function readJson(p) {
-  try {
-    return JSON.parse(fs.readFileSync(p, 'utf-8'));
-  } catch {
-    return null;
-  }
-}
-
-module.exports = { sh, run, git, assertRef, repoRoot, worktrees, die, ok, info, dirSize, fmtBytes, detectPm, readJson };
+module.exports = { sh, run, git, assertRef, repoRoot, die };
