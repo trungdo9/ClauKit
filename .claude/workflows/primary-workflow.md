@@ -30,9 +30,10 @@ Integer stages are the long-standing pipeline; decimal stages are gates inserted
 #### 2. Plan Review & Clear Context
 - User reviews the plan; after approval the user runs `/clear` (context reset between planning and coding — a user step, not a subagent step). Begin coding only after the handoff.
 
-#### 2.5. Environment Pre-flight — `git/worktree`
-- **Detect early (free):** `node .claude/hooks/file-claims.cjs list` — a FOREIGN claim or dirty work you didn't author = concurrent session. **Provision late:** planning/verification are read-only, so isolation is needed before the **first edit**, not the first thought — and a plan that Verify-Plan proves is a no-op must not have paid for provisioning first.
-- Provision via `node scripts/ck/wt-new.cjs <slug>` (absolute path outside the repo, per-worktree deps, smoke gate on the untouched base commit) + `node scripts/ck/wt-doctor.cjs`; **refuse to proceed if unhealthy**. Record the worktree path in `STATE.md`.
+#### 2.5. Environment Pre-flight — `file-claims` + baseline
+- **Detect (free, at start):** `node .claude/hooks/file-claims.cjs list` — a FOREIGN claim or dirty work you didn't author = concurrent session sharing this tree.
+- **Coordinate, don't isolate:** confine edits to unclaimed paths; if the task must touch a claimed file, stop and report which session owns it. `guard-destructive` Tier B declines whole-tree staging while a foreign claim is live.
+- **Baseline before the first edit:** run the suite on the untouched tree and append `baseline: <X/Y> (<sha7>)` to `STATE.md`. Planning/verification are read-only, so this belongs before the first edit — not the first thought. **Red where green is expected ⇒ refuse to proceed** until the user rules the failures known-and-accepted (ruling recorded on the same line).
 
 #### 3. Implementation — `cook` (Implement)
 - **Fresh implementer subagent per phase**; main session keeps only the loop, gates, and ledger. Dispatch = 1 context line + brief file path (`scripts/ck/phase-brief.cjs`) + interfaces + ambiguity resolutions + report path — **never session history, <2k chars** (artifacts as files, `orchestration-protocol.md`).
@@ -40,7 +41,7 @@ Integer stages are the long-standing pipeline; decimal stages are gates inserted
 - **DO NOT** create new enhanced files — update existing files directly.
 
 #### 4. Testing — `tdd` + `tester`
-- **Bug fixes are TDD-first**: red test on the exact symptom → verify red → green → sweep (`/ck:fix tdd`). Baseline for "pre-existing?" = base commit in a separate worktree, **never `git stash`**.
+- **Bug fixes are TDD-first**: red test on the exact symptom → verify red → green → sweep (`/ck:fix tdd`). Baseline for "pre-existing?" = the suite run on the untouched tree **before the first edit**, **never `git stash`**.
 - No fake data, mocks-to-pass, cheats, or temporary solutions just to pass the build. Fix failing tests and re-run via `tester` until green — never finish with a red suite.
 
 #### 5. Code Review — `code-review`
@@ -54,5 +55,5 @@ Integer stages are the long-standing pipeline; decimal stages are gates inserted
 - Bugs/CI failures → `debugger` for root cause → fix → back to stage 4. **Loop cap 3 per gate**, then the breaker: adjudicate each open finding → `parked — <ruling>` or `BLOCKED` in `STATE.md` (silent discard forbidden), run `retro`, ask the user.
 
 #### 8. Finish — `git`
-- `/ck:git pr` (or `finish`): verify green → self-review scoped diff → **draft-default PR** with the `pr-body.md` fill contract → **project-declared handoff tail** (ships empty; declared in the project CLAUDE.md, run headless + idempotent) → **worktree teardown** (`wt-clean.js`).
+- `/ck:git pr` (or `finish`): verify green → self-review scoped diff → **draft-default PR** with the `pr-body.md` fill contract → **project-declared handoff tail** (ships empty; declared in the project CLAUDE.md, run headless + idempotent).
 - Auth failure ⇒ paste-ready payload, zero retries. Merged/deployed claims require `git fetch origin` + remote-ref evidence.

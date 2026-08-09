@@ -20,10 +20,10 @@ All 31 tasks landed. Verified **by running the acceptance criteria**, not by rea
 | T1.3 `scout-block` precision | ✅ | 12 allow + 9 deny cases incl. the reproduced `grep -v` false positive |
 | T1.4 scoped commit | ✅ | `/ck:git cm` derives the manifest from the claim registry; knowledge in `git/SKILL.md` |
 | T1.5 finish-branch + PR fallback | ✅ | `/ck:git` gains `finish`; auth failure ⇒ paste-ready, zero retries |
-| T1.6 worktree fleet | ✅ | `wt-new` (smoke gate, symlink refusal) · `wt-doctor` · `wt-clean` (path-validated `git worktree remove`) |
+| T1.6 worktree fleet | ⛔ **REVERTED 2026-08-05** | shipped, then removed in production use — see the note under the T1.6 section |
 | T1.7 DB safe-writes | ✅ | `database/databases/references/safe-writes.md`; guard message points to it |
 | T2.1 `verify-plan` | ✅ | skill + `/ck:plan verify`; cook Stage 0.5 |
-| T2.2 `tdd` + `/ck:fix tdd` | ✅ | skill + variant; baseline via base-commit worktree, never `git stash` |
+| T2.2 `tdd` + `/ck:fix tdd` | ✅ | skill + variant; baseline-first (rewritten 2026-08-05 when T1.6 was reverted), never `git stash` |
 | T2.3 plan rigor | ✅ | `planning/SKILL.md` + `references/output-standards.md` |
 | T2.4 scope lock | ✅ | cook Stage 0 A/B gate |
 | T2.5 remote-truth rows | ✅ | added to both verification references |
@@ -408,7 +408,14 @@ Override:    CK_ALLOW_DESTRUCTIVE=1 (stages their work into your commit)
   - **auth failure → do not retry.** Emit a paste-ready block: PR title · body · source branch · target branch · the exact `gh`/`glab` command. Never let a finished feature die at the auth step.
 - **Acceptance:** with `gh` unauthenticated, `/ck:git pr` exits 0 having printed a complete paste-ready PR draft; zero retry attempts in the transcript.
 
-#### T1.6 — Hardened worktree fleet (G16) — **promoted twice: now the largest single win**
+#### T1.6 — Hardened worktree fleet (G16) — **REVERTED 2026-08-05**
+
+> **This task shipped and was then removed.** The premise below — that one worktree per concurrent session removes the shared-tree hazard — held in theory and failed in practice. Multi-session work is habitual, so the provisioning gate fired almost every run; each worktree paid a full dependency install; and teardown depended on a session reaching its finish step, so stale trees accumulated on disk. The isolation mechanism became a larger recurring cost than the hazard it removed.
+>
+> **What replaced it:** *coordinate, don't isolate* — the T1.2b claim registry and the T1.2 Tier B guard stay as the concurrency substrate; pipelines confine edits to unclaimed paths, `/ck:team` partitions disjoint path sets and serializes overlaps, `/ck:refactor` stops on a shared tree. The T2.2 baseline rule becomes **baseline-first** (suite on the untouched tree before the first edit, recorded in `STATE.md`; scratch-branch fallback when already dirty; `git stash` still forbidden). The two Tier A rules this task contributed are **kept** — they protect worktrees a user creates by hand.
+>
+> Everything below is the original specification, retained as the record of what was built.
+
 T1.2 is a safety net; **worktrees remove the hazard entirely** — at 43% (User A) and 29% (User B) multi-clauding, one worktree per concurrent session means two sessions physically cannot stage, stash, or clean each other's files, and the T1.2b registry partitions along the same boundary. But User B's data proves knowledge alone is not enough: **worktrees were their #1 source of lost work**, because ClauKit ships the *concept* with no tooling. So this task delivers scripts with a smoke gate, not prose.
 
 **T1.6a — provisioning scripts.** New `scripts/ck/wt-new`, `wt-doctor`, `wt-clean` (Node, cross-platform, consistent with the T3.2 scripts; registered under the manifests' `scripts` key).

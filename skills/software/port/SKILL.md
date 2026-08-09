@@ -81,7 +81,7 @@ Safely extract a feature from an external GitHub repository and integrate it int
 - Comparison: `plans/<plan-name>/reports/port-<repo>-compare.md`
 - Final port report: `plans/<plan-name>/reports/port-<repo>-port.md`
 
-If no active plan, drop reports into `plans/port-adhoc-YYYYMMDD-HHmm/reports/`.
+If no active plan, drop reports into `plans/port-adhoc-<YYMMDD-HHmm>/reports/` (`bash -c 'date +%y%m%d-%H%M'`).
 
 ## Guardrails
 

@@ -1,10 +1,10 @@
 # ClauKit Registry
 
-**Last Updated**: 2026-08-01 (**Workflow verification sweep** — full audit of all 15 `.claude/workflows/*` files against filesystem + registry + kit manifests. Fixed: stale "21 agents" → 29 across 10 files (`orchestration-protocol.md`, `dynamic-workflow` skill + its 2 references, `/ck:flow`/`/ck:team`/`/ck:find` (find.md also skills 74→131, commands 60→56), README, `system-architecture.md`, 2 registry entries); `seo-workflow.md` Phase 5 skill `email-campaign` → `emails` (no skill ever existed under that name); `cro-framework.md` added to marketing kit manifest (was engineer+both only, yet `/mk:cro`, `cro` skill, marketing-rules §4 and marketing-workflow Phase 6 hard-require it — marketing kit workflows 8→9); `fix-pipeline.md` tdd link `../../skills/` → `../skills/` (root-relative form breaks in installed projects — installer ships skills only at `.claude/skills/`); agent-vs-skill labels fixed in `sales-workflow.md`/`video-workflow.md`/`skill-activation.md`; `CHANGELOG.md` backfilled v1.0.2→v1.3.6 + `changelogTitle` added to `.releaserc.json` (changelog plugin configured post-v1.3.6, file had never been generated). Counts unchanged: 131 skills · 29 agents · 56 commands · 15 workflows.)
+**Last Updated**: 2026-08-06 (**Verification Iron Law deduplicated** — `skills/software/debugging/references/verification.md` retired: a near-copy of `code-review/references/verification-before-completion.md` (same Iron Law, same gate function, evidence table identical row for row), and its two remaining sections were already in `code-review/references/verification-patterns.md`, so consolidating ported **0 lines**. `debugging/SKILL.md` § 4 and `agents/engineering/debugger.md` now point at the canonical reference. **Kept deliberately, not an oversight:** the one-line `Iron Law: …` in `code-reviewer.md` and `debugger.md`. Agent `.md` files *are* the subagent system prompt — frontmatter carries no skill auto-load — so removing the line removes the rule from that agent. Duplication in a *reference* is drift; a summary line in an isolated context is load-bearing. **Why it mattered:** the behavioural eval for this gate needed three ablation rounds before the rule was actually absent from the tree, because no one could say where it lived. New coverage: `tests/retirement.test.js` (4 e2e tests over `syncRetired`, previously untested despite being the only code path that deletes user files — both its digest gate and its coherence gate verified to fail when disabled) + 2 static table tests in `installer-packaging.test.js` (all 55 RETIRED/STALE digests resolve via `git cat-file`; no retired token still named in ClauKit's own docs). Counts unchanged: 130 skills · 29 agents · 56 commands. Tests 248→254.) · 2026-08-05 (**Worktree fleet removed** — T1.6 of plan `260730-1359-clauKit-upgrade` retired after real multi-session use: automatic provisioning fired on every concurrent session, each worktree cost a full dependency install, and stale trees accumulated on disk because teardown depended on a session reaching its finish step. **Deleted:** `scripts/ck/wt-new`/`wt-doctor`/`wt-clean`, `tests/wt-scripts.test.js`, skill `software/git/worktree`. **Replaced by:** (a) *coordinate, don't isolate* — the `file-claims` registry + `guard-destructive` Tier B remain the concurrency substrate; pipelines now confine edits to unclaimed paths, `/ck:team` partitions disjoint path sets and serializes overlaps, `/ck:refactor` stops on a shared tree instead of forking one; (b) **baseline-first** replaces the base-commit-worktree baseline in `tdd` — run the suite on the untouched tree before the first edit and record `baseline: <X/Y> (<sha7>)` in `STATE.md`; already dirty ⇒ park your own WIP on a scratch branch by explicit paths (untracked included) and verify `git status --porcelain` is empty at the base checkout before running; foreign dirty files ⇒ don't park, stop; never `git stash`. `guard-destructive`'s two environment rules (`npm ci` onto a `node_modules` symlink, `rm -rf` of a known worktree) are **kept** — they protect worktrees the user makes themselves — with messages no longer pointing at deleted scripts. **Behaviour change, not just a removal — stated plainly because the pipelines now refuse work they used to complete:** `/ck:cook` and `/ck:flow` confine editing to unclaimed paths and defer a phase that cannot; `/ck:refactor` stops on a shared tree instead of forking one; `/ck:team` serializes editing teammates whose path sets overlap, so **parallel editing teammates are gone as a capability**, not merely as an implementation. The environment-health gate that `wt-doctor` backed is replaced by a **red-baseline halt** in `tdd`/`cook`/`primary-workflow` (suite red where green is expected ⇒ stop before the first edit, ruling recorded in `STATE.md`) — the smoke gate's purpose survives without its tooling. `ck init` retires leftover files from existing installs **only on a content digest proving ClauKit shipped that exact file**, and only after refreshing the docs that invoke it (`bin/lib/retired-files.js`); anything else is reported and left alone. Counts: skills 131→130, scripts 8→5, total entries 216→215.) · 2026-08-01 (**Workflow verification sweep** — full audit of all 15 `.claude/workflows/*` files against filesystem + registry + kit manifests. Fixed: stale "21 agents" → 29 across 10 files (`orchestration-protocol.md`, `dynamic-workflow` skill + its 2 references, `/ck:flow`/`/ck:team`/`/ck:find` (find.md also skills 74→131, commands 60→56), README, `system-architecture.md`, 2 registry entries); `seo-workflow.md` Phase 5 skill `email-campaign` → `emails` (no skill ever existed under that name); `cro-framework.md` added to marketing kit manifest (was engineer+both only, yet `/mk:cro`, `cro` skill, marketing-rules §4 and marketing-workflow Phase 6 hard-require it — marketing kit workflows 8→9); `fix-pipeline.md` tdd link `../../skills/` → `../skills/` (root-relative form breaks in installed projects — installer ships skills only at `.claude/skills/`); agent-vs-skill labels fixed in `sales-workflow.md`/`video-workflow.md`/`skill-activation.md`; `CHANGELOG.md` backfilled v1.0.2→v1.3.6 + `changelogTitle` added to `.releaserc.json` (changelog plugin configured post-v1.3.6, file had never been generated). Counts unchanged: 131 skills · 29 agents · 56 commands · 15 workflows.)
 
 **Prior**: 2026-07-31 (**Durability–Evidence–Cost upgrade** (plan `260730-1359-clauKit-upgrade`) — 3 new skills (`run-state` durable ledger · `verify-plan` falsification gate · `tdd` red-green discipline), 2 new hooks (`guard-destructive` 2-tier conflict-aware guard · `file-claims` per-worktree claim registry; `scout-block` rewritten precise, single implementation), 8 new `scripts/ck/` (worktree fleet `wt-new`/`wt-doctor`/`wt-clean` w/ smoke gate · context hygiene `phase-brief`/`review-package`/`run-workspace` · headless `ci-review` + deterministic `delivery-tail`), 1 new workflow (`skill-activation.md` hard gate), `primary-workflow.md` rewritten to 13 gated stages (Exact-Requirements Gate surfaced — closes G25), `/ck:git` gains `finish` + scoped-commit + draft-default PR + declared delivery tail (empty default) + `pr-body.md` fill contract, `/ck:plan verify`, `/ck:fix tdd`, `/ck:review --lenses`, multi-repo `/ck:scout`, model-tiering matrix + 529 fallback, DB safe-writes protocol, node:test harness (`npm test`, 180 tests) + behavioral eval harness (`tests/behavior/`, 6 scenarios). **Removed:** `programmatic-seo` (duplicate of `seo-programmatic`); `preview` narrowed to presentations-only (render-markdown → `markdown-novel-viewer`). Counts: skills 129→131, agents 29, commands 53→56, workflows 14→15, total entries 211→216.) · 2026-07-31 (**`/ck:claude-md analyze` added** — read-only per-section token-cost profile of a CLAUDE.md (lines/chars/~tokens per `##` section, classify DIRECTIVE/POINTER/PROSE/DUP/FILLER, ranked KEEP/EXTRACT/DEDUPE/DROP recommendations + projected savings); alias `optimize` = analyze + offer `refactor`; `claude-md` dispatcher 3→4 actions. Counts: commands 52→53, total entries 210→211.) · 2026-07-25 (**SEO campaign workflow closed** — new `.claude/workflows/seo-workflow.md` (7-phase closed loop: gate → baseline audit+metrics → plan [hard stop] → batch write → publish [draft-default] → distribute → measure [GSC/GA4, 2–4 wk bake] → optimize scale/refresh/kill loop). `/mk:seo` gains `campaign` action; `seo-writer` agent + `seo-writing` skill gain `campaign` mode; `seo-flow` gains SEO Campaign recipe; wired into marketing/both kit manifests (workflows 5→6) + `marketing-workflow.md` Phase 5 delegation + MARKETING.md Flow 3c.) · 2026-07-23 (**seo-writing pipeline added** — new ClauKit-authored `seo-writing` skill (6-stage article-production pipeline ported from a production n8n workflow: strategy → outline → write → optimize → media → publish; 7 references + 100-article WordPress playbook), new `seo-writer` orchestrator agent, `/mk:seo` gains `plan` + `write` actions. 6 previously-stub SEO skills filled with real content; agents upgraded pipeline-stage-specific. Counts: skills 128→129, agents 28→29.) · 2026-07-17 (**Gemini purge** — `scout-external` agent removed (Gemini/OpenCode CLI orchestration retired; `/ck:scout` is now internal-Explore-only), Gemini offload paths stripped from `research` skill + `/ck:research` + `git-manager` + `/ck:use-mcp` (all now Claude-native). Gemini retained only in `software/ai/` skills (`ai-multimodal`/`ai-artist`) where it is a genuine capability. Earlier same-day: `mcp-manager` agent removed; `researcher` → sonnet, `journal-writer` → haiku; `tester`/`database-admin`/`project-manager` slimmed to thin personas; long agent descriptions trimmed to trigger-style.)
 **Scope**: Single source of truth for every Skill, Agent, and Command in this project.
-**Counts**: 131 skills (131 active + 0 scaffold) · 29 agents · 56 commands · **216 total entries**
+**Counts**: 130 skills (130 active + 0 scaffold) · 29 agents · 56 commands · **215 total entries**
 
 Replaces previous `skills-catalog.md` (skills only). One file, all three resource types, with duplicate/overlap detection.
 
@@ -28,7 +28,7 @@ Replaces previous `skills-catalog.md` (skills only). One file, all three resourc
 
 ---
 
-## 1 · Skills (131)
+## 1 · Skills (130)
 
 ### Global (1) — `.claude/skills/global/`
 
@@ -162,7 +162,7 @@ All 40 are active (`dynamic-workflow` added 2026-06-03, paired with `/ck:flow`; 
 | `run-state` | ✅ | `software/run-state/` | **Durable per-plan ledger** (`plans/<plan>/STATE.md`) — append-only gate events, resume protocol (re-derive from git + gate re-runs), parallel-session safety. Scope vs `plans-kanban` (plan board/status views) and `project-organization` (repo layout): run-state records *execution* events of one run, not plan management. Added 2026-07-31 |
 | `scenario` | ✅ | `software/scenario/` | Test scenario design (tool-agnostic) |
 | `sequential-thinking` | ✅ | `software/sequential-thinking/` | |
-| `tdd` ❗ | ✅ | `software/tdd/` | **Red-green discipline** — Iron Law (no production code without a failing test first), base-commit-worktree baseline (never `git stash`), rationalization table. Deliberate scope split: `tdd` = discipline · `test-automation` = infra · `web-testing` = browser toolkit · `scenario` = case derivation. Paired with `/ck:fix tdd`. Added 2026-07-31 |
+| `tdd` ❗ | ✅ | `software/tdd/` | **Red-green discipline** — Iron Law (no production code without a failing test first), baseline-first (suite on the untouched tree before the first edit; never `git stash`), rationalization table. Deliberate scope split: `tdd` = discipline · `test-automation` = infra · `web-testing` = browser toolkit · `scenario` = case derivation. Paired with `/ck:fix tdd`. Added 2026-07-31 |
 | `verify-plan` | ✅ | `software/verify-plan/` | **Plan falsification gate** — claim → verdict (CONFIRMED/REFUTED/UNVERIFIABLE) → evidence table; mandatory for `--from-plan` (cook Stage 0.5); paired with `/ck:plan verify`. Added 2026-07-31 |
 | `team` 🔁 | ✅ | `software/team/` | Parallel multi-session orchestration — spawns independent Claude Code teammates (templates: research/cook/review/debug); paired with `/team` command |
 | `show-off` | ✅ | `software/show-off/` | |
@@ -228,12 +228,11 @@ All 40 are active (`dynamic-workflow` added 2026-06-03, paired with `/ck:flow`; 
 
 > `software/expo/` (12 sub-skills, 9515 LOC) **removed 2026-05-16** per user direction. `mobile-development` skill also **removed 2026-05-29** per user direction — no dedicated mobile skill remains. Re-add via `npx skills add expo/skills` (if upstream pkg exists) if needed.
 
-#### `software/git/` (2) 🔁
+#### `software/git/` (1) 🔁
 
 | Name | Status | Path |
 |---|:---:|---|
 | `git` | ✅ | `software/git/SKILL.md` |
-| `worktree` | ✅ | `software/git/worktree/SKILL.md` |
 
 #### `software/infrastructure/` (1)
 
@@ -339,7 +338,7 @@ All commands are ✅ active. Grouped by namespace. **Prefix `ck:` applied 2026-0
 | `/ck:fix ci` | Fix CI/GitHub Actions issues |
 | `/ck:fix logs` | Fix from log analysis |
 | `/ck:fix test` | Run tests + fix (input: an already-red suite) |
-| `/ck:fix tdd` | Production-symptom red-green loop (`tdd` skill): toolchain proof → red test w/ pasted failure → base-commit-worktree baseline → green → sweep. Distinct from `test` by input (symptom vs red suite) — both stay (R4) |
+| `/ck:fix tdd` | Production-symptom red-green loop (`tdd` skill): toolchain proof → red test w/ pasted failure → pre-edit baseline → green → sweep. Distinct from `test` by input (symptom vs red suite) — both stay (R4) |
 | `/ck:fix types` | Fix type errors |
 | `/ck:fix ui` | Fix UI issues |
 
@@ -349,7 +348,7 @@ All commands are ✅ active. Grouped by namespace. **Prefix `ck:` applied 2026-0
 |---|---|
 | `/ck:git cm` | **Scoped** commit — session manifest from the file-claims registry, foreign WIP reported never staged, explicit paths only (never `-A`) |
 | `/ck:git cp` | Scoped commit + push |
-| `/ck:git pr [to] [from] [--no-handoff] [--ready]` | Finish the branch: verify green → self-review scoped diff → **draft-default** PR (`pr-body.md` fill contract) → project-declared delivery tail (ships empty) → worktree teardown; auth failure ⇒ paste-ready payload, zero retries |
+| `/ck:git pr [to] [from] [--no-handoff] [--ready]` | Finish the branch: verify green → self-review scoped diff → **draft-default** PR (`pr-body.md` fill contract) → project-declared delivery tail (ships empty); auth failure ⇒ paste-ready payload, zero retries |
 | `/ck:git merge [pr#\|branch]` | Merge PR or branch (interactive); merged-status claims require `git fetch` + remote-ref evidence |
 | `/ck:git finish` | Verify green → env detect (repo/worktree/detached) → menu: merge locally · push+PR · keep as-is |
 
@@ -435,7 +434,7 @@ Other trios (`testing` → covered by `web-testing`/`chrome-devtools`, `design` 
 | Design | 10 design skills | `frontend-developer` (agent `ui-ux-designer` removed 2026-07-16) | `/ck:design` |
 | Content | `show-off` | `copywriter` (marketing kit) | – (marketing kit: `/mk:content`) |
 | SEO/GEO | `seo`, `geo` | – (agent removed 2026-05-17) | – (marketing kit: `/mk:seo`) |
-| Git | `git`, `worktree` | `git-manager` | `/ck:git [cm\|cp\|pr\|merge\|finish]` |
+| Git | `git` | `git-manager` | `/ck:git [cm\|cp\|pr\|merge\|finish]` |
 | Bootstrap | `bootstrap` (knowledge) | – | `/ck:bootstrap` |
 | Port & Refactor | `port` | (uses `scout`, `code-reviewer`) | `/ck:port` |
 | Security | `security`, `cti-expert` | `security-auditor` | `/ck:review`, `/ck:security` |
@@ -592,17 +591,17 @@ Verification: `for f in $(find .claude/skills -name SKILL.md); do …` returns z
 | Skills · `global/` | 1 | 0 | 1 |
 | Skills · `marketing/` | 50 | 0 | 50 |
 | Skills · `automation/` | 6 | 0 | 6 |
-| Skills · `software/` | 72 | 0 | 72 |
+| Skills · `software/` | 71 | 0 | 71 |
 | Skills · `integrations/` | 2 | 0 | 2 |
 | Skills · removed (v2.0.0: old `geo`, old `seo/references`; 2026-07-31: `programmatic-seo`) | — | — | — |
-| **Skills total** | **131** | **0** | **131** |
+| **Skills total** | **130** | **0** | **130** |
 | Agents · `engineering/` | 17 | 0 | 17 |
 | Agents · `marketing/` | 12 | 0 | 12 |
 | **Agents total** | **29** | **0** | **29** |
 | Commands (logical, per § 3 row scheme) | 56 | 0 | 56 |
-| **Grand total entries** | | | **216** |
+| **Grand total entries** | | | **215** |
 
-Adjacent inventories (not registry entries — hooks and scripts are itemised in **§ 9**): **15 workflows** (`.claude/workflows/*.md`, incl. `skill-activation.md`), **4 hooks**, **8 scripts**, **1 PR-body template** (`git/references/pr-body.md`), **6 behavioral eval scenarios** (`tests/behavior/scenarios/`).
+Adjacent inventories (not registry entries — hooks and scripts are itemised in **§ 9**): **15 workflows** (`.claude/workflows/*.md`, incl. `skill-activation.md`), **4 hooks**, **5 scripts**, **1 PR-body template** (`git/references/pr-body.md`), **6 behavioral eval scenarios** (`tests/behavior/scenarios/`).
 
 ## 7 · Open Issues
 
@@ -637,13 +636,10 @@ Not registry *entries* (they are neither skill, agent, nor command), but they ar
 
 `.sh` / `.ps1` siblings of `guard-destructive` are **thin delegates** to the `.js` — one implementation, no cross-language drift. (`scout-block` is the inverse: `.js` dispatches to the platform script.)
 
-### 9b · Scripts (`scripts/ck/`) — 8
+### 9b · Scripts (`scripts/ck/`) — 5
 
 | Script | Purpose | Notes |
 |---|---|---|
-| `wt-new` | Provision a worktree: **absolute path outside the repo root**, per-worktree install, then a **smoke gate** (typecheck + suite on the untouched base commit, cached by base SHA) | refuses to install when `node_modules` is a symlink (the exit-216 shape) |
-| `wt-doctor` | Diagnose broken/circular symlinks, dependency version skew, missing dev server/token | non-zero exit = unhealthy; pipelines refuse to proceed |
-| `wt-clean` | Safe teardown via `git worktree remove` + `prune`, reports reclaimed disk | validates the path against `git worktree list`; **never** `rm -rf`; refuses the main worktree |
 | `phase-brief` | Extract one phase's full text from a plan into a uniquely-named file, print the path | artifacts-as-files rule (dispatches carry paths, not pasted prose) |
 | `review-package` | `git log --oneline` + `--stat` + `diff -U10` for BASE..HEAD into one file | never `HEAD~1` as BASE — that silently truncates a multi-commit phase |
 | `run-workspace` | Resolve/create the per-plan artifact dir, print the path | — |
@@ -652,4 +648,4 @@ Not registry *entries* (they are neither skill, agent, nor command), but they ar
 
 ### 9c · Test harness
 
-`npm test` → `node --test tests/` (Node ≥18 built-in, **zero new dependencies** — ClauKit is installed by other projects, so a test framework in `dependencies` would be a cost every consumer pays). Covers both hooks, the worktree scripts, `delivery-tail`, and wraps the legacy shell suites so one command runs everything. Behavioral gates that cannot be verified by reading a diff live in `tests/behavior/scenarios/` (6 scenarios, each required to fail when its gate is removed).
+`npm test` → `node --test tests/` (Node ≥18 built-in, **zero new dependencies** — ClauKit is installed by other projects, so a test framework in `dependencies` would be a cost every consumer pays). Covers both hooks, the `scripts/ck/` helpers, `delivery-tail`, and wraps the legacy shell suites so one command runs everything. Behavioral gates that cannot be verified by reading a diff live in `tests/behavior/scenarios/` (6 scenarios, each required to fail when its gate is removed).

@@ -4,6 +4,13 @@ description: QA / testing specialist. Use after implementing features or fixing 
 model: sonnet
 ---
 
+<!-- Tier: standard, per orchestration-protocol § Agent Selection ("Testing | standard") and
+     the model-tier matrix. Running a suite and reading its output is not architecture work,
+     and this agent is re-dispatched on every Test-gate cycle (loop cap 3) plus once per
+     Review fix cycle — the multiplier is where cook's cost actually lives. Escalate a tier
+     only for a failure that survived one sonnet pass (matrix: "Fix-loop escalation"). -->
+
+
 You are a senior QA engineer specializing in comprehensive testing and quality assurance — unit, integration, e2e, performance validation, and build verification.
 
 ## Methodology

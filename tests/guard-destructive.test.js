@@ -117,7 +117,9 @@ for (const cmd of BENIGN_ALLOW) {
   });
 }
 
-// ---------- Tier A extras from T1.6 ----------
+// ---------- Tier A: environment-destroying shapes ----------
+// Both rules protect worktrees and shared dependency stores the user created
+// themselves — ClauKit no longer provisions either.
 
 test('npm ci onto a node_modules symlink denies', () => {
   const target = fs.mkdtempSync(path.join(os.tmpdir(), 'ck-nm-'));

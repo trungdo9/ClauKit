@@ -46,7 +46,7 @@ If `-o html`: after the `planner` subagent returns the finished markdown plan (a
 ## `fast` — no research
 
 Use `planner` subagent to:
-1. Create directory `plans/YYYYMMDD-HHmm-plan-name` and pass path to every subagent.
+1. Create directory `plans/<YYMMDD-HHmm>-<slug>` (timestamp via `bash -c 'date +%y%m%d-%H%M'` — 6-digit date; `/ck:cook` resolves this form) and pass path to every subagent.
 2. Follow the **"Plan Creation & Organization"** rules + **Plan Directory Structure** + **Plan File Specification** defined in the `planning` skill (single source of truth).
 3. Analyze codebase: read `docs/codebase-summary.md`, `docs/code-standards.md`, `docs/system-architecture.md`, `docs/project-overview-pdr.md`.
 4. Gather information → create implementation plan.
@@ -56,7 +56,7 @@ Use `planner` subagent to:
 
 ## `hard` — research-heavy
 
-1. Create directory `plans/YYYYMMDD-HHmm-plan-name` and pass path to every subagent.
+1. Create directory `plans/<YYMMDD-HHmm>-<slug>` (timestamp via `bash -c 'date +%y%m%d-%H%M'` — 6-digit date; `/ck:cook` resolves this form) and pass path to every subagent.
 2. Follow the **"Plan Creation & Organization"** rules + **Plan Directory Structure** + **Plan File Specification** defined in the `planning` skill (single source of truth).
 3. Use up to **2 `researcher` agents in parallel** — each researches a different aspect, max 5 tool calls each.
 4. Analyze codebase: read `docs/codebase-summary.md`, `docs/code-standards.md`, `docs/system-architecture.md`, `docs/project-overview-pdr.md`.
@@ -72,7 +72,7 @@ Use `planner` subagent to:
 
 Think harder. Use `planner` subagent to create **2 detailed implementation plans**.
 
-1. Create directory `plans/YYYYMMDD-HHmm-plan-name`, pass path to every subagent.
+1. Create directory `plans/<YYMMDD-HHmm>-<slug>` (timestamp via `bash -c 'date +%y%m%d-%H%M'` — 6-digit date; `/ck:cook` resolves this form), pass path to every subagent.
 2. Follow **Plan Creation & Organization** + **Plan Directory Structure** + **Plan File Spec** from `planning` skill.
 3. Multiple `researcher` agents in parallel — each on a different aspect, max 5 tool calls each.
 4. `scout` agent → discover relevant files.
@@ -120,6 +120,18 @@ Workflow:
 Command-only: the run is **read-only** (no edits, no writes), the table lands at `plans/<plan>/reports/plan-verification.md`, and the gate result is appended to `plans/<plan>/STATE.md`.
 
 **Auto-invoked** by `/ck:cook --from-plan` (Stage 0.5); use standalone before executing any plan you didn't write this session.
+
+## Hand-over gate (ALL modes that produce a plan — hard)
+
+Before the "ask user to review" step of any mode above, and before rendering `-o html`:
+
+```
+node scripts/ck/plan-lint.cjs <plan-dir>
+```
+
+**Exit 1 ⇒ do not present the plan.** Send the violations back to `planner`, get a corrected plan, re-run. Exit 0 ⇒ present for review, quoting the PASS line.
+
+Gate contract + rationale: `planning` skill § Hand-over gate. It checks Global Constraints, per-phase `<command> → <expected>` gates, per-phase Interfaces (or an explicit `none`), placeholders, and the `## Plan Completeness` sign-off. Skip only for `verify` (which lints nothing — it falsifies an existing plan) and for convert mode (a pure re-render).
 
 ## Important Notes
 - **DO NOT implement** — plan only.

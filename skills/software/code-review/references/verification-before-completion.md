@@ -45,7 +45,7 @@ Skip any step = lying, not verifying
 | Agent completed | VCS diff shows changes | Agent reports "success" |
 | Requirements met | Line-by-line checklist | Tests passing |
 | Merged / deployed | `git fetch origin` then inspect the **remote** ref (`origin/<branch>`, `git branch -r --contains`) | Local branch state, a previous fetch, "the PR was approved" |
-| Failure is pre-existing | Base commit checked out **in a separate worktree**, suite run there | `git stash` baseline (silently no-ops) |
+| Failure is pre-existing | Suite run on the **untouched tree before the first edit**, recorded in `STATE.md` | `git stash` baseline (silently no-ops) |
 
 ## Red Flags — STOP
 

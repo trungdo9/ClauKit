@@ -54,7 +54,7 @@ Validate at every layer data passes through. Make bugs impossible.
 
 **Load when:** After finding root cause, need to add comprehensive validation
 
-### 4. Verification (`references/verification.md`)
+### 4. Verification (`../code-review/references/verification-before-completion.md`)
 
 Run verification commands and confirm output before claiming success.
 
@@ -63,6 +63,8 @@ Run verification commands and confirm output before claiming success.
 Run the command. Read the output. Then claim the result.
 
 **Load when:** About to claim work complete, fixed, or passing
+
+*This rule used to be restated in this skill's own `references/` directory as a near-copy of the code-review one — same Iron Law, same gate function, same evidence table. One rule stated in two places drifts, and it did: the behavioural eval for this gate needed three ablation rounds before the rule was actually gone from the tree, because nobody could say where it lived. It lives there now. Concrete per-claim patterns and the rationalization table are in `../code-review/references/verification-patterns.md`.*
 
 ## Quick Reference
 

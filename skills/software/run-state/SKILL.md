@@ -45,7 +45,7 @@ phase <N>: BLOCKED — <reason>
 
 Full event vocabulary + field semantics: [references/state-schema.md](references/state-schema.md).
 
-Write points: append at **every** gate transition — requirements gate, verify-plan, scope-lock, each implement phase, test, review, debug loop rulings, finish — not only inside Implement. Also record environment facts a resume needs (worktree path, model substitutions, dead-agent redispatches).
+Write points: append at **every** gate transition — requirements gate, verify-plan, scope-lock, each implement phase, test, review, debug loop rulings, finish — not only inside Implement. Also record environment facts a resume needs (pre-edit baseline, model substitutions, dead-agent redispatches).
 
 ## Resume protocol (the core value)
 
@@ -71,4 +71,4 @@ On starting a run whose plan directory already has a `STATE.md`:
 - A killed run resumes from `STATE.md` + gate re-runs alone — if resume would need anything else, that thing belongs in the ledger.
 - Evidence in gate lines is verbatim (`<cmd> → <result>`), per the code-review skill's Iron Law — "gate passed" without the command is a claim, not a record.
 - Commit the ledger with the phase it records (same commit or immediately after).
-- Related: `planning` skill (executable exit gates are what make step 2 possible), `code-review` (verification gates), `git/worktree` (record the worktree path so resume lands in the right tree).
+- Related: `planning` skill (executable exit gates are what make step 2 possible), `code-review` (verification gates), `tdd` (the `baseline:` line a resume needs to tell inherited breakage from regressions).

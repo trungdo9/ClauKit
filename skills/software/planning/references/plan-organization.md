@@ -5,15 +5,15 @@
 ### Plan Location
 Save plans in `./plans` directory with timestamp and descriptive name.
 
-**Format:** `plans/YYYYMMDD-HHmm-your-plan-name/`
+**Format:** `plans/YYMMDD-HHmm-your-plan-name/` — 6-digit date, from `bash -c 'date +%y%m%d-%H%M'`, never from model knowledge.
 
-**Example:** `plans/20251101-1505-authentication-and-profile-implementation/`
+**Example:** `plans/260805-1505-authentication-and-profile-implementation/`
 
 ### File Organization
 
 ```
 plans/
-├── 20251101-1505-authentication-and-profile-implementation/
+├── 260805-1505-authentication-and-profile-implementation/
     ├── research/
     │   ├── researcher-XX-report.md
     │   └── ...

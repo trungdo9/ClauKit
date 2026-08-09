@@ -42,7 +42,10 @@ Companion to `verification-before-completion.md`. Concrete patterns per claim ty
 
 **Pre-existing failure (baseline):**
 ```
-✅ node scripts/ck/wt-new.cjs baseline --base <sha> → run suite in that worktree → compare failure sets
+✅ suite run on the untouched tree before the first edit (`baseline:` in STATE.md) → compare failure sets
+✅ already dirty? park own WIP on a scratch branch (explicit paths, untracked included) → checkout <base sha>
+   → `git status --porcelain` MUST be empty → run → return   (foreign dirty files ⇒ don't park, stop)
+❌ git commit -am on a shared tree (sweeps another session's files, then strips them at checkout)
 ❌ git stash → run → stash pop (the stash can silently no-op; the "baseline" is your dirty tree)
 ```
 

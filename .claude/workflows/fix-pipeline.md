@@ -49,7 +49,7 @@ Single source of truth for the `/ck:fix` family of commands. Each `/ck:fix*` com
 | `--quick` / `--review` / `logs` / `ci` | `debugger` subagent |
 | `--review` (added) | `researcher` subagent (external research) |
 | `test` | `tester` first → `debugger` for failures |
-| `tdd` | `tdd` skill loop: toolchain proof → red test → base-commit-worktree baseline → green → sweep |
+| `tdd` | `tdd` skill loop: toolchain proof → red test → pre-edit baseline → green → sweep |
 | `types` | direct: run typecheck → fix loop (no agent) |
 | `ui` | `frontend-developer` subagent + `chrome-devtools` skill |
 | `logs` / `ci` (added) | `scout` subagent (locate issues in codebase) |
@@ -69,7 +69,9 @@ Single source of truth for the `/ck:fix` family of commands. Each `/ck:fix*` com
 
 **After the gate — falsify the diagnosis (verify-plan):** when the root cause asserts *existing* behaviour ("X currently does Y", row counts, "the legacy path handles Z"), run the `verify-plan` skill's evidence check on it before implementing — a wrong root cause once shipped through 3 merged PRs. Append the gate result to `plans/<plan>/STATE.md` (`run-state` skill).
 
-**Baseline rule (all variants, G19):** "is this failure pre-existing?" is answered from the base commit checked out **in a separate worktree** (`node scripts/ck/wt-new.cjs baseline --base <sha>`), **never via `git stash`** — see the [`tdd` skill](../skills/software/tdd/SKILL.md) § Baseline for why (the no-op is silent).
+**After the gate — lock the scope when the blast radius spans layers (cook):** when **06 · blast radius** answers with more than one repo or layer, run the [`cook` skill](../skills/software/cook/SKILL.md) § Scope lock before Stage [4]: present **(A) minimal-surface** and **(B) thorough** — repos and layers touched, plus which existing conventions each option follows or breaks — and **halt for the pick**. Over-scoping is a distinct failure from a wrong root cause: the diagnosis can be right and the change still several times too large, and a cross-layer bug report is exactly where that happens. A behavioural eval of this path caught a two-layer email fix edited on one side with nothing asked, because this pipeline carried no scope gate at all while `/ck:cook` did — and a bug report, not `/ck:cook`, is how most work arrives. `--auto`: pick (A) and `[ASSUMED]`-log it. Single-layer fixes are unaffected — the condition is the gate's own answer, not a guess.
+
+**Baseline rule (all variants, G19):** "is this failure pre-existing?" is answered from the suite run on the **untouched tree before the first edit** (recorded in `STATE.md`), **never via `git stash`** — see the [`tdd` skill](../skills/software/tdd/SKILL.md) § Baseline for why (the no-op is silent) and for the scratch-branch fallback when the tree is already dirty.
 
 **[4] Plan (optional)** — `planner` subagent creates implementation plan. Triggered for:
 - `--review` (always)

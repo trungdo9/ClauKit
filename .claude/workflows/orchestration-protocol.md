@@ -26,9 +26,9 @@ When a task requires explicit plan approval before coding:
 Spawn multiple subagents simultaneously for independent tasks:
 
 - **Code + Tests + Docs**: Separate, non-conflicting components
-- **Multiple Feature Branches**: Different agents on isolated features
 - **Cross-platform Development**: iOS and Android specific implementations
 - **Careful Coordination**: No file conflicts or shared resource contention
+- **One branch, disjoint paths — never a branch per agent.** Worktrees were retired, so every agent and session shares one working tree and **one HEAD**; a second branch cannot be checked out concurrently, and checking one out relocates everyone else. Parallelism comes from partitioning **paths**, not refs (`team` skill § Shared-Tree Protocol). Branch policy + the mechanical check: [`git` skill § Branch Policy in a Shared Tree](../skills/software/git/SKILL.md).
 
 ## Parallel Patterns
 

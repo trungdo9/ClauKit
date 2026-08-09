@@ -57,6 +57,59 @@ Master Git workflows with conventional commit semantics. Provides structured gui
 3. **Stage by explicit path only.** The `guard-destructive` hook denies whole-tree staging when another live session holds claims — the denial prints the scoped command.
 4. Re-check staged content before committing (concurrent-editor churn), lint + targeted tests, then a conventional commit with ticket prefix when the branch/plan names one.
 
+## Per-Phase Commits (canonical)
+
+**A multi-phase run commits at every phase exit gate — not once at the end.** Two downstream mechanisms read commits as their only source of truth, and both fail silently without them:
+
+- **Resume** (`run-state` step 2) re-derives true state from `git log --oneline <base>..HEAD`. Nothing committed ⇒ nothing to re-derive ⇒ a killed run re-implements confirmed work, which is the exact cost the ledger exists to avoid.
+- **Review** needs a real range. `review-package.cjs` takes an explicit BASE by design because `HEAD~1` silently truncates a multi-commit phase; the BASE it wants is the phase's recorded `started (base <sha7>)`. With no commits there is no range, and the reviewer gets the wrong diff or none.
+
+The loop, per phase:
+
+1. **Before the phase** — `git rev-parse --short HEAD`, append `phase <N>: started (base <sha7>)` to `plans/<plan>/STATE.md`.
+2. **Exit gate green** → commit scoped (§ Scoped Commits — manifest from the claim registry, never `-A`). One commit per phase is the floor; several small ones are fine, the ledger records the range.
+3. **After the commit** — append `phase <N>: complete (commits <a7>..<b7>, tests <X/Y>, …)`. The `commits` field is unfillable without step 2; an empty one means the phase did not really finish.
+4. **Commit `STATE.md` with the phase it records** (same commit or immediately after), so a resume after machine loss can pull the ledger from the remote.
+
+**Do not branch to do this** — commits land on the current branch (§ Branch Policy below). "Commit at the end" and "commit only when the user asks" are different rules: the user's approval gates **push** and **PR**, not the local checkpoints a resume needs.
+
+## Branch Policy in a Shared Tree (canonical)
+
+**Do not create or switch a branch during implementation. Work on the branch you were invoked on.** Auto-creating a feature branch is allowed in **`--auto` only**, where the flag is the operator's consent recorded at invocation. Everywhere else it needs an explicit ask.
+
+Why this is stricter than ordinary git hygiene: the worktree fleet was retired (2026-08-05), so concurrent sessions share **one working tree and one HEAD**. Branch creation stopped being private:
+
+- `git checkout -b feat/x` relocates the HEAD of **every other live session at once**. They keep editing and their next commit lands on a branch they never chose.
+- Each session's `base <sha7>` in `STATE.md` stops describing HEAD, so `review-package.cjs BASE..HEAD` spans the wrong range and a `run-state` resume re-derives against the wrong history.
+- At 43% multi-clauding this is the normal case, not an edge case.
+
+**Mechanical check** — `node scripts/ck/branch-guard.cjs "<git command>" [--auto]`, exit 1 = refuse:
+
+| Operation | With another live session | Rationale |
+|---|---|---|
+| `checkout -b` / `switch -c` / `-B` / `-C` | **DENY** (unless `--auto`) | creates *and* moves HEAD |
+| `checkout <branch>` / `switch <branch>` | **DENY** (unless `--auto`) | moves HEAD |
+| `checkout <sha>` / `--detach` | **DENY** (unless `--auto`) | detaches HEAD for everyone |
+| `git branch <new>` | **ALLOW** + advisory | creates a ref, moves no HEAD |
+| `checkout -- <paths>` / `restore` | not a branch op | `guard-destructive`'s territory |
+
+Only HEAD movement is refused, because only HEAD is shared — the rule is about not relocating other sessions, not about ref hygiene. A missing/unreadable claim registry allows: this guard adds a refusal and must never become a new way for work to fail.
+
+### How `--auto` consents (`CK_AUTO_MODE=1`)
+
+A slash command's `--auto` is invisible to a PreToolUse hook, so consent travels the way `guard-destructive`'s escape hatch already does — **`CK_AUTO_MODE=1`, as an env var for the run or as a prefix on the one command**:
+
+```bash
+CK_AUTO_MODE=1 git switch -c feat/x        # consented
+CK_AUTO_MODE=1 git switch -c feat/x && git checkout main   # create allowed, switch still DENIED
+```
+
+Prefix binding is identical to `CK_ALLOW_DESTRUCTIVE=1`: it exempts the segment it prefixes and nothing else, because bash does not carry a `VAR=1` prefix across `&&`. An `--auto` pipeline that wants to branch once sets it on that command; a pipeline that owns the machine exports it for the run.
+
+**Not** read from the run ledger, deliberately: a `--auto` line in a plan's `STATE.md` is durable, and a durable marker makes consent sticky — a later interactive session in the same plan dir would inherit permission it was never given. Per-command consent cannot go stale.
+
+**What to do instead of branching:** stay put and commit scoped (§ Scoped Commits). Need a branch anyway → ask, or wait until `node .claude/hooks/file-claims.cjs list` shows no `FOREIGN` rows. Branch creation belongs at the **finish** step (below), once the work is done and the user picked an option — not at the start of implementation.
+
 ## Finish-Branch Protocol (canonical)
 
 1. **Verify first (Iron Law):** tests + typecheck green, output pasted — a PR/merge is a completion claim.

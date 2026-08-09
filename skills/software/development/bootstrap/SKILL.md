@@ -136,7 +136,7 @@ Multiple `researcher` subagents in parallel → explore request, validate ideas,
 `planner` + `researcher` subagents in parallel → find best-fit stack. Write to `./docs`.
 
 **Phase 3 — Planning**
-`planner` subagent → detailed implementation plan following the `planning` skill's progressive disclosure structure (`plans/YYYYMMDD-HHmm-plan-name/plan.md` + per-phase files).
+`planner` subagent → detailed implementation plan following the `planning` skill's progressive disclosure structure (`plans/<YYMMDD-HHmm>-<slug>/plan.md` + per-phase files).
 
 **Phase 4 — Wireframe & Design**
 `ui-ux-designer` + `researcher` subagents in parallel → design plan + wireframes. Outputs:

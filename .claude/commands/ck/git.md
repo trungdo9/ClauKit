@@ -14,8 +14,10 @@ FLAGS: `--no-handoff` (skip declared handoff steps — WIP PR mid-ticket) · `--
 
 Dispatch to the matching operation based on {ACTION}. Use `git-manager` agent for all git/GitHub work. The `git` skill is the canonical knowledge (scoped commits, finish-branch, delivery-tail semantics); this command is the trigger.
 
-→ **Three protocols are canonical in the [`git` skill](../../skills/software/git/SKILL.md)** and are deliberately not restated here — this file declared that skill their owner one line above, and a protocol written down twice drifts:
-> **Scoped Commits** · **Finish-Branch Protocol** · **Delivery Tail — execution semantics**
+→ **Four protocols are canonical in the [`git` skill](../../skills/software/git/SKILL.md)** and are deliberately not restated here — this file declared that skill their owner one line above, and a protocol written down twice drifts:
+> **Scoped Commits** · **Branch Policy in a Shared Tree** · **Finish-Branch Protocol** · **Delivery Tail — execution semantics**
+
+**Branch policy applies to every action below.** Concurrent sessions share one HEAD, so any `checkout`/`switch` relocates them mid-run. Before running one, check it: `node scripts/ck/branch-guard.cjs "<git command>"` — exit 1 ⇒ don't run it, report the owning session. `--auto` is the only mode that may move HEAD unasked.
 
 Only the dispatch differences live below.
 
@@ -23,7 +25,7 @@ Only the dispatch differences live below.
 
 → git skill § **Scoped Commits**. Manifest comes from `node .claude/hooks/file-claims.cjs list` (the `MINE` rows). `cp` additionally pushes.
 
-### `pr` — non-interactive finish: verify → self-review → draft PR → declared tail → teardown
+### `pr` — non-interactive finish: verify → self-review → draft PR → declared tail
 
 TO_BRANCH: {ARG1} (defaults to `main`) · FROM_BRANCH: {ARG2} (defaults to current branch)
 
@@ -43,7 +45,7 @@ Detect context, then **ask the user** to confirm the merge strategy before actin
 1. Detect: is `gh` available? Does the current branch have an open PR? Is {ARG1} a PR number or a target branch name?
 2. Offer choices (pick the relevant ones):
    - **Merge via `gh pr merge`** (squash / merge-commit / rebase, optionally `--delete-branch`) — preferred when a PR exists.
-   - **Local merge** — checkout target branch, pull, merge current branch in, push.
+   - **Local merge** — checkout target branch, pull, merge current branch in, push. **Moves HEAD:** run `branch-guard.cjs` first; with another live session, offer the `gh pr merge` path instead (it touches no local HEAD) or wait for the claim to clear.
 3. Wait for user's choice, then execute.
 4. If {ARG1} is a number → treat as PR number. If a string → treat as target branch.
 5. **Merged-status claims require remote truth:** `git fetch origin` + inspect `origin/<branch>` / `git branch -r --contains` before reporting anything merged — local branch state is not evidence.

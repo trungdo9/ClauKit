@@ -48,7 +48,7 @@ Connect MCPs for enhanced capabilities when researching, analyzing, or implement
 
 ## Development Approach
 
-### Git Worktrees Strategy
+### Branch Strategy
 Maintain separate branches for different design style variations during development.
 Allows parallel exploration of Minimalist, Modern, Glassmorphism interpretations.
 

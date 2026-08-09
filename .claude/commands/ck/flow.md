@@ -26,7 +26,7 @@ DRY_RUN: `--dry-run` present → stop after PREVIEW (show plan + estimate, don't
 
 Orchestrator = main session, under control. Apply the skill's 4-axis inheritance to every stage.
 
-**Environment pre-flight (before any phase that edits files):** `node .claude/hooks/file-claims.cjs list` → a `FOREIGN` claim (or dirty work you didn't author) means another live session shares this tree; provision an isolated worktree via `node scripts/ck/wt-new.cjs <slug>`, verify with `node scripts/ck/wt-doctor.cjs` (**unhealthy → refuse to orchestrate edits**), and record the worktree path in `plans/<plan>/STATE.md`. Append one `STATE.md` line after every phase gate (run-state skill).
+**Environment pre-flight (before any phase that edits files):** `node .claude/hooks/file-claims.cjs list` → a `FOREIGN` claim (or dirty work you didn't author) means another live session shares this tree. Keep editing phases on **unclaimed paths only**; if a phase must touch a claimed file, defer it and say so rather than orchestrating edits into a contested tree. Record the pre-edit baseline as `baseline: <X/Y> (<sha7>)` (`tdd` skill § Baseline) and append one `STATE.md` line after every phase gate (run-state skill).
 
 1. **PLAN** — decompose TASK → phases. Each phase declares: persona (`subagent_type`), shape (fan-out | pipeline), gate set, model. Pick quality patterns from the skill (adversarial verify, judge panel, loop-until-dry, multi-modal sweep, completeness critic) as the task warrants.
 2. **PREVIEW (mandatory gate)** — print the phase plan + chosen personas/models + a **cost estimate range**. Ask **approve / adjust / abort**. NO orchestration without approval. If `--dry-run` → stop here.

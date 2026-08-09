@@ -139,9 +139,9 @@ Each variant follows the **Fix Pipeline** ([.claude/workflows/fix-pipeline.md](.
 
 <issues>{ISSUES}</issues>
 
-→ **The loop is canonical in the [`tdd` skill](../../skills/software/tdd/SKILL.md)**: toolchain proof → red test with pasted failure → baseline → green sweep → prove. Iron Law: no production code without a failing test first. The **baseline rule** (base commit in a separate worktree, never `git stash`, because a stash-based baseline silently no-ops) is stated there once — this command does not restate it.
+→ **The loop is canonical in the [`tdd` skill](../../skills/software/tdd/SKILL.md)**: toolchain proof → red test with pasted failure → baseline → green sweep → prove. Iron Law: no production code without a failing test first. The **baseline rule** (suite on the untouched tree before the first edit, never `git stash`, because a stash-based baseline silently no-ops) is stated there once — this command does not restate it.
 
-Command-only: run the baseline worktree with `node scripts/ck/wt-new.cjs baseline --base <sha>`, append `gate tdd → PASS (evidence: <suite output>)` to `plans/<plan>/STATE.md`, and **escalate only** on a data change needing approval or an unrepairable env blocker.
+Command-only: append `baseline: <X/Y> (<sha7>)` and then `gate tdd → PASS (evidence: <suite output>)` to `plans/<plan>/STATE.md`, and **escalate only** on a data change needing approval or an unrepairable env blocker.
 
 **Distinct from `test`:** different inputs — `test` starts from a red suite; `tdd` starts from a production symptom and *creates* the red test. Both stay.
 

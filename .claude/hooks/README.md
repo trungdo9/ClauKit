@@ -26,7 +26,7 @@ No manual configuration needed - the Node.js dispatcher handles platform detecti
 ## Quick Start
 
 ### Current Setup
-Check **[SETUP-SUMMARY.md](./SETUP-SUMMARY.md)** for current configuration and quick reference.
+The live configuration is `.claude/settings.json` — read it there rather than from a summary that can drift.
 
 ### Scout Block Hook (Cross-Platform)
 Automatically blocks Claude Code from accessing heavy directories to improve performance.
@@ -118,7 +118,6 @@ echo '{"hookType":"Stop","projectDir":"'$(pwd)'","sessionId":"test","toolsUsed":
 ## Documentation
 
 ### Quick Reference
-- **[Setup Summary](./SETUP-SUMMARY.md)** - Current configuration, testing, and troubleshooting
 
 ### Detailed Setup Guides
 

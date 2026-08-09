@@ -44,7 +44,7 @@
 
 ## Testing Discipline
 - **Bug fixes are test-first by default** (`tdd` skill): red test reproducing the exact production symptom → verify red (paste output) → fix → verify green + full sweep. A waiver (time-critical hotfix, unreachable runner) must be logged in the plan/PR and in `STATE.md`.
-- Baseline for "is this failure pre-existing?" = base commit in a separate worktree (`scripts/ck/wt-new.cjs`), **never `git stash`** (silently no-ops).
+- Baseline for "is this failure pre-existing?" = the suite run on the untouched tree **before the first edit**, recorded in `STATE.md`. Already dirty ⇒ park your own WIP on a scratch branch by explicit paths (untracked included, never `-A`/`-am`), check out the base, and **verify `git status --porcelain` is empty before running** — the `tdd` skill § Baseline has the 4 steps. Foreign dirty files ⇒ do not park, stop. **Never `git stash`** (silently no-ops).
 
 ## Cross-Service Changes
 - A caller must not ship before the dependency endpoint is deployed — **state the required deploy order in the commit/PR description** (which side ships first, and why it is safe in between).
@@ -52,4 +52,13 @@
 - Contract changes (payload shapes, status codes) are verified against the consumer's actual parsing (`scout` per repo, shapes reported), not against the producer's intent.
 
 ## Behavioural-Skill Governance
-- A change to a **behavioural** skill (`tdd`, `verify-plan`, `run-state`, `code-review`, `debugging`, `cook`) requires running the project's behavioural-eval scenario for that gate before and after the change — and the scenario must **fail with its gate removed**, or it is measuring the model's general competence rather than your rule. Reference skills — the ones that document capability rather than shape behaviour — are exempt. *(ClauKit's own harness lives in `tests/behavior/`, which is repo-internal and not shipped by any kit; a consuming project supplies its own.)*
+- A change to a **behavioural** skill (`tdd`, `verify-plan`, `run-state`, `code-review`, `debugging`, `cook`) requires running the project's behavioural-eval scenario for that gate before and after the change. Reference skills — the ones that document capability rather than shape behaviour — are exempt. *(ClauKit's own harness lives in `tests/behavior/`, which is repo-internal and not shipped by any kit; a consuming project supplies its own.)*
+- **A green scenario is not evidence by itself.** It counts as evidence about your rule only under a control: the behaviour vanishes in *every* ablated run (`--negative`), or removing one claimed-load-bearing line flips a failing case and reproduces (`--positive`). Both are causal; the one-line version isolates more tightly, because full ablation differs by a directory plus dozens of lines.
+- **Where neither control is reachable, record that and ship — do not block, and do not call the gate demonstrated.** A rule the current model already follows unprompted is not a wrong rule; it is an invisible one, and the two are easy to confuse in the direction that gets working rules deleted.
+- **Chasing invisibility with harder fixtures does not work, and that is measured, not assumed.** `tdd-red-first` lost its behaviour in 5 of 13 ablated runs across two fixtures — the second built specifically to make test-first expensive (symptom two hops from cause, nothing naming a function or a value, a one-character fix against a test that must be invented). The investigation got two to three times deeper and the model still went red-first unprompted. That conclusion cost four live runs; do not re-buy it.
+
+| scenario | what running it proves today |
+|---|---|
+| `verify-plan-fires` · `scope-lock` | **load-bearing** — positive-controlled, so a regression here is a real regression |
+| `tdd-red-first` · `iron-law` · `resume-from-ledger` | **regression-only** — green means the kit still works, not that the rule caused it |
+| `guard-tier-b` | little: the hook itself is covered by 24 cases in `tests/guard-destructive.test.js`, and the scenario showed the model never reaches for the broad stage the hook guards |

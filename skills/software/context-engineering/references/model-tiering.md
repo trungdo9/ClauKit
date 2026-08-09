@@ -15,7 +15,18 @@ An omitted `model` inherits the session's model — often the most expensive tie
 | Multi-file integration, pattern matching, debugging | standard (sonnet) |
 | Architecture/design; **final whole-branch review** | most capable (opus) |
 | Reviewers | scale to diff size/complexity/risk; **mid-tier (sonnet) is the floor** |
+| Adversarial verify (refute one finding at a cited `file:line`) | standard (sonnet) — bounded, evidence-driven work |
 | Fix-loop escalation (3rd round) | one tier above the implementer that got stuck |
+
+## Where the cost actually is: multiplicative gates
+
+Tier the **loop**, not just the dispatch. A stage that runs once is priced once; a stage whose structure multiplies is priced by the product. `/ck:cook`'s Review gate is the only stage of either kind: `cycles × (1 reviewer + N findings + 1 test re-run)`, capped at 3 cycles. With 5 findings that is ~17 dispatches against the Plan gate's 1 — so the tier of `code-reviewer` / `debugger` / `tester` decides the run's cost far more than the tier of `planner`.
+
+Rules that follow:
+- **Per-cycle reviews at the floor (sonnet); one opus pass at the end.** A fix-loop review re-reads a diff you already scoped; the final whole-branch review is the one that must not miss anything.
+- **Adversarial verify at the floor.** Refuting a finding is reproduction at a cited line, not design.
+- **Escalate on the verdict, not on the schedule** — an `UNVERIFIABLE` Critical earns a tier; a second identical review does not.
+- **Batch by file, not by finding.** Several findings in one file are one dispatch; N dispatches re-read the same file N times.
 
 ## Turn count beats token price
 

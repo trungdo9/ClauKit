@@ -23,7 +23,7 @@ ClauKit/
 │   │   └── mk/                 # 12 marketing-kit command files (/mk:<name>)
 │   ├── hooks/                  # Git hooks and scripts (scout-block.cjs dispatcher)
 │   ├── kits/                   # Kit manifests (*.json) — engineer/marketing/both
-│   ├── skills/                 # 128 SKILL.md files — see § Skills Library below
+│   ├── skills/                 # 130 SKILL.md files — see § Skills Library below
 │   ├── workflows/              # Development workflow definitions (*.md)
 │   ├── settings.json           # Claude Code settings
 │   ├── metadata.json           # Installed-project metadata (kit, version)
@@ -89,7 +89,7 @@ Notes:
 
 ### 2. Slash Commands System
 
-**Command files**: 25 under `.claude/commands/ck/` (`/ck:<name>`) + 12 under `.claude/commands/mk/` (`/mk:<name>`) = 37 files. `docs/clauKit-registry.md` counts "commands" differently (dispatcher sub-actions like `/ck:fix ci` counted separately) — its header/§1/§3/§6 figures are now reconciled to **56** logical commands (= 216 total entries with 131 skills + 29 agents). The registry's § 3 tables remain the itemized source of truth.
+**Command files**: 25 under `.claude/commands/ck/` (`/ck:<name>`) + 12 under `.claude/commands/mk/` (`/mk:<name>`) = 37 files. `docs/clauKit-registry.md` counts "commands" differently (dispatcher sub-actions like `/ck:fix ci` counted separately) — its header/§1/§3/§6 figures are now reconciled to **56** logical commands (= 215 total entries with 130 skills + 29 agents). The registry's § 3 tables remain the itemized source of truth.
 
 | Namespace | Commands |
 |-----------|----------|
@@ -100,7 +100,7 @@ Several `/ck:` commands are dispatchers with positional-arg variants (no dash), 
 
 ### 3. Skills Library
 
-**Skills Organization** (`.claude/skills/` — 128 `SKILL.md` files across 5 top-level groups):
+**Skills Organization** (`.claude/skills/` — 130 `SKILL.md` files across 5 top-level groups):
 
 | Group | Count | Notes |
 |-------|------:|-------|
@@ -108,7 +108,7 @@ Several `/ck:` commands are dispatchers with positional-arg variants (no dash), 
 | `marketing/` | 50 | 25 claude-seo engine skills + 23 coreyhaines31-sourced + 2 ClauKit-authored (`product-marketing`, `kit-builder`) |
 | `automation/` | 6 | MCP wrappers: `marketing-orchestrator`, `mcp-ga4`, `mcp-gsc`, `mcp-sendgrid`, `mcp-resend`, `mcp-reviewweb` |
 | `integrations/` | 2 | `wordpress-rest`, `mcp-wordpress` |
-| `software/` | 69 | Top-level standalone (37) + subcategorized: `ai/` (3), `database/` (2), `design/` (9), `development/` (11), `document-skills/` (4), `git/` (2), `infrastructure/` (1) |
+| `software/` | 71 | Top-level standalone (40) + subcategorized: `ai/` (3), `database/` (2), `design/` (9), `development/` (11), `document-skills/` (4), `git/` (1), `infrastructure/` (1) |
 
 No `ffmpeg`, `shopify`, or `csharp-expert` skills exist. Image/video generation and editing route through the `ai-multimodal` skill (stale `imagemagick` references were purged 2026-07-16 along with the earlier-deleted `media-processing` skill). C#/.NET work is covered by the `csharp-developer` skill (`software/development/csharp-developer/`), not `csharp-expert`.
 
@@ -137,7 +137,7 @@ All hooks are single-implementation Node.js (`.sh`/`.ps1` are thin delegates so 
 - **Tier B (deny on live evidence):** whole-tree staging (`git add -A/.`, `commit -am`, bare `stash`) denied **iff** the file-claims registry shows another live session owns an affected file; denial prints the scoped command. Fails open on its own errors
 
 **File Claims** (`.claude/hooks/file-claims.cjs`, PostToolUse·Write|Edit):
-- Appends one JSONL claim per file mutation to `<worktree>/.claude/.ck-file-claims.jsonl` (per-worktree scope, append-only, no locks)
+- Appends one JSONL claim per file mutation to `<worktree-root>/.claude/.ck-file-claims.jsonl` (per-worktree scope — `git rev-parse --show-toplevel` resolves to the linked worktree, not the main repo; append-only, no locks)
 - Self-pruning (clean-file check + 4h TTL + compaction); `list` CLI derives the session manifest for `/ck:git cm`
 
 **Modularization** (`.claude/hooks/modularization-hook.cjs`, PostToolUse·Write|Edit): 200-LOC advisory, non-blocking.
@@ -145,9 +145,8 @@ All hooks are single-implementation Node.js (`.sh`/`.ps1` are thin delegates so 
 ### 6. Scripts (`scripts/ck/`)
 
 Cross-platform Node, zero dependencies, installed via the manifests' `scripts` key:
-- **Worktree fleet:** `wt-new.js` (absolute-path provisioning outside the repo + per-worktree deps + smoke gate on the untouched base commit, cached per base SHA) · `wt-doctor.js` (symlink health, version skew, env keys) · `wt-clean.js` (validated `git worktree remove`, never `rm -rf`)
-- **Context hygiene:** `phase-brief.js` (phase text + Global Constraints → brief file) · `review-package.js` (log + stat + `-U10` diff → one reviewer file) · `run-workspace.js` (per-plan artifact dir)
-- **Headless:** `ci-review.js` (narrow-grant `claude -p` PR review; GitHub Actions wrapper at `.github/workflows/ck-review.yml.template`) · `delivery-tail.js` (executes the project-declared post-PR step list; no declaration = no-op)
+- **Context hygiene:** `phase-brief.cjs` (phase text + Global Constraints → brief file) · `review-package.cjs` (log + stat + `-U10` diff → one reviewer file) · `run-workspace.cjs` (per-plan artifact dir)
+- **Headless:** `ci-review.cjs` (narrow-grant `claude -p` PR review; GitHub Actions wrapper at `.github/workflows/ck-review.yml.template`) · `delivery-tail.cjs` (executes the project-declared post-PR step list; no declaration = no-op)
 
 ### 7. Statusline Scripts
 

@@ -189,7 +189,7 @@ function tierA(command, cwd) {
       try {
         const nm = path.resolve(cwd || process.cwd(), 'node_modules');
         if (fs.existsSync(nm) && fs.lstatSync(nm).isSymbolicLink()) {
-          return 'node_modules here is a SYMLINK — a clean install would destroy the shared target (the exit-216 incident). Install inside the worktree via scripts/ck/wt-new, or replace the symlink deliberately first.';
+          return 'node_modules here is a SYMLINK — a clean install would destroy the shared target (the exit-216 incident). Replace the symlink with a real directory deliberately first, or use a non-clean install (`npm install` / `pnpm install`) that writes through it instead of wiping it.';
         }
       } catch { /* fs race: fall through */ }
     }
@@ -217,7 +217,7 @@ function tierA(command, cwd) {
           return rel === '' || (!rel.startsWith('..') && !path.isAbsolute(rel));
         };
         if (wts.some(contains)) {
-          return `'${t}' is (or contains) a git worktree. rm -rf on a worktree corrupts git metadata and has deleted nested directories here. Use \`git worktree remove <path>\` (scripts/ck/wt-clean).`;
+          return `'${t}' is (or contains) a git worktree. rm -rf on a worktree corrupts git metadata and has deleted nested directories here. Use \`git worktree remove <path>\` followed by \`git worktree prune\`.`;
         }
       }
     }

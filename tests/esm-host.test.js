@@ -108,12 +108,13 @@ test('statusline and scripts/ck load inside a "type": "module" project', () => {
   });
   assert.ok(!/require is not defined/.test(status.stderr), `statusline.cjs: ${status.stderr}`);
 
-  // wt-doctor pulls in scripts/ck/lib/common.cjs — an extensionless require of
+  // ci-review pulls in scripts/ck/lib/common.cjs — an extensionless require of
   // it would not resolve, so this also covers the relative-import rewrite.
-  const doctor = spawnSync('node', [path.join(p, 'scripts/ck/wt-doctor.cjs')], { cwd: p, encoding: 'utf-8' });
+  // No args: it exits on its usage message, which is after the require.
+  const ci = spawnSync('node', [path.join(p, 'scripts/ck/ci-review.cjs')], { cwd: p, encoding: 'utf-8' });
   assert.ok(
-    !/require is not defined|Cannot find module/.test(doctor.stderr),
-    `wt-doctor.cjs: ${doctor.stderr}`
+    !/require is not defined|Cannot find module/.test(ci.stderr),
+    `ci-review.cjs: ${ci.stderr}`
   );
 });
 
@@ -206,6 +207,83 @@ test('upgrade: shipped docs stop invoking the deleted .js paths', () => {
   assert.match(after, /\.claude\/hooks\/file-claims\.cjs list/, 'the instruction must name the file that exists');
   assert.doesNotMatch(after, /file-claims\.js/, 'no shipped doc may still invoke the deleted path');
   assert.match(after, /tools\/build\.js/, "an unrelated .js in the same doc is not ours to rewrite");
+});
+
+// ---------- who owns the .js being deleted ----------
+// `pruneStaleJs` used to unlink `<x>.js` whenever `<x>.cjs` existed. The twin
+// existing proves only that the copy loop ran; it says nothing about who wrote
+// the `.js`. So a customised hook was deleted silently and the upgrade reported
+// success. Removal is now gated on the content being one ClauKit shipped.
+
+test('upgrade: a hook the user customised is kept, not deleted', () => {
+  const p = esmProject();
+  assert.strictEqual(init(p).status, 0);
+
+  // The realistic shape: a pre-rename install where the user had edited one hook
+  // to add their own denied patterns, and left the others alone.
+  const pristine = fs.readFileSync(path.join(p, '.claude/hooks/scout-block.cjs'));
+  fs.renameSync(path.join(p, '.claude/hooks/scout-block.cjs'), path.join(p, '.claude/hooks/scout-block.js'));
+  fs.renameSync(path.join(p, '.claude/hooks/guard-destructive.cjs'), path.join(p, '.claude/hooks/guard-destructive.js'));
+  const mine = '// my own rules\nconst MINE = /rm -rf/;\n' + fs.readFileSync(path.join(p, '.claude/hooks/guard-destructive.js'), 'utf-8');
+  fs.writeFileSync(path.join(p, '.claude/hooks/guard-destructive.js'), mine);
+
+  const res = init(p);
+  assert.strictEqual(res.status, 0, res.stderr);
+
+  assert.ok(fs.existsSync(path.join(p, '.claude/hooks/guard-destructive.js')),
+    'an edited hook is the user\'s work — deleting it loses changes they cannot recover');
+  assert.strictEqual(fs.readFileSync(path.join(p, '.claude/hooks/guard-destructive.js'), 'utf-8'), mine,
+    'and it must be left byte-identical, not "helpfully" refreshed');
+  assert.match(res.stdout, /kept .*guard-destructive\.js/,
+    'a file left behind must be reported — it is inert now that settings point at the .cjs');
+
+  // The unedited one is ours and must still be cleaned up: the gate must not
+  // turn the repair into a no-op.
+  assert.ok(!fs.existsSync(path.join(p, '.claude/hooks/scout-block.js')), 'an unmodified shipped .js is still removed');
+  assert.strictEqual(
+    fs.readFileSync(path.join(p, '.claude/hooks/scout-block.cjs')).toString(), pristine.toString(),
+    'and its .cjs replacement is on disk'
+  );
+});
+
+test('the SHIPPED_JS digests are real blobs of the real history', () => {
+  // The table is the whole basis for deleting a user's file. If an entry were a
+  // typo, that path would silently stop being cleaned up; if it were fabricated,
+  // the proof would be no proof. So each digest is resolved against git.
+  const { SHIPPED_JS, MIGRATED } = require('../bin/lib/cjs-migrate.js');
+  assert.deepStrictEqual(Object.keys(SHIPPED_JS).sort(), [...MIGRATED].sort(),
+    'every migrated path needs a digest set, or it falls back to guessing');
+
+  for (const [rel, shas] of Object.entries(SHIPPED_JS)) {
+    assert.ok(shas.length > 0, `${rel} has no shipped digests`);
+    for (const sha of shas) {
+      assert.match(sha, /^[0-9a-f]{40}$/, `${rel}: ${sha} is not a blob id`);
+      const t = spawnSync('git', ['cat-file', '-t', sha], { cwd: REPO, encoding: 'utf-8' });
+      assert.strictEqual(t.stdout.trim(), 'blob', `${rel}: ${sha} is not a blob in this repo`);
+    }
+  }
+});
+
+test('a historical .js — not just the current content — is recognised as ours', () => {
+  // The runtime term (current package `.cjs`) covers a manual rename. The table
+  // is what covers the actual upgrade population: someone still running an older
+  // release, whose `.js` matches no current file. Exercised with real bytes out
+  // of git history rather than a stand-in.
+  const { SHIPPED_JS } = require('../bin/lib/cjs-migrate.js');
+  const rel = '.claude/hooks/file-claims';
+  const sha = SHIPPED_JS[rel][0];
+  const old = spawnSync('git', ['cat-file', 'blob', sha], { cwd: REPO, encoding: 'buffer' });
+  assert.strictEqual(old.status, 0, `could not read blob ${sha}`);
+
+  const p = esmProject();
+  assert.strictEqual(init(p).status, 0);
+  fs.rmSync(path.join(p, `${rel}.cjs`));
+  fs.writeFileSync(path.join(p, `${rel}.js`), old.stdout);   // the shape of a stale install
+
+  assert.strictEqual(init(p).status, 0);
+  assert.ok(fs.existsSync(path.join(p, `${rel}.cjs`)), 'the .cjs replacement is installed');
+  assert.ok(!fs.existsSync(path.join(p, `${rel}.js`)),
+    'a genuine older release must still be cleaned up — otherwise the digest gate broke the repair');
 });
 
 test('migration is idempotent — a second init changes nothing', () => {
