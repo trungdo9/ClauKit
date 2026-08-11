@@ -1,6 +1,6 @@
 # ClauKit — The Opinionated Multi-Agent Orchestration Framework for Claude Code
 
-*130 skills · 29 agents · 56 gated commands · atomic-commit safety · MCP-ready · 3 installable kits*
+*129 skills · 29 agents · 56 gated commands · atomic-commit safety · MCP-ready · 3 installable kits*
 
 [![GitHub stars](https://img.shields.io/github/stars/trungdo9/ClauKit?style=social)](https://github.com/trungdo9/ClauKit/stargazers)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
@@ -9,7 +9,7 @@
 
 Claude Code gives you the primitives — but no opinions on how to combine them. You're left to invent your own workflows, manage parallel agents by hand, and hope you don't `git push` a broken refactor. Most Claude Code templates throw a thousand skills at the wall and call it a day.
 
-**ClauKit is the opinionated alternative.** 130 curated skills, 29 specialized agents, 56 gated commands — each one earns its place. Built-in pre-flight checks block destructive operations. Multi-agent orchestration via `/ck:team` and `/ck:flow` runs parallel Claude Code work safely. **3 installable kits** — engineer (default), marketing, both.
+**ClauKit is the opinionated alternative.** 129 curated skills, 29 specialized agents, 56 gated commands — each one earns its place. Built-in pre-flight checks block destructive operations. Multi-agent orchestration via `/ck:team` and `/ck:flow` runs parallel Claude Code work safely. **3 installable kits** — engineer (default), marketing, both.
 
 > Plan once. `/clear` context. Cook with confidence. That's the ClauKit workflow.
 
@@ -17,7 +17,7 @@ Claude Code gives you the primitives — but no opinions on how to combine them.
 
 - **Gated pipelines, not gambling.** `/ck:refactor` and `/ck:cook` enforce pre-flight gates — clean working tree, tests green, not on `main`. See [`.claude/workflows/primary-workflow.md`](./.claude/workflows/primary-workflow.md). Skip the gates and the command refuses to run.
 - **Trio architecture — one concept, one entry point.** Every skill (knowledge) maps to an agent (persona) and a command (`/ck:<name>` trigger). No tool roulette. Full map in [`docs/clauKit-registry.md`](./docs/clauKit-registry.md).
-- **Curated, not crawled.** 130 skills hand-selected for AI dev workflows — research, planning, refactoring, testing, code review, SEO, payments. Each maintained, each documented, each in the registry. No abandoned scaffolds.
+- **Curated, not crawled.** 129 skills hand-selected for AI dev workflows — research, planning, refactoring, testing, code review, SEO, payments. Each maintained, each documented, each in the registry. No abandoned scaffolds.
 
 ## Quick Start
 
@@ -80,7 +80,7 @@ ck update            # Pull latest version from GitHub
 ck help              # Show help information
 ```
 
-> `ck init` copies `.claude/` plus `scripts/ck/` (the context-hygiene and headless helpers), merges hook entries into an existing `.claude/settings.json`, and wires the kit's workflows into your root `CLAUDE.md`. Other assets shipped in the package (`.opencode/`, `AGENTS.md`, `docs/`) are only available via Option 3 (clone-as-template).
+> `ck init` copies `.claude/` plus `scripts/ck/` (the context-hygiene and headless helpers), merges hook entries into an existing `.claude/settings.json`, wires the kit's workflows into your root `CLAUDE.md`, and adds two ignore rules for ClauKit's regenerable plan artifacts to your root `.gitignore` (hand-written plan files and reports are deliberately *not* ignored — they are linked from PR bodies). Other assets shipped in the package (`.opencode/`, `AGENTS.md`, `docs/`) are only available via Option 3 (clone-as-template).
 
 </details>
 
@@ -94,20 +94,20 @@ So this release adds almost no surface: **0 new agents, 0 new commands.** It har
 
 | | v1.3.9 | now |
 |---|---|---|
-| Skills | 129 | **130** — `run-state`, `verify-plan`, `tdd` added; `programmatic-seo` + `worktree` removed |
+| Skills | 129 | **129** — `run-state`, `verify-plan`, `tdd` added; `programmatic-seo`, `worktree` + `obsidian` removed |
 | Agents · command actions | 29 · 53 | 29 · **56** |
 | Workflows | 14 | **15** — `skill-activation` hard gate |
-| Hooks wired in `settings.json` | 2 | **4** — `guard-destructive`, `file-claims` |
-| `scripts/ck/` helpers | 0 | **5** (+ a shared lib) |
-| Automated tests | 2 shell scripts, both for one hook | **254 tests** (`npm test`) + 6 behavioral scenarios |
+| Hooks wired in `settings.json` | 2 | **5** — `guard-destructive`, `file-claims`, `branch-guard` |
+| `scripts/ck/` helpers | 0 | **7** (+ a shared lib) |
+| Automated tests | 2 shell scripts, both for one hook | **306 tests** (`npm test`) + 10 behavioral scenarios |
 
-**Stop losing work.** A durable per-plan ledger (`plans/<plan>/STATE.md`) means a run killed by a spend limit or a crash resumes by *re-deriving* truth from git and re-running gates — never by trusting the plan's own status claims. See [Flow 9](#flow-9---resume-an-interrupted-run). A two-tier `guard-destructive` hook blocks irreversible shapes (`git stash -u`, `reset --hard`, `clean -fdx`, unguarded `DELETE`/`TRUNCATE`) and declines over-broad staging (`git add -A`, `git commit -am`) **only when a claim registry proves another live session owns an affected file** — then prints the scoped command to run instead. Concurrent sessions **coordinate rather than isolate**: editing stays on unclaimed paths, `/ck:team` gives each editing teammate a disjoint path set, and overlaps are serialized instead of forked into separate trees.
+**Stop losing work.** A durable per-plan ledger (`plans/<plan>/STATE.md`) means a run killed by a spend limit or a crash resumes by *re-deriving* truth from git and re-running gates — never by trusting the plan's own status claims. See [Flow 9](#flow-9---resume-an-interrupted-run). A two-tier `guard-destructive` hook blocks irreversible shapes (`git stash -u`, `reset --hard`, `clean -fdx`, unguarded `DELETE`/`TRUNCATE`) and declines over-broad staging (`git add -A`, `git commit -am`) **only when a claim registry proves another live session owns an affected file** — then prints the scoped command to run instead. A second guard, `branch-guard`, denies a git command that **moves HEAD** (`checkout -b`, `switch`, a detach) while that same registry shows another live session sharing the tree — sessions no longer get a worktree each, so one branch switch relocates everyone. Both fail open and both take `CK_AUTO_MODE=1` / `CK_ALLOW_DESTRUCTIVE=1` as consent. Concurrent sessions **coordinate rather than isolate**: editing stays on unclaimed paths, `/ck:team` gives each editing teammate a disjoint path set, and overlaps are serialized instead of forked into separate trees.
 
 **Evidence before code.** `verify-plan` treats a plan as falsifiable hypotheses — every factual claim gets CONFIRMED / REFUTED / UNVERIFIABLE with a `file:line`, git ref, or verbatim output, and no code is written until the table is approved. `tdd` enforces red-before-green, with the baseline taken from the untouched tree **before the first edit** and recorded in `STATE.md` (a `git stash` baseline silently no-ops). A scope-lock gate forces a minimal-vs-thorough choice *before* planning. `/ck:review --lenses` fans out four reviewers — adversary, fidelity, blast-radius, convention — none of which ever sees the implementer's reasoning.
 
 **Cost.** Implementation moves to a fresh subagent per phase with artifacts handed over **as file paths**, so the orchestrator's context stops accumulating diffs; a model-tiering matrix makes `model=` mandatory on every dispatch; review and the post-PR delivery tail run headless.
 
-> **Verification status — stated plainly.** The 185 unit tests prove the hooks and scripts behave correctly *when called*. They cannot prove a model obeys a gate under pressure, and most of this release is prompt text. That is what `tests/behavior/` exists for, and its first full sweep **failed** — it caught a P0 install defect (workflow gates shipped unreferenced by any `CLAUDE.md`, so they never loaded; now fixed) and found three scenarios that pass even with their gate deleted. Those three are **not** evidence their gates work. Details in [`tests/behavior/README.md`](./tests/behavior/README.md).
+> **Verification status — stated plainly.** The 306 unit tests prove the hooks and scripts behave correctly *when called*. They cannot prove a model obeys a gate under pressure, and most of this release is prompt text. That is what `tests/behavior/` exists for. All 10 gate runs pass — but a green run is only evidence about the *rule* under a control, so each gate is labelled by what it actually demonstrates: `plan-before-code` clears both bars (absent in all 3 ablated runs, *and* a one-line positive control flips it); `verify-plan-fires` and `scope-lock` are positive-controlled; `iron-law` separates 2 of 3 under ablation but no single line flips it, so that rule is distributed rather than concentrated; the remaining five are **not discriminating** — with the rule removed the model still does the right thing, which is a fact about the model, not a verdict on the rule. Stated plainly rather than rounded up. Details, and the method's measured ceiling, in [`tests/behavior/README.md`](./tests/behavior/README.md).
 
 ---
 
@@ -309,7 +309,7 @@ flowchart LR
     I --> J["/ck:git pr<br/>draft PR + declared tail"]
 ```
 
-**Tip**: `/ck:find` is your meta-helper across 130 skills + 56 commands. Use it whenever you think "there's probably a ClauKit tool for this".
+**Tip**: `/ck:find` is your meta-helper across 129 skills + 56 commands. Use it whenever you think "there's probably a ClauKit tool for this".
 
 **Wrap-up notes**: `/ck:git cm` commits only *your session's* files (manifest from the file-claims registry — foreign WIP is reported, never staged). `/ck:git pr` finishes the branch: verify green → **draft-default** PR with an evidence-backed body → your project's declared post-PR steps (if any — see the `Delivery tail` block in `/ck:claude-md init`). If `gh`/`glab` auth fails, you get a paste-ready PR block instead of a dead end.
 
@@ -551,8 +551,8 @@ claukit/
 ├── .claude/                    # Claude Code configuration
 │   ├── agents/                 # Specialized agent definitions (29 agents: 17 engineering/ + 12 marketing/)
 │   ├── commands/               # Slash command implementations (56 commands)
-│   ├── hooks/                  # Git hooks and scripts
-│   ├── skills/                 # Specialized skills library (130 skills)
+│   ├── hooks/                  # PreToolUse/PostToolUse hooks (5 wired in settings.json)
+│   ├── skills/                 # Specialized skills library (129 skills)
 │   ├── workflows/              # Development workflow definitions
 │   ├── settings.json           # Claude Code settings
 │   ├── metadata.json           # Project metadata
@@ -569,7 +569,8 @@ claukit/
 │   └── workflows/              # CI/CD workflows
 ├── docs/                       # Project documentation
 ├── plans/                      # Implementation plans and reports
-├── scripts/                    # Setup and utility scripts
+├── scripts/                    # Dev-only tooling (NOT shipped — only scripts/ck/ is)
+│   └── ck/                     # Shipped helpers (7 + lib/): context hygiene, gates, headless
 ├── CLAUDE.md                   # Project instructions for Claude
 ├── README.md                   # This file
 ├── package.json                # Node.js dependencies
@@ -685,7 +686,7 @@ All documentation is maintained in `./docs`:
 <details>
 <summary><strong>What is ClauKit and how is it different from aggregate Claude Code templates?</strong></summary>
 
-ClauKit is an opinionated multi-agent orchestration framework for Claude Code with 130 curated skills, 29 agents, and 56 gated commands. Unlike aggregate Claude Code templates (often 1000+ skills, kitchen-sink approach), ClauKit hand-selects each skill, enforces pre-flight safety gates on destructive operations, and ships a trio architecture (skill + agent + command) so every concept has exactly one entry point. See the [comparison table](#claukit-vs-other-ai-coding-tools) for side-by-side capabilities.
+ClauKit is an opinionated multi-agent orchestration framework for Claude Code with 129 curated skills, 29 agents, and 56 gated commands. Unlike aggregate Claude Code templates (often 1000+ skills, kitchen-sink approach), ClauKit hand-selects each skill, enforces pre-flight safety gates on destructive operations, and ships a trio architecture (skill + agent + command) so every concept has exactly one entry point. See the [comparison table](#claukit-vs-other-ai-coding-tools) for side-by-side capabilities.
 
 </details>
 
@@ -768,7 +769,7 @@ eligibility in SERP.
   "name": "ClauKit",
   "applicationCategory": "DeveloperApplication",
   "operatingSystem": "Cross-platform",
-  "description": "Opinionated multi-agent orchestration framework for Claude Code with 130 curated skills, 29 agents, and 56 gated commands.",
+  "description": "Opinionated multi-agent orchestration framework for Claude Code with 129 curated skills, 29 agents, and 56 gated commands.",
   "url": "https://github.com/trungdo9/ClauKit",
   "license": "https://opensource.org/licenses/MIT",
   "author": { "@type": "Person", "name": "trungdo9" },
@@ -783,7 +784,7 @@ eligibility in SERP.
     {
       "@type": "Question",
       "name": "What is ClauKit and how is it different from aggregate Claude Code templates?",
-      "acceptedAnswer": { "@type": "Answer", "text": "ClauKit is an opinionated multi-agent orchestration framework for Claude Code with 130 curated skills, 29 agents, and 56 gated commands. Unlike aggregate Claude Code templates (often 1000+ skills, kitchen-sink approach), ClauKit hand-selects each skill, enforces pre-flight safety gates on destructive operations, and ships a trio architecture (skill + agent + command)." }
+      "acceptedAnswer": { "@type": "Answer", "text": "ClauKit is an opinionated multi-agent orchestration framework for Claude Code with 129 curated skills, 29 agents, and 56 gated commands. Unlike aggregate Claude Code templates (often 1000+ skills, kitchen-sink approach), ClauKit hand-selects each skill, enforces pre-flight safety gates on destructive operations, and ships a trio architecture (skill + agent + command)." }
     },
     {
       "@type": "Question",

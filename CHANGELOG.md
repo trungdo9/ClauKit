@@ -1,5 +1,36 @@
 # Changelog
 
+## [1.5.1](https://github.com/trungdo9/ClauKit/compare/v1.5.0...v1.5.1) (2026-08-11)
+
+**A `scripts/` code review, and the headline finding is that a gate shipped with no way to fire.** `branch-guard` went out in 1.5.0 with its verdict, its tests, and its documentation — and no registration anywhere, so a plain `git checkout -b` reached the shell unchecked. Same shape as the 1.5.0 finding it followed. Also: the delivery tail's parser held six defects at once, three dev-tree files were retired, and `ck init` now stops consumer projects from committing megabytes of regenerable diff.
+
+### 🐞 Bug Fixes
+
+* **hooks:** `branch-guard` **registered as a PreToolUse hook** (`.claude/hooks/branch-guard.cjs`, wired in `settings.json`, merged into existing installs by `settings-merge.js`). The verdict shipped for a release with the only instruction to use it being one line of prose in `/ck:git` — so the gate fired exactly when the model chose to run it, which is not a gate. `guard-destructive`'s own suite asserts `git checkout -b feat/x` is benign, so nothing else stopped it either. A shared HEAD is a mechanical invariant; it needs a mechanical check. Fails open in three ways (unparseable payload, missing checks module, unreadable registry) because it adds a refusal to a previously-allowed action.
+* **scripts:** command parsing extracted to `scripts/ck/lib/shell-parse.cjs` and made **quote-aware**. Newline and single `&` are separators (multi-line Bash is the normal shape for an agent's git calls), any git global option is skipped rather than four whitelisted ones (`git --no-pager checkout -b x` was allowed), launcher prefixes are peeled (`env git …`), and a `sh -c "…"` wrapper is found wherever it sits instead of only spanning the whole line. **All four previously returned ALLOW with 0 ops.** Registry path now resolves against `repoRoot()`, not cwd.
+* **scripts:** the delivery tail's parser, five defects, each of which silently ran the wrong command, re-ran it every invocation, or reported the wrong step DONE — a bold step name with trailing prose starts its own step, a declared key is never overwritten, an H1 closes the tail block, an unbackticked `done-when` is not split at a bare `=`, and **both** sides of `done-when` are substituted.
+* **install:** stale `.cjs` paths repaired in `ck-review.yml.template` — every consumer's PR review job failed with `Cannot find module` — and in the tail's REFUSED payload, which is the only instructions for arming a tail. `cjs-migrate-refs.js` now covers `.github/workflows/` so existing installs self-heal.
+* **install:** regenerable plan artifacts (`plans/**/reports/review-package-*.md`, `*-brief-*.md`) wired into the **root** `.gitignore`. `run-workspace.cjs` described that directory as "a git-ignored per-plan artifact dir" and nothing ClauKit installed ignored it, so every `review-package.cjs` run wrote a full `git diff -U10` there and the next `git add -A` swept it into history. Scoped to the two regenerable name patterns, not `plans/**` — a plan's `plan.md`, `STATE.md` and hand-written reports are linked from the PR body, and an ignored report is a 404 in a review.
+* **scripts:** the three `generate-marketing-*.js` scaffolders are **write-once** (`--force` to overwrite, `--dry-run` to preview, skip count always printed) — a re-run would have replaced 16 hand-authored files with stubs, `/mk:seo` alone having grown to 78 lines against its template's 50. `programmatic-seo` dropped from the generator and the `/mk:seo` cross-link (§4f records it removed as a duplicate; the generator would have resurrected it). The 3 automation agents now write to `.claude/agents/marketing/` where they actually live, instead of creating a second file with duplicate `name:` frontmatter under a stale `automation/`.
+
+### ♻️ Code Refactoring
+
+* **scripts:** `delivery-tail.cjs` split 357 → 169 lines over `lib/tail-parse` (parse + substitute), `lib/tail-checks` (approval policy + payloads) and `lib/tail-runtime` (execute). The previous single unit held all six defects above, all of them in the parsing half, with no seam to test them at.
+
+### 💥 Removed
+
+* **`obsidian` skill** (`software/obsidian/` — SKILL.md + 4 references). Maintainer decision: no agent, no command, no runtime code, and nothing in ClauKit's own pipelines ever routed to it — out of scope for a software engineering kit, and an auto-discoverable `SKILL.md` that nothing invokes is activation surface with no payoff. All 5 files registered in `RETIRED` with their shipped blob digests, so `ck init` cleans existing installs on content proof, never on a name guess. Counts: skills 130→**129**, `software/` 71→70, registry entries 215→**214**.
+* **`scripts/postinstall.js`** — wired to nothing for the package's whole life (no `postinstall` entry, no husky hook, root `scripts/` excluded from `files`), so its banner never printed for anyone while `codebase-summary.md` listed it as a live setup script. `ck --help` already prints strictly more.
+* **`.agent/`** — held `.agent/skills → ../skills`, the Antigravity IDE's workspace skills path. Never dead code in *intent*, but it was tracked as a symlink blob with no ignore rule, and a per-platform-regenerated pointer that git tracks is the one shape that breaks Windows checkouts. `link-skills.js` is back to one target and records how to restore the second (add to `targets` **and** give it an ignore rule — one without the other is the original defect).
+
+### ✅ Tests
+
+* 281 → **306 tests**, 305 pass, 0 fail, 1 skip. New: `branch-guard` hook coverage, delivery-tail parser cases pinning each of the five defects, and `installer-packaging` assertions that `.claude/skills` stays untracked + ignored and that nothing tracks `.agent/` again.
+
+### 📚 Documentation
+
+* **README counts corrected against the filesystem** — skills 130→129 (5 sites), hooks 4→**5**, `scripts/ck/` helpers 5→**7**, tests 254→**306**, behavioral scenarios 6→**10**. The verification-status note now states what each gate demonstrates rather than describing a sweep two releases old.
+
 ## [1.5.0](https://github.com/trungdo9/ClauKit/compare/v1.4.2...v1.5.0) (2026-08-06)
 
 **Gates that were never demonstrated, measured — and two of them were dark.** The behavioural harness was rebuilt until its verdicts meant something, and the first thing it found was that a gate can pass review, ship, and still not fire. Also: the worktree fleet is removed, the installer can finally *update* an existing project rather than only create one, and two new mechanical gates (`branch-guard`, `plan-lint`) replace checklist prose with exit codes.
