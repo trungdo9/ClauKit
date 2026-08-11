@@ -4,7 +4,7 @@
  * branch-guard.cjs — refuse to move HEAD while another live session shares the
  * tree (CLI). Checks and rationale live in `lib/branch-checks.cjs`.
  *
- * Usage: node scripts/ck/branch-guard.cjs "<git command>" [--auto]
+ * Usage: node .claude/scripts/ck/branch-guard.cjs "<git command>" [--auto]
  * Exit:  0 = ALLOW · 1 = DENY (reason on stderr) · 2 = usage
  *
  * This is the ASK-FIRST path, for a command a pipeline is about to run. The

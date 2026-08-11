@@ -36,7 +36,7 @@ Integer stages are the long-standing pipeline; decimal stages are gates inserted
 - **Baseline before the first edit:** run the suite on the untouched tree and append `baseline: <X/Y> (<sha7>)` to `STATE.md`. Planning/verification are read-only, so this belongs before the first edit — not the first thought. **Red where green is expected ⇒ refuse to proceed** until the user rules the failures known-and-accepted (ruling recorded on the same line).
 
 #### 3. Implementation — `cook` (Implement)
-- **Fresh implementer subagent per phase**; main session keeps only the loop, gates, and ledger. Dispatch = 1 context line + brief file path (`scripts/ck/phase-brief.cjs`) + interfaces + ambiguity resolutions + report path — **never session history, <2k chars** (artifacts as files, `orchestration-protocol.md`).
+- **Fresh implementer subagent per phase**; main session keeps only the loop, gates, and ledger. Dispatch = 1 context line + brief file path (`.claude/scripts/ck/phase-brief.cjs`) + interfaces + ambiguity resolutions + report path — **never session history, <2k chars** (artifacts as files, `orchestration-protocol.md`).
 - After each phase: compile/typecheck; verify the agent produced a diff before recording complete; append the phase line to `STATE.md`.
 - **DO NOT** create new enhanced files — update existing files directly.
 

@@ -83,7 +83,7 @@ Why this is stricter than ordinary git hygiene: the worktree fleet was retired (
 - Each session's `base <sha7>` in `STATE.md` stops describing HEAD, so `review-package.cjs BASE..HEAD` spans the wrong range and a `run-state` resume re-derives against the wrong history.
 - At 43% multi-clauding this is the normal case, not an edge case.
 
-**Mechanical check** — enforced by the `branch-guard` PreToolUse hook (`.claude/hooks/branch-guard.cjs`, registered in `.claude/settings.json`), which blocks the Bash call outright; `node scripts/ck/branch-guard.cjs "<git command>" [--auto]` is the same verdict on demand, exit 1 = refuse:
+**Mechanical check** — enforced by the `branch-guard` PreToolUse hook (`.claude/hooks/branch-guard.cjs`, registered in `.claude/settings.json`), which blocks the Bash call outright; `node .claude/scripts/ck/branch-guard.cjs "<git command>" [--auto]` is the same verdict on demand, exit 1 = refuse:
 
 | Operation | With another live session | Rationale |
 |---|---|---|
@@ -123,7 +123,7 @@ Prefix binding is identical to `CK_ALLOW_DESTRUCTIVE=1`: it exempts the segment 
 
 ClauKit ships the **mechanism** to run a project-declared post-PR step list, and **declares no steps of its own** — any built-in list would encode one team's tracker vocabulary into a generic kit; most trackers cannot even express another suite's step names. Projects declare steps in an optional `## Delivery tail` CLAUDE.md block (see the `/ck:claude-md` template, the only file where vendor names may appear — commented out): one bullet per step with `run` · `needs` · `done-when` · `on-fail` keys.
 
-The runner (`scripts/ck/delivery-tail.cjs`, invoked by `/ck:git pr` step 5 and re-runnable standalone after an interruption — same single code path):
+The runner (`.claude/scripts/ck/delivery-tail.cjs`, invoked by `/ck:git pr` step 5 and re-runnable standalone after an interruption — same single code path):
 
 - **Deterministic, no agent on the default path.** A declared step carries `run` + `done-when`, so it is executable as-is; the runner substitutes `{{placeholders}}`, runs the commands, and compares results itself. It does **not** spawn an LLM to do that. Three reasons: the step whose whole purpose is surviving spend limits must cost nothing; an outcome parsed out of model prose is less reliable than an exit code; and an unattended tool grant derived from the declaration would be derived from the very text it would be guarding against.
 - **Declaration order.** Steps run in listed order; no reordering.

@@ -23,6 +23,7 @@ ClauKit/
 │   │   └── mk/                 # 12 marketing-kit command files (/mk:<name>)
 │   ├── hooks/                  # Git hooks and scripts (scout-block.cjs dispatcher)
 │   ├── kits/                   # Kit manifests (*.json) — engineer/marketing/both
+│   ├── scripts/ck/             # 7 shipped helpers + lib/ — see § Scripts below
 │   ├── skills/                 # 130 SKILL.md files — see § Skills Library below
 │   ├── workflows/              # Development workflow definitions (*.md)
 │   ├── settings.json           # Claude Code settings
@@ -36,7 +37,7 @@ ClauKit/
 ├── .github/workflows/          # CI/CD (semantic-release)
 ├── docs/                       # Project documentation (this file's home)
 ├── plans/                      # Implementation plans + `<plan>/reports/`
-├── scripts/                    # Dev-only, NOT shipped (only `scripts/ck/` is)
+├── scripts/                    # Dev-only, NOT shipped
 │   ├── link-skills.js          #   recreate the .claude/skills symlink per platform
 │   ├── generate-marketing-*.js #   write-once scaffolders (--force to overwrite)
 │   └── lib/                    #   gen-write (write-once), marketing-commands (data)
@@ -141,7 +142,7 @@ All hooks are single-implementation Node.js (`.sh`/`.ps1` are thin delegates so 
 
 **Branch Guard** (`.claude/hooks/branch-guard.cjs`, PreToolUse·Bash):
 - Denies a git command that **moves HEAD** (`checkout -b`/`switch -c`/plain switch/detach) while the claim registry shows another live session sharing the tree — sessions no longer get a worktree each, so a branch switch relocates everyone. `git branch <new>` is allowed with an advisory; `CK_AUTO_MODE=1` is the consent, per-run (env) or per-segment (prefix)
-- Thin: the verdict is `scripts/ck/lib/branch-checks.cjs` and the command parsing is `lib/shell-parse.cjs`, shared with the `branch-guard` CLI and the tests. **Fails open** on an unparseable payload, a missing checks module, or an unreadable registry, and stays silent when it allows
+- Thin: the verdict is `.claude/scripts/ck/lib/branch-checks.cjs` and the command parsing is `lib/shell-parse.cjs`, shared with the `branch-guard` CLI and the tests. **Fails open** on an unparseable payload, a missing checks module, or an unreadable registry, and stays silent when it allows
 
 **File Claims** (`.claude/hooks/file-claims.cjs`, PostToolUse·Write|Edit):
 - Appends one JSONL claim per file mutation to `<worktree-root>/.claude/.ck-file-claims.jsonl` (per-worktree scope — `git rev-parse --show-toplevel` resolves to the linked worktree, not the main repo; append-only, no locks)
@@ -149,7 +150,7 @@ All hooks are single-implementation Node.js (`.sh`/`.ps1` are thin delegates so 
 
 **Modularization** (`.claude/hooks/modularization-hook.cjs`, PostToolUse·Write|Edit): 200-LOC advisory, non-blocking.
 
-### 6. Scripts (`scripts/ck/`)
+### 6. Scripts (`.claude/scripts/ck/`)
 
 Cross-platform Node, zero dependencies, installed via the manifests' `scripts` key:
 - **Context hygiene:** `phase-brief.cjs` (phase text + Global Constraints → brief file) · `review-package.cjs` (log + stat + `-U10` diff → one reviewer file) · `run-workspace.cjs` (per-plan artifact dir; its two regenerable outputs are git-ignored by `bin/lib/gitignore-wire.js` in the **root** `.gitignore`)

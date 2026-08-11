@@ -17,7 +17,7 @@ Dispatch to the matching operation based on {ACTION}. Use `git-manager` agent fo
 → **Four protocols are canonical in the [`git` skill](../../skills/software/git/SKILL.md)** and are deliberately not restated here — this file declared that skill their owner one line above, and a protocol written down twice drifts:
 > **Scoped Commits** · **Branch Policy in a Shared Tree** · **Finish-Branch Protocol** · **Delivery Tail — execution semantics**
 
-**Branch policy applies to every action below.** Concurrent sessions share one HEAD, so any `checkout`/`switch` relocates them mid-run. **Enforced mechanically** by the `branch-guard` PreToolUse hook — a HEAD move with another live session is blocked before the shell sees it, and you get the owning session in the refusal. To decide *before* proposing a command (better than being refused), run `node scripts/ck/branch-guard.cjs "<git command>"` — exit 1 ⇒ don't run it. `--auto` is the only mode that may move HEAD unasked, and it travels as `CK_AUTO_MODE=1`.
+**Branch policy applies to every action below.** Concurrent sessions share one HEAD, so any `checkout`/`switch` relocates them mid-run. **Enforced mechanically** by the `branch-guard` PreToolUse hook — a HEAD move with another live session is blocked before the shell sees it, and you get the owning session in the refusal. To decide *before* proposing a command (better than being refused), run `node .claude/scripts/ck/branch-guard.cjs "<git command>"` — exit 1 ⇒ don't run it. `--auto` is the only mode that may move HEAD unasked, and it travels as `CK_AUTO_MODE=1`.
 
 Only the dispatch differences live below.
 
@@ -30,7 +30,7 @@ Only the dispatch differences live below.
 TO_BRANCH: {ARG1} (defaults to `main`) · FROM_BRANCH: {ARG2} (defaults to current branch)
 
 → git skill § **Finish-Branch Protocol** for the ordering, the Iron-Law gate, draft-default, the `pr-body.md` fill contract and the auth-failure paste-ready rule.
-→ git skill § **Delivery Tail** for step 5's semantics. Runner: `node scripts/ck/delivery-tail.cjs` (`--dry-run` to review, `--approve` to arm).
+→ git skill § **Delivery Tail** for step 5's semantics. Runner: `node .claude/scripts/ck/delivery-tail.cjs` (`--dry-run` to review, `--approve` to arm).
 
 Flags: `--ready` opens the PR undrafted · `--no-handoff` skips the tail (a WIP PR mid-ticket).
 

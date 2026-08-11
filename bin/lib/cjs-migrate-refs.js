@@ -31,7 +31,12 @@ const path = require("path");
 
 const { MIGRATED } = require("./cjs-migrate");
 
-/** Directories holding ClauKit-shipped prose and wrappers. */
+/**
+ * Directories holding ClauKit-shipped prose and wrappers. The root `scripts/ck`
+ * is the pre-relocation home of the helpers (see relocate-scripts.js) and stays
+ * listed: a project upgrading across that move still has prose there on the run
+ * that repairs it.
+ */
 const DOC_ROOTS = [".claude", "scripts/ck", ".github/workflows"];
 const DOC_EXTENSIONS = new Set([".md", ".sh", ".ps1", ".yml", ".yaml", ".template"]);
 
@@ -85,4 +90,4 @@ function migrateDocRefs(projectRoot) {
   return changed;
 }
 
-module.exports = { migrateDocRefs, REF_PATTERN };
+module.exports = { migrateDocRefs, REF_PATTERN, walk, DOC_ROOTS };

@@ -15,7 +15,7 @@ const fs = require('node:fs');
 const os = require('node:os');
 const path = require('node:path');
 
-const SCRIPT = path.join(__dirname, '..', 'scripts', 'ck', 'delivery-tail.cjs');
+const SCRIPT = path.join(__dirname, '..', '.claude', 'scripts', 'ck', 'delivery-tail.cjs');
 const { extractTailBlock, parseSteps } = require(SCRIPT);
 
 let dir;

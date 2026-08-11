@@ -80,7 +80,7 @@ ck update            # Pull latest version from GitHub
 ck help              # Show help information
 ```
 
-> `ck init` copies `.claude/` plus `scripts/ck/` (the context-hygiene and headless helpers), merges hook entries into an existing `.claude/settings.json`, wires the kit's workflows into your root `CLAUDE.md`, and adds two ignore rules for ClauKit's regenerable plan artifacts to your root `.gitignore` (hand-written plan files and reports are deliberately *not* ignored — they are linked from PR bodies). Other assets shipped in the package (`.opencode/`, `AGENTS.md`, `docs/`) are only available via Option 3 (clone-as-template).
+> `ck init` copies `.claude/` — everything it installs, including `.claude/scripts/ck/` (the context-hygiene and headless helpers), lives under that one directory — merges hook entries into an existing `.claude/settings.json`, wires the kit's workflows into your root `CLAUDE.md`, and adds two ignore rules for ClauKit's regenerable plan artifacts to your root `.gitignore` (hand-written plan files and reports are deliberately *not* ignored — they are linked from PR bodies). Other assets shipped in the package (`.opencode/`, `AGENTS.md`, `docs/`) are only available via Option 3 (clone-as-template).
 
 </details>
 
@@ -98,7 +98,7 @@ So this release adds almost no surface: **0 new agents, 0 new commands.** It har
 | Agents · command actions | 29 · 53 | 29 · **56** |
 | Workflows | 14 | **15** — `skill-activation` hard gate |
 | Hooks wired in `settings.json` | 2 | **5** — `guard-destructive`, `file-claims`, `branch-guard` |
-| `scripts/ck/` helpers | 0 | **7** (+ a shared lib) |
+| `.claude/scripts/ck/` helpers | 0 | **7** (+ a shared lib) |
 | Automated tests | 2 shell scripts, both for one hook | **306 tests** (`npm test`) + 10 behavioral scenarios |
 
 **Stop losing work.** A durable per-plan ledger (`plans/<plan>/STATE.md`) means a run killed by a spend limit or a crash resumes by *re-deriving* truth from git and re-running gates — never by trusting the plan's own status claims. See [Flow 9](#flow-9---resume-an-interrupted-run). A two-tier `guard-destructive` hook blocks irreversible shapes (`git stash -u`, `reset --hard`, `clean -fdx`, unguarded `DELETE`/`TRUNCATE`) and declines over-broad staging (`git add -A`, `git commit -am`) **only when a claim registry proves another live session owns an affected file** — then prints the scoped command to run instead. A second guard, `branch-guard`, denies a git command that **moves HEAD** (`checkout -b`, `switch`, a detach) while that same registry shows another live session sharing the tree — sessions no longer get a worktree each, so one branch switch relocates everyone. Both fail open and both take `CK_AUTO_MODE=1` / `CK_ALLOW_DESTRUCTIVE=1` as consent. Concurrent sessions **coordinate rather than isolate**: editing stays on unclaimed paths, `/ck:team` gives each editing teammate a disjoint path set, and overlaps are serialized instead of forked into separate trees.
@@ -553,6 +553,7 @@ claukit/
 │   ├── commands/               # Slash command implementations (56 commands)
 │   ├── hooks/                  # PreToolUse/PostToolUse hooks (5 wired in settings.json)
 │   ├── skills/                 # Specialized skills library (129 skills)
+│   ├── scripts/ck/             # Shipped helpers (7 + lib/): context hygiene, gates, headless
 │   ├── workflows/              # Development workflow definitions
 │   ├── settings.json           # Claude Code settings
 │   ├── metadata.json           # Project metadata
@@ -569,8 +570,7 @@ claukit/
 │   └── workflows/              # CI/CD workflows
 ├── docs/                       # Project documentation
 ├── plans/                      # Implementation plans and reports
-├── scripts/                    # Dev-only tooling (NOT shipped — only scripts/ck/ is)
-│   └── ck/                     # Shipped helpers (7 + lib/): context hygiene, gates, headless
+├── scripts/                    # Dev-only tooling (NOT shipped)
 ├── CLAUDE.md                   # Project instructions for Claude
 ├── README.md                   # This file
 ├── package.json                # Node.js dependencies

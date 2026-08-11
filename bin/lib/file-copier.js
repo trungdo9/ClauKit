@@ -125,9 +125,10 @@ function copyPath(src, dst, options = {}) {
       return "skipped";
     }
     // --force used to `rmSync(dst, {recursive:true})`. Once a kit shipped a
-    // destination OUTSIDE .claude/ (scripts/ck/), that recursively deleted a
-    // top-level user directory — a project's own scripts/ck/deploy.js vanished
-    // with no warning. Overwrite what we ship; never delete what we don't.
+    // destination OUTSIDE .claude/ (the root scripts/ck/, since relocated under
+    // .claude/ — see relocate-scripts.js), that recursively deleted a top-level
+    // user directory — a project's own scripts/ck/deploy.js vanished with no
+    // warning. Overwrite what we ship; never delete what we don't.
     if (stat.isDirectory()) {
       const foreign = filesNotShipped(src, dst);
       copyDirectory(src, dst);

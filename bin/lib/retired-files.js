@@ -83,6 +83,12 @@ const STALE = [
   // them — so it is refreshed but deliberately not allowed to veto removal
   // (see DOC_EXTENSIONS: prose instructs an agent, an error string does not).
   { path: ".claude/hooks/guard-destructive.cjs", sha: ["22b67ee8bf966cf80d31c0778d5e1a9cce015553"] },
+  // Not prose: this hook RESOLVES `scripts/ck/branch-guard.cjs` by relative path,
+  // and relocate-scripts.js deletes the copy the 1.5.1 version points at. Without
+  // this refresh, a no-`--force` upgrade keeps the old hook (the copy loop skips
+  // an existing `.claude/hooks/`), it resolves nothing, and it fails open — the
+  // shared-HEAD gate would stop existing without a single line of output.
+  { path: ".claude/hooks/branch-guard.cjs", sha: ["98fcdb7a6236ea4dbb2aaa4b94c84c3b77075f32"] },
   { path: ".claude/workflows/primary-workflow.md", sha: ["ef634ed05f639d2082e012b9abbde0cbf05a756d", "f6a19d6d52cad0c301fa560cc52ca40ceaa63fef"] },
   { path: ".claude/workflows/fix-pipeline.md", sha: ["64ac3b0994919d3c0c1dd69b19e46a8f408bf5da", "889bfe1c5e4cff693bf8fb4834e9f6fa7e85c861", "8b12e2e87435845bdfdd05f9f4efb65f951a2ecd", "e6a7f2347b7fad76834b145593ded5e51277efbc"] },
   { path: ".claude/workflows/development-rules.md", sha: ["1303c98dfb3c21bed3f117acc5d3b859d96f5505", "847d7ea0721e7703bc1070db02088b9244b62419", "f09a404dfcdd30802315b247c49fea786eea40b3"] },

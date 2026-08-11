@@ -80,7 +80,7 @@ Command-only additions:
 | **BLAST RADIUS** | cheap, narrow prompt |
 | **CONVENTION** | cheap, narrow prompt |
 
-- Build the package first: `node scripts/ck/review-package.cjs <BASE> [HEAD] --plan <plan>` — hand each lens the **path**, never an inline diff.
+- Build the package first: `node .claude/scripts/ck/review-package.cjs <BASE> [HEAD] --plan <plan>` — hand each lens the **path**, never an inline diff.
 - Composable with `--flow`; the reconcile step runs in the main session.
 
 **Examples:** `/ck:review --lenses` · `/ck:review --lenses --flow plans/<plan>` 

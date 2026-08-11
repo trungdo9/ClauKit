@@ -690,7 +690,7 @@ Mistakes to avoid
 
 ### Every Node file ClauKit installs is `.cjs` — never `.js`
 
-Hooks, `statusline`, and everything under `scripts/ck/` are CommonJS, and they
+Hooks, `statusline`, and everything under `.claude/scripts/ck/` are CommonJS, and they
 run inside the *user's* project. Node picks a `.js` file's module system from the
 host's nearest `package.json`, so in any project with `"type": "module"` — every
 Vite/Next/modern-ESM app — a shipped `.js` is parsed as an ES module and dies on
@@ -703,7 +703,7 @@ ReferenceError: require is not defined in ES module scope
 `.cjs` is CommonJS regardless of the host. The rules:
 
 - **Ship shipped Node code as `.cjs`.** `tests/esm-host.test.js` fails the build
-  on any `.js` under `.claude/hooks/` or `scripts/ck/`.
+  on any `.js` under `.claude/hooks/` or `.claude/scripts/ck/`.
 - **Require it with the extension.** Node's CommonJS resolver tries `.js`,
   `.json`, `.node` — *not* `.cjs`. `require('./lib/common')` silently stops
   resolving; write `require('./lib/common.cjs')`.

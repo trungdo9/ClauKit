@@ -1,7 +1,7 @@
 /**
  * ESM-host tests.
  *
- * The defect: ClauKit's hooks, statusline and scripts/ck helpers are CommonJS
+ * The defect: ClauKit's hooks, statusline and .claude/scripts/ck helpers are CommonJS
  * but shipped as `.js`. Node picks a `.js` file's module system from the HOST
  * project's nearest package.json, so in any project with `"type": "module"`
  * every one of them died on its first `require`:
@@ -28,7 +28,7 @@ const REPO = path.join(__dirname, '..');
 const CK = path.join(REPO, 'bin', 'ck.js');
 
 /** Every file ClauKit installs into a project and then invokes with `node`. */
-const SHIPPED_NODE_DIRS = ['.claude/hooks', 'scripts/ck'];
+const SHIPPED_NODE_DIRS = ['.claude/hooks', '.claude/scripts/ck'];
 
 let work;
 
@@ -99,7 +99,7 @@ test('hooks run inside a "type": "module" project', () => {
   }
 });
 
-test('statusline and scripts/ck load inside a "type": "module" project', () => {
+test('statusline and .claude/scripts/ck load inside a "type": "module" project', () => {
   const p = esmProject();
   assert.strictEqual(init(p).status, 0);
 
@@ -108,10 +108,10 @@ test('statusline and scripts/ck load inside a "type": "module" project', () => {
   });
   assert.ok(!/require is not defined/.test(status.stderr), `statusline.cjs: ${status.stderr}`);
 
-  // ci-review pulls in scripts/ck/lib/common.cjs — an extensionless require of
+  // ci-review pulls in .claude/scripts/ck/lib/common.cjs — an extensionless require of
   // it would not resolve, so this also covers the relative-import rewrite.
   // No args: it exits on its usage message, which is after the require.
-  const ci = spawnSync('node', [path.join(p, 'scripts/ck/ci-review.cjs')], { cwd: p, encoding: 'utf-8' });
+  const ci = spawnSync('node', [path.join(p, '.claude/scripts/ck/ci-review.cjs')], { cwd: p, encoding: 'utf-8' });
   assert.ok(
     !/require is not defined|Cannot find module/.test(ci.stderr),
     `ci-review.cjs: ${ci.stderr}`
@@ -251,8 +251,19 @@ test('the SHIPPED_JS digests are real blobs of the real history', () => {
   // typo, that path would silently stop being cleaned up; if it were fabricated,
   // the proof would be no proof. So each digest is resolved against git.
   const { SHIPPED_JS, MIGRATED } = require('../bin/lib/cjs-migrate.js');
-  assert.deepStrictEqual(Object.keys(SHIPPED_JS).sort(), [...MIGRATED].sort(),
-    'every migrated path needs a digest set, or it falls back to guessing');
+  // The helpers' `.js` era happened at the ROOT `scripts/ck/`, so their digests
+  // live in relocate-scripts.js with the rest of that directory's history. The
+  // property being pinned is unchanged: no migrated path may be left without a
+  // digest set in EITHER table, because that is the path that falls back to
+  // guessing whose file it is deleting.
+  const { SHIPPED, newPathOf } = require('../bin/lib/relocate-scripts.js');
+  const covered = new Set([
+    ...Object.keys(SHIPPED_JS),
+    ...SHIPPED.map((e) => newPathOf(e.path).replace(/\.cjs$/, '')),
+  ]);
+  for (const rel of MIGRATED) {
+    assert.ok(covered.has(rel), `${rel} has no digest set — it would fall back to guessing`);
+  }
 
   for (const [rel, shas] of Object.entries(SHIPPED_JS)) {
     assert.ok(shas.length > 0, `${rel} has no shipped digests`);

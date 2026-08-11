@@ -65,7 +65,7 @@ Forbidden: "You're absolutely right!", "Great point!", "Thanks for [anything]", 
 ## Requesting Review (Summary)
 
 1. Get SHAs: `BASE_SHA=$(git rev-parse HEAD~1)` and `HEAD_SHA=$(git rev-parse HEAD)`. For a multi-commit phase, BASE is the phase's recorded base from `STATE.md` — never assume `HEAD~1`.
-2. Dispatch code-reviewer subagent via Task tool with: WHAT_WAS_IMPLEMENTED, PLAN_OR_REQUIREMENTS, BASE_SHA, HEAD_SHA, DESCRIPTION. Hand the diff as a **file** (`scripts/ck/review-package.cjs`), not inline.
+2. Dispatch code-reviewer subagent via Task tool with: WHAT_WAS_IMPLEMENTED, PLAN_OR_REQUIREMENTS, BASE_SHA, HEAD_SHA, DESCRIPTION. Hand the diff as a **file** (`.claude/scripts/ck/review-package.cjs`), not inline.
 3. Act on feedback: fix Critical immediately, High before proceeding, note Medium/Low for later.
 
 ## Multi-Lens Review (canonical lens table)

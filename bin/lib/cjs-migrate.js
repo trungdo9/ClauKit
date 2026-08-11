@@ -44,12 +44,12 @@ const MIGRATED = [
   ".claude/hooks/modularization-hook",
   ".claude/hooks/file-claims",
   ".claude/statusline",
-  "scripts/ck/ci-review",
-  "scripts/ck/delivery-tail",
-  "scripts/ck/phase-brief",
-  "scripts/ck/review-package",
-  "scripts/ck/run-workspace",
-  "scripts/ck/lib/common",
+  ".claude/scripts/ck/ci-review",
+  ".claude/scripts/ck/delivery-tail",
+  ".claude/scripts/ck/phase-brief",
+  ".claude/scripts/ck/review-package",
+  ".claude/scripts/ck/run-workspace",
+  ".claude/scripts/ck/lib/common",
 ];
 
 /**
@@ -76,12 +76,9 @@ const SHIPPED_JS = {
   ".claude/hooks/modularization-hook": ["bce44ed2e18af76dedfd6109d884a54758386835", "fcfc0918ef91c78ac3170ef1cbd3088fce82d5c2"],
   ".claude/hooks/file-claims": ["3c48983db8f143d4040ff17431ab4d8cd0ab98f5", "b9b1116de30494395f0f5f00b0d2567a8aed3bcc", "bef8fd71dd35cccd9abc8cc3a88e3e6bfaebe8d7"],
   ".claude/statusline": ["c7f4d514c811401739af32a61c20c16beeddd6f4"],
-  "scripts/ck/ci-review": ["5ea1d29def9f59e11fb17e49699829c08ec036af", "97cc45cd8c16f06b273db0ec37d0a137875e7d97", "afe4fa14ce16dd7db8dc32624b299d9ad60e9eb3"],
-  "scripts/ck/delivery-tail": ["1a88ec9f3860115c31ca5dea9857bf00f617c0dd", "a767cc98e05b01f74b70e1953bb4df9a44307737"],
-  "scripts/ck/phase-brief": ["82ee96a29fcd639954c3c95f59b620e7462519d3"],
-  "scripts/ck/review-package": ["9c96f1b2995523044de07ec6ed9cd1943a061a5c", "e96545864087a94ed377b5047f59106adbe2b814"],
-  "scripts/ck/run-workspace": ["5ab7039b581e614cef83d7b350f494dc68c9f1b5"],
-  "scripts/ck/lib/common": ["24aee7c3764bad43b620d1cbf5fda25dbb23487b", "d6b72c7fe9bc11c48582788a441b7f13c61e0f99"],
+  // The helpers' `.js` era happened at the ROOT `scripts/ck/`, which is not a
+  // path ClauKit writes any more — their digests moved to relocate-scripts.js
+  // with the rest of that directory's history, so it stays one table.
 };
 
 const BASENAMES = MIGRATED.map((p) => path.posix.basename(p));

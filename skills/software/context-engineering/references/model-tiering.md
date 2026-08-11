@@ -44,4 +44,4 @@ A dispatched agent that dies on `529 Overloaded` (or any transient API failure) 
 
 ## Interaction with context hygiene
 
-Tiering composes with artifacts-as-files (`scripts/ck/phase-brief.cjs`, `review-package.cjs`): a cheap-tier agent given a complete brief file outperforms an expensive agent given pasted history. Tier the model to the work shape; keep the dispatch under 2k chars either way.
+Tiering composes with artifacts-as-files (`.claude/scripts/ck/phase-brief.cjs`, `review-package.cjs`): a cheap-tier agent given a complete brief file outperforms an expensive agent given pasted history. Tier the model to the work shape; keep the dispatch under 2k chars either way.

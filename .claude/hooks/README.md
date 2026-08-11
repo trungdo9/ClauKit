@@ -10,7 +10,7 @@ Claude Code hooks automate notifications and actions at specific points in your 
 |------|------|------|-------------|
 | **Scout Block** | `scout-block.cjs` | Automated | Cross-platform hook blocking heavy directories (node_modules, .git, etc.) |
 | **Guard Destructive** | `guard-destructive.cjs` | Automated | PreToolUse (Bash) — denies irreversible ops (Tier A) and whole-tree ops that would sweep up another live session's files (Tier B). Override: `CK_ALLOW_DESTRUCTIVE=1` |
-| **Branch Guard** | `branch-guard.cjs` | Automated | PreToolUse (Bash) — denies a git command that moves HEAD while another live session shares the working tree. Verdict from `scripts/ck/branch-guard.cjs`. Override: `CK_AUTO_MODE=1` |
+| **Branch Guard** | `branch-guard.cjs` | Automated | PreToolUse (Bash) — denies a git command that moves HEAD while another live session shares the working tree. Verdict from `.claude/scripts/ck/branch-guard.cjs`. Override: `CK_AUTO_MODE=1` |
 | **File Claims** | `file-claims.cjs` | Automated | PostToolUse (Write\|Edit) — appends one claim per file mutation; the substrate both guards read |
 | **Modularization** | `modularization-hook.cjs` | Automated | Non-blocking suggestions for files >200 LOC to encourage code modularization |
 | **Discord (Auto)** | `discord_notify.sh` | Automated | Auto-sends rich embeds on session/subagent completion |
