@@ -83,7 +83,7 @@ Why this is stricter than ordinary git hygiene: the worktree fleet was retired (
 - Each session's `base <sha7>` in `STATE.md` stops describing HEAD, so `review-package.cjs BASE..HEAD` spans the wrong range and a `run-state` resume re-derives against the wrong history.
 - At 43% multi-clauding this is the normal case, not an edge case.
 
-**Mechanical check** — `node scripts/ck/branch-guard.cjs "<git command>" [--auto]`, exit 1 = refuse:
+**Mechanical check** — enforced by the `branch-guard` PreToolUse hook (`.claude/hooks/branch-guard.cjs`, registered in `.claude/settings.json`), which blocks the Bash call outright; `node scripts/ck/branch-guard.cjs "<git command>" [--auto]` is the same verdict on demand, exit 1 = refuse:
 
 | Operation | With another live session | Rationale |
 |---|---|---|

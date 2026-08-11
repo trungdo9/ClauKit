@@ -41,6 +41,32 @@ const HEADER = [
 ];
 
 /**
+ * Artifacts ClauKit REGENERATES from git on demand, relative to the project
+ * root. `run-workspace.cjs` describes `plans/<plan>/reports/` as "a git-ignored
+ * per-plan artifact dir" — and nothing ClauKit installed ignored it. Every
+ * `review-package.cjs` run writes a full `git diff -U10` there and every
+ * `phase-brief.cjs` run writes a NEW `phase-N-brief-<timestamp>.md` (nothing
+ * ever cleans them), so in a consumer project the next `git add -A` swept
+ * megabytes of regenerable diff into history. Only ClauKit's own root
+ * .gitignore had these two rules, and that file is not shipped.
+ *
+ * Scoped to the two regenerable NAME PATTERNS, not to `plans/**` or even to
+ * `reports/`: a plan's `plan.md`, `STATE.md` and its hand-written reports are
+ * linked from the PR body and must stay committable — an ignored report is a 404
+ * in a review.
+ */
+const PLAN_RULES = [
+  "plans/**/reports/review-package-*.md",
+  "plans/**/reports/*-brief-*.md",
+];
+
+const PLAN_HEADER = [
+  "# ClauKit regenerates these from git on demand — never commit them.",
+  "# Hand-written plan files and reports are deliberately NOT ignored: they are",
+  "# linked from the PR body, and an ignored report is a 404 in a review.",
+];
+
+/**
  * The patterns a gitignore file already declares. Comments and blanks are not
  * patterns; a leading `/` and trailing whitespace do not change what a
  * single-segment pattern matches, so both are normalised away before comparing
@@ -58,35 +84,50 @@ function existingPatterns(text) {
 }
 
 /**
- * Ensure `.claude/.gitignore` in the project covers every rule in RULES.
+ * Ensure one gitignore file covers every rule in `rules`.
  *
  * created   — no file existed; wrote the header plus every rule
  * wired     — appended only the rules the file lacked
  * unchanged — the file already covers all of them
  *
- * Returns { action, added: string[] }. Never rewrites or reorders lines the
- * user already had, and never runs when `.claude/` itself is absent (nothing
- * has been installed, so there is no runtime state to ignore yet).
+ * Never rewrites or reorders lines the user already had.
  */
-function wireGitignore(projectRoot) {
-  const dir = path.join(projectRoot, ".claude");
-  if (!fs.existsSync(dir)) return { action: "unchanged", added: [] };
-
-  const file = path.join(dir, ".gitignore");
-
+function wireOne(file, rules, header) {
   if (!fs.existsSync(file)) {
-    fs.writeFileSync(file, [...HEADER, ...RULES, ""].join("\n"));
-    return { action: "created", added: [...RULES] };
+    fs.writeFileSync(file, [...header, ...rules, ""].join("\n"));
+    return { action: "created", added: [...rules] };
   }
 
   const existing = fs.readFileSync(file, "utf-8");
   const have = existingPatterns(existing);
-  const missing = RULES.filter((r) => !have.has(r));
+  const missing = rules.filter((r) => !have.has(r));
   if (!missing.length) return { action: "unchanged", added: [] };
 
   const sep = existing.endsWith("\n") ? "\n" : "\n\n";
-  fs.writeFileSync(file, existing + sep + [...HEADER, ...missing, ""].join("\n"));
+  fs.writeFileSync(file, existing + sep + [...header, ...missing, ""].join("\n"));
   return { action: "wired", added: missing };
 }
 
-module.exports = { wireGitignore, RULES, HEADER, existingPatterns };
+/**
+ * Wire both scopes and report them separately, because they are different
+ * files with different reasons: `.claude/.gitignore` covers machine-local
+ * runtime state, the project root `.gitignore` covers regenerable plan
+ * artifacts (a `plans/` rule inside `.claude/` would match `.claude/plans/`
+ * and ignore nothing that exists).
+ *
+ * Returns { action, added, plans: { action, added } }. The top-level fields
+ * stay the `.claude/` result so existing callers and tests keep their meaning.
+ * Neither scope runs when `.claude/` is absent — nothing has been installed, so
+ * there is no runtime state and no artifact dir to ignore yet.
+ */
+function wireGitignore(projectRoot) {
+  const dir = path.join(projectRoot, ".claude");
+  if (!fs.existsSync(dir)) {
+    return { action: "unchanged", added: [], plans: { action: "unchanged", added: [] } };
+  }
+  const claude = wireOne(path.join(dir, ".gitignore"), RULES, HEADER);
+  const plans = wireOne(path.join(projectRoot, ".gitignore"), PLAN_RULES, PLAN_HEADER);
+  return { ...claude, plans };
+}
+
+module.exports = { wireGitignore, RULES, HEADER, PLAN_RULES, PLAN_HEADER, existingPatterns };

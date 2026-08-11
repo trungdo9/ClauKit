@@ -62,6 +62,48 @@ test('env prefixes and git global options do not hide the subcommand', () => {
   assert.strictEqual(kindOf('/usr/bin/git checkout -b feat/x'), 'create');
 });
 
+test('a global option outside the old whitelist does not hide the subcommand', () => {
+  // The loop used to `break` on the first unrecognised token, so `--no-pager`
+  // became tokens[0], `sub` was never `checkout`, and the guard allowed it.
+  for (const cmd of ['git --no-pager checkout -b feat/x', 'git -P switch -c feat/x',
+    'git --git-dir /tmp/r switch -c feat/x', 'git --git-dir=/tmp/r switch -c feat/x',
+    'git --no-optional-locks checkout -b feat/x']) {
+    assert.strictEqual(kindOf(cmd), 'create', cmd);
+  }
+});
+
+test('a launcher prefix does not hide the subcommand', () => {
+  for (const cmd of ['env git checkout -b feat/x', 'nohup git switch -c feat/x',
+    'env FOO=1 git checkout -b feat/x']) {
+    assert.strictEqual(kindOf(cmd), 'create', cmd);
+  }
+});
+
+test('a quoted ref is reported without its quotes', () => {
+  assert.deepStrictEqual(classify('git checkout -b "feat/x"'),
+    { kind: 'create', target: 'feat/x', consented: false });
+});
+
+test('newline and single & separate commands as surely as && does', () => {
+  // Multi-line Bash strings are the normal shape for an agent's git calls, and a
+  // single `&` backgrounds the left side. Neither was a separator, so each of
+  // these arrived as ONE segment whose first token is not `git` — ALLOW, 0 ops.
+  for (const cmd of ['git add -A\ngit checkout -b feat/x', 'git add -A\r\ngit switch -c feat/x',
+    'git status & git checkout -b feat/x', 'git checkout -b feat/x & wait']) {
+    const ops = classifyCommand(cmd);
+    assert.strictEqual(ops.length, 1, cmd);
+    assert.strictEqual(ops[0].kind, 'create', cmd);
+  }
+});
+
+test('a separator inside a quoted string is not a separator', () => {
+  // The price of noticing `&` must not be denying commands that execute no git.
+  for (const cmd of ['echo "a && git checkout -b x"', 'echo "a & git switch -c x"',
+    'git commit -m "wip & more"', "git commit -m 'a; git checkout -b x'"]) {
+    assert.strictEqual(classifyCommand(cmd).length, 0, cmd);
+  }
+});
+
 test('a HEAD move hidden in a compound command is still found', () => {
   const ops = classifyCommand('npm test && git checkout -b feat/x && echo done');
   assert.strictEqual(ops.length, 1);
@@ -85,6 +127,23 @@ test('a HEAD move inside a shell wrapper is still found', () => {
     assert.strictEqual(ops.length, 1, cmd);
     assert.strictEqual(ops[0].kind, 'create', cmd);
   }
+});
+
+test('a wrapper followed by more text is still descended into', () => {
+  // The pattern was anchored `^…\s*$`, so any trailing text made it miss; the
+  // line then fell through to a plain split and `sh -c "…"` read as an
+  // invocation of `sh`, whose first token is not `git`.
+  for (const cmd of ['sh -c "git switch -c feat/x" && echo hi', 'bash -c "git checkout -b feat/x"; true',
+    'echo start; bash -lc "git switch -c feat/x"; echo end']) {
+    const ops = classifyCommand(cmd);
+    assert.strictEqual(ops.length, 1, cmd);
+    assert.strictEqual(ops[0].kind, 'create', cmd);
+  }
+});
+
+test('ops keep textual order across a wrapper boundary', () => {
+  const ops = classifyCommand('git checkout main && sh -c "git switch -c feat/x"');
+  assert.deepStrictEqual(ops.map(o => `${o.kind}:${o.target}`), ['switch:main', 'create:feat/x']);
 });
 
 // ---------- decision ----------
@@ -190,4 +249,105 @@ test('an unreadable registry must not invent a refusal', () => {
     encoding: 'utf-8', cwd: require('node:os').tmpdir(),
   });
   assert.strictEqual(res.status, 0, res.stderr);
+});
+
+// ---------- the hook (registration is the gate; prose is not) ----------
+
+const fs = require('node:fs');
+const os = require('node:os');
+const HOOK = path.join(__dirname, '..', '.claude', 'hooks', 'branch-guard.cjs');
+const REPO = path.join(__dirname, '..');
+
+/** A throwaway repo with one dirty tracked file and its own claim registry. */
+function seededRepo(claims) {
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'ck-bg-'));
+  spawnSync('git', ['init', '-q'], { cwd: dir });
+  fs.writeFileSync(path.join(dir, 'a.txt'), 'base\n');
+  spawnSync('git', ['add', '.'], { cwd: dir });
+  spawnSync('git', ['-c', 'user.email=t@t', '-c', 'user.name=t', 'commit', '-qm', 'base'], { cwd: dir });
+  fs.appendFileSync(path.join(dir, 'a.txt'), 'dirty\n');   // claims on clean files are pruned
+  fs.mkdirSync(path.join(dir, '.claude', 'hooks'), { recursive: true });
+  fs.copyFileSync(path.join(REPO, '.claude', 'hooks', 'file-claims.cjs'),
+    path.join(dir, '.claude', 'hooks', 'file-claims.cjs'));
+  if (claims) fs.writeFileSync(path.join(dir, '.claude', '.ck-file-claims.jsonl'), claims);
+  return dir;
+}
+
+function hook(command, cwd, env = {}) {
+  return spawnSync('node', [HOOK], {
+    encoding: 'utf-8',
+    input: JSON.stringify({ tool_input: { command }, cwd, session_id: 'mine1234' }),
+    env: { ...process.env, CK_AUTO_MODE: '', CLAUDE_CODE_SESSION_ID: 'mine1234', ...env },
+  });
+}
+
+test('the hook DENIES a HEAD move while a foreign claim is live', () => {
+  const dir = seededRepo(JSON.stringify({ session: 'foreign9', file: 'a.txt', ts: Date.now(), tool: 'Edit' }) + '\n');
+  try {
+    const res = hook('git checkout -b feat/x', dir);
+    assert.strictEqual(res.status, 2, `expected a blocking exit\nstdout: ${res.stdout}\nstderr: ${res.stderr}`);
+    assert.match(res.stderr, /BLOCKED \(shared HEAD\)/);
+    assert.match(res.stderr, /foreign9/);
+  } finally {
+    fs.rmSync(dir, { recursive: true, force: true });
+  }
+});
+
+test('the hook is silent and allows when nothing else holds a claim', () => {
+  const dir = seededRepo(null);
+  try {
+    const res = hook('git checkout -b feat/x', dir);
+    assert.strictEqual(res.status, 0, res.stderr);
+    assert.strictEqual((res.stdout + res.stderr).trim(), '',
+      'the verdict\'s bookkeeping ("no other live session holds a claim") is not news to the model');
+  } finally {
+    fs.rmSync(dir, { recursive: true, force: true });
+  }
+});
+
+test('the hook still passes on the one real advisory', () => {
+  // `git branch <new>` moves no HEAD, so it is allowed — but nobody is on it.
+  const dir = seededRepo(JSON.stringify({ session: 'foreign9', file: 'a.txt', ts: Date.now(), tool: 'Edit' }) + '\n');
+  try {
+    const res = hook('git branch feat/x', dir);
+    assert.strictEqual(res.status, 0);
+    assert.match(res.stderr, /without moving HEAD/);
+  } finally {
+    fs.rmSync(dir, { recursive: true, force: true });
+  }
+});
+
+test('the hook says nothing at all about a command with no branch operation', () => {
+  const dir = seededRepo(JSON.stringify({ session: 'foreign9', file: 'a.txt', ts: Date.now(), tool: 'Edit' }) + '\n');
+  try {
+    const res = hook('npm test', dir);
+    assert.strictEqual(res.status, 0);
+    assert.strictEqual((res.stdout + res.stderr).trim(), '', 'a guard that chatters gets routed around');
+  } finally {
+    fs.rmSync(dir, { recursive: true, force: true });
+  }
+});
+
+test('CK_AUTO_MODE=1 in the environment is consent the hook honours', () => {
+  const dir = seededRepo(JSON.stringify({ session: 'foreign9', file: 'a.txt', ts: Date.now(), tool: 'Edit' }) + '\n');
+  try {
+    assert.strictEqual(hook('git checkout -b feat/x', dir, { CK_AUTO_MODE: '1' }).status, 0);
+  } finally {
+    fs.rmSync(dir, { recursive: true, force: true });
+  }
+});
+
+test('the hook fails open on a payload it cannot read', () => {
+  for (const input of ['', 'not json', '{"tool_input":{}}']) {
+    const res = spawnSync('node', [HOOK], { encoding: 'utf-8', input });
+    assert.strictEqual(res.status, 0, `input ${JSON.stringify(input)} must not block Bash`);
+  }
+});
+
+test('the hook is registered in settings.json — an unregistered gate never fires', () => {
+  const settings = JSON.parse(fs.readFileSync(path.join(REPO, '.claude', 'settings.json'), 'utf-8'));
+  const bash = (settings.hooks.PreToolUse || []).filter(g => g.matcher === 'Bash');
+  const commands = bash.flatMap(g => g.hooks.map(h => h.command));
+  assert.ok(commands.some(c => /branch-guard\.cjs/.test(c)),
+    'the verdict shipped once with no registration anywhere; this asserts it cannot happen again');
 });

@@ -36,7 +36,10 @@ ClauKit/
 ├── .github/workflows/          # CI/CD (semantic-release)
 ├── docs/                       # Project documentation (this file's home)
 ├── plans/                      # Implementation plans + `<plan>/reports/`
-├── scripts/                    # Setup/utility scripts (postinstall, link-skills)
+├── scripts/                    # Dev-only, NOT shipped (only `scripts/ck/` is)
+│   ├── link-skills.js          #   recreate the .claude/skills symlink per platform
+│   ├── generate-marketing-*.js #   write-once scaffolders (--force to overwrite)
+│   └── lib/                    #   gen-write (write-once), marketing-commands (data)
 ├── skills/marketing/README.md  # Marketing kit reference (skills/agents/commands)
 ├── CLAUDE.md                   # Project instructions for Claude
 ├── MARKETING.md                # Full marketing kit guide
@@ -89,7 +92,7 @@ Notes:
 
 ### 2. Slash Commands System
 
-**Command files**: 25 under `.claude/commands/ck/` (`/ck:<name>`) + 12 under `.claude/commands/mk/` (`/mk:<name>`) = 37 files. `docs/clauKit-registry.md` counts "commands" differently (dispatcher sub-actions like `/ck:fix ci` counted separately) — its header/§1/§3/§6 figures are now reconciled to **56** logical commands (= 215 total entries with 130 skills + 29 agents). The registry's § 3 tables remain the itemized source of truth.
+**Command files**: 25 under `.claude/commands/ck/` (`/ck:<name>`) + 12 under `.claude/commands/mk/` (`/mk:<name>`) = 37 files. `docs/clauKit-registry.md` counts "commands" differently (dispatcher sub-actions like `/ck:fix ci` counted separately) — its header/§1/§3/§6 figures are now reconciled to **56** logical commands (= 214 total entries with 129 skills + 29 agents). The registry's § 3 tables remain the itemized source of truth.
 
 | Namespace | Commands |
 |-----------|----------|
@@ -100,7 +103,7 @@ Several `/ck:` commands are dispatchers with positional-arg variants (no dash), 
 
 ### 3. Skills Library
 
-**Skills Organization** (`.claude/skills/` — 130 `SKILL.md` files across 5 top-level groups):
+**Skills Organization** (`.claude/skills/` — 129 `SKILL.md` files across 5 top-level groups):
 
 | Group | Count | Notes |
 |-------|------:|-------|
@@ -108,7 +111,7 @@ Several `/ck:` commands are dispatchers with positional-arg variants (no dash), 
 | `marketing/` | 50 | 25 claude-seo engine skills + 23 coreyhaines31-sourced + 2 ClauKit-authored (`product-marketing`, `kit-builder`) |
 | `automation/` | 6 | MCP wrappers: `marketing-orchestrator`, `mcp-ga4`, `mcp-gsc`, `mcp-sendgrid`, `mcp-resend`, `mcp-reviewweb` |
 | `integrations/` | 2 | `wordpress-rest`, `mcp-wordpress` |
-| `software/` | 71 | Top-level standalone (40) + subcategorized: `ai/` (3), `database/` (2), `design/` (9), `development/` (11), `document-skills/` (4), `git/` (1), `infrastructure/` (1) |
+| `software/` | 70 | Top-level standalone (39) + subcategorized: `ai/` (3), `database/` (2), `design/` (9), `development/` (11), `document-skills/` (4), `git/` (1), `infrastructure/` (1) |
 
 No `ffmpeg`, `shopify`, or `csharp-expert` skills exist. Image/video generation and editing route through the `ai-multimodal` skill (stale `imagemagick` references were purged 2026-07-16 along with the earlier-deleted `media-processing` skill). C#/.NET work is covered by the `csharp-developer` skill (`software/development/csharp-developer/`), not `csharp-expert`.
 
@@ -136,6 +139,10 @@ All hooks are single-implementation Node.js (`.sh`/`.ps1` are thin delegates so 
 - **Tier A (always deny):** `git stash -u`, `reset --hard`, `clean -fd[x]`, whole-tree checkout/restore, force-push without lease, destructive SQL through a DB client, frozen installs onto a `node_modules` symlink, `rm -rf` of a known worktree. Denial names the safe alternative; `CK_ALLOW_DESTRUCTIVE=1` escape hatch
 - **Tier B (deny on live evidence):** whole-tree staging (`git add -A/.`, `commit -am`, bare `stash`) denied **iff** the file-claims registry shows another live session owns an affected file; denial prints the scoped command. Fails open on its own errors
 
+**Branch Guard** (`.claude/hooks/branch-guard.cjs`, PreToolUse·Bash):
+- Denies a git command that **moves HEAD** (`checkout -b`/`switch -c`/plain switch/detach) while the claim registry shows another live session sharing the tree — sessions no longer get a worktree each, so a branch switch relocates everyone. `git branch <new>` is allowed with an advisory; `CK_AUTO_MODE=1` is the consent, per-run (env) or per-segment (prefix)
+- Thin: the verdict is `scripts/ck/lib/branch-checks.cjs` and the command parsing is `lib/shell-parse.cjs`, shared with the `branch-guard` CLI and the tests. **Fails open** on an unparseable payload, a missing checks module, or an unreadable registry, and stays silent when it allows
+
 **File Claims** (`.claude/hooks/file-claims.cjs`, PostToolUse·Write|Edit):
 - Appends one JSONL claim per file mutation to `<worktree-root>/.claude/.ck-file-claims.jsonl` (per-worktree scope — `git rev-parse --show-toplevel` resolves to the linked worktree, not the main repo; append-only, no locks)
 - Self-pruning (clean-file check + 4h TTL + compaction); `list` CLI derives the session manifest for `/ck:git cm`
@@ -145,8 +152,10 @@ All hooks are single-implementation Node.js (`.sh`/`.ps1` are thin delegates so 
 ### 6. Scripts (`scripts/ck/`)
 
 Cross-platform Node, zero dependencies, installed via the manifests' `scripts` key:
-- **Context hygiene:** `phase-brief.cjs` (phase text + Global Constraints → brief file) · `review-package.cjs` (log + stat + `-U10` diff → one reviewer file) · `run-workspace.cjs` (per-plan artifact dir)
+- **Context hygiene:** `phase-brief.cjs` (phase text + Global Constraints → brief file) · `review-package.cjs` (log + stat + `-U10` diff → one reviewer file) · `run-workspace.cjs` (per-plan artifact dir; its two regenerable outputs are git-ignored by `bin/lib/gitignore-wire.js` in the **root** `.gitignore`)
+- **Gates:** `branch-guard.cjs` (HEAD-move verdict on demand; the enforcing copy is the PreToolUse hook) · `plan-lint.cjs` (planning checklist → exit code over a plan dir)
 - **Headless:** `ci-review.cjs` (narrow-grant `claude -p` PR review; GitHub Actions wrapper at `.github/workflows/ck-review.yml.template`) · `delivery-tail.cjs` (executes the project-declared post-PR step list; no declaration = no-op)
+- **`lib/`:** `common.cjs` (argv-only git, ref guards) · `shell-parse.cjs` + `branch-checks.cjs` (branch guard) · `plan-checks.cjs` (plan lint) · `tail-parse.cjs` + `tail-checks.cjs` + `tail-runtime.cjs` (delivery tail: parse / approve+render / execute)
 
 ### 7. Statusline Scripts
 

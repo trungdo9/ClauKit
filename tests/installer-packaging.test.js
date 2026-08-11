@@ -23,7 +23,7 @@ const fs = require('node:fs');
 const os = require('node:os');
 const path = require('node:path');
 
-const { RULES, existingPatterns } = require('../bin/lib/gitignore-wire');
+const { RULES, PLAN_RULES, existingPatterns } = require('../bin/lib/gitignore-wire');
 
 const REPO = path.join(__dirname, '..');
 const CK = path.join(REPO, 'bin', 'ck.js');
@@ -66,6 +66,52 @@ test('an existing .claude/.gitignore keeps the user\'s lines and gains only what
   assert.match(text, /^\.ck-file-claims\.jsonl$/m, 'a rule they lacked is appended');
 });
 
+test('regenerable plan artifacts are ignored in the project ROOT .gitignore', () => {
+  // run-workspace.cjs calls plans/<plan>/reports/ "a git-ignored per-plan
+  // artifact dir" and nothing ClauKit installed ignored it: every
+  // review-package run writes a full `git diff -U10` there, every phase-brief
+  // writes another timestamped file, and `git add -A` swept the lot into history.
+  const p = fresh();
+  const res = init(p);
+  assert.strictEqual(res.status, 0, res.stderr);
+  const text = fs.readFileSync(path.join(p, '.gitignore'), 'utf-8');
+  for (const rule of PLAN_RULES) assert.ok(existingPatterns(text).has(rule), `missing: ${rule}`);
+  // The rules must land at the ROOT: a `plans/` pattern inside .claude/ would
+  // only ever match `.claude/plans/`, which does not exist.
+  assert.ok(!existingPatterns(fs.readFileSync(path.join(p, '.claude/.gitignore'), 'utf-8')).has(PLAN_RULES[0]));
+});
+
+test('plan-artifact rules leave a hand-written report committable', () => {
+  // Ignoring plans/** or all of reports/ would be the easy fix and the wrong
+  // one: reports are linked from the PR body, so an ignored one is a 404.
+  const p = fresh();
+  init(p);
+  const dir = path.join(p, 'plans', '260810-1200-x', 'reports');
+  fs.mkdirSync(dir, { recursive: true });
+  for (const f of ['plan.md', 'STATE.md']) fs.writeFileSync(path.join(p, 'plans', '260810-1200-x', f), 'x\n');
+  for (const f of ['code-review.md', 'review-package-abc123.md', 'phase-2-brief-1754800000.md']) {
+    fs.writeFileSync(path.join(dir, f), 'x\n');
+  }
+  const ignored = (rel) =>
+    spawnSync('git', ['check-ignore', '-q', rel], { cwd: p }).status === 0;
+  assert.ok(ignored('plans/260810-1200-x/reports/review-package-abc123.md'), 'regenerated diff must be ignored');
+  assert.ok(ignored('plans/260810-1200-x/reports/phase-2-brief-1754800000.md'), 'regenerated brief must be ignored');
+  assert.ok(!ignored('plans/260810-1200-x/reports/code-review.md'), 'a hand-written report must stay committable');
+  assert.ok(!ignored('plans/260810-1200-x/plan.md'), 'the plan itself must stay committable');
+  assert.ok(!ignored('plans/260810-1200-x/STATE.md'), 'the run ledger must stay committable');
+});
+
+test('an existing root .gitignore keeps its lines and gains only what is missing', () => {
+  const p = fresh();
+  fs.writeFileSync(path.join(p, '.gitignore'), '# mine\nnode_modules\nplans/**/reports/*-brief-*.md\n');
+  assert.strictEqual(init(p).status, 0);
+  const text = fs.readFileSync(path.join(p, '.gitignore'), 'utf-8');
+  assert.match(text, /^node_modules$/m, "the user's own rule survives");
+  assert.match(text, /^# mine$/m, 'their comment survives');
+  assert.strictEqual(text.match(/^plans\/\*\*\/reports\/\*-brief-\*\.md$/gm).length, 1, 'not duplicated');
+  assert.ok(existingPatterns(text).has('plans/**/reports/review-package-*.md'), 'the missing one is appended');
+});
+
 test('.gitignore wiring is idempotent — a second init adds nothing', () => {
   const p = fresh();
   init(p);
@@ -92,6 +138,15 @@ test('the wired rules stay in sync with ClauKit\'s own .claude/.gitignore', () =
   const declared = existingPatterns(own);
   for (const rule of RULES) {
     assert.ok(declared.has(rule), `${rule} is wired into consumers but missing from this repo's own .claude/.gitignore — the two must not drift`);
+  }
+});
+
+test('the plan-artifact rules stay in sync with ClauKit\'s own root .gitignore', () => {
+  // Same anti-drift rule as above, for the other scope: this repo discovered the
+  // need for these two patterns first and wired them into consumers second.
+  const declared = existingPatterns(fs.readFileSync(path.join(REPO, '.gitignore'), 'utf-8'));
+  for (const rule of PLAN_RULES) {
+    assert.ok(declared.has(rule), `${rule} is wired into consumers but missing from this repo's own .gitignore`);
   }
 });
 
@@ -270,4 +325,42 @@ test('every cook stage and its exit gate survives into a shipped install', () =>
   // The two rules that live outside the table because no single stage carries them.
   assert.match(skill, /Closing gate/, 'the acceptance-criteria closing gate must ship');
   assert.match(skill, /5 fix cycles total per feature/, 'the feature-level loop cap must ship');
+});
+
+// ---------- ClauKit's own tree: the skills pointer ----------
+
+test('the skills pointer is untracked and ignored', () => {
+  // `skills/` is canonical and `.claude/skills` points at it, regenerated per
+  // platform by `npm run link-skills`. A TRACKED symlink is the one shape that
+  // breaks: a Windows checkout without symlink support writes a text file
+  // containing "../skills", link-skills replaces it with a junction, and the
+  // tracked path then reads as permanently modified — or, on the copy fallback,
+  // ~1500 untracked skill files. That is exactly what happened to the retired
+  // `.agent/skills` target, which had no ignore rule at all, so the invariant is
+  // asserted rather than left to the next reviewer.
+  const git = (...args) => spawnSync('git', args, { cwd: REPO, encoding: 'utf-8' });
+  assert.strictEqual(git('ls-files', '.claude/skills').stdout.trim(), '',
+    '.claude/skills is regenerated per platform, so it must not be tracked');
+  // check-ignore does not require the path to exist, so this holds on a fresh
+  // checkout where link-skills has not run yet.
+  assert.strictEqual(git('check-ignore', '-q', '.claude/skills').status, 0, '.claude/skills must be git-ignored');
+  // `.agent/` was removed 2026-08-11 (see scripts/link-skills.js): nothing
+  // recreates it, so nothing may track it either.
+  assert.strictEqual(git('ls-files', '.agent').stdout.trim(), '',
+    '.agent/ is retired — no target creates it, so a tracked entry there is a leftover');
+});
+
+test('the repo ships no script that nothing invokes', () => {
+  // scripts/postinstall.js was wired to nothing for the package's whole life —
+  // no `postinstall` entry, no husky hook, and root `scripts/` excluded from
+  // `files`, so its "installed successfully" banner never printed for anyone,
+  // while codebase-summary.md listed it as a live setup script. `ck --help`
+  // already prints strictly more than the banner did.
+  const pkg = JSON.parse(fs.readFileSync(path.join(REPO, 'package.json'), 'utf-8'));
+  assert.ok(!fs.existsSync(path.join(REPO, 'scripts', 'postinstall.js')),
+    'reintroducing it requires wiring it AND shipping it AND fixing its cwd-relative package.json read');
+  for (const [name, cmd] of Object.entries(pkg.scripts || {})) {
+    const m = cmd.match(/node\s+(scripts\/\S+)/);
+    if (m) assert.ok(fs.existsSync(path.join(REPO, m[1])), `npm run ${name} points at a missing file: ${m[1]}`);
+  }
 });

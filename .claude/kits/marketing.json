@@ -13,8 +13,7 @@
     "skills": [
       ".claude/skills/marketing/",
       ".claude/skills/automation/",
-      ".claude/skills/integrations/",
-      ".claude/skills/software/obsidian/"
+      ".claude/skills/integrations/"
     ],
     "workflows": [
       ".claude/workflows/marketing-workflow.md",

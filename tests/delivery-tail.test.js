@@ -178,7 +178,7 @@ test('unresolved {{placeholder}} fails the step instead of running a literal', (
   const res = runTail([]);
   assert.strictEqual(res.status, 0);
   assert.match(res.stdout, /FAILED: needs-input/);
-  assert.match(res.stdout, /unresolved input\(s\): nope/);
+  assert.match(res.stdout, /unresolved input\(s\) in run: nope/);
   assert.match(res.stdout, /declared needs: nope/);
   assert.ok(!fs.existsSync(path.join(dir, '{{nope}}')), 'must not execute with a literal placeholder');
 });
@@ -294,6 +294,95 @@ test('an unapproved declaration refuses to run and says how to review it', () =>
   assert.match(res.stdout, /REFUSED: this delivery tail/);
   assert.match(res.stdout, /--approve/);
   assert.match(res.stdout, /Steps declared: exfiltrate/);
+});
+
+// ---------- parser defects (code review 2026-08-11) ----------
+
+test('a bold name with trailing prose starts its own step', () => {
+  // The name regexes required `**bold**` to END the line, and the plain
+  // alternative rejected a leading `*`. So `- **notify team** (optional)` matched
+  // neither, no new step started, and its `run:` overwrote the PREVIOUS step's
+  // command: one step's command ran and was reported DONE under the other's name.
+  const { steps, bad, warn } = parseSteps(extractTailBlock([
+    '## Delivery tail',
+    '- **close issue**',
+    '  - run: `echo closed > out-close`',
+    '- **notify team** (optional)',
+    '  - run: `echo notified > out-notify`',
+    '',
+  ].join('\n')));
+  assert.strictEqual(bad.length, 0);
+  assert.strictEqual(warn.length, 0);
+  assert.deepStrictEqual(steps.map(s => s.name), ['close issue', 'notify team']);
+  assert.match(steps[0].run, /echo closed/, "the first step's command must survive the second step");
+  assert.match(steps[1].run, /echo notified/);
+});
+
+test('a second run: never replaces a command already declared', () => {
+  // The invariant that closes the dropped-step class for good, whatever an
+  // unrecognised line looks like.
+  const { steps, warn } = parseSteps([
+    '- **step**',
+    '  - run: `echo first`',
+    '  - run: `echo second`',
+  ].join('\n'));
+  assert.strictEqual(steps.length, 1);
+  assert.match(steps[0].run, /echo first/);
+  assert.ok(warn.some(w => /second 'run:'/.test(w)), 'silently keeping the last one is how a step went missing');
+});
+
+test('an H1 ends the tail block — bullets below it are not steps', () => {
+  const marker = path.join(dir, 'H1-RAN');
+  fs.writeFileSync(path.join(dir, 'CLAUDE.md'), [
+    '## Delivery tail',
+    '- **declared**',
+    '  - run: `echo d > out-declared`',
+    '',
+    '# Other section',
+    '- **not a step**',
+    `  - run: \`touch ${marker}\``,
+    '',
+  ].join('\n'));
+  const { steps } = parseSteps(extractTailBlock(fs.readFileSync(path.join(dir, 'CLAUDE.md'), 'utf-8')));
+  assert.deepStrictEqual(steps.map(s => s.name), ['declared'], 'a later H1 closes the section');
+  approveTail();
+  runTail([]);
+  assert.ok(!fs.existsSync(marker), 'a bullet in an unrelated section must never execute');
+});
+
+test('an unbackticked done-when is not split at a bare =', () => {
+  const { parseDoneWhen } = require(SCRIPT);
+  // Splitting at the FIRST `=` truncated the command and invented an expected
+  // value, so the check could never pass and the step ran on every invocation.
+  assert.deepStrictEqual(parseDoneWhen('curl -sf http://x/y?a=b'),
+    { cmd: 'curl -sf http://x/y?a=b', expected: null });
+  assert.deepStrictEqual(parseDoneWhen('gh pr view --json state=x'),
+    { cmd: 'gh pr view --json state=x', expected: null });
+  // The documented spaced form still parses.
+  assert.deepStrictEqual(parseDoneWhen('cat marker.txt = ready'),
+    { cmd: 'cat marker.txt', expected: 'ready' });
+});
+
+test('an unresolved done-when placeholder fails the step BEFORE it writes', () => {
+  // isDone() returned a bare `false`, so the step executed, was reported FAILED
+  // with no reason line, and executed AGAIN on the next run — both halves of the
+  // idempotency contract broken by one missing branch.
+  fs.writeFileSync(path.join(dir, 'CLAUDE.md'), [
+    '## Delivery tail',
+    '- **append**',
+    '  - run: `echo ran >> tally.txt`',
+    '  - done-when: `grep -c ran tally.txt` = `{{pr}}`',
+    '',
+  ].join('\n'));
+  approveTail();
+  const first = runTail([]);
+  assert.strictEqual(first.status, 0);
+  assert.match(first.stdout, /FAILED: append/);
+  assert.match(first.stdout, /unresolved input\(s\) in done-when: pr/, 'the payload must name the missing key');
+  assert.ok(!fs.existsSync(path.join(dir, 'tally.txt')), 'a step with an unresolvable check must not run at all');
+
+  runTail([]);
+  assert.ok(!fs.existsSync(path.join(dir, 'tally.txt')), 'and must not accumulate writes across runs');
 });
 
 test('approval is content-bound: editing a step re-arms the refusal', () => {

@@ -147,6 +147,12 @@ function initCommand(options = {}) {
     console.log(`\n   🔗 added ${ignored.added.length} rule(s) to your existing .claude/.gitignore:`);
     for (const a of ignored.added) console.log(`      + ${a}`);
   }
+  // Plan artifacts are regenerated from git, so they belong in the ROOT
+  // .gitignore — a `plans/` rule under `.claude/` would ignore nothing.
+  if (ignored.plans.action !== "unchanged") {
+    console.log(`\n   🔗 ${ignored.plans.action === "created" ? "created .gitignore with" : "added"} ${ignored.plans.added.length} regenerable-artifact rule(s):`);
+    for (const a of ignored.plans.added) console.log(`      + ${a}`);
+  }
 
   writeMetadata(projectRoot, packageJson, kit);
 

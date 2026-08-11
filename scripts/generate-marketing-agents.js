@@ -1,19 +1,29 @@
 #!/usr/bin/env node
 /**
- * Generates 10 new marketing/automation agents (Phase 4).
+ * Generates 10 marketing/automation agents (Phase 4).
  *
  * 7 marketing agents:
  *   - Core (3 ClauKit-authored): content-strategist, market-researcher, email-specialist
  *   - SEO (4 from AgriciDaniel): seo-content, seo-technical, seo-schema, seo-geo
  *
- * 3 automation agents (NEW):
- *   - campaign-manager, crm-specialist, video-producer
+ * 3 automation agents: campaign-manager, crm-specialist, video-producer
+ *
+ * ONE DIRECTORY. The `automation/` split was retired — all ten now live in
+ * `.claude/agents/marketing/`, which is where the three automation agents
+ * actually are on disk. Writing them to `.claude/agents/automation/` produced a
+ * SECOND file with the same `name:` frontmatter for each, in a directory nothing
+ * else references: the duplicate condition docs/clauKit-registry.md exists to
+ * detect, with an unspecified resolution order.
+ *
+ * WRITE-ONCE — the three SEO agents were later upgraded to pipeline-stage-
+ * specific definitions by hand; a re-run used to revert them. See
+ * scripts/lib/gen-write.js.
+ * Usage: node scripts/generate-marketing-agents.js [--force] [--dry-run]
  */
-const fs = require("fs");
 const path = require("path");
+const { parseArgs, writeOnce, report, count } = require("./lib/gen-write");
 
-const AGENTS_ROOT_MARKETING = path.join(__dirname, "..", ".claude", "agents", "marketing");
-const AGENTS_ROOT_AUTOMATION = path.join(__dirname, "..", ".claude", "agents", "automation");
+const AGENTS_ROOT = path.join(__dirname, "..", ".claude", "agents", "marketing");
 
 const AGENTS = {
   // Core marketing agents (ClauKit-authored)
@@ -141,22 +151,13 @@ ${skills.map(s => `- \`${s}\``).join("\n")}
 `;
 }
 
-// Write marketing agents
-fs.mkdirSync(AGENTS_ROOT_MARKETING, { recursive: true });
+const opts = parseArgs();
+const tally = {};
+
+// The `marketing/` and `automation/` key prefixes are kept as labels of origin;
+// both write into AGENTS_ROOT, the one directory Claude Code discovers them in.
 for (const [rel, data] of Object.entries(AGENTS)) {
-  if (rel.startsWith("marketing/")) {
-    fs.writeFileSync(path.join(AGENTS_ROOT_MARKETING, path.basename(rel)), template(data));
-  }
+  count(tally, writeOnce(path.join(AGENTS_ROOT, path.basename(rel)), template(data), opts));
 }
 
-// Write automation agents
-fs.mkdirSync(AGENTS_ROOT_AUTOMATION, { recursive: true });
-for (const [rel, data] of Object.entries(AGENTS)) {
-  if (rel.startsWith("automation/")) {
-    fs.writeFileSync(path.join(AGENTS_ROOT_AUTOMATION, path.basename(rel)), template(data));
-  }
-}
-
-const marketingCount = Object.keys(AGENTS).filter(k => k.startsWith("marketing/")).length;
-const automationCount = Object.keys(AGENTS).filter(k => k.startsWith("automation/")).length;
-console.log(`✅ Generated ${marketingCount} marketing + ${automationCount} automation = ${marketingCount + automationCount} agents`);
+report(`marketing agents (${Object.keys(AGENTS).length} declared)`, tally, opts);

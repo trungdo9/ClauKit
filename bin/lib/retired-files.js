@@ -53,6 +53,18 @@ const RETIRED = [
   // behavioural eval for this gate needed three ablation rounds before the rule was
   // actually absent from the tree, because no one could say where it lived.
   { path: ".claude/skills/software/debugging/references/verification.md", token: "references/verification.md", sha: ["65bf5575448532d8b313aaf222c83e4273ce07c0", "a04e063eaf12e644cf31e655bc93d827b9496a65"] },
+
+  // `obsidian`, retired 2026-08-11: maintainer decision. Knowledge-only skill for
+  // authoring Obsidian vaults — no agent, no command, no runtime code, and nothing
+  // in ClauKit's own pipelines ever routed to it. It is out of scope for a software
+  // engineering kit, and an auto-discoverable SKILL.md that nothing invokes is pure
+  // activation surface. References are listed before SKILL.md so `references/` is
+  // empty when its rmdir is attempted, and `obsidian/` empty when SKILL.md's is.
+  { path: ".claude/skills/software/obsidian/references/obsidian-markdown.md", token: "software/obsidian", sha: ["eec70ba12bdefccb04c027f1e4875e3cc65b22bf"] },
+  { path: ".claude/skills/software/obsidian/references/frontmatter-properties.md", token: "software/obsidian", sha: ["6ef93fd61127db5d2ee7c3e78ba172ff63d2f10e"] },
+  { path: ".claude/skills/software/obsidian/references/vault-conventions.md", token: "software/obsidian", sha: ["e4160b7bd48538c463fb0e1c790b1005fc12909d"] },
+  { path: ".claude/skills/software/obsidian/references/live-vault-mcp.md", token: "software/obsidian", sha: ["1135090f6683d9ae6b4fb56d45c5f23b82998b55"] },
+  { path: ".claude/skills/software/obsidian/SKILL.md", token: "software/obsidian", sha: ["79fed9868aa7fc7957ab7fa038c8a2331e607e1a"] },
 ];
 
 /**

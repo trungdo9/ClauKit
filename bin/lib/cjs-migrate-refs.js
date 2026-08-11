@@ -15,8 +15,15 @@
  *
  * Scope is deliberately narrow: only path-qualified references to the fourteen
  * files ClauKit ships (`.claude/hooks/<name>.js`, `scripts/ck/<name>.js`,
- * `.claude/statusline.js`), only inside `.claude/` and `scripts/ck/`. A
- * project's own prose about its own `common.js` matches nothing here.
+ * `.claude/statusline.js`), only inside the roots below. A project's own prose
+ * about its own `common.js` matches nothing here.
+ *
+ * `.github/workflows/` is in scope because prose is not the only thing that
+ * *runs* these paths: `ck-review.yml.template` is copied into a consumer's
+ * workflows and invokes `scripts/ck/ci-review.js` directly, so after the rename
+ * every PR review job failed with "Cannot find module" — a red check on every
+ * pull request, repaired by nothing, since the two-stage migration only looked
+ * at `.claude/` and `scripts/ck/`.
  */
 
 const fs = require("fs");
@@ -24,9 +31,9 @@ const path = require("path");
 
 const { MIGRATED } = require("./cjs-migrate");
 
-/** Directories holding ClauKit-shipped prose. */
-const DOC_ROOTS = [".claude", "scripts/ck"];
-const DOC_EXTENSIONS = new Set([".md", ".sh", ".ps1"]);
+/** Directories holding ClauKit-shipped prose and wrappers. */
+const DOC_ROOTS = [".claude", "scripts/ck", ".github/workflows"];
+const DOC_EXTENSIONS = new Set([".md", ".sh", ".ps1", ".yml", ".yaml", ".template"]);
 
 /** `.claude/hooks/file-claims.js` and friends — path-qualified, shipped names only. */
 const REF_PATTERN = new RegExp(

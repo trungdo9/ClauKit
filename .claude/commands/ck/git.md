@@ -17,7 +17,7 @@ Dispatch to the matching operation based on {ACTION}. Use `git-manager` agent fo
 → **Four protocols are canonical in the [`git` skill](../../skills/software/git/SKILL.md)** and are deliberately not restated here — this file declared that skill their owner one line above, and a protocol written down twice drifts:
 > **Scoped Commits** · **Branch Policy in a Shared Tree** · **Finish-Branch Protocol** · **Delivery Tail — execution semantics**
 
-**Branch policy applies to every action below.** Concurrent sessions share one HEAD, so any `checkout`/`switch` relocates them mid-run. Before running one, check it: `node scripts/ck/branch-guard.cjs "<git command>"` — exit 1 ⇒ don't run it, report the owning session. `--auto` is the only mode that may move HEAD unasked.
+**Branch policy applies to every action below.** Concurrent sessions share one HEAD, so any `checkout`/`switch` relocates them mid-run. **Enforced mechanically** by the `branch-guard` PreToolUse hook — a HEAD move with another live session is blocked before the shell sees it, and you get the owning session in the refusal. To decide *before* proposing a command (better than being refused), run `node scripts/ck/branch-guard.cjs "<git command>"` — exit 1 ⇒ don't run it. `--auto` is the only mode that may move HEAD unasked, and it travels as `CK_AUTO_MODE=1`.
 
 Only the dispatch differences live below.
 

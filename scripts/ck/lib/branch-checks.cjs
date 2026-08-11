@@ -1,6 +1,7 @@
 /**
  * branch-checks.cjs — classify git commands that move HEAD, and decide.
- * Parsing + verdict only; the CLI lives in `scripts/ck/branch-guard.cjs`.
+ * Verdict only; command parsing lives in `lib/shell-parse.cjs`, the CLI in
+ * `scripts/ck/branch-guard.cjs`, the hook in `.claude/hooks/branch-guard.cjs`.
  *
  * WHY. The worktree fleet was retired (2026-08-05), so concurrent sessions no
  * longer get a tree each — they share **one working tree and one HEAD**. That
@@ -23,10 +24,7 @@
  * other sessions, not about ref hygiene.
  */
 
-const path = require('path');
-
-/** Shell separators that start a new command. */
-const SPLIT = /&&|\|\||[;|]/;
+const { commandSegments, normalizeSegment, unquote } = require('./shell-parse.cjs');
 
 /** A ref that looks like an object id — checking it out detaches HEAD. */
 const SHA = /^[0-9a-f]{7,40}$/i;
@@ -38,24 +36,7 @@ const SHA = /^[0-9a-f]{7,40}$/i;
  */
 const AUTO_PREFIX = /^CK_AUTO_MODE=1(\s|$)/;
 
-/** `bash -lc "<payload>"` and friends — the `c` may be bundled into a flag cluster. */
-const WRAPPER = /^\s*(?:[A-Za-z_][A-Za-z0-9_]*=\S*\s+)*(?:\S*\/)?(?:ba|z|da)?sh\s+(?:-[a-z]+\s+)*-[a-z]*c\s+(['"])([\s\S]*)\1\s*$/;
-
 const MOVES_HEAD = new Set(['create', 'switch', 'detach']);
-
-/** Strip `VAR=1` prefixes and `git -C <dir>` / `-c k=v` global options. */
-function normalizeSegment(seg) {
-  const tokens = seg.trim().split(/\s+/).filter(Boolean);
-  while (tokens.length && /^[A-Za-z_][A-Za-z0-9_]*=/.test(tokens[0])) tokens.shift();
-  if (!tokens.length || path.basename(tokens[0]).replace(/\.exe$/i, '') !== 'git') return null;
-  tokens.shift();
-  while (tokens.length) {
-    if (tokens[0] === '-C' || tokens[0] === '-c') { tokens.splice(0, 2); continue; }
-    if (tokens[0].startsWith('--git-dir') || tokens[0].startsWith('--work-tree')) { tokens.shift(); continue; }
-    break;
-  }
-  return tokens.length ? tokens : null;
-}
 
 /**
  * Classify one git invocation: 'create' · 'switch' · 'detach' · 'branch-only' · 'none'.
@@ -68,7 +49,7 @@ function classify(segment) {
   if (!tokens) return { kind: 'none' };
   const [sub, ...args] = tokens;
   const has = (...flags) => args.some(a => flags.includes(a));
-  const positional = args.filter(a => !a.startsWith('-'));
+  const positional = args.filter(a => !a.startsWith('-')).map(unquote);
   const op = (kind, target) => ({ kind, target, consented });
 
   if (sub === 'switch') {
@@ -98,16 +79,9 @@ function classify(segment) {
   return { kind: 'none' };
 }
 
-/**
- * Every HEAD-affecting op in a command line, descending one level into a shell
- * wrapper. Without this, `bash -c "git checkout -b x"` reads as an invocation of
- * `bash` and the guard never sees the checkout.
- */
+/** Every HEAD-affecting op in a command line, wrappers expanded, in order. */
 function classifyCommand(cmd, depth = 0) {
-  const text = String(cmd);
-  const wrapped = depth < 3 && text.match(WRAPPER);
-  if (wrapped) return classifyCommand(wrapped[2], depth + 1);
-  return text.split(SPLIT).map(classify).filter(op => op.kind !== 'none');
+  return commandSegments(cmd, depth).map(classify).filter(op => op.kind !== 'none');
 }
 
 /**

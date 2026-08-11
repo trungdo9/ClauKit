@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * Generates 48 marketing skill stubs (Phase 3).
+ * Generates marketing skill stubs (Phase 3): 25 claude-seo + 22 coreyhaines31.
  *
  * Creates well-structured SKILL.md files with:
  * - ClauKit frontmatter (name, description, allowed-tools)
@@ -10,9 +10,14 @@
  *
  * YAGNI: not full content copies of external repos — references the source
  * and notes what to fetch. User can `git clone` source repos for full content.
+ *
+ * WRITE-ONCE. A stub is a starting point; several have since been filled in by
+ * hand (`seo-cluster` is 93 lines of real content, not 51 of placeholders). An
+ * existing SKILL.md is therefore left untouched — see scripts/lib/gen-write.js.
+ * Usage: node scripts/generate-marketing-skills.js [--force] [--dry-run]
  */
-const fs = require("fs");
 const path = require("path");
+const { parseArgs, writeOnce, report, count } = require("./lib/gen-write");
 
 const SKILLS_ROOT = path.join(__dirname, "..", "skills", "marketing");
 
@@ -45,7 +50,11 @@ const CLAUDE_SEO = [
   { name: "seo-image-gen", desc: "Image generation for SEO — AI image prompts, alt-text optimization, visual content." }
 ];
 
-// 23 from coreyhaines31/marketingskills (curated subset)
+// 22 from coreyhaines31/marketingskills (curated subset).
+// `programmatic-seo` is deliberately ABSENT: it duplicated the claude-seo import
+// `seo-programmatic` and was removed on 2026-07-31 (docs/clauKit-registry.md
+// §4f), with cross-links updated to the survivor. Listing it here would have had
+// every re-run resurrect the duplicate the registry records as resolved.
 const COREY_HAINES = [
   { name: "ad-creative", desc: "Paid ad creative — headlines, copy variants, image briefs, video scripts for ads." },
   { name: "ads", desc: "Paid advertising — Google Ads, Meta Ads, LinkedIn Ads strategy, structure, bidding." },
@@ -65,7 +74,6 @@ const COREY_HAINES = [
   { name: "marketing-ideas", desc: "Marketing ideas library — tactics, channels, growth experiments, case studies." },
   { name: "paywalls", desc: "Paywall design — pricing pages, upgrade flows, feature gates, conversion paths." },
   { name: "popup", desc: "Popup strategy — exit-intent, time-delay, scroll-trigger, A/B variants." },
-  { name: "programmatic-seo", desc: "Programmatic SEO — template pages, data sources, internal linking at scale." },
   { name: "signup", desc: "Signup flow optimization — friction reduction, social proof, form design." },
   { name: "sms", desc: "SMS marketing — compliance, cadence, segmentation, opt-in flows." },
   { name: "social-content", desc: "Social content — platform-native posts, hooks, threads, repurposing system." },
@@ -126,18 +134,14 @@ Imported from \`${source}\` and adapted for ClauKit. Adaptations: ClauKit frontm
 `;
 }
 
-// Write claude-seo skills
-for (const skill of CLAUDE_SEO) {
-  const dir = path.join(SKILLS_ROOT, skill.name);
-  fs.mkdirSync(dir, { recursive: true });
-  fs.writeFileSync(path.join(dir, "SKILL.md"), template({ ...skill, source: "AgriciDaniel/claude-seo" }));
+const opts = parseArgs();
+const tally = {};
+
+for (const [source, skills] of [["AgriciDaniel/claude-seo", CLAUDE_SEO], ["coreyhaines31/marketingskills", COREY_HAINES]]) {
+  for (const skill of skills) {
+    const file = path.join(SKILLS_ROOT, skill.name, "SKILL.md");
+    count(tally, writeOnce(file, template({ ...skill, source }), opts));
+  }
 }
 
-// Write coreyhaines31 skills
-for (const skill of COREY_HAINES) {
-  const dir = path.join(SKILLS_ROOT, skill.name);
-  fs.mkdirSync(dir, { recursive: true });
-  fs.writeFileSync(path.join(dir, "SKILL.md"), template({ ...skill, source: "coreyhaines31/marketingskills" }));
-}
-
-console.log(`✅ Generated ${CLAUDE_SEO.length} claude-seo + ${COREY_HAINES.length} coreyhaines31 = ${CLAUDE_SEO.length + COREY_HAINES.length} skill stubs`);
+report(`marketing skills (${CLAUDE_SEO.length} claude-seo + ${COREY_HAINES.length} coreyhaines31)`, tally, opts);
