@@ -95,7 +95,7 @@ Implementation runs in a **fresh implementer subagent per phase** (`backend-deve
 
 The dispatch contains exactly:
 1. one line on where the phase fits;
-2. the **brief file path** ("read this first — your requirements, exact values verbatim"; generate via `scripts/ck/phase-brief.cjs`);
+2. the **brief file path** ("read this first — your requirements, exact values verbatim"; generate via `.claude/scripts/ck/phase-brief.cjs`);
 3. interfaces/decisions from earlier phases the brief can't know;
 4. resolutions of ambiguity you already spotted;
 5. the report-file path + report contract.

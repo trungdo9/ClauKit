@@ -3,7 +3,7 @@
 /**
  * ci-review.js — provider-agnostic headless PR review (T4.2).
  *
- * Usage: node scripts/ck/ci-review.cjs <BASE> [HEAD] [--post <pr-number>] [--dry-run]
+ * Usage: node .claude/scripts/ck/ci-review.cjs <BASE> [HEAD] [--post <pr-number>] [--dry-run]
  *
  * Runs `claude -p` over the PR diff with a NARROW tool grant
  * (Read, Grep, Bash(git diff:*), Bash(git log:*)) and emits

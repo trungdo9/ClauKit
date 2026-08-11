@@ -44,7 +44,7 @@
       ".claude/hooks/"
     ],
     "scripts": [
-      "scripts/ck/"
+      ".claude/scripts/ck/"
     ],
     "statusline": [
       ".claude/statusline.cjs",

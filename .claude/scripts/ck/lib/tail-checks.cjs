@@ -1,6 +1,6 @@
 /**
  * tail-checks.cjs — approval policy and the payloads a delivery tail prints.
- * Parsing lives in `lib/tail-parse.cjs`, execution in `scripts/ck/delivery-tail.cjs`.
+ * Parsing lives in `lib/tail-parse.cjs`, execution in `.claude/scripts/ck/delivery-tail.cjs`.
  *
  * Nothing here executes a declared step, which is the point of the seam: the
  * fingerprint that arms a tail and the text that tells a human how to review it
@@ -67,8 +67,8 @@ function refusedPayload({ fp, root, claudeMdPath, planDir, steps }) {
     '  merged pull request can add or change steps, and they would otherwise run',
     '  unattended on the next `/ck:git pr`.',
     '',
-    `  Review it:   node scripts/ck/delivery-tail.cjs --dry-run${planDir ? ` --plan ${planDir}` : ''}`,
-    '  Approve it:  node scripts/ck/delivery-tail.cjs --approve',
+    `  Review it:   node .claude/scripts/ck/delivery-tail.cjs --dry-run${planDir ? ` --plan ${planDir}` : ''}`,
+    '  Approve it:  node .claude/scripts/ck/delivery-tail.cjs --approve',
     '',
     `  Steps declared: ${steps.map(s => s.name).join(' → ')}`,
   ].join('\n');

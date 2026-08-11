@@ -3,7 +3,7 @@
 /**
  * plan-lint.js — mechanical hand-over gate for a plan directory (CLI).
  *
- * Usage: node scripts/ck/plan-lint.cjs <plan-dir-or-plan.md> [--warn-only]
+ * Usage: node .claude/scripts/ck/plan-lint.cjs <plan-dir-or-plan.md> [--warn-only]
  * Exit:  0 = PASS · 1 = violations (gate closed) · 2 = usage / plan not found
  *
  * Why a script and not a prompt: the `planning` skill's self-review checklist was

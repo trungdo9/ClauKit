@@ -18,7 +18,7 @@ const fs = require('node:fs');
 const os = require('node:os');
 const path = require('node:path');
 
-const SCRIPTS = path.join(__dirname, '..', 'scripts', 'ck');
+const SCRIPTS = path.join(__dirname, '..', '.claude', 'scripts', 'ck');
 const { git, assertRef } = require(path.join(SCRIPTS, 'lib', 'common.cjs'));
 
 let repo, marker;

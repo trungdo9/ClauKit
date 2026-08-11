@@ -1,7 +1,7 @@
 /**
  * branch-checks.cjs — classify git commands that move HEAD, and decide.
  * Verdict only; command parsing lives in `lib/shell-parse.cjs`, the CLI in
- * `scripts/ck/branch-guard.cjs`, the hook in `.claude/hooks/branch-guard.cjs`.
+ * `.claude/scripts/ck/branch-guard.cjs`, the hook in `.claude/hooks/branch-guard.cjs`.
  *
  * WHY. The worktree fleet was retired (2026-08-05), so concurrent sessions no
  * longer get a tree each — they share **one working tree and one HEAD**. That

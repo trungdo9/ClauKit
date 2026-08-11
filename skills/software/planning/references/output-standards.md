@@ -52,7 +52,7 @@ Machine-checked: placeholders · phase gates · Interfaces presence · Global Co
 - [ ] Interfaces blocks consistent across phases (names/types agree)
 - [ ] every phase gate is a runnable command with a stated expected result
 - [ ] Global Constraints values verbatim, not referenced
-- [ ] `node scripts/ck/plan-lint.cjs <plan-dir>` exits 0 — **hard gate**, the plan does not leave the planner otherwise
+- [ ] `node .claude/scripts/ck/plan-lint.cjs <plan-dir>` exits 0 — **hard gate**, the plan does not leave the planner otherwise
 
 ## Task Breakdown
 

@@ -33,7 +33,6 @@
   "files": [
     "bin/",
     ".claude/",
-    "scripts/ck/",
     "skills/",
     ".opencode/",
     "docs/",

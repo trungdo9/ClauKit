@@ -21,6 +21,7 @@ const { copyPath } = require("./lib/file-copier");
 const { writeMetadata } = require("./lib/metadata-writer");
 const { mergeSettings } = require("./lib/settings-merge");
 const { migrateCjs } = require("./lib/cjs-migrate");
+const { relocateScripts } = require("./lib/relocate-scripts");
 const { migrateDocRefs } = require("./lib/cjs-migrate-refs");
 const { syncRetired } = require("./lib/retired-files");
 const { wireClaudeMd } = require("./lib/claude-md-wire");
@@ -73,6 +74,18 @@ function initCommand(options = {}) {
     );
     if (result === "copied") copied++;
     else if (result === "skipped") skipped++;
+  }
+
+  // The helpers used to install to the ROOT `scripts/ck/` — the only destination
+  // any kit wrote outside `.claude/`. They install under `.claude/scripts/ck/`
+  // now; this removes the copy the old layout left behind and repoints the prose
+  // that runs it. Before the `.cjs` migration below, so that pass sees one tree.
+  const relocated = relocateScripts(projectRoot, resolveSourcePath);
+  if (relocated.removed.length || relocated.kept.length) {
+    console.log(`\n   📦 helpers moved to .claude/scripts/ck/ (they used to sit in your project root):`);
+    if (relocated.removed.length) console.log(`      - removed ${relocated.removed.length} file(s) from the old scripts/ck/`);
+    for (const k of relocated.kept) console.log(`      ! kept ${k.path} — ${k.why}`);
+    if (relocated.refs.length) console.log(`      ~ repointed ${relocated.refs.length} file(s) that invoked the old path`);
   }
 
   // ClauKit's CommonJS files used to ship as `.js`, which Node parses as ESM in

@@ -126,7 +126,7 @@ Command-only: the run is **read-only** (no edits, no writes), the table lands at
 Before the "ask user to review" step of any mode above, and before rendering `-o html`:
 
 ```
-node scripts/ck/plan-lint.cjs <plan-dir>
+node .claude/scripts/ck/plan-lint.cjs <plan-dir>
 ```
 
 **Exit 1 ⇒ do not present the plan.** Send the violations back to `planner`, get a corrected plan, re-run. Exit 0 ⇒ present for review, quoting the PASS line.

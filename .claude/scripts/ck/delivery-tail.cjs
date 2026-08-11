@@ -3,7 +3,7 @@
 /**
  * delivery-tail.cjs — deterministic executor for the project-declared post-PR tail (T4.2 / T6.1).
  *
- * Usage: node scripts/ck/delivery-tail.cjs [--claude-md <path>] [--plan <plan-dir>]
+ * Usage: node .claude/scripts/ck/delivery-tail.cjs [--claude-md <path>] [--plan <plan-dir>]
  *                                          [--context k=v ...] [--dry-run] [--approve]
  *
  * An EXECUTOR, not a script with steps in it: ClauKit declares zero handoff

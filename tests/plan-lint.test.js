@@ -17,8 +17,8 @@ const fs = require('node:fs');
 const os = require('node:os');
 const path = require('node:path');
 
-const SCRIPT = path.join(__dirname, '..', 'scripts', 'ck', 'plan-lint.cjs');
-const BRIEF = path.join(__dirname, '..', 'scripts', 'ck', 'phase-brief.cjs');
+const SCRIPT = path.join(__dirname, '..', '.claude', 'scripts', 'ck', 'plan-lint.cjs');
+const BRIEF = path.join(__dirname, '..', '.claude', 'scripts', 'ck', 'phase-brief.cjs');
 
 const CONSTRAINTS = ['## Global Constraints', '', '- code files under 200 lines', '- node >= 20.10', ''].join('\n');
 

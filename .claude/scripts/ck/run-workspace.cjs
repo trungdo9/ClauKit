@@ -3,7 +3,7 @@
 /**
  * run-workspace.js — resolve/create the git-ignored per-plan artifact dir (T3.2).
  *
- * Usage: node scripts/ck/run-workspace.cjs <plan-dir-or-plan.md>
+ * Usage: node .claude/scripts/ck/run-workspace.cjs <plan-dir-or-plan.md>
  *
  * Prints the absolute path of `plans/<plan>/reports/` (creating it if needed).
  * Subagent briefs, review packages, and reports go here — handed around as

@@ -14,7 +14,7 @@
  * needs a mechanical check.
  *
  * FAILS OPEN, deliberately and in three ways: an unparseable payload, a missing
- * checks module (a project that installed `.claude/` without `scripts/ck/`), and
+ * checks module (the marketing kit ships `.claude/` without `scripts/ck/`), and
  * an unreadable claim registry all exit 0. This hook adds a refusal to a
  * previously-allowed action, so a bug in it must not become a new way for work
  * to fail. The refusal is narrow and the override is documented in the message.
@@ -25,13 +25,21 @@
 const fs = require('fs');
 const path = require('path');
 
-/** Where `scripts/ck/` sits relative to this hook, in the repo and in an install. */
+/**
+ * Where `scripts/ck/` sits relative to this hook. Current installs keep it at
+ * `.claude/scripts/ck/`; the root `scripts/ck/` is where it lived up to 1.5.1
+ * and is still tried, because a no-`--force` upgrade refreshes the two trees on
+ * different runs and a hook that resolves nothing is a gate that silently stops
+ * existing. `ck init` deletes the legacy copy only on a digest match, so when
+ * this fallback hits, the file it loads is one ClauKit shipped.
+ */
 function loadGuard() {
-  try {
-    return require(path.join(__dirname, '..', '..', 'scripts', 'ck', 'branch-guard.cjs'));
-  } catch {
-    return null;
+  for (const rel of [['..', 'scripts', 'ck'], ['..', '..', 'scripts', 'ck']]) {
+    try {
+      return require(path.join(__dirname, ...rel, 'branch-guard.cjs'));
+    } catch { /* try the next layout */ }
   }
+  return null;
 }
 
 function main() {

@@ -14,7 +14,7 @@ const assert = require('node:assert');
 const { spawnSync } = require('node:child_process');
 const path = require('node:path');
 
-const SCRIPT = path.join(__dirname, '..', 'scripts', 'ck', 'branch-guard.cjs');
+const SCRIPT = path.join(__dirname, '..', '.claude', 'scripts', 'ck', 'branch-guard.cjs');
 const { classify, classifyCommand, assess } = require(SCRIPT);
 
 const SESSIONS = new Set(['6c5ee444', 'aa11bb22']);

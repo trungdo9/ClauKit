@@ -1,5 +1,5 @@
 /**
- * Shared helpers for ClauKit scripts (scripts/ck/*).
+ * Shared helpers for ClauKit scripts (.claude/scripts/ck/*).
  * Node-only, zero dependencies, cross-platform.
  */
 
