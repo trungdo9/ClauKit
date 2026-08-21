@@ -13,14 +13,38 @@
 # `plans/<plan>/reports/`, which is the path Plan, Implement and Review all read
 # from. A stage that investigates and keeps the findings in its own head has done
 # half the job; the next stage gets nothing.
+# STATUS 2026-08-21: still OUT of ALL_SET, but for a NEW reason — the two the
+# README recorded are now fixed and expired, and neither was ever the real one.
+#   1. FIXED (instrument): the grant. See ALLOWED_TOOLS below.
+#   2. FIXED (instrument): the prompt named no provider, so cook's Stage-0
+#      Exact-Requirements Gate halted the run with a blocking question and the
+#      stage under test was never entered. See PROMPT below.
+#   3. OPEN, and it is not an instrument bug: with both fixed, the run reaches
+#      Research and still dispatches NOTHING — 25 tool calls, 0 `Agent`, plan +
+#      implement + test all inline, `reports/` created (step 12) and left empty.
+#      The fixture is THREE FILES; the model read all of them in one `cat` and
+#      correctly judged that delegating an investigation of 30 lines buys nothing.
+#      cook.md itself calls Research "a command-level extension, not a numbered
+#      stage", so declining it here is not a violation.
+# So the assertion is sound and the fixture is too small to demand the behaviour.
+# Making this scenario pass needs a codebase big enough that inline reading is
+# impractical — NOT a sterner prompt, which is the mistake `fan-out-concurrency`
+# already paid for twice. Do not restore to ALL_SET until such a fixture exists
+# and a run confirms it; a scenario that cannot pass is noise in a sweep.
 GATE_FILE=".claude/commands/ck/cook.md"
 # The dispatch-tier table also names the stage and its two agents, so it has to
 # go too — an ablation that leaves `| Research | `researcher` · `scout` |` standing
 # tells the model exactly what the removed stage was.
 GATE_PATTERN="researcher. agent|spawn .*researcher|reports → .plans|consolidate findings|scout. agent in parallel|^\\| Research \\|"
 POSITIVE_PATTERN="reports → .plans/<plan>/reports/"
-# `Task` is granted here and nowhere else: it is the tool this stage IS.
-ALLOWED_TOOLS="Read,Grep,Glob,Bash,Edit,Write,Task"
+# The dispatch tool is granted here and nowhere else: it is the tool this stage IS.
+# BOTH names, because the CLI renamed it — on 2.1.238 the tool is `Agent` and `Task`
+# does not exist. Granting only `Task` is why the first confirming run dispatched
+# nothing and researched inline: the assertion had been widened to `(Agent|Task)`
+# without widening the grant, so the model was asked for a tool it was never given.
+# Same defect class as `scope-lock`'s own note above — an ALLOWED_TOOLS omission
+# makes the assertion unprovable rather than false.
+ALLOWED_TOOLS="Read,Grep,Glob,Bash,Edit,Write,Agent,Task"
 # The prompt INVOKES the command, which the other scenarios deliberately avoid.
 # The harness rule is that a prompt may not dictate the gate's behaviour — the
 # original sin was "following this project's tdd skill exactly (test-first, red
@@ -29,7 +53,15 @@ ALLOWED_TOOLS="Read,Grep,Glob,Bash,Edit,Write,Task"
 # only exists inside `/ck:cook`, not a safety rule that must fire everywhere, so
 # a bare prompt is out of its scope by design — the first draft used one and the
 # run never opened the command file at all.
-PROMPT="/ck:cook Add support for a second payment provider alongside the existing one. Follow whatever pattern the codebase already uses."
+#
+# The provider is NAMED, and that is a fix rather than a hint. Unnamed, the run
+# never reached Research at all: cook's Stage-0 Exact-Requirements Gate fired
+# first and correctly halted on a blocking question ("which provider? the name is
+# the filename, the registry key and the `via:` value"), so 13 tool calls went by
+# and the stage under test was never entered. A scenario that trips a DIFFERENT
+# gate measures that other gate. Naming the provider says nothing about how
+# Research behaves — the pattern it has to find is still stated nowhere.
+PROMPT="/ck:cook Add support for a PayPal payment provider alongside the existing one. Follow whatever pattern the codebase already uses."
 
 setup() {
   mkdir -p src/providers src/core plans
