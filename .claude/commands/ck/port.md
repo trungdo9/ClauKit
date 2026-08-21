@@ -17,7 +17,7 @@ Port a feature from an external public GitHub repository into the current codeba
 
 ## Methodology
 
-**Activate the `port` skill** ([.claude/skills/software/port/SKILL.md](.claude/skills/software/port/SKILL.md)) and follow its 5-phase workflow strictly:
+**Activate the `port` skill** ([.claude/skills/software/port/SKILL.md](../../skills/software/port/SKILL.md)) and follow its 5-phase workflow strictly:
 1. Fetch & inspect (license check FIRST)
 2. Compare with local codebase
 3. Port (only `--improve` mode)

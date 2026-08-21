@@ -44,7 +44,10 @@
   "requires": {
     "shared": [
       ".claude/agents/engineering/planner.md",
-      ".claude/skills/software/planning/references/html-output.md"
+      ".claude/skills/software/planning/SKILL.md",
+      ".claude/skills/software/planning/references/html-output.md",
+      ".claude/workflows/primary-workflow.md",
+      ".claude/workflows/development-rules.md"
     ]
   }
 }

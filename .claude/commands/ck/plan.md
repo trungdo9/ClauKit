@@ -3,7 +3,7 @@ description: ⚡⚡⚡ Plan operations dispatcher (router · fast hard two ci cr
 argument-hint: [task] [fast|hard|two|ci|cro|verify] [-o md|html]
 ---
 
-Activate `planning` skill ([.claude/skills/software/planning/SKILL.md](.claude/skills/software/planning/SKILL.md)).
+Activate `planning` skill ([.claude/skills/software/planning/SKILL.md](../../skills/software/planning/SKILL.md)).
 
 ## Your mission
 <task>$ARGUMENTS</task>
@@ -26,7 +26,7 @@ Activate `planning` skill ([.claude/skills/software/planning/SKILL.md](.claude/s
 
 Strip `-o md|html` from `$ARGUMENTS` before mode dispatch. Default (no `-o`, or `-o md`) = markdown only (current behavior).
 
-If `-o html`: after the `planner` subagent returns the finished markdown plan (any mode above), the **MAIN agent** (not the subagent) renders ONE self-contained `plan.html` into the plan dir as a final step, derived from `plan.md` + `phase-*.md`. Do this BEFORE the "ask user to review" prompt. Follow `planning` skill reference [html-output.md](.claude/skills/software/planning/references/html-output.md) (single source of truth for the template + fill procedure). Markdown stays source-of-truth; html is a one-directional snapshot (re-run `-o html` to refresh). Does NOT change cook — cook reads markdown only.
+If `-o html`: after the `planner` subagent returns the finished markdown plan (any mode above), the **MAIN agent** (not the subagent) renders ONE self-contained `plan.html` into the plan dir as a final step, derived from `plan.md` + `phase-*.md`. Do this BEFORE the "ask user to review" prompt. Follow `planning` skill reference [html-output.md](../../skills/software/planning/references/html-output.md) (single source of truth for the template + fill procedure). Markdown stays source-of-truth; html is a one-directional snapshot (re-run `-o html` to refresh). Does NOT change cook — cook reads markdown only.
 
 ## Convert mode — existing plan → HTML (`<path>.md -o html`)
 
@@ -34,7 +34,7 @@ If `-o html`: after the `planner` subagent returns the finished markdown plan (a
 
 - SKIP all research/planning. Do NOT spawn `planner`. Do NOT create a new plan dir.
 - Resolve the plan dir = the file's parent (if given a dir or `plan.md`, use that dir; if given a `phase-*.md`, use its dir).
-- The MAIN agent reads `plan.md` + all `phase-*.md` in that dir and renders ONE `plan.html` there, per [html-output.md](.claude/skills/software/planning/references/html-output.md) fill procedure (same as above).
+- The MAIN agent reads `plan.md` + all `phase-*.md` in that dir and renders ONE `plan.html` there, per [html-output.md](../../skills/software/planning/references/html-output.md) fill procedure (same as above).
 - Overwrite any existing `plan.html` (it's a regenerated snapshot). Report the path. No user-review gate (pure render).
 - Use this to refresh a stale `plan.html` after editing the markdown.
 
@@ -99,7 +99,7 @@ Use `planner` subagent to:
 
 You are an expert in conversion optimization. Analyze the content based on `$ARGUMENTS` (minus `cro`).
 
-**CRO Framework:** [.claude/workflows/cro-framework.md](.claude/workflows/cro-framework.md) — single source of truth for the 25-point CRO principles.
+**CRO Framework:** [.claude/workflows/cro-framework.md](../../workflows/cro-framework.md) — single source of truth for the 25-point CRO principles.
 
 This command produces a **CRO plan document** with framework-driven recommendations — not a direct copy rewrite. Wait for user approval before implementation.
 

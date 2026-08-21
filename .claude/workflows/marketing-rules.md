@@ -45,7 +45,7 @@ Marketing tasks should NEVER include code-implementation steps. If a marketing t
 
 - **Content files:** `plans/marketing/<campaign-name>/<asset>.<ext>` (e.g., `plans/marketing/launch-2026q3/blog-post.md`).
 - **Audit reports:** `plans/marketing/<audit-name>/<report>.md` with falsifiable findings.
-- **Templates:** `skills/marketing/<skill>/templates/` (referenced, not duplicated).
+- **Templates:** `.claude/skills/marketing/<skill>/templates/` (referenced, not duplicated).
 
 ## 7. Anti-patterns (auto-reject)
 
@@ -61,5 +61,5 @@ Marketing tasks should NEVER include code-implementation steps. If a marketing t
 
 - `.claude/workflows/cro-framework.md` — CRO 25-point framework
 - `plans/marketing-context.md` — required context hub
-- `skills/marketing/README.md` — full kit overview
+- `.claude/skills/marketing/README.md` — full kit overview
 - `docs/marketing-kit/` — kit QA reports + implementation docs

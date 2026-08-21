@@ -3,7 +3,7 @@ description: ⚡⚡ Security audit — OWASP 2025, 21 rules, L1-L4 data flow, SM
 argument-hint: [uncommitted|staged|diff|"commit within Xdays"|"commit id <sha>"|"pr id <num>"] [--en]
 ---
 
-Activate the `security` skill ([.claude/skills/software/security/SKILL.md](.claude/skills/software/security/SKILL.md)).
+Activate the `security` skill ([.claude/skills/software/security/SKILL.md](../../skills/software/security/SKILL.md)).
 
 Use the `security-auditor` subagent to run the scanner workflow on the specified scope.
 

@@ -44,7 +44,7 @@ Results written to `plans/marketing/<campaign>/content/<asset>.<ext>`
 - PII redaction enforced for all customer/lead data (see .claude/workflows/automation-rules.md).
 - Idempotency: re-runs must not duplicate resources (emails, leads, video assets).
 - WordPress publish: credentials via env only (never hardcode/log). Default = draft. Live publish = explicit `--publish` + confirmation. Re-publish updates by slug (idempotent), never duplicates.
-- Cross-references: `.claude/workflows/marketing-rules.md`, `.claude/workflows/automation-rules.md`, `skills/marketing/README.md`, `skills/integrations/wordpress-rest/SKILL.md`.
+- Cross-references: `.claude/workflows/marketing-rules.md`, `.claude/workflows/automation-rules.md`, `.claude/skills/marketing/README.md`, `.claude/skills/integrations/wordpress-rest/SKILL.md`.
 
 ## Examples
 

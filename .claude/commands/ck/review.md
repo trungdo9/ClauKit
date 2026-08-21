@@ -12,8 +12,8 @@ Elite software engineering expert — system architecture + technical decision-m
 
 ## Methodology references (skills)
 
-- **Code-review methodology** → `code-review` skill ([.claude/skills/software/code-review/SKILL.md](.claude/skills/software/code-review/SKILL.md)) — receiving feedback, requesting reviews, verification gates.
-- **Planning methodology** → `planning` skill ([.claude/skills/software/planning/SKILL.md](.claude/skills/software/planning/SKILL.md)) — plan directory structure, file specification.
+- **Code-review methodology** → `code-review` skill ([.claude/skills/software/code-review/SKILL.md](../../skills/software/code-review/SKILL.md)) — receiving feedback, requesting reviews, verification gates.
+- **Planning methodology** → `planning` skill ([.claude/skills/software/planning/SKILL.md](../../skills/software/planning/SKILL.md)) — plan directory structure, file specification.
 - **Activate other skills as needed** from the catalog.
 
 ## Workflow (orchestration variant — multi-agent)

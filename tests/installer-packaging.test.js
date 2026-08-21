@@ -30,8 +30,8 @@ const CK = path.join(REPO, 'bin', 'ck.js');
 
 let work;
 
-function init(dir, extra = []) {
-  return spawnSync('node', [CK, 'init', '--kit', 'engineer', ...extra], { cwd: dir, encoding: 'utf-8' });
+function init(dir, extra = [], kit = 'engineer') {
+  return spawnSync('node', [CK, 'init', '--kit', kit, ...extra], { cwd: dir, encoding: 'utf-8' });
 }
 
 function fresh() {
@@ -247,8 +247,10 @@ test('no shipped doc links to a file the install does not have', () => {
   // which is worse than dangling. `.claude/hooks/README.md` pointed twice at a
   // SETUP-SUMMARY.md that exists nowhere. Same principle `workflowLines` states:
   // a pointer to a file that is not there is worse than no pointer.
-  const p = fresh();
-  init(p);
+  // Every kit, not just engineer: a kit manifest can ship a doc and omit its target,
+  // which is a different defect from a wrong path and invisible to a one-kit check.
+  // Measured: `marketing` shipped `agents/engineering/planner.md`, whose first line
+  // says to activate the planning skill, without `planning/SKILL.md`.
   const VENDORED = 'node_modules';
   const walk = (dir, out = []) => {
     for (const e of fs.readdirSync(dir, { withFileTypes: true })) {
@@ -259,17 +261,99 @@ test('no shipped doc links to a file the install does not have', () => {
     }
     return out;
   };
+  // The pattern used to require a leading `./` or `../`, which exempted the single
+  // most common wrong form: `](.claude/skills/…)`. That one resolves from the repo
+  // root — where a reader checking it sees it work — and from nowhere in an install,
+  // since the file itself sits at `.claude/commands/ck/`. Repo and install disagree
+  // because `.claude/skills` is a symlink here and a real directory there, so the
+  // form cannot be validated by reading the repo at all. Widening to any relative
+  // target found 38 of them (25 agents/commands + 3 dangling in one skill) against
+  // 0 broken of the `../` form — the old pattern was right where it looked and
+  // blind immediately next to it.
+  const LINK = /\]\(([^)\s]+?\.md)(?:#[^)\s]*)?\)/g;
   const broken = [];
-  for (const f of walk(path.join(p, '.claude'))) {
-    const text = fs.readFileSync(f, 'utf-8');
-    for (const m of text.match(/\]\((\.\.?\/)[A-Za-z0-9_./-]+\.md\)/g) || []) {
-      const rel = m.slice(2, -1);
-      if (!fs.existsSync(path.resolve(path.dirname(f), rel))) {
-        broken.push(`${path.relative(p, f)} -> ${rel}`);
+  for (const kit of ['engineer', 'marketing', 'both']) {
+    const p = fresh();
+    init(p, [], kit);
+    for (const f of walk(path.join(p, '.claude'))) {
+      const text = fs.readFileSync(f, 'utf-8');
+      for (const m of text.matchAll(LINK)) {
+        const rel = m[1];
+        if (/^[a-z][a-z0-9+.-]*:/i.test(rel) || rel.startsWith('/')) continue;  // URL or absolute
+        if (!fs.existsSync(path.resolve(path.dirname(f), rel))) {
+          broken.push(`[${kit}] ${path.relative(p, f)} -> ${rel}`);
+        }
       }
     }
   }
   assert.deepStrictEqual(broken, [], 'shipped docs must not point at files the install lacks');
+});
+
+test('no shipped doc names a .claude/ path the install does not have', () => {
+  // The link check above only sees `](target.md)`. The same defect hides in prose:
+  // `skills/marketing/README.md` in running text is root-relative by convention and
+  // an install has no root-level `skills/` — 43 of those had accumulated across the
+  // marketing kit, invisible to a link-shaped regex.
+  //
+  // Scope is deliberately ONE form: a backticked path starting with `.claude/`.
+  // Measured, widening past that is unusable — any-backticked-path flagged 767,
+  // nearly all legitimate: `references/…` is skill-relative, and `docs/…`,
+  // `plans/…`, `./README.md` name files in the USER's project that a fresh install
+  // is not supposed to have. A `.claude/`-prefixed path is the one form that can
+  // only mean a shipped file.
+  //
+  // Yield on introduction: 4, of which 2 were real dangling instructions —
+  // `marketing` shipped `skills/marketing/README.md` and `hooks/discord-hook-setup.md`
+  // pointing at `primary-workflow.md` / `development-rules.md` it did not install.
+  // Fixed in `kits/marketing.json` § requires.shared, not by deleting the pointers.
+  //
+  // The other 2 are why `EXEMPT_SCRIPTS_IN_MARKETING` exists rather than a manifest
+  // entry: `hooks/README.md` and `planning/SKILL.md` name `.claude/scripts/ck/*.cjs`,
+  // and marketing's omission of that tree is DELIBERATE — `hooks/branch-guard.cjs`
+  // documents it and fails open on exactly that layout. Shipping the helpers to
+  // silence this check breaks `relocate-scripts.test.js` § "the helper is never
+  // deleted before its replacement is on disk", which uses "marketing installs no
+  // scripts" as its fixture. Two guards disagreeing is the signal; that one is right.
+  //
+  // Prose cannot distinguish a POINTER from a CITATION, so the exemptions below are
+  // load-bearing, not laziness. Each needs a reason; do not add one without it.
+  const EXEMPT_TARGET = new Set([
+    '.claude/settings.local.json',  // created by Claude Code / the user, never shipped
+    '.claude/config.json',          // ditto — the hook docs tell the reader to create it
+  ]);
+  const EXEMPT_SCRIPTS_IN_MARKETING = /^\.claude\/scripts\/ck\//;  // see above — deliberate omission
+  const EXEMPT_FILE = new Set([
+    'commands/ck/flow.md',              // documents `/ck:flow save <name>` — names its own future output
+    'workflows/development-rules.md',   // its subject IS path conventions; it cites paths it does not point at
+  ]);
+  const VENDORED = 'node_modules';
+  const walk = (dir, out = []) => {
+    for (const e of fs.readdirSync(dir, { withFileTypes: true })) {
+      if (e.name === VENDORED) continue;
+      const full = path.join(dir, e.name);
+      if (e.isDirectory()) walk(full, out);
+      else if (e.name.endsWith('.md')) out.push(full);
+    }
+    return out;
+  };
+  const TICKED = /`(\.claude\/[^`\s]*\.(?:md|sh|js|cjs|json))`/g;
+  const missing = [];
+  for (const kit of ['engineer', 'marketing', 'both']) {
+    const p = fresh();
+    init(p, [], kit);
+    for (const f of walk(path.join(p, '.claude'))) {
+      const rel = path.relative(path.join(p, '.claude'), f).split(path.sep).join('/');
+      if (EXEMPT_FILE.has(rel)) continue;
+      for (const m of fs.readFileSync(f, 'utf-8').matchAll(TICKED)) {
+        const target = m[1];
+        if (/[*<>{}]/.test(target)) continue;             // glob or placeholder, not a literal path
+        if (EXEMPT_TARGET.has(target)) continue;
+        if (kit === 'marketing' && EXEMPT_SCRIPTS_IN_MARKETING.test(target)) continue;
+        if (!fs.existsSync(path.join(p, target))) missing.push(`[${kit}] ${rel} -> ${target}`);
+      }
+    }
+  }
+  assert.deepStrictEqual([...new Set(missing)], [], 'a shipped doc names a .claude/ file its own kit does not install');
 });
 
 test('cook pipeline rules have one home, and the command delegates to it', () => {

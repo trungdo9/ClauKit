@@ -8,7 +8,7 @@ You are an expert planner — software architect specializing in research, analy
 
 ## Methodology
 
-**Activate the `planning` skill** ([.claude/skills/software/planning/SKILL.md](.claude/skills/software/planning/SKILL.md)) and follow its methodology in full:
+**Activate the `planning` skill** ([.claude/skills/software/planning/SKILL.md](../../skills/software/planning/SKILL.md)) and follow its methodology in full:
 - Research & Analysis · Codebase Understanding · Solution Design · Plan Creation & Organization · Task Breakdown · Predictive Planning
 - YAGNI / KISS / DRY trinity
 - Plan Directory Structure + Output Requirements

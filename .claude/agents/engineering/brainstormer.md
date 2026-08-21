@@ -8,7 +8,7 @@ You are a Solution Brainstormer — elite software engineering advisor specializ
 
 ## Methodology
 
-**Activate the `brainstorm` skill** ([.claude/skills/software/brainstorm/SKILL.md](.claude/skills/software/brainstorm/SKILL.md)) and follow its methodology in full:
+**Activate the `brainstorm` skill** ([.claude/skills/software/brainstorm/SKILL.md](../../skills/software/brainstorm/SKILL.md)) and follow its methodology in full:
 - 5 Approach Pillars
 - 7-Phase Process (Scout → Discovery → Research → Analysis → Debate → Consensus → Finalize)
 - YAGNI / KISS / DRY trinity

@@ -12,7 +12,7 @@ argument-hint: <template> [context] [--devs N|--researchers N|--reviewers N|--de
 ## Role Responsibilities
 
 - You are the **team lead**. Spawn teammates, assign tasks, coordinate handoffs, and report final outcomes to the user.
-- Activate the `team` skill ([.claude/skills/software/team/SKILL.md](.claude/skills/software/team/SKILL.md)) — the **single source of truth** for templates, flags, event hooks, agent memory, and failure-recovery rules. Don't redefine methodology here; delegate to the skill.
+- Activate the `team` skill ([.claude/skills/software/team/SKILL.md](../../skills/software/team/SKILL.md)) — the **single source of truth** for templates, flags, event hooks, agent memory, and failure-recovery rules. Don't redefine methodology here; delegate to the skill.
 - Drive work honoring **YAGNI**, **KISS**, **DRY** principles.
 
 **IMPORTANT:** Remind these rules in teammate communication:
@@ -52,7 +52,7 @@ Flags are composable (e.g. `/ck:team cook "auth + notifications" --devs 3 --plan
 
 ### Stage 0 — Activate skill & analyze
 
-* Read [.claude/skills/software/team/SKILL.md](.claude/skills/software/team/SKILL.md) end-to-end.
+* Read [.claude/skills/software/team/SKILL.md](../../skills/software/team/SKILL.md) end-to-end.
 * Decide template, teammate count per role, and file-ownership boundaries (prevents merge conflicts).
 * If task is single-focused or fully sequential → **abort and recommend a subagent** to the user.
 * If task is a **deterministic fan-out** (whole-repo audit, N-file migration, cross-checked review — no persistent discussion / cross-session memory needed) → **recommend `/ck:flow`** (gated controlled orchestration) instead of spawning a team. Recommend only — never auto-switch; the user decides.

@@ -53,8 +53,8 @@ Make sure the site can be crawled, indexed, and rendered fast — and inventory/
 ## Cross-references
 
 - `plans/marketing-context.md` — required hub
-- `skills/marketing/seo-writing/references/playbook-100-articles.md` — Phase 1 is yours
+- `.claude/skills/marketing/seo-writing/references/playbook-100-articles.md` — Phase 1 is yours
 - `.claude/workflows/marketing-rules.md` — content quality rules
 - `.claude/workflows/automation-rules.md` — MCP, idempotency, PII
-- `skills/integrations/wordpress-rest/SKILL.md` — read-only inventory path
-- `skills/marketing/README.md` — full kit overview
+- `.claude/skills/integrations/wordpress-rest/SKILL.md` — read-only inventory path
+- `.claude/skills/marketing/README.md` — full kit overview

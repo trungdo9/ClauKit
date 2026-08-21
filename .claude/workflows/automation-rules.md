@@ -12,7 +12,7 @@ If a task needs GA4/GSC/SendGrid/Resend/ReviewWeb data:
 3. If no → use the skill's **manual fallback** (CSV export, template gen, paste-back)
 4. Never silently fail or skip the data step
 
-**Available MCP wrappers** (in `skills/automation/mcp-*/SKILL.md` or `skills/integrations/*/SKILL.md`):
+**Available MCP wrappers** (in `.claude/skills/automation/mcp-*/SKILL.md` or `.claude/skills/integrations/*/SKILL.md`):
 - `mcp-ga4` — Google Analytics 4
 - `mcp-gsc` — Google Search Console
 - `mcp-sendgrid` — SendGrid email
@@ -102,8 +102,8 @@ Automation outputs go to:
 
 ## 9. Cross-references
 
-- `skills/automation/mcp-*/SKILL.md` — MCP wrapper docs
-- `skills/automation/marketing-orchestrator/SKILL.md` — multi-MCP orchestration
+- `.claude/skills/automation/mcp-*/SKILL.md` — MCP wrapper docs
+- `.claude/skills/automation/marketing-orchestrator/SKILL.md` — multi-MCP orchestration
 - `.claude/workflows/marketing-workflow.md` — 10-phase marketing pipeline
 - `.claude/workflows/sales-workflow.md` — 5-phase lead→customer
 - `.claude/workflows/crm-workflow.md` — 5-phase lifecycle

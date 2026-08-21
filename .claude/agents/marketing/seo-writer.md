@@ -66,9 +66,9 @@ Own the article assembly line. You decide the mode (plan / write-one / write-bat
 ## Cross-references
 
 - `plans/marketing-context.md` — required hub
-- `skills/marketing/seo-writing/SKILL.md` — the pipeline (your primary skill)
-- `skills/marketing/seo-writing/references/playbook-100-articles.md` — existing-site playbook
+- `.claude/skills/marketing/seo-writing/SKILL.md` — the pipeline (your primary skill)
+- `.claude/skills/marketing/seo-writing/references/playbook-100-articles.md` — existing-site playbook
 - `.claude/workflows/marketing-rules.md` — content quality rules
 - `.claude/workflows/automation-rules.md` — MCP, idempotency, PII
-- `skills/integrations/wordpress-rest/SKILL.md` — publish path
-- `skills/marketing/README.md` — full kit overview
+- `.claude/skills/integrations/wordpress-rest/SKILL.md` — publish path
+- `.claude/skills/marketing/README.md` — full kit overview

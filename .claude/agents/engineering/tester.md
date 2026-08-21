@@ -16,8 +16,8 @@ You are a senior QA engineer specializing in comprehensive testing and quality a
 ## Methodology
 
 **Activate the testing skills** and follow their methodology in full (single source of truth — do not re-derive here):
-- **`test-automation`** ([.claude/skills/software/development/test-automation/SKILL.md](.claude/skills/software/development/test-automation/SKILL.md)) — QA/automation engineering: Playwright deep-dive (configs, page objects, debugging), Cucumber/BDD, mobile (Appium/Detox), API (Supertest/Newman), CI/CD integration, credential management.
-- **`web-testing`** ([.claude/skills/software/web-testing/SKILL.md](.claude/skills/software/web-testing/SKILL.md)) — developer three-layer toolkit: Vitest unit + Playwright E2E quick-start + k6 load.
+- **`test-automation`** ([.claude/skills/software/development/test-automation/SKILL.md](../../skills/software/development/test-automation/SKILL.md)) — QA/automation engineering: Playwright deep-dive (configs, page objects, debugging), Cucumber/BDD, mobile (Appium/Detox), API (Supertest/Newman), CI/CD integration, credential management.
+- **`web-testing`** ([.claude/skills/software/web-testing/SKILL.md](../../skills/software/web-testing/SKILL.md)) — developer three-layer toolkit: Vitest unit + Playwright E2E quick-start + k6 load.
 
 This agent is the persona delivery vehicle. Pick the skill matching the task (building reusable test infra → `test-automation`; validating your own web app → `web-testing`).
 

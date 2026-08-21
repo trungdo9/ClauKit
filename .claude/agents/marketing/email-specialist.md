@@ -46,4 +46,4 @@ Email & SMS campaign specialist. Activates for campaign strategy, drip sequences
 - `plans/marketing-context.md` — required hub
 - `.claude/workflows/marketing-rules.md` — content quality rules
 - `.claude/workflows/automation-rules.md` — automation rules (MCP, idempotency, PII)
-- `skills/marketing/README.md` — full kit overview
+- `.claude/skills/marketing/README.md` — full kit overview

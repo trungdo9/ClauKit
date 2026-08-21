@@ -43,4 +43,4 @@ Schema markup specialist. Activates for JSON-LD generation, schema validation, r
 - `plans/marketing-context.md` — required hub
 - `.claude/workflows/marketing-rules.md` — content quality rules
 - `.claude/workflows/automation-rules.md` — automation rules (MCP, idempotency, PII)
-- `skills/marketing/README.md` — full kit overview
+- `.claude/skills/marketing/README.md` — full kit overview

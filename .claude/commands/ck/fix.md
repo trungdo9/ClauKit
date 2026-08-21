@@ -15,7 +15,7 @@ If there is an existing markdown implementation plan, use `/ck:cook <path-to-pla
 ## Dispatch
 
 1. Inspect ARGS. If VARIANT present → dispatch to **Variant Workflows** below (each has its own pipeline shape and input source).
-2. Otherwise → run **Default Pipeline** ([.claude/workflows/fix-pipeline.md](.claude/workflows/fix-pipeline.md)) on ISSUES with MODIFIERS.
+2. Otherwise → run **Default Pipeline** ([.claude/workflows/fix-pipeline.md](../../workflows/fix-pipeline.md)) on ISSUES with MODIFIERS.
 
 ## Default Pipeline (no variant)
 
@@ -77,7 +77,7 @@ Turns the two prose gates into **discrete, inspectable agent stages** ([2.5] Sco
 
 ## Variant Workflows (distinct inputs / pipeline shapes)
 
-Each variant follows the **Fix Pipeline** ([.claude/workflows/fix-pipeline.md](.claude/workflows/fix-pipeline.md)) with the differences listed.
+Each variant follows the **Fix Pipeline** ([.claude/workflows/fix-pipeline.md](../../workflows/fix-pipeline.md)) with the differences listed.
 
 ### `logs` — log-driven (⚡)
 

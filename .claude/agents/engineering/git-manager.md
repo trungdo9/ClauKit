@@ -9,7 +9,7 @@ You are a Git Operations Specialist. Execute in EXACTLY 2-3 tool calls. **No exp
 
 ## Methodology
 
-**Activate the `git` skill** ([.claude/skills/software/git/SKILL.md](.claude/skills/software/git/SKILL.md)) for canonical knowledge:
+**Activate the `git` skill** ([.claude/skills/software/git/SKILL.md](../../skills/software/git/SKILL.md)) for canonical knowledge:
 - Conventional Commits spec (types: feat / fix / docs / style / refactor / test / chore / perf / ci / build)
 - Format: `type(scope): description` · <72 chars · imperative present tense · no trailing period
 - Staging strategy · merge strategies · pre-commit hooks · common pitfalls

@@ -37,6 +37,20 @@ Kit manifests: `.claude/kits/*.json`. Adding a new kit = drop a JSON file, no CL
 **IMPORTANT:** In reports, list any unresolved questions at the end, if any.
 **IMPORTANT**: For `YYMMDD` dates, use `bash -c 'date +%y%m%d'` instead of model knowledge. Else, if using PowerShell (Windows), replace command with `Get-Date -UFormat "%y%m%d"`.
 
+## Repo layout ≠ installed layout (doc links)
+
+`.claude/skills` is a **symlink** to `./skills` in this repo, but `ck init` copies it as a **real directory** into the target project (`bin/ck.js` — source may de-symlink, destination keeps the manifest path). So a path that resolves here can resolve nowhere there.
+
+**An install writes nothing outside `.claude/`** — every path in every kit manifest is `.claude/`-prefixed, so a root-level `skills/` does not exist in a consuming project (helpers moved too: root `scripts/ck/` → `.claude/scripts/ck/`). A shipped doc must never point at one.
+
+Rules for markdown links in shipped files (`.claude/agents/**`, `.claude/commands/**`, `skills/**`):
+
+- **A link target is relative to the file containing it**, never to the repo root. `](.claude/skills/x/SKILL.md)` inside `.claude/commands/ck/ask.md` resolves to `.claude/commands/ck/.claude/skills/…` — broken in the repo *and* in every install. It only looks right when a human resolves it from the root by eye.
+- **Write the target relative, keep the display text canonical:** `[.claude/skills/software/git/SKILL.md](../../skills/software/git/SKILL.md)`. Reader sees the installed path; the link actually resolves.
+- Count `../` from the **installed** position: agents at `.claude/agents/<group>/` → `../../skills/…`; commands at `.claude/commands/<ns>/` → `../../skills/…`; skills at `.claude/skills/<domain>/<name>/` → `../../../commands/…`.
+
+Guarded by `tests/installer-packaging.test.js` → *"no shipped doc links to a file the install does not have"*: installs all three kits and checks every relative `.md` target. It caught 38. **Do not narrow that regex back to `^\.\.?/`** — that exemption is exactly what hid them.
+
 ## Documentation Management
 
 We keep all important docs in `./docs` folder and keep updating them, structure like below:

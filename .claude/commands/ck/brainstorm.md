@@ -10,7 +10,7 @@ argument-hint: [question]
 
 ## Instructions
 
-**Activate the `brainstorm` skill** ([.claude/skills/software/brainstorm/SKILL.md](.claude/skills/software/brainstorm/SKILL.md)) and follow its methodology in full:
+**Activate the `brainstorm` skill** ([.claude/skills/software/brainstorm/SKILL.md](../../skills/software/brainstorm/SKILL.md)) and follow its methodology in full:
 - 5 Approach Pillars (Question Everything · Brutal Honesty · Explore Alternatives · Challenge Assumptions · Consider All Stakeholders)
 - 7-Phase Process (Scout → Discovery → Research → Analysis → Debate → Consensus → Finalize)
 - YAGNI / KISS / DRY trinity

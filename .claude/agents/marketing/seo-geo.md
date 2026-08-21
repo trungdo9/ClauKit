@@ -53,7 +53,7 @@ Make content *extractable and citable* by LLMs — not just rankable in blue lin
 ## Cross-references
 
 - `plans/marketing-context.md` — required hub
-- `skills/marketing/seo-writing/SKILL.md` — the pipeline (Stage 4 AI-search structuring)
+- `.claude/skills/marketing/seo-writing/SKILL.md` — the pipeline (Stage 4 AI-search structuring)
 - `.claude/workflows/marketing-rules.md` — content quality rules
 - `.claude/workflows/automation-rules.md` — MCP, idempotency, PII
-- `skills/marketing/README.md` — full kit overview
+- `.claude/skills/marketing/README.md` — full kit overview

@@ -77,10 +77,10 @@ Input: `[product-type] [style] [industry]` (e.g. `SaaS minimal fintech`, `landin
 4. Output comprehensive UI implementation.
 
 **Stack:** default `html-tailwind`. Supported: react · nextjs · vue · svelte · swiftui · react-native · flutter · shadcn.
-**Reference:** [.claude/skills/software/design/ui-ux-pro-max/SKILL.md](.claude/skills/software/design/ui-ux-pro-max/SKILL.md) for full Style Intelligence docs.
+**Reference:** [.claude/skills/software/design/ui-ux-pro-max/SKILL.md](../../skills/software/design/ui-ux-pro-max/SKILL.md) for full Style Intelligence docs.
 
 ## Notes
-- All plan structure → `planning` skill ([.claude/skills/software/planning/SKILL.md](.claude/skills/software/planning/SKILL.md)).
+- All plan structure → `planning` skill ([.claude/skills/software/planning/SKILL.md](../../skills/software/planning/SKILL.md)).
 - All design methodology → `frontend-developer` agent + design skills (`aesthetic`, `frontend-design`, `ui-ux-pro-max`).
 - Generate visual assets with `ai-multimodal`; verify quality with same skill. Background removal via `ai-multimodal`.
 - Concise grammar in reports. List unresolved questions at end.

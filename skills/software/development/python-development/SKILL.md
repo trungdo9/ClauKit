@@ -414,12 +414,6 @@ jobs:
 - Pytest Docs: https://docs.pytest.org/
 - Python.org: https://www.python.org/
 
-## References
-
-- [FastAPI Patterns](references/fastapi-patterns.md) - Advanced FastAPI patterns
-- [Django Best Practices](references/django-best-practices.md) - Django patterns & tips
-- [Testing Patterns](references/testing-patterns.md) - Pytest patterns & fixtures
-
 ## Integration
 
 When working with Python projects:

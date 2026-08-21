@@ -47,4 +47,4 @@ Multi-channel campaign orchestrator. Activates by /mk:campaign and Phase 9 (Meas
 - `plans/marketing-context.md` — required hub
 - `.claude/workflows/marketing-rules.md` — content quality rules
 - `.claude/workflows/automation-rules.md` — automation rules (MCP, idempotency, PII)
-- `skills/marketing/README.md` — full kit overview
+- `.claude/skills/marketing/README.md` — full kit overview

@@ -51,7 +51,7 @@ Own content strategy + production: build the cluster and brief, then write the a
 ## Cross-references
 
 - `plans/marketing-context.md` — required hub
-- `skills/marketing/seo-writing/SKILL.md` — the pipeline (Stages 2–3 are yours)
+- `.claude/skills/marketing/seo-writing/SKILL.md` — the pipeline (Stages 2–3 are yours)
 - `.claude/workflows/marketing-rules.md` — content quality rules
 - `.claude/workflows/automation-rules.md` — MCP, idempotency, PII
-- `skills/marketing/README.md` — full kit overview
+- `.claude/skills/marketing/README.md` — full kit overview

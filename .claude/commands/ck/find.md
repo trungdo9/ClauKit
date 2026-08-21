@@ -52,7 +52,7 @@ If a concept has all three (skill + agent + command), point user at the **comman
 
 ### Step 5 — External fallback (only if NO local match)
 
-If nothing in the local registry fits, activate **`find-skills` skill** ([.claude/skills/software/find-skills/SKILL.md](.claude/skills/software/find-skills/SKILL.md)) to search the external `npx skills` ecosystem. Be explicit that this is a fallback.
+If nothing in the local registry fits, activate **`find-skills` skill** ([.claude/skills/software/find-skills/SKILL.md](../../skills/software/find-skills/SKILL.md)) to search the external `npx skills` ecosystem. Be explicit that this is a fallback.
 
 ### Step 6 — Empty case
 

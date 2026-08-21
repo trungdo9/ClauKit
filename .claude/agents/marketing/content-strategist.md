@@ -46,4 +46,4 @@ Editorial calendar + content pillar architect. Activates when user needs a conte
 - `plans/marketing-context.md` — required hub
 - `.claude/workflows/marketing-rules.md` — content quality rules
 - `.claude/workflows/automation-rules.md` — automation rules (MCP, idempotency, PII)
-- `skills/marketing/README.md` — full kit overview
+- `.claude/skills/marketing/README.md` — full kit overview

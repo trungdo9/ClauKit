@@ -3,7 +3,7 @@ description: ⚡⚡⚡⚡⚡ Bootstrap a new project (default: step-by-step · a
 argument-hint: [user-requirements] [auto|fast]
 ---
 
-Activate `bootstrap` skill ([.claude/skills/software/development/bootstrap/SKILL.md](.claude/skills/software/development/bootstrap/SKILL.md)).
+Activate `bootstrap` skill ([.claude/skills/software/development/bootstrap/SKILL.md](../../skills/software/development/bootstrap/SKILL.md)).
 
 ## User's Objectives & Requirements
 <user-requirements>$ARGUMENTS</user-requirements>

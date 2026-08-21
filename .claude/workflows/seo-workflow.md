@@ -6,7 +6,7 @@ Closed-loop SEO campaign. Wraps the `seo-writing` 6-stage article pipeline with 
 **Agents:** `seo-writer` (production, Phases 2–4) · `seo-technical` (Phases 1, 6) · `campaign-manager` (cross-channel, Phase 5)
 **Required input:** `plans/marketing-context.md` (hard-fail if absent → `/mk:plan`)
 **Output dir:** `plans/marketing/<site>/`
-**State:** `pipeline.md` status machine (see `skills/marketing/seo-writing/references/pipeline-state.md`) — every phase is resumable + idempotent.
+**State:** `pipeline.md` status machine (see `.claude/skills/marketing/seo-writing/references/pipeline-state.md`) — every phase is resumable + idempotent.
 
 ---
 
@@ -68,4 +68,4 @@ Per-article verdicts:
 
 **Cadence option (n8n-style drip):** between cycles, `/loop 6h /mk:seo write --batch 1` drips the approved backlog on a schedule; Phase 6–7 then run on demand.
 
-**Conventions:** every phase writes one artifact into the campaign dir; `pipeline.md` is the single source of truth for article state — phases only pick up rows matching their entry status, so any phase re-runs alone without redoing the rest. Sub-references: `.claude/workflows/marketing-rules.md` (content quality), `.claude/workflows/automation-rules.md` (PII, idempotency, MCP fallback), `skills/marketing/seo-writing/SKILL.md` (stage playbooks).
+**Conventions:** every phase writes one artifact into the campaign dir; `pipeline.md` is the single source of truth for article state — phases only pick up rows matching their entry status, so any phase re-runs alone without redoing the rest. Sub-references: `.claude/workflows/marketing-rules.md` (content quality), `.claude/workflows/automation-rules.md` (PII, idempotency, MCP fallback), `.claude/skills/marketing/seo-writing/SKILL.md` (stage playbooks).

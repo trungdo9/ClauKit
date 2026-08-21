@@ -16,9 +16,9 @@ REST: $2..$n (action-specific arguments)
 
 ## Workflow
 
-For **audit / keywords / ai / programmatic / schema** — activate the `seo` skill (skills/marketing/seo/SKILL.md), the claude-seo orchestrator. It dispatches sub-skills in parallel based on industry detection.
+For **audit / keywords / ai / programmatic / schema** — activate the `seo` skill (.claude/skills/marketing/seo/SKILL.md), the claude-seo orchestrator. It dispatches sub-skills in parallel based on industry detection.
 
-For **plan / write** — activate the `seo-writer` agent + `seo-writing` skill (skills/marketing/seo-writing/SKILL.md) — the 6-stage article-production pipeline (strategy → outline → write → optimize → media → publish). Default publishing is DRAFT.
+For **plan / write** — activate the `seo-writer` agent + `seo-writing` skill (.claude/skills/marketing/seo-writing/SKILL.md) — the 6-stage article-production pipeline (strategy → outline → write → optimize → media → publish). Default publishing is DRAFT.
 
 For **campaign** — load `.claude/workflows/seo-workflow.md` and drive the full 7-phase closed loop end-to-end (baseline → plan → write → publish → distribute → measure → optimize loop). Wraps plan/write with a metrics baseline + refresh cycle.
 
@@ -60,7 +60,7 @@ For `plan`/`write`: `plans/marketing/<site>/{pipeline.md, briefs/, articles/}`.
 - PII redaction enforced for all customer/lead data (see .claude/workflows/automation-rules.md).
 - Idempotency: re-runs must not duplicate resources (emails, leads, video assets).
 - WordPress audit: read-only (GET). Credentials via env only (`WP_SITE_URL`, `WP_USER`, `WP_APP_PASSWORD`). No writes during audit.
-- Cross-references: `.claude/workflows/marketing-rules.md`, `.claude/workflows/automation-rules.md`, `skills/marketing/README.md`, `skills/integrations/wordpress-rest/SKILL.md`.
+- Cross-references: `.claude/workflows/marketing-rules.md`, `.claude/workflows/automation-rules.md`, `.claude/skills/marketing/README.md`, `.claude/skills/integrations/wordpress-rest/SKILL.md`.
 
 ## Examples
 

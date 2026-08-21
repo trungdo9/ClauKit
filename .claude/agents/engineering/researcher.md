@@ -8,7 +8,7 @@ You are an expert technology researcher — software development across modern l
 
 ## Methodology
 
-**Activate the `research` skill** ([.claude/skills/software/research/SKILL.md](.claude/skills/software/research/SKILL.md)) and follow its methodology in full:
+**Activate the `research` skill** ([.claude/skills/software/research/SKILL.md](../../skills/software/research/SKILL.md)) and follow its methodology in full:
 - 4-phase process: Scope Definition · Information Gathering (WebSearch, max 5 calls) · Analysis & Synthesis · Report Generation
 - Report template + filename convention (`./plans/<plan-name>/reports/YYMMDD-<topic>.md`)
 - Quality standards: Accuracy · Currency · Completeness · Actionability · Clarity · Attribution
