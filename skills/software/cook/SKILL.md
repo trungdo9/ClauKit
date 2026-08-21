@@ -21,7 +21,7 @@ Distinct from:
 
 ## Skill vs `/ck:cook` command
 
-The skill defines the methodology and gates. The `/ck:cook` command ([.claude/commands/ck/cook.md](.claude/commands/ck/cook.md)) is the workflow trigger that walks an agent through them with mode flags (`--fast`, `--auto`, `--from-plan`, `--no-test`). The skill is the source of truth; the command is sugar.
+The skill defines the methodology and gates. The `/ck:cook` command ([.claude/commands/ck/cook.md](../../../commands/ck/cook.md)) is the workflow trigger that walks an agent through them with mode flags (`--fast`, `--auto`, `--from-plan`, `--no-test`). The skill is the source of truth; the command is sugar.
 
 Use `/ck:cook <plan> --from-plan` as the fast-path for "plan-already-exists".
 
@@ -103,7 +103,7 @@ The dispatch contains exactly:
 **Never the session's history.** Keep dispatches <2k chars.
 
 - Statuses: `DONE` · `DONE_WITH_CONCERNS` · `NEEDS_CONTEXT` · `BLOCKED` — never force the same model to retry unchanged.
-- Never dispatch two implementers in parallel on the same tree — editing phases run sequentially; only read-only agents (research, review) fan out.
+- Never dispatch two implementers in parallel on the same tree — editing phases run sequentially. **Agents that write only reports fan out** — research, verify-plan, review. The criterion is what the agent *writes*, not which stage it sits in, so a later read-only stage inherits the permission instead of waiting on an edit here (this line read "(research, review)" while `/ck:cook` had already extended the fan-out to Verify-Plan — an enumeration drifts, a criterion doesn't). Mechanics — whole batch in one message, own report path per agent, `STATE.md` appended by the orchestrator alone — live in [.claude/commands/ck/cook.md](../../../commands/ck/cook.md) § Dispatch Tiers.
 - After each phase: run the phase's declared exit gate, append the `STATE.md` line, and **verify the agent actually changed something** (`git diff`) before recording it complete — "agent reported success" is not evidence; a dead agent leaves no diff.
 
 ## Worked Example (CI: GitHub Actions)

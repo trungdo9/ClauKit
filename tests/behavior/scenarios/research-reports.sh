@@ -84,6 +84,6 @@ assert_transcript() {
   # a report produces the same file, and the point of the stage is that the main
   # context stays clean.
   node "$HARNESS_DIR/tool-sequence.cjs" "$EVENTS" \
-    | grep -qE "^[0-9]+	Task	" \
+    | grep -qE "^[0-9]+\t(Agent|Task)\t" \
     || { echo "no agent was dispatched — the stage was inlined, not run"; return 1; }
 }

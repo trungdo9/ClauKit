@@ -20,7 +20,7 @@ HARNESS_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 REPO_ROOT="$(cd "$HARNESS_DIR/../.." && pwd)"
 SCENARIOS_DIR="$HARNESS_DIR/scenarios"
 FAST_SET="guard-tier-b iron-law"
-ALL_SET="verify-plan-fires tdd-red-first scope-lock resume-from-ledger iron-law guard-tier-b closing-gate deploy-waiver plan-before-code docs-usable"
+ALL_SET="verify-plan-fires tdd-red-first scope-lock resume-from-ledger iron-law guard-tier-b closing-gate deploy-waiver plan-before-code docs-usable fan-out-concurrency"
 
 # Minimum plausible transcript. A real run of any scenario is far larger; the
 # infrastructure notices we have seen are ~100 bytes.

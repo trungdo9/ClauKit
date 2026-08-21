@@ -15,7 +15,7 @@ const { spawnSync } = require('node:child_process');
 const fs = require('node:fs');
 const os = require('node:os');
 const path = require('node:path');
-const { parse, outcomeOf, tddOrder, evidenceBefore } = require('./behavior/tool-sequence.cjs');
+const { parse, outcomeOf, tddOrder, evidenceBefore, sameTurn, concurrentDispatch } = require('./behavior/tool-sequence.cjs');
 
 const RUNNER = path.join(__dirname, 'behavior', 'run-scenario.sh');
 
@@ -63,6 +63,114 @@ const FIX_FIRST = [
   asst(use('b', 'Bash', { command: 'node test-math.js' })),
   res('b', 'all good'),
 ];
+
+// Fan-out and queue, as the stream records them. Same tools, same targets, same
+// order, same end state — the ONLY difference is the message boundary, which is
+// exactly the thing `/ck:cook` § Dispatch Tiers says decides whether a "parallel"
+// stage is parallel at all.
+const FANNED_OUT = [
+  asst({ type: 'text', text: 'Verifying all four claims at once.' },
+    use('t1', 'Task', { description: 'verify claims re parser' }),
+    use('t2', 'Task', { description: 'verify claims re registry' })),
+  res('t1', 'CONFIRMED'),
+  res('t2', 'REFUTED'),
+];
+const QUEUED = [
+  asst({ type: 'text', text: 'Verifying the parser claims.' }, use('t1', 'Task', { description: 'verify claims re parser' })),
+  res('t1', 'CONFIRMED'),
+  asst({ type: 'text', text: 'Now the registry claims.' }, use('t2', 'Task', { description: 'verify claims re registry' })),
+  res('t2', 'REFUTED'),
+];
+
+test('two dispatches in one message read as a fan-out', () => {
+  const v = sameTurn(stepsOf(FANNED_OUT), /^Task$/, 2);
+  assert.ok(v.ok, v.why);
+  assert.strictEqual(v.max, 2);
+  assert.strictEqual(v.total, 2);
+});
+
+test('the same two dispatches one-per-message do NOT — the discriminator', () => {
+  // Without this the assertion would pass on a serial queue, i.e. it would
+  // measure "did it delegate", a thing the model does anyway, and never
+  // "did it delegate concurrently", which is the rule.
+  const v = sameTurn(stepsOf(QUEUED), /^Task$/, 2);
+  assert.ok(!v.ok, 'a queue must not satisfy a fan-out assertion');
+  assert.strictEqual(v.max, 1);
+  assert.strictEqual(v.total, 2, 'both calls are still counted — only their batching differs');
+});
+
+// The two routes to a real fan-out, and the one shape that has neither. `bg` is
+// what two measured runs actually sent: run_in_background:false on every
+// dispatch, which blocks the orchestrator and serializes the stage whatever the
+// instruction says. The tool's own default is background.
+const dispatch = (id, bg) => use(id, 'Agent', { subagent_type: 'debugger', description: `verify ${id}`,
+                                                ...(bg === undefined ? {} : { run_in_background: bg }) });
+
+test('dispatches left in the background are concurrent even one per message', () => {
+  const v = concurrentDispatch(stepsOf([
+    asst(dispatch('a')), res('a', 'CONFIRMED'),
+    asst(dispatch('b')), res('b', 'REFUTED'),
+  ]), 2);
+  assert.ok(v.ok, v.why);
+  assert.strictEqual(v.background, 2);
+  assert.strictEqual(v.batched, 1, 'not batched in one message — background is the other route');
+});
+
+test('dispatches that force blocking are NOT a fan-out — the measured failure', () => {
+  const v = concurrentDispatch(stepsOf([
+    asst(dispatch('a', false)), res('a', 'CONFIRMED'),
+    asst(dispatch('b', false)), res('b', 'REFUTED'),
+  ]), 2);
+  assert.ok(!v.ok, 'run_in_background:false one per message is a queue');
+  assert.strictEqual(v.blocking, 2);
+  assert.strictEqual(v.background, 0);
+});
+
+test('blocking dispatches still count as a fan-out when batched in one message', () => {
+  // Both routes are genuinely sufficient on their own; asserting the AND would
+  // fail runs that are actually concurrent.
+  const v = concurrentDispatch(stepsOf([
+    asst(dispatch('a', false), dispatch('b', false)), res('a', 'x'), res('b', 'y'),
+  ]), 2);
+  assert.ok(v.ok, v.why);
+  assert.strictEqual(v.batched, 2);
+});
+
+test('a dispatch names its persona even when the prompt is long', () => {
+  // The persona has to survive the 160-char cap: a batch of read-only debuggers
+  // is the rule, a batch of implementers is the violation, and a truncated
+  // JSON blob cannot tell them apart.
+  const steps = stepsOf([
+    asst(use('t', 'Task', { subagent_type: 'debugger', description: 'refute claim 3',
+                            prompt: 'x'.repeat(4000) })),
+    res('t', 'REFUTED'),
+  ]);
+  assert.strictEqual(steps[0].target, 'debugger: refute claim 3');
+  assert.ok(steps[0].target.length < 160);
+});
+
+test('turn numbers advance per message that calls tools, not per call', () => {
+  assert.deepStrictEqual(stepsOf(FANNED_OUT).map(s => s.turn), [1, 1]);
+  assert.deepStrictEqual(stepsOf(QUEUED).map(s => s.turn), [1, 2]);
+});
+
+test('a batch of other tools is not a fan-out of the tool asked about', () => {
+  const mixed = [
+    asst(use('a', 'Read', { file_path: 'a.md' }), use('b', 'Read', { file_path: 'b.md' }),
+         use('t', 'Task', { description: 'one agent' })),
+    res('a', 'x'), res('b', 'y'), res('t', 'done'),
+  ];
+  const v = sameTurn(stepsOf(mixed), /^Task$/, 2);
+  assert.ok(!v.ok, 'three parallel calls but only one is a dispatch');
+  assert.strictEqual(v.max, 1);
+});
+
+test('no dispatch at all is reported as the stage not running, not as a queue', () => {
+  const v = sameTurn(stepsOf([asst(use('r', 'Read', { file_path: 'a.md' })), res('r', 'x')]), /^Task$/, 2);
+  assert.ok(!v.ok);
+  assert.strictEqual(v.total, 0);
+  assert.match(v.why, /did not run/);
+});
 
 test('parse keeps tool calls in order and pairs each result to its call', () => {
   const steps = stepsOf(RED_FIRST);

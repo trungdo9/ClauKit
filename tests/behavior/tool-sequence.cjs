@@ -14,7 +14,7 @@
  *
  * Ordering lives in the tool-call sequence, so that is what this extracts.
  *
- * Three modes, one parse:
+ * Four modes, one parse:
  *   (default)     TSV: idx <TAB> tool <TAB> target <TAB> outcome
  *   --render      ordered human-readable transcript (also what the text greps in
  *                 the other five scenarios read)
@@ -29,6 +29,13 @@
  *                 the first mutation of the file matching <re>. The invariant
  *                 lives here, not in the scenario's shell, so `npm test` can
  *                 cover it without a `claude -p` run.
+ *   --same-turn <tool-re> [n]  exit 0 iff at least n calls to a tool matching
+ *                 <tool-re> share ONE assistant message (default n=2). This is
+ *                 the only way to tell a fan-out from a queue: N dispatches in
+ *                 one message run concurrently, the same N one-per-message run
+ *                 serially, and both leave an identical step list — which is why
+ *                 `steps` carries `turn` and the default TSV, whose four columns
+ *                 several scenarios grep, was left alone.
  *
  * `outcome` is `ok` or `fail:<marker>`. A Bash step that exits non-zero is the
  * only way a scenario can prove a test was observed RED rather than merely
@@ -36,6 +43,16 @@
  */
 
 const fs = require("fs");
+
+/**
+ * The subagent-dispatch tool, under both names it has had.
+ *
+ * It is `Agent` on the CLI in use (2.1.228); `Task` is the older name and is
+ * still what the older scenarios grep for. Keying an assertion on one name alone
+ * makes it silently unmatchable on the other — `research-reports` asserted
+ * `^\d+\tTask\t` and could not have passed on this CLI whatever the model did.
+ */
+const DISPATCH = /^(Agent|Task)$/;
 
 /** Failure markers, in the order they are worth reporting. */
 const FAIL_MARKERS = [
@@ -55,7 +72,22 @@ const FAIL_MARKERS = [
 function rawTargetOf(name, input) {
   if (!input || typeof input !== "object") return "";
   if (name === "Bash") return String(input.command || "");
+  if (DISPATCH.test(name)) return dispatchTargetOf(input);
   return String(input.file_path || input.path || input.pattern || input.notebook_path || "");
+}
+
+/**
+ * A dispatch acts on an agent, not on a path.
+ *
+ * Without this a Task step fell through to `JSON.stringify(input)`, where the
+ * prompt — the longest field — can push `subagent_type` past the 160-char cap,
+ * so "which persona was dispatched" was unmatchable exactly when a fan-out
+ * assertion needs it (a batch of read-only `debugger`s is the rule; a batch of
+ * implementers is the violation, and the two looked the same).
+ */
+function dispatchTargetOf(input) {
+  const named = [input.subagent_type, input.description].filter(Boolean).join(": ");
+  return named || JSON.stringify(input);
 }
 
 /** Which input field names the thing a tool acted on. */
@@ -63,6 +95,7 @@ function targetOf(name, input) {
   if (!input || typeof input !== "object") return "";
   const one = (s) => String(s).replace(/\s+/g, " ").trim().slice(0, 160);
   if (name === "Bash") return one(input.command || "");
+  if (DISPATCH.test(name)) return one(dispatchTargetOf(input));
   if (input.file_path) return one(input.file_path);
   if (input.path) return one(input.path);
   if (input.pattern) return one(input.pattern);
@@ -106,6 +139,10 @@ function parse(lines) {
   const steps = [];
   const byId = new Map();
   const prose = [];
+  // One assistant message = one turn. Concurrency is expressed by putting several
+  // tool_use blocks in the SAME message, so the message boundary is the only place
+  // "in parallel" is written down; `idx` alone cannot recover it.
+  let turn = 0;
 
   for (const line of lines) {
     let ev;
@@ -119,12 +156,15 @@ function parse(lines) {
     }
 
     const blocks = (ev.message && Array.isArray(ev.message.content) && ev.message.content) || [];
+    // Advance once per message that calls tools — not per block, or every call
+    // would land in a turn of its own and a fan-out would read as a queue.
+    if (blocks.some((b) => b && b.type === "tool_use")) turn++;
     for (const b of blocks) {
       if (!b || typeof b !== "object") continue;
       if (b.type === "text" && b.text.trim()) prose.push({ at: steps.length, text: b.text });
       if (b.type === "tool_use") {
-        const step = { idx: steps.length + 1, tool: b.name, target: targetOf(b.name, b.input),
-                       raw: rawTargetOf(b.name, b.input), result: null };
+        const step = { idx: steps.length + 1, turn, tool: b.name, target: targetOf(b.name, b.input),
+                       raw: rawTargetOf(b.name, b.input), input: b.input, result: null };
         steps.push(step);
         if (b.id) byId.set(b.id, step);
       }
@@ -234,6 +274,51 @@ function evidenceBefore(steps, evidenceRe, mutRe) {
     why: `claim checked @${evidence}${mutation === null ? ", no mutation" : `, mutation @${mutation}`}` };
 }
 
+/**
+ * Fan-out, as a property of message boundaries rather than of counts.
+ *
+ * A stage that dispatches 4 read-only agents to cut wall-clock and a stage that
+ * dispatches the same 4 one after another produce the same tools, the same
+ * targets and the same order. The difference is only that the first put them in
+ * one message, so that is what gets measured. Returns { ok, max, turn, total, why }.
+ */
+function sameTurn(steps, toolRe, min = 2) {
+  const byTurn = new Map();
+  for (const s of steps) if (toolRe.test(s.tool)) byTurn.set(s.turn, (byTurn.get(s.turn) || 0) + 1);
+  let max = 0, at = null;
+  for (const [t, n] of byTurn) if (n > max) { max = n; at = t; }
+  const total = [...byTurn.values()].reduce((a, b) => a + b, 0);
+  const why = total === 0
+    ? `no ${toolRe} call in the stream at all — the stage did not run`
+    : `${total} ${toolRe} call(s) over ${byTurn.size} turn(s); largest single-message batch ${max}`
+      + ` (turn ${at}), need ${min}`;
+  return { ok: max >= min, max, turn: at, total, why };
+}
+
+/**
+ * Concurrency of a dispatch batch, by either route the tool actually offers.
+ *
+ * `--same-turn` measures one route (several dispatches in one message) and it was
+ * the only one checked at first, which made the check read as "prose failed" when
+ * the truth was mechanical: two measured runs grouped the claims correctly and
+ * then passed `run_in_background: false` on all eight dispatches. That field makes
+ * the orchestrator block on each agent, so the stage serializes no matter how the
+ * instruction is worded — and the tool's own default is background. A fan-out is
+ * therefore satisfied by batching in one message OR by leaving the agents in the
+ * background; it is defeated by explicitly blocking, which is what to assert on.
+ */
+function concurrentDispatch(steps, min = 2) {
+  const disp = steps.filter((s) => DISPATCH.test(s.tool));
+  const batched = sameTurn(steps, DISPATCH, min).max;
+  const background = disp.filter((s) => !s.input || s.input.run_in_background !== false).length;
+  const blocking = disp.length - background;
+  const why = disp.length === 0
+    ? "no dispatch in the stream at all — the stage did not run"
+    : `${disp.length} dispatch(es): largest single-message batch ${batched}, ${background} left in`
+      + ` background, ${blocking} forced to block (run_in_background:false); need ${min} by either route`;
+  return { ok: batched >= min || background >= min, batched, background, blocking, total: disp.length, why };
+}
+
 function main() {
   const [file, ...flags] = process.argv.slice(2);
   if (!file) {
@@ -249,6 +334,26 @@ function main() {
     if (!pattern) { console.error("--tdd-order needs a regex for the production file"); process.exit(2); }
     if (!steps.length) { console.error("no tool calls in the stream — nothing to order"); process.exit(1); }
     const v = tddOrder(steps, new RegExp(pattern));
+    console.log(v.why);
+    process.exit(v.ok ? 0 : 1);
+  }
+
+  const fanIdx = flags.indexOf("--fan-out");
+  if (fanIdx !== -1) {
+    const min = Number(flags[fanIdx + 1]) || 2;
+    if (!steps.length) { console.error("no tool calls in the stream — nothing to batch"); process.exit(1); }
+    const v = concurrentDispatch(steps, min);
+    console.log(v.why);
+    process.exit(v.ok ? 0 : 1);
+  }
+
+  const turnIdx = flags.indexOf("--same-turn");
+  if (turnIdx !== -1) {
+    const pattern = flags[turnIdx + 1];
+    if (!pattern) { console.error("--same-turn needs a tool regex"); process.exit(2); }
+    const min = Number(flags[turnIdx + 2]) || 2;
+    if (!steps.length) { console.error("no tool calls in the stream — nothing to batch"); process.exit(1); }
+    const v = sameTurn(steps, new RegExp(pattern), min);
     console.log(v.why);
     process.exit(v.ok ? 0 : 1);
   }
@@ -297,4 +402,5 @@ function main() {
 }
 
 if (require.main === module) main();
-module.exports = { parse, outcomeOf, targetOf, rawTargetOf, tddOrder, evidenceBefore };
+module.exports = { parse, outcomeOf, targetOf, rawTargetOf, tddOrder, evidenceBefore, sameTurn,
+                   concurrentDispatch };

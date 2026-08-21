@@ -631,3 +631,52 @@ declared unavailable.
 `docs-usable` produced no data here: **six** haiku attempts all returned zero tool calls, which the
 runner correctly classes as ERROR rather than FAIL. Systematic for that prompt-and-model pairing,
 not transient — recorded as unmeasured rather than folded into the result.
+
+## Measuring concurrency, and a rule that had to be rewritten twice (2026-08-13)
+
+`fan-out-concurrency` covers `/ck:cook` § Verify-Plan: a plan with >=4 falsifiable claims across >=2
+subsystems must verify the claim groups **concurrently**. It is the first scenario here whose subject
+is *when* work was requested rather than what was done, and it produced a gate that took three runs
+to make fire.
+
+**Run 1 — the rule as first written: FAIL.** The grouping was perfect (queue claims 1-2 / parser 3 /
+registry 4 / baseline 5) and the four `debugger` dispatches landed in four separate turns. Half the
+rule fired; the half that was the point did not.
+
+**Run 2 — the wording made imperative, plus an explicit self-check: FAIL, identically.** Four
+dispatches, four turns. This is the run that mattered most: one FAIL is a model that happened not to,
+two FAILs across different wordings is the instruction not being followed.
+
+**The cause was mechanical, not rhetorical.** All eight dispatches across both runs carried
+`run_in_background: false`. That field makes the orchestrator block on the agent it just sent, so the
+next dispatch cannot leave until the previous one has finished — and the tool's own default is
+background. No phrasing beats a field that serializes the loop.
+
+**Run 3 — the rule rewritten to name the field: PASS.** Three dispatches, `0 forced to block, 3 left
+in background`. **Positive control: removing the two lines that mention the field flips it straight
+back** — `3 forced to block`, serial, assertion FAILS as a positive control requires. So this gate is
+**load-bearing by the tightest available control**, and the finding generalises past this scenario: a
+rule that states the intent instead of the mechanism can be obeyed to the letter and still not happen.
+
+### Two limits this README asserted, both expired
+
+* **"`claude -p` does not expand slash commands."** It does, on CLI 2.1.228: step 1 of every run
+  above is `Skill {"skill":"ck:cook"}` and `commands/ck/cook.md` enters context. The observation was
+  true when recorded — it is a CLI-version fact, not a property of the harness — but it had been
+  doing load-bearing work as the reason `research-reports` sits outside `ALL_SET`.
+* **The dispatch tool is `Agent`, not `Task`.** `research-reports` asserts `^\d+\tTask\t`, which
+  cannot match on this CLI whatever the model does, so its exclusion had a second and independent
+  cause that the recorded reason never mentioned. Both scenarios now accept `(Agent|Task)`.
+
+Restoring `research-reports` to `ALL_SET` now needs only a run to confirm it; it was not attempted here.
+
+### What the instrument gained
+
+`tool-sequence.cjs` carries `turn` (the assistant-message index) and the raw `input` per step, and
+answers two new modes — `--same-turn <tool-re> [n]` for the message-boundary route and `--fan-out [n]`
+for either route. Dispatch steps now render as `debugger: verify claim 3` instead of a truncated JSON
+blob, so a batch of read-only verifiers is distinguishable from a batch of implementers (the first is
+the rule, the second is the violation). Nine cases in `tests/behavior-harness.test.js` pin all of it,
+including the three discriminators that matter: a queue must not satisfy a fan-out assertion, two
+background dispatches one-per-message must, and `run_in_background: false` one-per-message must not.
+The default four-column TSV was left alone — several scenarios grep it.

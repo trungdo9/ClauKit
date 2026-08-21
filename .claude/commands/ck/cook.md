@@ -10,7 +10,7 @@ Think harder to drive the following feature end-to-end. Follow the cook skill me
 ## Role Responsibilities
 
 - You are a senior software engineer driving a feature from idea (or existing plan) to production-ready code.
-- Activate the `cook` skill ([.claude/skills/software/cook/SKILL.md](.claude/skills/software/cook/SKILL.md)) — the **single source of truth** for the gated lifecycle (Gate → Plan → Code → Test → Review → Docs → Deploy), the Exact-Requirements Gate, gating rules, and anti-patterns. Don't redefine methodology here; delegate to the skill.
+- Activate the `cook` skill ([.claude/skills/software/cook/SKILL.md](../../skills/software/cook/SKILL.md)) — the **single source of truth** for the gated lifecycle (Gate → Plan → Code → Test → Review → Docs → Deploy), the Exact-Requirements Gate, gating rules, and anti-patterns. Don't redefine methodology here; delegate to the skill.
 - Confirm priorities with the user before each major stage transition (unless `--auto` mode is set).
 - Honor **YAGNI**, **KISS**, **DRY**.
 - All subagent reports go to `plans/<plan>/reports/` (per Orchestration Protocol); read summaries, don't inline full outputs.
@@ -48,7 +48,7 @@ An omitted `model` inherits the session's tier and silently defeats tiering; a d
 |---|---|---|
 | Research | `researcher` · `scout` | `sonnet` · `haiku` |
 | Plan | `planner` | `opus` |
-| Verify-Plan | `debugger` (read-only, writes the evidence table) | `sonnet` |
+| Verify-Plan | `debugger` ×N (read-only, one per claim group) | `sonnet` |
 | Implement | `backend-developer` / `frontend-developer` | `haiku` when the brief carries complete code; else `sonnet` |
 | Implement (bookkeeping) | `project-manager` | `haiku` |
 | Test | `tester` | `sonnet` |
@@ -59,6 +59,15 @@ An omitted `model` inherits the session's tier and silently defeats tiering; a d
 | Deploy / commits | `git-manager` | `haiku` |
 
 **Tier the loop, not the dispatch.** Review is the only multiplicative gate — `cycles × (1 reviewer + N findings + 1 test re-run)` — so these three agents (`code-reviewer`, `debugger`, `tester`) set the run's cost, not `planner`. Escalate on a **verdict** (`UNVERIFIABLE` Critical, or a root cause that survived one sonnet pass), never on the schedule. Batch adversarial verify **by file**, not by finding.
+
+**Fan-out mechanics.** *Which* agents may fan out is the skill's ruling, not this file's — [`cook` skill](../../skills/software/cook/SKILL.md) § Implement: agents that write only reports (Research, Verify-Plan, Review), never two implementers on one tree. What is mechanical lives here, and it is one mechanism, not an attitude: a stage is concurrent only if each dispatch leaves before the previous one has been waited on — see "Two routes" below for the two ways to get that and the one field that prevents both. Path-disjoint parallel *implementation* is `/ck:team`'s job, not cook's (`team` skill § Shared-Tree Protocol — *partition, don't isolate*; overlap ⇒ serialize). Two invariants for every fan-out:
+
+- each agent writes **its own** report path — never a shared file, or the last writer wins;
+- **only the main session appends to `STATE.md`** — N agents appending to one ledger drops lines, and the ledger is what a killed run resumes from.
+
+Cap concurrency at ~4 and prefer fewer, larger groups: N dispatches over the same file re-read that file N times.
+
+**Two routes, and one field that defeats both.** Either send the whole batch in one message, **or** leave each agent in the background — the `Agent` tool's own default — and collect the reports afterwards. What actually kills the concurrency is passing **`run_in_background: false`**: that makes the orchestrator block on the agent it just sent, so the next dispatch cannot leave until the previous one is finished, and no amount of "in parallel" in the prose changes it. This is measured, not theorised: across two full runs in ClauKit's own behavioural harness (repo-internal, not shipped with any kit) the claim grouping was correct every time and **8 of 8 dispatches carried `run_in_background: false`**, so both runs queued; a third run that only left them in the background passed. Set it to `false` only when the very next step needs that agent's verdict — and when a group genuinely depends on another group's verdict, serialize on purpose and write the dependency in `STATE.md`.
 
 ## Environment Pre-flight (before the first edit)
 
@@ -81,7 +90,10 @@ Stages are named; numbering lives in the cook skill (source of truth).
 
 ### Verify-Plan (Stage 0.5)
 
-**Mandatory when `--from-plan`; elsewhere run iff the plan asserts ≥1 falsifiable claim about existing behaviour.** Activate the `verify-plan` skill ([.claude/skills/software/verify-plan/SKILL.md](.claude/skills/software/verify-plan/SKILL.md)): extract every factual claim, prove/disprove each with git evidence + read-only queries + file reads, write the table to `plans/<plan>/reports/plan-verification.md`. **No code until the table is approved**; any REFUTED load-bearing claim → back to `planner`. Append the gate result to `STATE.md`.
+**Mandatory when `--from-plan`; elsewhere run iff the plan asserts ≥1 falsifiable claim about existing behaviour.** Activate the `verify-plan` skill ([.claude/skills/software/verify-plan/SKILL.md](../../skills/software/verify-plan/SKILL.md)): extract every factual claim, prove/disprove each with git evidence + read-only queries + file reads, write the table to `plans/<plan>/reports/plan-verification.md`. **No code until the table is approved**; any REFUTED load-bearing claim → back to `planner`. Append the gate result to `STATE.md`.
+
+* **Fan out by claim group (≥4 claims spanning ≥2 subsystems).** Extract the claim list in the main session — that stays cheap — group the claims by the file/subsystem they are *about* so no two dispatches re-read the same file, then **send every group's dispatch without waiting for the previous one** — N `debugger` calls in one message, or N background dispatches, never `run_in_background: false` on a group (see § Dispatch Tiers "Two routes"). Dispatching group 1, reading its verdict, then dispatching group 2 costs the sum of the groups instead of the slowest one. Each writes `reports/plan-verification-<group>.md`; the **main session merges them into the one `plan-verification.md` table** and appends the single gate line. Fewer claims, or all of them about one file → one dispatch; the fan-out is latency relief, not ceremony.
+* A group that comes back `UNVERIFIABLE` is not a pass — it re-dispatches or escalates a tier, same as any other verdict. Merging must not launder a missing verdict into a filled table.
 
 ### Research
 
@@ -122,12 +134,13 @@ Stages are named; numbering lives in the cook skill (source of truth).
 
 ### Review
 
-Follow the `code-review` skill ([.claude/skills/software/code-review/SKILL.md](.claude/skills/software/code-review/SKILL.md)) — single source of truth for the review protocol (SHAs, dispatch fields, edge-case scouting, verification gates).
+Follow the `code-review` skill ([.claude/skills/software/code-review/SKILL.md](../../skills/software/code-review/SKILL.md)) — single source of truth for the review protocol (SHAs, dispatch fields, edge-case scouting, verification gates).
 
 * Optional for complex changes: `/ck:scout edge cases for <feature>` → hand report to reviewer.
 * **BASE comes from the ledger, never `HEAD~1`:** use the first implemented phase's recorded `started (base <sha7>)` (Implement step 1) → `node .claude/scripts/ck/review-package.cjs <BASE> HEAD --plan <plan-dir>`, hand the reviewer the **file path**. `HEAD~1` silently truncates a multi-commit phase.
 * Dispatch `code-reviewer` per the skill's "Requesting Review" protocol; it emits Critical / High / Medium / Low. **Tier:** `sonnet` per fix cycle; `opus` for the **final whole-branch review** and for a high-risk diff (>200 lines, >3 files, or auth/payments/migrations/cross-service).
-* **Adversarial verify (before any fix):** each Critical/High finding must survive an independent skeptic before it enters the fix loop. Dispatch the `debugger` agent (`model: sonnet`; NOT the reviewer that raised it — `debugger` owns reproduction), **batched by file** — several findings in one file are one dispatch, since N dispatches re-read the same file N times — prompted to *refute* the finding — reproduce it at the cited `file:line`, confirm the failing input→output, check it isn't already handled. Verdict `CONFIRMED` (with repro evidence) → proceed to fix. `REFUTED` / can't-reproduce → drop the finding, log why. Default-to-refuted when the `debugger` is uncertain. This is the adversarial-verify pattern; a fix loop is expensive (loop cap = 3), so never spend a cycle on a phantom bug.
+* **Dimension fan-out — only above that same high-risk threshold.** A diff that already earns `opus` also earns a split find pass: concurrent `code-reviewer` dispatches by dimension (correctness · security · performance · test-coverage), one message, each handed the same diff-**file** path plus its own report path; the main session dedupes by `file:line` before adversarial verify. Below the threshold, **one reviewer** — Review is the multiplicative gate (§ Dispatch Tiers), so 4 reviewers is 4× the per-cycle cost, and a 50-line diff does not carry four dimensions of risk. Unlike the read-only fan-outs above, this one buys coverage with tokens, not just wall-clock; the threshold is what keeps it honest.
+* **Adversarial verify (before any fix):** each Critical/High finding must survive an independent skeptic before it enters the fix loop. Dispatch the `debugger` agent (`model: sonnet`; NOT the reviewer that raised it — `debugger` owns reproduction), **batched by file and sent concurrently** — several findings in one file are one dispatch, since N dispatches re-read the same file N times, and **all file-batches go out in one message**: disjoint files, read-only agents, so the concurrency costs zero extra tokens and shrinks the gate's wall-clock from the sum of the files to the slowest one — prompted to *refute* the finding — reproduce it at the cited `file:line`, confirm the failing input→output, check it isn't already handled. Verdict `CONFIRMED` (with repro evidence) → proceed to fix. `REFUTED` / can't-reproduce → drop the finding, log why. Default-to-refuted when the `debugger` is uncertain. This is the adversarial-verify pattern; a fix loop is expensive (loop cap = 3), so never spend a cycle on a phantom bug.
 * **Gate decision:** `--auto` passes if `Critical = 0 AND High = 0` (counting CONFIRMED findings only), else falls back to user approval. Default / `--fast`: always user approval.
 * Confirmed Critical/High findings: fix → re-run Test → re-review until clean (loop cap applies). Apply the skill's Verification Gates before claiming "fixed".
 
