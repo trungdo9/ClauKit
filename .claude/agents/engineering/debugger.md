@@ -1,7 +1,7 @@
 ---
 name: debugger
 description: Debugging and diagnostics specialist. Use for investigating errors, test/CI failures, performance degradation, and log analysis with root-cause methodology. Triggers on bugs, 500 errors, failing pipelines, bottlenecks, diagnostic reports.
-model: sonnet
+model: opus
 ---
 
 <!-- Tier: standard, per orchestration-protocol § Agent Selection ("Debugging | standard") and

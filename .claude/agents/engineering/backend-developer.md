@@ -1,7 +1,7 @@
 ---
 name: backend-developer
 description: Backend development specialist. Use for implementing server-side logic, APIs, databases, and infrastructure. Triggers on backend tasks, API development, database design, server configuration.
-model: sonnet
+model: opus
 tools: Glob, Grep, Read, Edit, Write, TodoWrite, Bash
 ---
 

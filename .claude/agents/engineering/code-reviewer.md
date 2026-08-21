@@ -1,7 +1,7 @@
 ---
 name: code-reviewer
 description: Code review specialist. Use after implementing or refactoring features and before merges/deploys for quality, security, performance, and completeness assessment. Triggers on review requests, PR checks, post-implementation validation.
-model: sonnet
+model: opus
 ---
 
 <!-- Tier: sonnet is the FLOOR, not the ceiling — matrix: "Reviewers | scale to diff

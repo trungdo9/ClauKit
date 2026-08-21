@@ -1,7 +1,7 @@
 ---
 name: frontend-developer
 description: Frontend development specialist. Use for implementing UI/UX, frontend frameworks, styling, and client-side logic. Triggers on frontend tasks, React, Vue, mobile apps, design implementation.
-model: sonnet
+model: opus
 tools: Glob, Grep, Read, Edit, Write, TodoWrite, Bash
 ---
 
