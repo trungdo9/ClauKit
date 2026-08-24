@@ -1,6 +1,6 @@
 ---
 description: ⚡⚡⚡ Scan & analyze the codebase.
-argument-hint: [tasks-or-prompt] [--flow] [--lenses]
+argument-hint: [tasks-or-prompt] [since <ref>] [--flow] [--lenses]
 ---
 
 Think harder to scan + analyze the codebase. Follow Orchestration Protocol + Core Responsibilities + Subagents Team + Development Rules.
@@ -12,7 +12,7 @@ Elite software engineering expert — system architecture + technical decision-m
 
 ## Methodology references (skills)
 
-- **Code-review methodology** → `code-review` skill ([.claude/skills/software/code-review/SKILL.md](../../skills/software/code-review/SKILL.md)) — receiving feedback, requesting reviews, verification gates.
+- **Code-review methodology** → `code-review` skill ([.claude/skills/software/code-review/SKILL.md](../../skills/software/code-review/SKILL.md)) — fixed-point pinning, the three axes, receiving feedback, verification gates. Procedure in full: [requesting-code-review.md](../../skills/software/code-review/references/requesting-code-review.md).
 - **Planning methodology** → `planning` skill ([.claude/skills/software/planning/SKILL.md](../../skills/software/planning/SKILL.md)) — plan directory structure, file specification.
 - **Activate other skills as needed** from the catalog.
 
@@ -24,9 +24,30 @@ Elite software engineering expert — system architecture + technical decision-m
 - `/ck:scout` for codebase file discovery.
 
 ### Code Review
-- Multiple `code-reviewer` subagents in parallel (methodology from `code-review` skill).
-- Issues / duplicate code / security vulns → ask main agent to improve + repeat test cycle until all tests pass.
+
+**Pin the fixed point first.** Every review is the diff between `HEAD` and one named fixed point — `HEAD~1` for a single commit, the PR target branch pre-PR, the phase's recorded base from `STATE.md` inside a `/ck:cook` run, or whatever the user named ("review since X"). Verify the ref resolves and the diff is non-empty **before** spawning anything; a bad ref discovered inside three parallel subagents costs three contexts and returns three confusing reports. Use three-dot `git diff <fp>...HEAD` so the target branch's own commits stay out of the diff. Nothing named and more than one commit in play → **ask**, don't default to `HEAD~1`. Full procedure + spec-source lookup order: [requesting-code-review.md](../../skills/software/code-review/references/requesting-code-review.md) steps 1–2.
+
+**Build the package once:** `node .claude/scripts/ck/review-package.cjs <FIXED_POINT> [HEAD] [--plan <plan>]` — every reviewer gets the **path**, never an inline diff.
+
+**Three axes, three parallel subagents, separate reports:**
+
+| Axis | Agent | Question | Sources pasted into the prompt |
+|---|---|---|---|
+| **Standards** | `code-reviewer` | Does the code follow this project's documented standards? | [development-rules.md](../../workflows/development-rules.md) + `./docs/code-standards.md` + [smell-baseline.md](../../skills/software/code-review/references/smell-baseline.md) **in full** |
+| **Spec** | `code-reviewer` | Does the code do what was asked — no more, no less? | the plan file, else the ticket / issue |
+| **Security** | `security-auditor` | Does the diff hold the security line? | the `security` skill's Core rule tier + [checklists.md](../../skills/software/security/references/checklists.md) |
+
+- Dispatch all three **in one message** so they actually run concurrently.
+- Scale Standards to the diff — more than one `code-reviewer` on that axis when the change spans subsystems. Spec and Security stay one each.
+- **The Security axis is not optional** and not conditional on the diff looking security-shaped. When it needs more room than a capped report — a non-diff scope, a file count big enough for the LARGE-mode fan-out, or a saved report to keep — run [`/ck:security`](security.md) separately; it does not replace this axis.
+- **No spec found** → ask; if there genuinely is none, skip the Spec axis and say so. Never fold Spec findings into Standards, and never invent requirements to review against.
+- Cap every axis report at **400 words**.
+
+**Report the axes side by side under `## Standards` / `## Spec` / `## Security` — do not merge or rerank.** Code can follow every rule while implementing the wrong thing (Standards pass, Spec fail) or nail the ticket while breaking every convention (Spec pass, Standards fail); one ranked list hides exactly that. Close with per-axis totals and the worst finding *within each axis* — never a single winner across axes.
+
+- Findings inside an axis → ask main agent to fix (Critical now, High before proceeding) + repeat test cycle until all tests pass. Re-run only the affected axis.
 - All clear → report changes to user + ask for review + approval.
+- High-risk diff (>~200 lines, >3 files, or auth / payments / migrations / cross-service)? → escalate to `--lenses` below. The axes and the lenses compose: axes ask *did it follow the rules / do the job / hold the line*; lenses ask *is it actually wrong*.
 
 ### Plan
 - `planner` subagent analyzes researcher + scout reports → creates improvement plan following `planning` skill's **Plan Creation & Organization** + **Plan Directory Structure** + **Plan File Specification**.
@@ -65,7 +86,7 @@ Dedup → confirmed-only report (main-session orchestrator, gated/inspectable)
 
 ## Multi-Lens Variant (`--lenses`, composable with `--flow`)
 
-**Opt-in** — default `/ck:review` stays single-reviewer; this is a genuine ~4× on the review stage. **Auto-suggest it only above a risk threshold**: >~200 changed lines, >3 files, or the diff touches auth / payments / migrations / a cross-service boundary.
+**Opt-in escalation on top of the three axes** — this is a genuine ~4× on the review stage. **Auto-suggest it only above a risk threshold**: >~200 changed lines, >3 files, or the diff touches auth / payments / migrations / a cross-service boundary.
 
 Fan out **4 reviewers concurrently in one message**, each with a distinct lens.
 
@@ -80,10 +101,17 @@ Command-only additions:
 | **BLAST RADIUS** | cheap, narrow prompt |
 | **CONVENTION** | cheap, narrow prompt |
 
-- Build the package first: `node .claude/scripts/ck/review-package.cjs <BASE> [HEAD] --plan <plan>` — hand each lens the **path**, never an inline diff.
+- Reuse the review package built in the Code Review stage — same pinned fixed point, one file, every lens gets the path.
 - Composable with `--flow`; the reconcile step runs in the main session.
 
 **Examples:** `/ck:review --lenses` · `/ck:review --lenses --flow plans/<plan>` 
+
+## Relationship to other commands
+
+- [`/ck:security`](security.md) — the arbitrary-scope, saved-report version of the Security axis; the only path that reaches the LARGE-mode parallel fan-out.
+- [`/ck:cook`](cook.md) — its Review stage runs this same three-axis dispatch per phase, fixed point = the phase's recorded base.
+- [`/ck:fix`](fix.md) — remediates what this command reports.
+- [`/ck:tickets`](tickets.md) — when the Plan stage's output is big enough to need slicing before anyone starts.
 
 ## Notes
 - Concise grammar, list unresolved questions at end.

@@ -11,7 +11,7 @@ Code review requires technical evaluation, not emotional performance.
 
 ## The Response Pattern
 
-```
+```text
 1. READ:       Complete feedback without reacting
 2. UNDERSTAND: Restate requirement in own words (or ask)
 3. VERIFY:     Check against codebase reality
@@ -44,7 +44,7 @@ If any item is unclear → STOP, ask clarification on ALL unclear items first.
 - No performative agreement — skip to action or technical acknowledgment
 
 ### From external reviewers
-```
+```text
 BEFORE implementing:
   1. Technically correct for THIS codebase?
   2. Breaks existing functionality?
@@ -61,7 +61,7 @@ IF conflicts with prior human-partner decisions → stop and discuss first
 
 ## YAGNI Check for "Professional" Features
 
-```
+```text
 IF reviewer suggests "implementing properly":
   grep codebase for actual usage
   IF unused: "This endpoint isn't called. Remove it (YAGNI)?"

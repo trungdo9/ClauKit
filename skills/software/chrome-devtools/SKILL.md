@@ -24,7 +24,7 @@ The skill emphasizes **persistent browser sessions**: the browser keeps running 
 - Console/network/performance debugging
 - Web scraping with full JS execution
 
-**Do NOT use when**: running long autonomous AI sessions (use [`agent-browser`](../agent-browser/SKILL.md)), or for unit/E2E framework testing (use [`web-testing`](../web-testing/SKILL.md)).
+**Do NOT use when**: running long autonomous AI sessions (use [`agent-browser`](../agent-browser/SKILL.md)), or for unit/E2E framework testing (use [`test-automation`](../development/test-automation/SKILL.md)).
 
 ## When to Use vs `agent-browser`
 
@@ -162,7 +162,7 @@ Quick reference:
 ## Related Skills
 
 - [`agent-browser`](../agent-browser/SKILL.md) — Token-efficient alternative for long AI sessions
-- [`web-testing`](../web-testing/SKILL.md) — Playwright/Vitest/k6 developer toolkit
+- [`test-automation`](../development/test-automation/SKILL.md) — Playwright/Vitest/k6, the single testing toolkit
 - [`frontend-design`](../design/frontend-design/SKILL.md) — Screenshot implementations for design comparison
 
 ## Core Principle

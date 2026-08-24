@@ -140,4 +140,4 @@ agent-browser --remote browserbase open https://example.com
 
 ## Related Skills
 
-- [`web-testing`](../web-testing/SKILL.md) — Comprehensive testing with Playwright, Vitest, k6
+- [`test-automation`](../development/test-automation/SKILL.md) — Comprehensive testing with Playwright, Vitest, k6

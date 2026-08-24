@@ -1,6 +1,6 @@
 ---
 name: code-review
-description: Use when receiving code review feedback (especially if unclear or technically questionable), when completing tasks or major features requiring review before proceeding, or before making any completion/success claims. Covers four practices - edge-case scouting before review, receiving feedback with technical rigor over performative agreement, requesting reviews via code-reviewer subagent, and verification gates requiring evidence before any status claims. Essential for subagent-driven development, pull requests, and preventing false completion claims.
+description: Use when reviewing a branch, a PR, or work-in-progress changes ("review since X"), when receiving code review feedback (especially if unclear or technically questionable), when completing tasks or major features requiring review before proceeding, or before making any completion/success claims. Covers edge-case scouting, pinning the review's fixed point with a merge-base diff, three-axis review (Standards vs Spec vs Security) in parallel subagents reported without reranking, the smell baseline the Standards axis always carries, the four-lens escalation for high-risk diffs, receiving feedback with technical rigor over performative agreement, and verification gates requiring evidence before any status claims. Essential for subagent-driven development, pull requests, and preventing false completion claims.
 ---
 
 # Code Review
@@ -16,22 +16,27 @@ Technical correctness over social comfort. Verify before implementing. Ask befor
 | Practice | When | Reference |
 |---|---|---|
 | Pre-review edge-case scout | Before reviewer on complex change | inline below |
-| Receiving feedback | Code review comments arrive | `references/code-review-reception.md` (+ `-examples.md`) |
-| Requesting review | After task/feature, pre-merge | `references/requesting-code-review.md` |
-| Verification gates | Before any success claim | `references/verification-before-completion.md` (+ `verification-patterns.md`) |
+| Requesting review (fixed point · 3 axes) | After task/feature, pre-merge, "review since X" | [references/requesting-code-review.md](references/requesting-code-review.md) |
+| Smell baseline (Standards axis) | Pasted into every Standards-axis prompt | [references/smell-baseline.md](references/smell-baseline.md) |
+| Receiving feedback | Code review comments arrive | [references/code-review-reception.md](references/code-review-reception.md) (+ [-examples](references/code-review-reception-examples.md)) |
+| Verification gates | Before any success claim | [references/verification-before-completion.md](references/verification-before-completion.md) (+ [patterns](references/verification-patterns.md)) |
 
 ## Quick Decision Tree
 
-```
+```text
 SITUATION?
 ├─ Received feedback
 │  ├─ Unclear items? → STOP, ask for clarification first
 │  ├─ From human partner? → Understand, then implement
 │  └─ From external reviewer? → Verify technically before implementing
+├─ Asked to review a branch / PR / "since X"
+│  ├─ Fixed point named? → pin it, three-dot diff, pre-flight check
+│  └─ Not named + >1 commit? → ASK, don't default to HEAD~1
 ├─ Completed work
 │  ├─ Complex change? → Scout edge cases first (see below)
-│  ├─ Major feature/task? → Request code-reviewer subagent review
-│  └─ Before merge? → Request code-reviewer subagent review
+│  ├─ Major feature/task? → Request review (Standards · Spec · Security)
+│  ├─ High-risk diff? → escalate to the 4 lenses (§ Multi-Lens Review)
+│  └─ Before merge? → Request review, fixed point = the PR target branch
 └─ About to claim status
    ├─ Have fresh verification? → State claim WITH evidence
    └─ No fresh verification? → RUN verification command first
@@ -64,13 +69,20 @@ Forbidden: "You're absolutely right!", "Great point!", "Thanks for [anything]", 
 
 ## Requesting Review (Summary)
 
-1. Get SHAs: `BASE_SHA=$(git rev-parse HEAD~1)` and `HEAD_SHA=$(git rev-parse HEAD)`. For a multi-commit phase, BASE is the phase's recorded base from `STATE.md` — never assume `HEAD~1`.
-2. Dispatch code-reviewer subagent via Task tool with: WHAT_WAS_IMPLEMENTED, PLAN_OR_REQUIREMENTS, BASE_SHA, HEAD_SHA, DESCRIPTION. Hand the diff as a **file** (`.claude/scripts/ck/review-package.cjs`), not inline.
-3. Act on feedback: fix Critical immediately, High before proceeding, note Medium/Low for later.
+Full procedure: [references/requesting-code-review.md](references/requesting-code-review.md).
+
+1. **Pin the fixed point** — `HEAD~1` for one commit, the PR target branch pre-PR, the phase's recorded base from `STATE.md` for a multi-commit phase (**never** assume `HEAD~1` there), or whatever the user named. Diff with **three dots** (`git diff <fp>...HEAD`) so the target branch's own commits stay out. Pre-flight: ref resolves, diff non-empty — fail here, not inside a subagent.
+2. **Hand the diff as a file** — `node .claude/scripts/ck/review-package.cjs <fp> HEAD [--plan <dir>]` prints the path. Never inline a diff; it stays resident in the orchestrator's context for the whole run.
+3. **Locate the spec** — plan file → ticket / issue key → user-supplied path → `./docs/` → ask. Never invent requirements to review against.
+4. **Dispatch one subagent per axis, in one message** — Standards (`code-reviewer` + development-rules + code-standards + the smell baseline pasted in full) · Spec (`code-reviewer` + the spec) · Security (`security-auditor` + the `security` skill's Core rules). 400-word cap each.
+5. **Report side by side, do not rerank** — `## Standards` / `## Spec` / `## Security`. Standards-pass + Spec-fail is a real outcome; one merged list hides it.
+6. **Act on feedback** — inside each axis: Critical immediately, High before proceeding, Medium/Low noted. Re-run only the affected axis.
+
+The three axes are the default shape. High-risk diffs escalate to the four lenses below; the two compose — axes answer *did it follow the rules / do the job / hold the line*, lenses answer *is it actually wrong*.
 
 ## Multi-Lens Review (canonical lens table)
 
-For high-risk diffs (>~200 lines, >3 files, or auth/payments/migrations/cross-service), fan out 4 independent reviewers, one lens each — perspective diversity catches what redundancy can't:
+**Escalation, not a replacement.** The three axes above run on every review; the four lenses are opt-in on top for high-risk diffs — >~200 changed lines, >3 files, or a diff touching auth / payments / migrations / a cross-service boundary. Fan out 4 independent reviewers, one lens each — perspective diversity catches what redundancy can't:
 
 | Lens | Looks for |
 |---|---|
@@ -84,7 +96,7 @@ For high-risk diffs (>~200 lines, >3 files, or auth/payments/migrations/cross-se
 - **Admissibility:** every finding cites `file:line`, a git ref, or verbatim output. No evidence → discarded as a hallucination.
 - **Reconcile:** cross-check lens reports against each other, flag disagreements explicitly, rank Critical/High/Medium, route Critical/High through adversarial verify before fixing.
 
-Trigger: `/ck:review --lenses` (opt-in; default review stays single-reviewer).
+Trigger: `/ck:review --lenses` (opt-in; default review stays the three axes). Same pinned fixed point and the same review-package file — build it once, hand every lens the path.
 
 ## Common Use Cases
 
@@ -106,7 +118,9 @@ Trigger: `/ck:review --lenses` (opt-in; default review stays single-reviewer).
 - `debugging` — evidence-based debugging methodology
 - `sequential-thinking` — systematic problem solving
 - `planning` — task decomposition and verification
+- `security` — the engine behind the Security axis; `/ck:security` for a scope wider than a diff
+- `tdd` — the red-green discipline the Iron Law above assumes on a bug fix
 
 ## Bottom Line
 
-Technical rigor over social performance. Systematic review via code-reviewer subagent. Evidence before claims. Verify. Question. Then implement.
+Technical rigor over social performance. Pin the diff, split the axes, never rerank them. Evidence before claims. Verify. Question. Then implement.

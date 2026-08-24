@@ -13,7 +13,7 @@ argument-hint: [topic]
 1. **Scope** — clarify key terms, recency requirements, evaluation criteria, depth boundaries.
 2. **Gather** — spawn `researcher` agent(s) in parallel (max 5 tool calls each):
    - Use the `WebSearch` tool for web searches.
-   - Use `docs-seeker` skill when a GitHub repo URL is found.
+   - `WebFetch` the README (then `docs/`) when a GitHub repo URL is found.
 3. **Analyze** — identify patterns, best practices, pros/cons, security + performance implications, compatibility.
 4. **Report** — save to `./plans/<plan-name>/reports/YYMMDD-<topic>.md` per research skill's report template.
 

@@ -23,25 +23,25 @@ Companion to `verification-before-completion.md`. Concrete patterns per claim ty
 ## Key Patterns
 
 **Tests:**
-```
+```text
 ✅ [Run test command] [See: 34/34 pass] "All tests pass"
 ❌ "Should pass now" / "Looks correct"
 ```
 
 **Regression tests (TDD Red-Green):**
-```
+```text
 ✅ Write → Run (pass) → Revert fix → Run (MUST FAIL) → Restore → Run (pass)
 ❌ "I've written a regression test" (without red-green verification)
 ```
 
 **Merged / deployed status:**
-```
+```text
 ✅ git fetch origin && git branch -r --contains <sha>  [See: origin/main] "Merged to origin/main"
 ❌ "The branch shows merged locally" / "the PR was approved" (stale local state reported as fact — happened twice in the source data)
 ```
 
 **Pre-existing failure (baseline):**
-```
+```text
 ✅ suite run on the untouched tree before the first edit (`baseline:` in STATE.md) → compare failure sets
 ✅ already dirty? park own WIP on a scratch branch (explicit paths, untracked included) → checkout <base sha>
    → `git status --porcelain` MUST be empty → run → return   (foreign dirty files ⇒ don't park, stop)
@@ -50,19 +50,19 @@ Companion to `verification-before-completion.md`. Concrete patterns per claim ty
 ```
 
 **Build:**
-```
+```text
 ✅ [Run build] [See: exit 0] "Build passes"
 ❌ "Linter passed" (linter doesn't check compilation)
 ```
 
 **Requirements:**
-```
+```text
 ✅ Re-read plan → Create checklist → Verify each → Report gaps or completion
 ❌ "Tests pass, phase complete"
 ```
 
 **Agent delegation:**
-```
+```text
 ✅ Agent reports success → Check VCS diff → Verify changes → Report actual state
 ❌ Trust agent report
 ```

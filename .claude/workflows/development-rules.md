@@ -10,7 +10,7 @@
   - Use composition over inheritance for complex widgets
   - Extract utility functions into separate modules
   - Create dedicated service classes for business logic
-- Use `docs-seeker` skill for exploring latest docs of plugins/packages if needed
+- Use `WebSearch` / `WebFetch` (or a connected docs MCP server) for the latest docs of plugins/packages if needed
 - Use `gh` bash command to interact with Github features if needed
 - Use `psql` bash command to query Postgres database for debugging if needed
 - Use `ai-multimodal` skill for describing details of images, videos, documents, etc. if needed

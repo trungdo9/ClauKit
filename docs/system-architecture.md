@@ -227,7 +227,7 @@ Explore different approaches simultaneously
 
 **Controlled Dynamic Workflow (`/ck:flow`)**:
 ```
-/ck:flow prompt → Phase plan (cost-previewed, gated) → fan-out/pipeline over 29 agents → gate → next phase
+/ck:flow prompt → Phase plan (cost-previewed, gated) → fan-out/pipeline over 30 agents → gate → next phase
 ```
 Re-creates Claude Code's dynamic-workflow model on ClauKit primitives — 4-axis inheritance, phase gates, cost preview; never uses native `ultracode`. Orchestrated variants: `/ck:fix --flow`, `/ck:review --flow`.
 
@@ -281,12 +281,11 @@ Re-creates Claude Code's dynamic-workflow model on ClauKit primitives — 4-axis
         └── examples.md
 ```
 
-**130 skills across 5 groups** (see `docs/clauKit-registry.md` § 1 for the full itemized list):
-- **`global/`** (1): `docs-seeker`
+**126 skills across 4 groups** (see `docs/clauKit-registry.md` § 1 for the full itemized list). The `global/` group was removed 2026-08-21 — `docs-seeker` retired and `global/common/` with it, and the path is dropped from the kit manifests
 - **`marketing/`** (50): claude-seo engine (`seo`, `seo-audit`, `seo-technical`, `seo-content`, `seo-schema`, `seo-geo`, +19 more `seo-*`), coreyhaines31-sourced (`copywriting`, `cro`, `ads`, `emails`, `analytics`, +18 more), ClauKit-authored (`product-marketing`, `kit-builder`)
 - **`automation/`** (6): `marketing-orchestrator`, `mcp-ga4`, `mcp-gsc`, `mcp-sendgrid`, `mcp-resend`, `mcp-reviewweb`
 - **`integrations/`** (2): `wordpress-rest`, `mcp-wordpress`
-- **`software/`** (70): top-level standalone (`git`, `research`, `planning`, `cook`, `refactor`, `debugging`, `code-review`, `dynamic-workflow`, `claude-md`, `team`, `port`, `chrome-devtools`, `agent-browser`, `security`, `cti-expert`, `problem-solving`, `sequential-thinking`, …) + subcategorized: `ai/` (`ai-artist`, `ai-multimodal`, `remotion`), `database/` (`postgresql`, `supabase`), `design/` (`aesthetic`, `frontend-design`, `ui-ux-pro-max`, `threejs`, …), `development/` (`csharp-developer`, `node-specialist`, `python-pro`, `react-specialist`, `nextjs-developer`, `typescript-pro`, `bootstrap`, `test-automation`, …), `document-skills/` (`docx`, `pdf`, `pptx`, `xlsx`), `git/`, `infrastructure/` (`docker-expert`)
+- **`software/`** (68): top-level standalone (`git`, `research`, `planning`, `cook`, `refactor`, `debugging`, `code-review`, `dynamic-workflow`, `claude-md`, `team`, `port`, `to-tickets`, `chrome-devtools`, `agent-browser`, `security`, `problem-solving`, `sequential-thinking`, …) + subcategorized: `ai/` (`ai-artist`, `ai-multimodal`, `remotion`), `database/` (`postgresql`, `supabase`), `design/` (`aesthetic`, `frontend-design`, `ui-ux-pro-max`, `threejs`, …), `development/` (`csharp-developer`, `node-specialist`, `python-pro`, `react-specialist`, `nextjs-developer`, `typescript-pro`, `bootstrap`, `test-automation`, …), `document-skills/` (`docx`, `pdf`, `pptx`, `xlsx`), `git/`, `infrastructure/` (`docker-expert`)
 
 No `ffmpeg`, `shopify`, `mongodb`, `turborepo`, `csharp-expert`, or `security-audit` skills exist — these were either never real or have been superseded (`security-audit` → `security`; C# coverage → `csharp-developer`; image/video work → `ai-multimodal`). Verify any skill name against the registry before citing it.
 
@@ -339,7 +338,6 @@ No `ffmpeg`, `shopify`, `mongodb`, `turborepo`, `csharp-expert`, or `security-au
 
 **Skills Integration**:
 - **ai-multimodal**: Visual analysis + image generation/editing (images, videos, documents)
-- **docs-seeker**: Documentation reading
 - **sequential-thinking**: Problem decomposition
 
 #### 6.3 External Service Integration

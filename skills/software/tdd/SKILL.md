@@ -1,6 +1,6 @@
 ---
 name: tdd
-description: Red-green test-driven discipline — NO PRODUCTION CODE WITHOUT A FAILING TEST FIRST. Use for bug fixes (default), regression-prone changes, or when asked to "write tests first" / "TDD this". Covers red → verify-red → green → verify-green → refactor, the baseline rule (baseline-first, never git stash), the rationalization table, and red flags. Discipline only — test infra lives in test-automation, browser toolkits in web-testing, case derivation in scenario.
+description: Red-green test-driven discipline — NO PRODUCTION CODE WITHOUT A FAILING TEST FIRST. Use for bug fixes (default), regression-prone changes, or when asked to "write tests first" / "TDD this". Covers red → verify-red → green → verify-green → refactor, the baseline rule (baseline-first, never git stash), the rationalization table, and red flags. Discipline only — test infra and browser toolkits live in test-automation, case derivation in scenario.
 metadata:
   version: "1.0.0"
 ---
@@ -61,10 +61,9 @@ Slower, but every step is reversible and visible in `git reflog`.
 ## Scope boundary (registry-clean)
 
 - `tdd` (this skill) = the **discipline** — when tests are written and what order.
-- `[[test-automation]]` = test **infrastructure** — runners, CI wiring, coverage tooling.
-- `[[web-testing]]` = browser/app-dev **toolkit**.
+- `[[test-automation]]` = test **infrastructure and toolkit** — runners, browser/E2E, CI wiring, coverage, load.
 - `[[scenario]]` = **case derivation** — which cases exist (happy/negative/recovery).
 
 ## Cross-links
 
-`[[scenario]]`, `[[test-automation]]`, `[[web-testing]]`, `[[debugging]]`, `[[cook]]` (Test stage), `[[run-state]]` (gate lines, baseline line), `[[git]]` (Scoped Commits — the staging rules the dirty-tree fallback obeys)
+`[[scenario]]`, `[[test-automation]]`, `[[debugging]]`, `[[cook]]` (Test stage), `[[run-state]]` (gate lines, baseline line), `[[git]]` (Scoped Commits — the staging rules the dirty-tree fallback obeys)

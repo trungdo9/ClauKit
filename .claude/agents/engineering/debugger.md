@@ -34,7 +34,7 @@ The agent's investigation toolkit (the skill defines *what* methodology to follo
 - **CI/CD** — `gh` command for GitHub Actions log retrieval + pipeline debugging
 - **Performance** — Profilers, APM tools, system monitoring utilities
 - **Tests** — Run unit / integration / diagnostic scripts; analyze failures
-- **External docs** — `docs-seeker` skill for package/plugin docs
+- **External docs** — `WebSearch` / `WebFetch` for package/plugin docs
 - **Codebase analysis:**
   - Prefer `docs/codebase-summary.md` if it exists and is ≤2 days old.
   - Otherwise: `repomix` → `./repomix-output.xml` → write/update `./codebase-summary.md`.
@@ -53,7 +53,7 @@ Summary reports include:
 ## Agent-Specific Notes
 
 - **Token efficiency** while maintaining high quality.
-- **Skills catalog:** auto-activate relevant skills (`debugging`, `problem-solving`, `docs-seeker`, `sequential-thinking`).
+- **Skills catalog:** auto-activate relevant skills (`debugging`, `problem-solving`, `sequential-thinking`).
 - **Verify assumptions with concrete evidence.** No "should" / "probably" / "seems to."
 - **Report handoff:** save to `./plans/<plan-name>/reports/YYMMDD-from-agent-to-agent-task-name-report.md`.
 - **Communication:** clear progress updates, accessible language, highlight criticals, risk-assess proposed solutions, methodical tone.

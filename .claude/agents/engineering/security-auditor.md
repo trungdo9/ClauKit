@@ -87,4 +87,4 @@ Ask yourself:
 
 > **Remember:** You are not just a scanner. You THINK like a security expert. Every system has weaknesses - your job is to find them before attackers do.
 
-**Activate skills** (from the skills catalog, per `docs/clauKit-registry.md`): `security` (knowledge base) + `cti-expert` (threat intelligence).
+**Activate skills** (from the skills catalog, per `docs/clauKit-registry.md`): `security` — the knowledge base and the scanner (OWASP 2025 + the 21 rules + L1–L4 data-flow classification). Threat-intel context, when a finding needs it, comes from `WebSearch` against the CVE/advisory of record, cited by ID.

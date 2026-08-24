@@ -8,7 +8,9 @@ status: active
 # Preview
 
 ## Purpose
-Transform markdown or notebooks into slide decks (Marp, reveal.js, Quarto). Separates content authoring from presentation design. **Presentations only** — for viewing/serving plain markdown documents as formatted HTML, use the `markdown-novel-viewer` skill (scope split 2026-07-31; the render-markdown half previously duplicated here now lives only there).
+Transform markdown or notebooks into slide decks (Marp, reveal.js, Quarto). Separates content authoring from presentation design. **Presentations only.**
+
+> Just *reading* a markdown tree in a browser needs no skill: `mdbook serve` (Rust, TOC + search), `npx markserv` (zero-config, any folder), or `grip README.md` (GitHub styling) each serve a directory with live reload. That was a separate skill until 2026-08-21 — three well-known one-liners are not knowledge a kit has to carry. Publishing a docs **site** is `[[mintlify]]`.
 
 ## When to Use
 - Converting markdown slides for talks, demos, or team presentations
@@ -16,7 +18,7 @@ Transform markdown or notebooks into slide decks (Marp, reveal.js, Quarto). Sepa
 - Building interactive notebooks with executable code (Quarto with R/Python)
 - Generating PDFs or HTML slides for sharing with non-technical audiences
 
-**Do NOT use when**: Viewing/rendering markdown documents (use `markdown-novel-viewer`), building interactive web apps (use a framework), creating video tutorials (use video editing software), or needing real-time collaboration (use Google Slides/Figma).
+**Do NOT use when**: Just viewing/serving markdown locally (see the note above — `mdbook serve` / `markserv` / `grip`), publishing a docs site (use `[[mintlify]]`), building interactive web apps (use a framework), creating video tutorials (use video editing software), or needing real-time collaboration (use Google Slides/Figma).
 
 ## Workflow
 1. **Choose tool** — Marp (simple markdown → slides), reveal.js (advanced HTML/CSS control), or Quarto (scientific/data-driven content)

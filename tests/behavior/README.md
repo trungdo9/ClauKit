@@ -1,6 +1,6 @@
 # Behavioral Eval Harness
 
-129 skills and 2 hook test files means every Iron Law, gate, and red-flag table is an untested assertion. This harness runs a scenario prompt against a scratch repo via `claude -p` and asserts on the transcript — it verifies that a gate actually **fires under pressure**, which no diff review can confirm.
+126 skills and 2 hook test files means every Iron Law, gate, and red-flag table is an untested assertion. This harness runs a scenario prompt against a scratch repo via `claude -p` and asserts on the transcript — it verifies that a gate actually **fires under pressure**, which no diff review can confirm.
 
 ## Running
 

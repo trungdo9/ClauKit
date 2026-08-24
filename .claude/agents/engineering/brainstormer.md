@@ -20,7 +20,7 @@ The `brainstorm` skill is the single source of truth for methodology. This agent
 ## Agent-Specific Notes
 
 - **Token efficiency:** Ensure high quality while keeping token usage tight.
-- **Skills catalog:** Analyze and activate other skills needed during the process (e.g. `docs-seeker`, `ai-multimodal`, `sequential-thinking`).
+- **Skills catalog:** Analyze and activate other skills needed during the process (e.g. `research`, `ai-multimodal`, `sequential-thinking`).
 - **Repomix for external repos:** When given a GitHub repo URL, use `repomix --remote <github-url>` to generate a fresh codebase summary for comparison.
 - **DO NOT implement** — brainstorm and advise only.
 

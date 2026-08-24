@@ -1,6 +1,6 @@
 ---
 name: dynamic-workflow
-description: Controllable re-creation of Claude Code's dynamic-workflow model on ClauKit's own primitives — markdown recipes + Agent-tool fan-out/pipeline over the 29 existing agents, with 4-axis inheritance and hard gates. Use when a task needs deterministic large-ish fan-out + verification (whole-repo audit, N-file migration, cross-checked review, multi-angle plan) under explicit control, NOT the native closed runtime.
+description: Controllable re-creation of Claude Code's dynamic-workflow model on ClauKit's own primitives — markdown recipes + Agent-tool fan-out/pipeline over the 30 existing agents, with 4-axis inheritance and hard gates. Use when a task needs deterministic large-ish fan-out + verification (whole-repo audit, N-file migration, cross-checked review, multi-angle plan) under explicit control, NOT the native closed runtime.
 category: Orchestration
 status: active
 ---
@@ -9,7 +9,7 @@ status: active
 
 ## What This Skill Does
 
-Defines ClauKit's **controllable orchestration model**: take one task, decompose it into phases, fan-out/pipeline those phases over the 29 existing agents, gate between phases, and synthesize a single report — all driven by an orchestrator running **in the main session under explicit control**.
+Defines ClauKit's **controllable orchestration model**: take one task, decompose it into phases, fan-out/pipeline those phases over the 30 existing agents, gate between phases, and synthesize a single report — all driven by an orchestrator running **in the main session under explicit control**.
 
 This **re-creates** Claude Code's native dynamic-workflow model (workflow → agent → subagent, with inheritance) on primitives ClauKit fully controls. It borrows the *patterns* (adversarial verify, judge panel, loop-until-dry, multi-modal sweep, completeness critic) — it does **NOT** call the native `Workflow` tool or `ultracode` runtime. The native feature is the *reference model*; this skill is the controllable substitute.
 
@@ -44,7 +44,7 @@ The **orchestrator stays in the main session** — it holds the phase loop, the 
 The differentiator vs plain subagent fan-out: parent workflow → child agent → subagent inherit along **four named axes**. Full table + ClauKit examples in [references/inheritance-contract.md](references/inheritance-contract.md).
 
 1. **context/output** — every stage reads/writes the shared `plans/<plan>/reports/` dir; a child reads the parent's handoff file. No re-discovery.
-2. **persona** — a stage routes to `code-reviewer`/`debugger`/`scout`/`planner`/`tester`/etc. via Agent `subagent_type`. Zero new agent code — the 29 existing agents ARE the persona library.
+2. **persona** — a stage routes to `code-reviewer`/`debugger`/`scout`/`planner`/`tester`/etc. via Agent `subagent_type`. Zero new agent code — the 30 existing agents ARE the persona library.
 3. **config/gate** — development-rules pre-flight + every parent gate apply to every stage; a child stage **cannot silently skip** a gate.
 4. **model/budget** — a stage inherits the parent model or overrides it (e.g. parent `opus`, verify-skeptics `haiku`). **Always name the model explicitly per stage** — tier by work shape per [model-tiering.md](../context-engineering/references/model-tiering.md) (single source: matrix, turn-count-beats-token-price, 529 one-tier fallback, dead-agent diff check). Cost estimate shown pre-run; **no injected hard cap** — the user decides.
 

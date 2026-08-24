@@ -11,7 +11,7 @@ status: active
 
 Scenario-based testing is a **design discipline**: enumerate the real-world workflows a system must support and the failure paths it must survive, then express them as runnable test cases. Tool-agnostic.
 
-Distinct from `[[test-automation]]` (how to run tests, runners, CI integration) and `[[web-testing]]` (browser UI specifics, Playwright patterns).
+Distinct from `[[test-automation]]` — how to run tests: runners, Playwright/browser patterns, CI integration. That skill is the single testing toolkit; this one decides *which cases exist*.
 
 ## When to Use
 
@@ -65,7 +65,7 @@ A balanced suite covers every type. A suite that's 100% golden-path is theatre.
 |---|---|---|
 | Unit / integration | pytest, JUnit, Vitest | See `[[test-automation]]` |
 | API | Postman, curl, supertest, httpx | Express scenarios as request sequences |
-| Browser / UI | Playwright, Cypress | See `[[web-testing]]` |
+| Browser / UI | Playwright, Cypress | See `[[test-automation]]` |
 | End-to-end | Playwright + Postman + DB seeders | Compose layers per scenario |
 
 The scenario itself is the same markdown spec — only the execution tool changes.
@@ -86,4 +86,4 @@ See `references/`:
 
 ## Cross-links
 
-`[[test-automation]]`, `[[web-testing]]`, `[[debugging]]`
+`[[test-automation]]`, `[[tdd]]`, `[[debugging]]`

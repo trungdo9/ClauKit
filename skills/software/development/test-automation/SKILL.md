@@ -1,27 +1,26 @@
 ---
 name: test-automation
-description: QA / automation engineering — Playwright deep-dive (configs, page objects, debugging), Cucumber BDD, mobile (Appium/Detox), API (Supertest/Newman), CI/CD integration, credential management. Cross-platform test infrastructure.
+description: All testing layers — Vitest unit, Playwright E2E deep-dive (configs, page objects, debugging, traces), Cucumber BDD, mobile (Appium/Detox), API (Supertest/Newman), k6 load, CI/CD integration, credential management. Use when writing or fixing tests, setting up test infrastructure, chasing a flaky test, or establishing performance baselines. One skill for every layer — there is no second testing toolkit to consult.
+category: Testing & Debug
+status: active
 license: MIT
-version: 1.0.0
+version: 2.0.0
 ---
 
 # Test Automation (QA Engineering)
 
-Production-ready test automation infra for **QA / automation engineers** building cross-platform test suites. Canonical Playwright reference (configs, page objects, debugging, credentials).
+The single testing reference for this kit — every layer, whether you are the app
+developer validating your own change or the QA engineer building reusable
+infrastructure. Unit (Vitest) · E2E (Playwright, canonical) · BDD (Cucumber) ·
+mobile (Appium/Detox) · API (Supertest/Newman) · load (k6).
 
-## Scope vs `web-testing`
-
-Use this skill when you are the **QA / automation engineer** building reusable test infrastructure spanning web + mobile + API + BDD, or when you need deep Playwright configuration / debugging / CI/CD setup / credential management.
-
-Use the [`web-testing`](../../web-testing/SKILL.md) skill when you are the **app developer** validating your own web app with the three-layer toolkit (Vitest unit + Playwright E2E quick start + k6 load).
-
-Canonical content split:
-- **Playwright deep-dive, page objects, debugging, CI/CD, credentials** → here (this skill)
-- **BDD (Cucumber), mobile (Appium/Detox), API (Supertest/Newman)** → here
-- **Vitest unit + k6 load** → `web-testing` skill
+Pick the layer by what you are trying to learn, not by your job title: a
+function's logic → unit; a user's path through the app → E2E; a contract between
+services → API; behaviour under concurrency → load.
 
 ## When to Use
 
+- Writing or fixing unit tests for functions, components, utilities
 - Setting up E2E test automation from scratch (web/mobile/API)
 - Writing Playwright tests with page objects + advanced configs
 - Implementing Cucumber/BDD scenarios with Gherkin
@@ -29,6 +28,9 @@ Canonical content split:
 - Creating maintainable, flaky-resistant test suites
 - Managing test credentials across local / CI / cloud
 - Debugging test failures with traces, snapshots, codegen
+- Establishing performance baselines and catching regressions under load
+
+**Do NOT use when**: driving a browser for a long autonomous session (use `[[agent-browser]]`) · profiling a live page's runtime, network or Core Web Vitals (use `[[chrome-devtools]]`) · deriving *which* cases to test (use `[[scenario]]`) · practising red-green discipline on a bug fix (use `[[tdd]]`) · testing third-party SaaS behaviour you do not control.
 
 ## Supported Frameworks
 
@@ -48,7 +50,44 @@ Canonical content split:
 ### API Testing
 - **Supertest** - HTTP assertions
 - **Rest Assured** - Java API testing
-- ** Newman** - Postman CLI
+- **Newman** - Postman CLI
+
+### Unit Testing
+- **Vitest** - Primary unit runner (Jest-compatible API, TypeScript-native, smart watch)
+- **Jest** - Alternative; still the default in older repos
+- **xUnit** - .NET services (see the [`csharp-developer`](../csharp-developer/SKILL.md) skill)
+
+### Load Testing
+- **k6** - Scriptable load tests with thresholds as pass/fail gates
+
+## Unit Testing (Vitest)
+
+The cheapest layer — reach for it first. Anything an E2E test could prove about a
+pure function, a unit test proves faster and points straight at the cause.
+
+1. **Configure** — `vitest.config.ts` sets the environment (`jsdom` for browser
+   APIs), coverage thresholds, reporters.
+2. **Write** — `.test.ts` / `.spec.ts` colocated with the source file.
+3. **Run** — `npm run test`; `npm run test:watch` re-runs only the tests affected
+   by the files you touched.
+4. **Coverage** — `npm run test:coverage` writes an HTML report to
+   `coverage/index.html`.
+
+```typescript
+// vitest.config.ts
+export default defineConfig({
+  test: {
+    globals: true,
+    environment: 'jsdom',
+    coverage: {
+      provider: 'v8',
+      reporter: ['text', 'html'],
+      include: ['src/**/*.ts'],
+      exclude: ['src/**/*.test.ts'],
+    },
+  },
+});
+```
 
 ## Playwright Quick Start
 
@@ -375,9 +414,72 @@ npx playwright show-report
 npx playwright test --reporter=json
 ```
 
+## Load Testing (k6)
+
+1. **Write the script** — virtual users, request pattern, and thresholds. Put the
+   thresholds in the script: they are the pass/fail gate, not a number someone
+   eyeballs in the output.
+2. **Run locally** — `k6 run script.js` prints throughput, p95 latency, error rate.
+3. **Scale** — raise `vus` and ramp duration gradually. A cold jump to peak load
+   measures the ramp, not the system.
+4. **Compare against a baseline** — a load run with nothing to compare to cannot
+   detect a regression. Record the numbers.
+
+```javascript
+import http from 'k6/http';
+import { check, sleep } from 'k6';
+
+export const options = {
+  vus: 10,
+  duration: '30s',
+  thresholds: {
+    http_req_duration: ['p(95)<500'],
+    http_req_failed: ['rate<0.1'],
+  },
+};
+
+export default function () {
+  const res = http.get('https://api.example.com/data');
+  check(res, { 'status is 200': (r) => r.status === 200 });
+  sleep(1);
+}
+```
+
+## Command Cheat-Sheet
+
+```bash
+# Unit: run all, watch only what changed
+npm run test
+npm run test:watch
+npm run test:coverage            # HTML report at coverage/index.html
+
+# E2E: one spec, headed / Inspector / UI mode
+npx playwright test tests/e2e/login.spec.ts --headed
+npx playwright test tests/e2e/checkout.spec.ts --debug
+npx playwright test --ui
+npx playwright test --trace on    # then: npx playwright show-trace trace.zip
+
+# Load: 50 users, 5-minute ramp
+k6 run -e USERS=50 -e RAMP_UP=5m load-test.js
+```
+
+## Common Pitfalls
+
+- **Over-testing in E2E** — E2E covers user workflows, not every button. If a
+  unit test can prove it, the E2E test is slower and flakier for no gain.
+- **Brittle selectors** — CSS/XPath break on layout changes. Use `data-testid`.
+- **Non-deterministic waits** — never `waitForTimeout(ms)`. Use
+  `waitForSelector` / `expect(...).toBeVisible()`.
+- **Failures without context** — "test failed" alone is useless. Capture traces,
+  screenshots, console logs (`--trace on`).
+- **Load-test spikes** — too short a ramp measures the ramp, not steady state.
+- **No baseline metrics** — without recorded numbers, no regression is detectable.
+
 ## Resources
 
 - Playwright Docs: https://playwright.dev/docs/intro
+- Vitest Docs: https://vitest.dev/
+- Grafana k6 Docs: https://grafana.com/docs/k6/latest/
 - Cucumber Docs: https://cucumber.io/docs/
 - Playwright Best Practices: https://playwright.dev/docs/best-practices
 - MS Playwright Testing: https://learn.microsoft.com/en-us/playwright/
@@ -385,11 +487,16 @@ npx playwright test --reporter=json
 ## Credential Management
 
 See: [references/credential-management.md](references/credential-management.md) for detailed guide on storing and managing test credentials across local, CI/CD, and cloud environments.
-.env.example            # Template - commit
-tests/
-├── .env               # Test-specific credentials
-├── fixtures/
-│   └── accounts.json # Encrypted or gitignored
+
+```text
+project/
+├── .env                    # Root credentials - NEVER commit
+├── .env.example            # Template - safe to commit
+├── .gitignore             # Must include .env
+└── tests/
+    ├── .env              # Test-specific credentials
+    └── fixtures/
+        └── accounts.json # Encrypted or gitignored
 ```
 
 ### Environment Variables Setup
@@ -418,7 +525,7 @@ ADMIN_ID=
 ```
 
 **3. Add to `.gitignore`:**
-```
+```text
 .env
 .env.local
 .env.*.local
@@ -569,9 +676,12 @@ npx playwright test
 ## Integration with Tester Agent
 
 When the `tester` agent runs tests:
-1. Use `test-automation` skill for E2E/BDD tests
-2. Use unit test frameworks (Jest, Vitest, etc.) for unit tests
+1. This skill covers every layer — unit, E2E, BDD, API, load. There is no second
+   testing skill to consult.
+2. Start at the cheapest layer that can prove the claim; escalate only as needed.
 3. Prioritize Playwright over Cypress (better cross-browser)
 4. Use BDD for acceptance criteria tests
 5. Always include `data-testid` attributes in development code
+6. On a failure, root-cause it with the `debugging` skill before changing the test —
+   a test edited until it passes proves nothing.
 6. Check for stored credentials in `.env` before prompting user

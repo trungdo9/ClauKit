@@ -2,8 +2,9 @@
 
 # Large Review Workflow (LARGE mode)
 
-For repos: >20 main-lang files OR >30 total files OR >14 days (commit scope).
+Scope: >20 main-language files OR >30 total files. A >14-day commit span brings the chunking + TodoWrite resume discipline below, but does not by itself raise the agent count (SKILL.md § Step 3).
 Main agent = orchestrator only. Sub-agents do the scanning.
+Agent count = `min(3, ceil(files / 25))` — a 40-file scan gets 2, not a flat 3, and no agent is spawned for a chunk that does not exist.
 
 ## L1 — Setup
 Create `.security-tmp/` workspace. Read `references/chunking-strategy.md` and divide files into chunks.
@@ -12,8 +13,9 @@ Create `.security-tmp/` workspace. Read `references/chunking-strategy.md` and di
 Use TodoWrite for each chunk (enables resume if interrupted).
 
 ## L3 — Spawn sub-agents
-Spawn up to 3 sub-agents in parallel. Each receives:
+Spawn the computed number (≤3) in parallel. Each receives:
 - File list for its chunk
+- The active rule IDs (Core + fired gates) — not all 21 unless `--full`
 - Full prompt from `references/sub-agent-prompts.md` (self-contained, no file loading)
 - Output path: `.security-tmp/findings-<chunk-slug>.md`
 
@@ -29,4 +31,4 @@ Translate to $LANG. Follow `references/output-format.md`. Write to `security-rep
 Delete `.security-tmp/` after successful aggregation. Preserve `security-reports/`.
 
 ## Performance target
-15 chunks → 5-10 minutes with parallel processing.
+~25K tokens per agent, ≤3 agents. 15 chunks → 5-10 minutes with parallel processing.

@@ -234,17 +234,6 @@ Or combine with slash commands:
 
 ---
 
-### docs-seeker
-
-**Search technical documentation**
-
-**Features:**
-- Search llms.txt docs
-- GitHub repository analysis
-- Multiple source aggregation
-
----
-
 ### skill-creator
 
 **Create new Claude skills**

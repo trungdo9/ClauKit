@@ -24,7 +24,7 @@ ClauKit/
 │   ├── hooks/                  # Git hooks and scripts (scout-block.cjs dispatcher)
 │   ├── kits/                   # Kit manifests (*.json) — engineer/marketing/both
 │   ├── scripts/ck/             # 7 shipped helpers + lib/ — see § Scripts below
-│   ├── skills/                 # 130 SKILL.md files — see § Skills Library below
+│   ├── skills/                 # 126 SKILL.md files — see § Skills Library below
 │   ├── workflows/              # Development workflow definitions (*.md)
 │   ├── settings.json           # Claude Code settings
 │   ├── metadata.json           # Installed-project metadata (kit, version)
@@ -93,7 +93,7 @@ Notes:
 
 ### 2. Slash Commands System
 
-**Command files**: 25 under `.claude/commands/ck/` (`/ck:<name>`) + 12 under `.claude/commands/mk/` (`/mk:<name>`) = 37 files. `docs/clauKit-registry.md` counts "commands" differently (dispatcher sub-actions like `/ck:fix ci` counted separately) — its header/§1/§3/§6 figures are now reconciled to **56** logical commands (= 214 total entries with 129 skills + 29 agents). The registry's § 3 tables remain the itemized source of truth.
+**Command files**: 26 under `.claude/commands/ck/` (`/ck:<name>`) + 12 under `.claude/commands/mk/` (`/mk:<name>`) = 38 files. `docs/clauKit-registry.md` counts "commands" differently (dispatcher sub-actions like `/ck:fix ci` counted separately) — its header/§1/§3/§6 figures are now reconciled to **57** logical commands (= 213 total entries with 126 skills + 30 agents). The registry's § 3 tables remain the itemized source of truth.
 
 | Namespace | Commands |
 |-----------|----------|
@@ -104,17 +104,16 @@ Several `/ck:` commands are dispatchers with positional-arg variants (no dash), 
 
 ### 3. Skills Library
 
-**Skills Organization** (`.claude/skills/` — 129 `SKILL.md` files across 5 top-level groups):
+**Skills Organization** (`.claude/skills/` — 126 `SKILL.md` files across 4 top-level groups):
 
 | Group | Count | Notes |
 |-------|------:|-------|
-| `global/` | 1 | `docs-seeker` |
 | `marketing/` | 50 | 25 claude-seo engine skills + 23 coreyhaines31-sourced + 2 ClauKit-authored (`product-marketing`, `kit-builder`) |
 | `automation/` | 6 | MCP wrappers: `marketing-orchestrator`, `mcp-ga4`, `mcp-gsc`, `mcp-sendgrid`, `mcp-resend`, `mcp-reviewweb` |
 | `integrations/` | 2 | `wordpress-rest`, `mcp-wordpress` |
-| `software/` | 70 | Top-level standalone (39) + subcategorized: `ai/` (3), `database/` (2), `design/` (9), `development/` (11), `document-skills/` (4), `git/` (1), `infrastructure/` (1) |
+| `software/` | 68 | Top-level standalone (38, incl. `git`) + subcategorized (30): `ai/` (3), `database/` (2), `design/` (9), `development/` (11), `document-skills/` (4), `infrastructure/` (1) |
 
-No `ffmpeg`, `shopify`, or `csharp-expert` skills exist. Image/video generation and editing route through the `ai-multimodal` skill (stale `imagemagick` references were purged 2026-07-16 along with the earlier-deleted `media-processing` skill). C#/.NET work is covered by the `csharp-developer` skill (`software/development/csharp-developer/`), not `csharp-expert`.
+No `ffmpeg`, `shopify`, `csharp-expert`, `docs-seeker`, `cti-expert`, or `web-testing` skills exist. Testing at every layer is one skill — `software/development/test-automation` (v2.0.0, absorbed `web-testing` 2026-08-21); external docs come from `WebFetch` / `WebSearch`, not a skill. Image/video generation and editing route through the `ai-multimodal` skill (stale `imagemagick` references were purged 2026-07-16 along with the earlier-deleted `media-processing` skill). C#/.NET work is covered by the `csharp-developer` skill (`software/development/csharp-developer/`), not `csharp-expert`.
 
 Single source of truth: **`docs/clauKit-registry.md`** (skills + agents + commands + duplicate detection). Skills auto-activate by description match; agents/commands cross-link to related skills.
 
@@ -287,5 +286,5 @@ Kit-specific MCP wrappers live under `.claude/skills/automation/` (GA4, GSC, Sen
 
 ## Unresolved Questions
 
-1. ~~registry command-count inconsistency~~ — RESOLVED 2026-07-31: header, § 3 and § 6 all read 56 logical commands / 216 entries, verified against the § 3 row count.
+1. ~~registry command-count inconsistency~~ — RESOLVED 2026-07-31; re-verified 2026-08-21: header, § 3 and § 6 all read 57 logical commands / 213 entries, recounted from disk (see registry § 6).
 2. `README.md` is 768 lines, exceeding the generic "<300 lines" guidance in `CLAUDE.md` — appears to be a deliberate choice from a recent commit ("docs: split marketing kit guide into MARKETING.md"). Flagging rather than enforcing; needs an explicit decision on whether the rule should carve out an exception for README.

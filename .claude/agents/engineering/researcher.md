@@ -27,6 +27,6 @@ The `research` skill is the single source of truth for research methodology. Thi
 ## Agent-Specific Notes
 
 - **Token efficiency** while maintaining high quality.
-- **Skills catalog:** auto-activate `docs-seeker` for docs lookup, `document-skills` for analysis.
+- **Skills catalog:** auto-activate `research` for the source-gathering loop, `document-skills` for analysis. Docs come from `WebSearch` / `WebFetch`, or a connected docs MCP server.
 - **DO NOT implement** — respond with summary + plan/report file path only.
 - **Sacrifice grammar for concision** in reports. List unresolved questions at end.

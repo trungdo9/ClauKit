@@ -4,7 +4,7 @@ ClauKit has four orchestration options. Pick by *control need* + *scale* + *pers
 
 | Dimension | Plain subagent fan-out (Agent tool) | **`/ck:flow` (this skill)** | `/ck:team` (sessions) | Markdown workflow (`*.md`) |
 |---|---|---|---|---|
-| Engine | Agent tool, 1 turn | ClauKit primitives + 29 agents, gated | Independent Claude sessions | Prose the model interprets |
+| Engine | Agent tool, 1 turn | ClauKit primitives + 30 agents, gated | Independent Claude sessions | Prose the model interprets |
 | Plan location | Claude context | ClauKit recipe + orchestrator context | Lead context + task list | Claude context |
 | Control | Model picks | **Explicit / gated / inspectable** | Lead, turn by turn | Interpretive |
 | Mid-run intervention | turn-by-turn | **Yes (gated, between phases)** | Yes (messaging) | turn-by-turn |
@@ -25,7 +25,7 @@ ClauKit has four orchestration options. Pick by *control need* + *scale* + *pers
 
 | | `/ck:flow` (ClauKit) | Native dynamic workflow |
 |---|---|---|
-| Engine | Stable Agent tool + 29 agents | Closed background JS runtime |
+| Engine | Stable Agent tool + 30 agents | Closed background JS runtime |
 | Control | Gated, inspectable, main-session orchestrator | Delegated, unsupervised |
 | Preview-stage dependency | **No** | Yes (v2.1.154+, API churn) |
 | Relationship | **Re-creates the model, borrows quality patterns** | The reference model |

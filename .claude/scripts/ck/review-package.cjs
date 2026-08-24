@@ -5,7 +5,8 @@
  *
  * Usage: node .claude/scripts/ck/review-package.cjs <BASE> [HEAD] [--plan <plan-dir>]
  *
- * Contents: `git log --oneline BASE..HEAD` + `git diff --stat` + `git diff -U10`.
+ * Contents: `git log --oneline BASE..HEAD` + `git diff --stat` + `git diff -U10`,
+ * the two diffs taken against the MERGE-BASE (`BASE...HEAD`, three dots).
  * Written to the plan's reports/ workspace (or the system temp dir without
  * --plan); the PATH is printed. Reviewers always get a diff FILE — an inlined
  * diff stays resident in the orchestrator's context forever.
@@ -44,13 +45,21 @@ function main() {
 
   // baseSha/headSha are hex at this point, but they still travel as single
   // argv elements — no shell is involved anywhere in this file.
-  const range = `${baseSha}..${headSha}`;
-  const log = git(['log', '--oneline', range]);
-  const stat = git(['diff', '--stat', range]);
-  const diff = git(['diff', '-U10', range]);
+  //
+  // Two ranges, not one. `log A..B` is the commits under review — correct with
+  // two dots. `diff A..B` is not: it is a plain two-endpoint diff, so when BASE
+  // is a branch that moved on after this work forked off, every commit someone
+  // else landed there shows up inverted in the review. Three dots diffs against
+  // the merge-base, which is the change actually under review. (Symmetric for
+  // `log`, so the two forms are not interchangeable — keep both.)
+  const logRange = `${baseSha}..${headSha}`;
+  const diffRange = `${baseSha}...${headSha}`;
+  const log = git(['log', '--oneline', logRange]);
+  const stat = git(['diff', '--stat', diffRange]);
+  const diff = git(['diff', '-U10', diffRange]);
 
   const body = [
-    `# Review package — ${baseSha}..${headSha}`,
+    `# Review package — ${baseSha}...${headSha} (merge-base diff)`,
     '',
     '## Commits',
     '```',

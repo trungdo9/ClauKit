@@ -15,7 +15,7 @@
 - Enables multi-step reasoning with revision capability
 
 ### Documentation Research
-- Use `docs-seeker` skill to read and understand documentation
+- Fetch documentation with `WebSearch` / `WebFetch` (or a connected docs MCP server) and read it before planning against it
 - Research plugins, packages, and frameworks
 - Find latest technical documentation using llms.txt standard
 

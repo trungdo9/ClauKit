@@ -11,7 +11,7 @@ Claiming work is complete without verification is dishonesty, not efficiency.
 
 ## The Iron Law
 
-```
+```text
 NO COMPLETION CLAIMS WITHOUT FRESH VERIFICATION EVIDENCE
 ```
 
@@ -19,7 +19,7 @@ If you haven't run the verification command in this message, you cannot claim it
 
 ## The Gate Function
 
-```
+```text
 BEFORE claiming any status or expressing satisfaction:
 
 1. IDENTIFY: What command proves this claim?

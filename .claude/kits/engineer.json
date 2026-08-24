@@ -11,8 +11,7 @@
       ".claude/commands/ck/"
     ],
     "skills": [
-      ".claude/skills/software/",
-      ".claude/skills/global/"
+      ".claude/skills/software/"
     ],
     "workflows": [
       ".claude/workflows/primary-workflow.md",

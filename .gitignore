@@ -90,3 +90,8 @@ prompt.md
 # dereferences the symlink, so a consumer's `.claude/skills/` is real files they
 # may well want in their own history.
 /.claude/skills
+
+# Security scan output — enumerates exploitable paths; never commit one.
+# `/ck:security` writes the report, `.security-tmp/` is its LARGE-mode scratch.
+security-reports/
+.security-tmp/

@@ -70,7 +70,7 @@ Before answering, ensure you have grounded context:
 1. Read `./README.md`, `./CLAUDE.md`, and relevant `./docs/*` (project-overview-pdr, system-architecture, codebase-summary, code-standards) **only if not already in context**.
 2. Locate the code: use `grep` / `Glob` to find entry points, then `Read` actual files.
 3. If the question spans multiple subsystems → delegate to `/ck:scout` or the `scout` agent for parallel discovery.
-4. For library / external-doc questions → activate `docs-seeker` skill.
+4. For library / external-doc questions → `WebSearch` + `WebFetch` the official docs, or a connected docs MCP server (`[[use-mcp]]`).
 
 **Red flag:** answering without reading any code = guessing. Stop and read first.
 
@@ -123,7 +123,7 @@ Load on demand:
 
 - `/ck:ask` command — primary trigger (this skill activates from it)
 - `scout` skill/agent — for broad parallel discovery before answering
-- `docs-seeker` skill — for external library docs
+- `WebSearch` / `WebFetch` — for external library docs
 - `planning` skill — when the answer turns into "we should plan this"
 - `debugging` skill — when the question is really "why is this broken?"
 - `brainstormer` agent — when the question is "what should we build?"

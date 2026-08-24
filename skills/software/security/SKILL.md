@@ -1,6 +1,6 @@
 ---
 name: security
-description: Complete security suite — expert mindset + active code scanner. Covers OWASP 2025, supply chain, L1-L4 data flow analysis, 21 vulnerability rules (Go/PHP/Python/TS language-specific overrides), SMALL/LARGE scan modes, bilingual output (vi/en). Use when scanning code for security vulnerabilities, doing security audits, or applying security mindset. Triggers on "scan security", "kiểm tra bảo mật", "security audit", "review security".
+description: Complete security suite — expert mindset + active code scanner. Covers OWASP 2025, supply chain, L1-L4 data flow analysis, 21 vulnerability rules with a cost-tiered default pass, TINY/SMALL/LARGE scan modes, bilingual output (vi/en). Use when scanning code for security vulnerabilities, doing security audits, or applying security mindset. Triggers on "scan security", "kiểm tra bảo mật", "security audit", "review security".
 allowed-tools: Read, Glob, Grep, Bash
 ---
 
@@ -10,14 +10,15 @@ allowed-tools: Read, Glob, Grep, Bash
 
 Two complementary layers:
 - **Strategic layer** → `references/mindset.md`: OWASP 2025, supply chain, threat modeling, risk prioritization, cloud security
-- **Tactical layer** → Active scanner: 21 rules, L1-L4 data flow, SMALL/LARGE mode, language-specific overrides
+- **Tactical layer** → Active scanner: 21 rules (tiered — 8 core, 9 signal-gated, 4 opt-in), L1-L4 data flow, TINY/SMALL/LARGE mode
 
 ## Quick Reference
 
 | Use case | Action |
 |---|---|
 | Security mindset / threat modeling | Load `references/mindset.md` |
-| Scan entire repo | `/ck:fix` with security context OR activate this skill + run scanner workflow below |
+| Scan the working diff | [`/ck:security`](../../../commands/ck/security.md) — the default scope |
+| Scan entire repo | `/ck:security repo` — explicit by name; main-context orchestration, so LARGE mode gets its parallel fan-out |
 | OWASP checklist review | Load `references/checklists.md` |
 | Understand data flow analysis | Load `references/data-flow-classification.md` |
 
@@ -25,14 +26,17 @@ Two complementary layers:
 
 | Scope | Command |
 |---|---|
-| Entire repo (default) | `/security` or activate skill, run workflow |
-| Uncommitted changes | Add `uncommitted` or `diff` arg |
-| Staged files | Add `staged` arg |
-| Recent commits | Add `commit within Xdays` arg |
-| Specific commit | Add `commit id <sha>` arg |
-| Pull request | Add `pr id <number>` arg |
+| Working diff (**default**) | `/ck:security` — staged, else uncommitted, else `HEAD~1` |
+| Entire repo | `/ck:security repo` — never a fallback, only when named |
+| Uncommitted changes | `/ck:security uncommitted` (or `diff`) |
+| Staged files | `/ck:security staged` |
+| Recent commits | `/ck:security commit within Xdays` |
+| Specific commit | `/ck:security commit id <sha>` |
+| Pull request | `/ck:security pr id <number>` |
 
 **Output language:** append `lang=en` or `--en` (default: `vi`)
+
+Scope + LANG parsing, TINY/SMALL/LARGE routing, the rule tiers, and the LARGE-mode sub-agent fan-out are driven by [`/ck:security`](../../../commands/ck/security.md) — a delegated subagent has no `Task` tool, so only the command path can spawn the parallel scanners.
 
 ## Core Principle: Reasoning-First (NOT pattern-match)
 
@@ -57,22 +61,25 @@ Run bash ONCE to detect scope, lang, file list, routing decision. Save to `secur
 - `lang=en` → `references/i18n/en.md`
 
 ### Step 2 — Detect primary language
-Read `references/language-detection.md`. Language ≥30% of files = primary. Load `rules/languages/<lang>/` overlay if available.
+The majority extension in the file list is the primary language — infer it from the Step 0 list, no extra read. Load a `rules/languages/<lang>/*.md` overlay **only if that glob matches**; the kit ships the hook (see `rules/languages/README.md`) with no overlay files, so on a current repo this step is a no-op and `references/language-detection.md` never needs opening.
 
 ### Step 3 — Route by size
 
-| Condition | Threshold | Mode |
+**File count decides how many agents run. Nothing else does.**
+
+| Files in scope | Mode | Agents |
 |---|---|---|
-| Main-lang files | ≤20 | SMALL |
-| Main-lang files | >20 | LARGE |
-| Total files | ≤30 | SMALL |
-| Total files | >30 | LARGE |
-| Commit timespan | ≤14 days | SMALL |
-| Commit timespan | >14 days | LARGE |
+| ≤5 | TINY | 0 — scan inline |
+| ≤20 main-lang **and** ≤30 total | SMALL | 1 |
+| above either | LARGE | `min(3, ceil(files / 25))` |
 
-ANY LARGE condition → use LARGE mode. Read matching workflow: `workflows/small-review.md` or `workflows/large-review.md`.
+A >14-day commit span raises the **discipline** — chunk the list, one TodoWrite item per chunk so an interrupted run resumes — but never the agent count: a 30-day window touching 3 files is still TINY. Ordering an old "ANY LARGE condition wins" read the other way would spawn three agents for three files, which is the exact waste the tiers exist to remove.
 
-### Step 4 — Apply 21 rules
+Workflow: `workflows/small-review.md` (TINY runs it inline) or `workflows/large-review.md`.
+
+### Step 4 — Apply the active rules
+
+All 21 IDs below stay canonical — tiering picks which ones a **pass** loads, and loading all of them costs ~15K tokens before a file is read. Default pass: **Core 8** = `01`, `02`, `03`, `04`, `10`, `12`, `14`, `21` · **9 signal-gated** (`05`+`20` dependency manifest · `07` model binding · `08` deserialization sink · `09` outbound client · `11` cookie auth · `13` password hashing · `15` CORS config · `16` upload sink) · **4 opt-in** = `06`, `17`, `18`, `19`. Signals, rationale, and the `--full` / `--rules` overrides live in [`/ck:security`](../../../commands/ck/security.md) § Rule tiers. A report must always name the IDs it skipped — unscanned is not clean.
 
 | # | ID | Severity |
 |---|---|---|
@@ -119,3 +126,4 @@ Follow `references/output-format.md`. Verdict: CRITICAL findings = FAIL, HIGH on
 - No drive-by deps: only add deps the ported code actually needs
 - Trust local conventions over source style
 - Reports use `security-reports/scan-<timestamp>.md` (not `vbsec-reports/`)
+- **No pattern-matching pre-scanner.** A Python pattern pre-scanner shipped under this skill's `scripts/` until 2026-08-21: referenced by no workflow, and a trial run false-positived in its pattern category — `exec() usage CRITICAL` on a plain `/regex/.exec()` call (reproduced before removal). Do not reintroduce one to save tokens. The Core Principle above is the contract: a regex pass that skips L1-L4 tracing is cheap and wrong, and its noise costs more to triage than the scan saved.

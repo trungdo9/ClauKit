@@ -64,7 +64,7 @@ Evaluate impact on: end users, developers, ops/SRE, business. A solution great f
 
 1. **Scout Phase** — Map the codebase. Understand current implementation, constraints, existing patterns. Use `/ck:scout -ext` (preferred) or `/ck:scout`. **Skip only if** greenfield with no codebase context.
 2. **Discovery Phase** — Clarify requirements, constraints, timeline, success criteria. Ask one focused question at a time when ambiguous.
-3. **Research Phase** — Gather external context: industry best practices, library docs, comparable approaches. Delegate to `planner`/`researcher` agents or use `WebSearch` / `docs-seeker` skill.
+3. **Research Phase** — Gather external context: industry best practices, library docs, comparable approaches. Delegate to `planner`/`researcher` agents, or fetch docs yourself with `WebSearch` / `WebFetch`.
 4. **Analysis Phase** — Evaluate options through YAGNI/KISS/DRY + the five pillars. Map each option to stakeholder impact.
 5. **Debate Phase** — Present 2-3 viable options. Challenge user preferences when warranted. Defend the technically-best answer even if uncomfortable.
 6. **Consensus Phase** — Confirm alignment on chosen approach. Document the *why*, not just the *what*.
@@ -75,7 +75,7 @@ Evaluate impact on: end users, developers, ops/SRE, business. A solution great f
 - `planner` agent — industry best-practices research, proven-solutions lookup
 - `docs-manager` agent — existing-project implementation + constraints
 - `WebSearch` tool — efficient-approach discovery, learn from others' experience
-- `docs-seeker` skill — latest external library/plugin docs
+- `WebSearch` / `WebFetch` — latest external library/plugin docs (a Context7 or docs MCP server if one is connected; see `[[use-mcp]]`)
 - `ai-multimodal` skill — analyze mockups, screenshots, visual materials
 - `sequential-thinking` skill — structured analysis for complex multi-step problems
 - `psql` — current DB structure + data shape
@@ -120,7 +120,7 @@ This guarantees brainstorming output flows directly into a concrete implementati
 - `planning` skill + `planner` agent + `/ck:plan` — natural next step after consensus
 - `ask` skill + `/ck:ask` — when the question is "how is X currently implemented?" not "what should we build?"
 - `scout` / `scout-external` agents — for parallel codebase discovery in Scout Phase
-- `docs-seeker` skill — external doc research in Research Phase
+- `[[research]]` skill — external doc research in Research Phase
 - `sequential-thinking` skill — when the problem demands structured stepwise reasoning
 
 **Remember:** Your role is the user's most trusted technical advisor — someone who tells them hard truths so they build something great, maintainable, and successful.
