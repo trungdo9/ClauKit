@@ -18,6 +18,24 @@ Note: the original skill is PHP-developer-focused (building REST endpoints insid
 
 ---
 
+## **MIT License**
+
+The 25 SEO skills under `skills/marketing/seo*` are ADAPTED from the following source. Domain content (analysis frameworks, scoring tables, thresholds, JSON-LD templates, cited statistics) is carried over; the source's bundled Python CLI harness (`claude-seo run <script>.py`), installer scripts, and slash-command surface are not included.
+
+**claude-seo**, Copyright (c) 2026 AgriciDaniel
+
+Source: [https://github.com/AgriciDaniel/claude-seo](https://github.com/AgriciDaniel/claude-seo)
+
+License: MIT
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+---
+
 ## **BSD 2-Clause License**
 
 The following components are licensed under BSD 2-Clause License reproduced below:

@@ -4,7 +4,9 @@
 
 **Prior**: 2026-07-31 (**Durability–Evidence–Cost upgrade** (plan `260730-1359-clauKit-upgrade`) — 3 new skills (`run-state` durable ledger · `verify-plan` falsification gate · `tdd` red-green discipline), 2 new hooks (`guard-destructive` 2-tier conflict-aware guard · `file-claims` per-worktree claim registry; `scout-block` rewritten precise, single implementation), 8 new `.claude/scripts/ck/` (worktree fleet `wt-new`/`wt-doctor`/`wt-clean` w/ smoke gate · context hygiene `phase-brief`/`review-package`/`run-workspace` · headless `ci-review` + deterministic `delivery-tail`), 1 new workflow (`skill-activation.md` hard gate), `primary-workflow.md` rewritten to 13 gated stages (Exact-Requirements Gate surfaced — closes G25), `/ck:git` gains `finish` + scoped-commit + draft-default PR + declared delivery tail (empty default) + `pr-body.md` fill contract, `/ck:plan verify`, `/ck:fix tdd`, `/ck:review --lenses`, multi-repo `/ck:scout`, model-tiering matrix + 529 fallback, DB safe-writes protocol, node:test harness (`npm test`, 180 tests) + behavioral eval harness (`tests/behavior/`, 6 scenarios). **Removed:** `programmatic-seo` (duplicate of `seo-programmatic`); `preview` narrowed to presentations-only (render-markdown → `markdown-novel-viewer`). Counts: skills 129→131, agents 29, commands 53→56, workflows 14→15, total entries 211→216.) · 2026-07-31 (**`/ck:claude-md analyze` added** — read-only per-section token-cost profile of a CLAUDE.md (lines/chars/~tokens per `##` section, classify DIRECTIVE/POINTER/PROSE/DUP/FILLER, ranked KEEP/EXTRACT/DEDUPE/DROP recommendations + projected savings); alias `optimize` = analyze + offer `refactor`; `claude-md` dispatcher 3→4 actions. Counts: commands 52→53, total entries 210→211.) · 2026-07-25 (**SEO campaign workflow closed** — new `.claude/workflows/seo-workflow.md` (7-phase closed loop: gate → baseline audit+metrics → plan [hard stop] → batch write → publish [draft-default] → distribute → measure [GSC/GA4, 2–4 wk bake] → optimize scale/refresh/kill loop). `/mk:seo` gains `campaign` action; `seo-writer` agent + `seo-writing` skill gain `campaign` mode; `seo-flow` gains SEO Campaign recipe; wired into marketing/both kit manifests (workflows 5→6) + `marketing-workflow.md` Phase 5 delegation + MARKETING.md Flow 3c.) · 2026-07-23 (**seo-writing pipeline added** — new ClauKit-authored `seo-writing` skill (6-stage article-production pipeline ported from a production n8n workflow: strategy → outline → write → optimize → media → publish; 7 references + 100-article WordPress playbook), new `seo-writer` orchestrator agent, `/mk:seo` gains `plan` + `write` actions. 6 previously-stub SEO skills filled with real content; agents upgraded pipeline-stage-specific. Counts: skills 128→129, agents 28→29.) · 2026-07-17 (**Gemini purge** — `scout-external` agent removed (Gemini/OpenCode CLI orchestration retired; `/ck:scout` is now internal-Explore-only), Gemini offload paths stripped from `research` skill + `/ck:research` + `git-manager` + `/ck:use-mcp` (all now Claude-native). Gemini retained only in `software/ai/` skills (`ai-multimodal`/`ai-artist`) where it is a genuine capability. Earlier same-day: `mcp-manager` agent removed; `researcher` → sonnet, `journal-writer` → haiku; `tester`/`database-admin`/`project-manager` slimmed to thin personas; long agent descriptions trimmed to trigger-style.)
 **Scope**: Single source of truth for every Skill, Agent, and Command in this project.
-**Counts**: 127 skills (127 active + 0 scaffold) · 30 agents · 57 commands · **214 total entries**
+**Counts**: 127 skills (**106 active + 21 scaffold**) · 30 agents · 57 commands · **214 total entries**
+
+> The 21 scaffold skills are the `coreyhaines31/marketingskills` imports listed in § 1 — all still carrying the generator's `[Core capability …]` placeholders. They were counted as active until 2026-08-25; the 19 claude-seo skills in the same state were filled that day, these were not (source repo not available locally).
 
 Replaces previous `skills-catalog.md` (skills only). One file, all three resource types, with duplicate/overlap detection.
 
@@ -40,6 +42,8 @@ Skill groups are now four: `software/`, `marketing/`, `automation/`, `integratio
 
 **Claude-SEO engine (25 — imported from `AgriciDaniel/claude-seo`, replaces old `seo`/`geo`) + 1 ClauKit-authored pipeline (`seo-writing`):**
 
+> **Content-fill completed 2026-08-25.** Of the 25, only 6 (`seo-cluster`, `seo-content`, `seo-content-brief`, `seo-flow`, `seo-images`, `seo-plan`) had ever been written. The other **19 shipped as unfilled scaffold** — 50 lines each, still carrying `scripts/generate-marketing-skills.js`'s literal `[Core capability 1 — what it does well]` placeholders — while listed here as ✅ production-ready. All 19 are now ported from source (123–356 lines each, + **55** new `references/`/`assets/` files). Two live dependencies of the `seo-writing` pipeline were among the empty ones: Stage 4 delegated to `[[seo-schema]]` for JSON-LD and `[[seo-geo]]` for AI-search structuring, and both returned nothing — a silent failure, since an empty skill still resolves. **The generator is the trap:** re-running `scripts/generate-marketing-skills.js --force` overwrites these files back to placeholders. It is write-once by default for exactly this reason; do not `--force` it over a filled skill.
+
 | Name | Status | Folder | Source |
 |---|:---:|---|---|
 | `seo` | ✅ | `marketing/seo/` | claude-seo root (orchestrator) |
@@ -71,30 +75,32 @@ Skill groups are now four: `software/`, `marketing/`, `automation/`, `integratio
 
 **Coreyhaines31 (22 — imported from `coreyhaines31/marketingskills`, curated subset):**
 
+> **21 of these 22 are 🟡 scaffold, not ✅ active** (verified on disk 2026-08-25) — only `cro` was ever filled. Same root cause as the claude-seo batch: `scripts/generate-marketing-skills.js` emitted the placeholder template and no one wrote the bodies. Filling them needs the upstream `coreyhaines31/marketingskills` repo, which is not checked out locally. Until then, treat a `/mk:` command that routes to one of these as unimplemented.
+
 | Name | Status | Folder | Notes |
 |---|:---:|---|---|
-| `ad-creative` | ✅ | `marketing/ad-creative/` | |
-| `ads` | ✅ | `marketing/ads/` | |
-| `analytics` | ✅ | `marketing/analytics/` | |
-| `cold-email` | ✅ | `marketing/cold-email/` | |
-| `competitor-alternatives` | ✅ | `marketing/competitor-alternatives/` | |
-| `competitor-profiling` | ✅ | `marketing/competitor-profiling/` | |
-| `competitors` | ✅ | `marketing/competitors/` | |
-| `content-strategy` | ✅ | `marketing/content-strategy/` | |
-| `copy-editing` | ✅ | `marketing/copy-editing/` | |
-| `copywriting` | ✅ | `marketing/copywriting/` | |
+| `ad-creative` | 🟡 | `marketing/ad-creative/` | |
+| `ads` | 🟡 | `marketing/ads/` | |
+| `analytics` | 🟡 | `marketing/analytics/` | |
+| `cold-email` | 🟡 | `marketing/cold-email/` | |
+| `competitor-alternatives` | 🟡 | `marketing/competitor-alternatives/` | |
+| `competitor-profiling` | 🟡 | `marketing/competitor-profiling/` | |
+| `competitors` | 🟡 | `marketing/competitors/` | |
+| `content-strategy` | 🟡 | `marketing/content-strategy/` | |
+| `copy-editing` | 🟡 | `marketing/copy-editing/` | |
+| `copywriting` | 🟡 | `marketing/copywriting/` | |
 | `cro` | ✅ | `marketing/cro/` | |
-| `customer-research` | ✅ | `marketing/customer-research/` | |
-| `email-sequence` | ✅ | `marketing/email-sequence/` | |
-| `emails` | ✅ | `marketing/emails/` | |
-| `launch` | ✅ | `marketing/launch/` | |
-| `marketing-ideas` | ✅ | `marketing/marketing-ideas/` | |
-| `paywalls` | ✅ | `marketing/paywalls/` | |
-| `popup` | ✅ | `marketing/popup/` | |
-| `signup` | ✅ | `marketing/signup/` | |
-| `sms` | ✅ | `marketing/sms/` | |
-| `social-content` | ✅ | `marketing/social-content/` | |
-| `user-onboarding` | ✅ | `marketing/user-onboarding/` | renamed from `onboarding` |
+| `customer-research` | 🟡 | `marketing/customer-research/` | |
+| `email-sequence` | 🟡 | `marketing/email-sequence/` | |
+| `emails` | 🟡 | `marketing/emails/` | |
+| `launch` | 🟡 | `marketing/launch/` | |
+| `marketing-ideas` | 🟡 | `marketing/marketing-ideas/` | |
+| `paywalls` | 🟡 | `marketing/paywalls/` | |
+| `popup` | 🟡 | `marketing/popup/` | |
+| `signup` | 🟡 | `marketing/signup/` | |
+| `sms` | 🟡 | `marketing/sms/` | |
+| `social-content` | 🟡 | `marketing/social-content/` | |
+| `user-onboarding` | 🟡 | `marketing/user-onboarding/` | renamed from `onboarding` |
 
 **ClauKit-authored (2):**
 

@@ -21,7 +21,7 @@
 
 5. **Featured image:** generate/source one hero image for the article title; store as `image_url` (prepended to the body or set as the post's featured image at publish).
 
-6. **Schema (optional but recommended):** via [[seo-schema]], generate JSON-LD (`Article` + `FAQPage` if the article has an FAQ section). Store alongside for the publish step. For AI-search visibility, also apply [[seo-geo]] structuring (clear definitions, extractable answers, entity clarity).
+6. **Schema (optional but recommended):** via [[seo-schema]], generate JSON-LD (`Article`; add `FAQPage` only when the article genuinely has a Q&A section — Google retired FAQ rich results for all sites on 2026-05-07, so emit it as documentation, never as a ranking lever). Store alongside for the publish step. For AI-search visibility, also apply [[seo-geo]] structuring (clear definitions, extractable answers, entity clarity).
 
 7. **Final truth-only pass:** re-scan for placeholder names / invented stats / meta-talk (Stage 3 rules). Any hit → fix before advancing.
 

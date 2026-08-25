@@ -25,7 +25,7 @@ Covers:
 
 Does NOT cover:
 - Writing the article body → [[seo-content]].
-- The image-generation model itself → [[ai-artist]] / an image-gen MCP.
+- Actually AI-generating an image (use-case → aspect ratio/resolution/domain-mode mapping, prompt construction, model routing) → [[seo-image-gen]], which in turn sits on [[ai-artist]]'s general prompting technique.
 
 ## Placeholder resolution (the Stage-4 job)
 
@@ -35,7 +35,7 @@ The writer (Stage 3) appends one `[[IMAGE_REQUEST:keyword-slug]]` per section. R
 2. **Source the image** (preference ladder):
    | Option | When | Tool |
    |---|---|---|
-   | AI-generate | original imagery | [[ai-artist]] / image-gen MCP, prompt = keyword + slug |
+   | AI-generate | original imagery | [[seo-image-gen]], prompt = keyword + slug |
    | Stock/API | fast, generic | image API MCP (source pipeline uses a `generate-image/serp` webhook) |
    | Skip | no infra | delete the tag |
 3. **Write alt text** — describe the image AND include the section keyword naturally. Never empty alt.
@@ -75,7 +75,7 @@ The writer (Stage 3) appends one `[[IMAGE_REQUEST:keyword-slug]]` per section. R
 
 - [[seo-writing]] — Stage 4 consumes this to resolve placeholders
 - [[seo-content]] — writer emits the `[[IMAGE_REQUEST:slug]]` tags in Stage 3
-- [[ai-artist]] — image generation backend
+- [[seo-image-gen]] — AI-generation option for the source ladder above (SEO use-case mapping, prompt construction); returns a finished image for this skill to alt-text/filename/compress
 - [[seo-technical]] — Core Web Vitals (image weight impacts LCP)
 - `.claude/workflows/marketing-rules.md` — content quality rules
 
