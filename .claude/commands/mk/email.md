@@ -23,7 +23,7 @@ Activate email-specialist agent + the action-specific skills.
 - **`campaign`** — One-shot email campaign (announcement, launch, promo)
   - skills: `emails`, `copywriting`
 - **`cold`** — Cold outreach sequence (3-7 emails, personalization, follow-up)
-  - skills: `cold-email`, `prospecting`
+  - skills: `cold-email`
 - **`drip`** — Lifecycle drip sequence (onboarding, education, conversion)
   - skills: `email-sequence`, `user-onboarding`
 - **`sms`** — SMS marketing campaign (compliance + segmentation + cadence)

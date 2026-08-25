@@ -49,7 +49,7 @@ const COMMANDS = {
     hint: "campaign|cold|drip|sms <goal>",
     actions: [
       { name: "campaign", what: "One-shot email campaign (announcement, launch, promo)", skills: ["emails", "copywriting"] },
-      { name: "cold", what: "Cold outreach sequence (3-7 emails, personalization, follow-up)", skills: ["cold-email", "prospecting"] },
+      { name: "cold", what: "Cold outreach sequence (3-7 emails, personalization, follow-up)", skills: ["cold-email"] },
       { name: "drip", what: "Lifecycle drip sequence (onboarding, education, conversion)", skills: ["email-sequence", "user-onboarding"] },
       { name: "sms", what: "SMS marketing campaign (compliance + segmentation + cadence)", skills: ["sms"] }
     ],
@@ -97,7 +97,7 @@ const COMMANDS = {
     hint: "launch|referral|free-tool <goal>",
     actions: [
       { name: "launch", what: "Product launch playbook (pre-launch, launch day, post-launch)", skills: ["launch", "copywriting", "ads"] },
-      { name: "referral", what: "Referral program design (incentives, sharing mechanics, tracking)", skills: ["referrals", "analytics"] },
+      { name: "referral", what: "Referral program design (incentives, sharing mechanics, tracking)", skills: ["marketing-ideas", "analytics"] },
       { name: "free-tool", what: "Free tool / lead magnet strategy (build, distribute, convert)", skills: ["marketing-ideas", "content-strategy"] }
     ],
     activate: "Activate content-strategist + action-specific skills.",
@@ -117,7 +117,7 @@ const COMMANDS = {
     desc: "Lead generation pipeline (5-phase — generate → qualify → nurture → convert → retain)",
     hint: "<icp-description>",
     actions: [
-      { name: "default", what: "Full 5-phase lead pipeline", skills: ["cold-email", "prospecting", "email-specialist", "crm-specialist", "customer-research"] }
+      { name: "default", what: "Full 5-phase lead pipeline", skills: ["cold-email", "email-specialist", "crm-specialist", "customer-research"] }
     ],
     activate: "Activate email-specialist + crm-specialist agents. Execute .claude/workflows/sales-workflow.md (5 phases). PII redaction enforced.",
     output: "plans/marketing/<campaign>/leads.csv (PII-redacted)"

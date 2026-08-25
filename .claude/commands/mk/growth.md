@@ -23,7 +23,7 @@ Activate content-strategist + action-specific skills.
 - **`launch`** — Product launch playbook (pre-launch, launch day, post-launch)
   - skills: `launch`, `copywriting`, `ads`
 - **`referral`** — Referral program design (incentives, sharing mechanics, tracking)
-  - skills: `referrals`, `analytics`
+  - skills: `marketing-ideas`, `analytics`
 - **`free-tool`** — Free tool / lead magnet strategy (build, distribute, convert)
   - skills: `marketing-ideas`, `content-strategy`
 
