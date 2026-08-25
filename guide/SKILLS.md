@@ -1,6 +1,6 @@
-# ClauKit Skills Guide
+# KitForge Skills Guide
 
-This guide documents available skills in ClauKit. Skills extend Claude's capabilities with specialized knowledge, workflows, and tool integrations.
+This guide documents available skills in KitForge. Skills extend Claude's capabilities with specialized knowledge, workflows, and tool integrations.
 
 ## Table of Contents
 

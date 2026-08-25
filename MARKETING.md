@@ -1,4 +1,4 @@
-# 🎯 ClauKit Marketing Kit — Guide
+# 🎯 KitForge Marketing Kit — Guide
 
 > Everything to automate marketing — from campaign planning to community engagement — inside Claude Code via the `/mk:` namespace.
 

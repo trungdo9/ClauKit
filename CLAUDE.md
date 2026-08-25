@@ -17,7 +17,7 @@ Your role is to analyze user requirements, delegate tasks to appropriate sub-age
 
 ## Kits
 
-ClauKit supports multiple installable kits via `ck init --kit <name>`:
+KitForge supports multiple installable kits via `ck init --kit <name>`:
 - **`engineer`** (default) — software engineering, `/ck:` namespace
 - **`marketing`** — marketing automation, `/mk:` namespace. See `skills/marketing/README.md`
 - **`both`** — engineer + marketing combined

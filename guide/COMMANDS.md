@@ -1,6 +1,6 @@
-# ClauKit Commands Reference
+# KitForge Commands Reference
 
-A comprehensive guide to all available slash commands in ClauKit.
+A comprehensive guide to all available slash commands in KitForge.
 
 ## Table of Contents
 
@@ -20,7 +20,7 @@ A comprehensive guide to all available slash commands in ClauKit.
 
 ### What are Slash Commands?
 
-Slash commands are powerful shortcuts that trigger specialized AI agents and workflows in ClauKit. They follow the simple syntax:
+Slash commands are powerful shortcuts that trigger specialized AI agents and workflows in KitForge. They follow the simple syntax:
 
 ```bash
 /ck:<command-name> [arguments]
@@ -531,7 +531,7 @@ Commands are stored in `.claude/commands/ck/` and invoked as `/ck:<name>` (e.g. 
 
 ## CLI Commands
 
-ClauKit also provides a CLI tool:
+KitForge also provides a CLI tool:
 
 ```bash
 # Install globally
