@@ -20,7 +20,8 @@ Resolve `<site>` (from `wp:site` target or context hub), init `plans/marketing/<
 Establish the "before" so Phase 6 has something to compare against.
 - **Audit:** technical + content + schema (`/mk:seo audit` path — claude-seo sub-skills in parallel). Existing WP site: read-only inventory + triage (playbook Phase 1, `wordpress-rest` GET only).
 - **Metrics baseline:** GSC clicks/impressions/avg-position, GA4 organic sessions — `mcp-gsc`/`mcp-ga4`, manual CSV fallback. No data source → mark `[NO BASELINE]`, don't fabricate.
-*Output:* `audit-report.md`, `inventory.md` (existing sites), `baseline-metrics.md` (aggregated, no PII).
+- **On-page snapshot:** `seo-drift baseline` over the tracked URLs — captures title/meta/canonical/robots/schema/H1 as they are now. This is what Phase 6 diffs against; without it a later ranking drop cannot be told apart from someone quietly changing the markup.
+*Output:* `audit-report.md`, `inventory.md` (existing sites), `baseline-metrics.md` (aggregated, no PII), `seo-drift/baselines/` (per-URL snapshots).
 
 ## Phase 2 — Plan (CHECKPOINT — hard stop)
 
@@ -47,13 +48,16 @@ Amplify + accelerate indexing: submit updated sitemap / request indexing, repurp
 
 **Wait for bake time first — SEO lags. Minimum 2–4 weeks after publish before judging; note the measurement date.**
 Per published article: position, CTR, clicks (GSC), organic conversions (GA4) — vs `baseline-metrics.md` and context-hub targets. MCP wrappers with manual CSV fallback (automation-rules). Redact user-level rows.
-*Output:* `metrics-report.md` (per-article table + aggregate delta vs baseline).
+
+**Any article that lost ground → run `seo-drift compare` on its URL before writing a verdict.** Metrics say *that* it fell; drift says *whether the page changed*. A regression (title rewritten, canonical repointed, `noindex` added, schema dropped) is a different problem from ranking decay and takes a different fix — restore the markup, don't rewrite the content. Attributing a markup regression to "decay" sends Phase 7 into a needless rewrite and leaves the actual cause in place. No baseline for that URL → say `[NO BASELINE]` and treat the cause as undetermined.
+*Output:* `metrics-report.md` (per-article table + aggregate delta vs baseline; drift verdict where one was run).
 
 ## Phase 7 — Optimize (loop)
 
 *Input:* `metrics-report.md` + prior `optimize-decisions.md` (read first — don't re-decide).
 
 Per-article verdicts:
+- **Restore** — Phase 6 drift found a markup regression. Put back what changed (title/meta/canonical/robots/schema), re-measure next cycle. Do **not** queue a rewrite; the content was never the problem.
 - **Scale** — cluster is winning → queue the next batch of `new` rows (back to Phase 3).
 - **Refresh** — decayed or near-miss (pos. 5–15, low CTR): update the brief with findings, set the row back to `outline_ready` → it re-enters Phase 3 through the normal status machine. Title/meta-only fixes may re-run Stage 4+6 alone.
 - **Kill** — thin/irrelevant losers: noindex or 301, remove from cluster links.
@@ -68,4 +72,4 @@ Per-article verdicts:
 
 **Cadence option (n8n-style drip):** between cycles, `/loop 6h /mk:seo write --batch 1` drips the approved backlog on a schedule; Phase 6–7 then run on demand.
 
-**Conventions:** every phase writes one artifact into the campaign dir; `pipeline.md` is the single source of truth for article state — phases only pick up rows matching their entry status, so any phase re-runs alone without redoing the rest. Sub-references: `.claude/workflows/marketing-rules.md` (content quality), `.claude/workflows/automation-rules.md` (PII, idempotency, MCP fallback), `.claude/skills/marketing/seo-writing/SKILL.md` (stage playbooks).
+**Conventions:** every phase writes one artifact into the campaign dir; `pipeline.md` is the single source of truth for article state — phases only pick up rows matching their entry status, so any phase re-runs alone without redoing the rest. Sub-references: `.claude/workflows/marketing-rules.md` (content quality), `.claude/workflows/automation-rules.md` (PII, idempotency, MCP fallback), `.claude/skills/marketing/seo-writing/SKILL.md` (stage playbooks), `.claude/skills/marketing/seo-drift/SKILL.md` (Phase 1 snapshot + Phase 6 regression check).

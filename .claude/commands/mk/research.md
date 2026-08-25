@@ -21,7 +21,7 @@ Activate market-researcher agent + action-specific skills.
 ### Actions
 
 - **`market`** — Market sizing (TAM/SAM/SOM) + trends
-  - skills: `customer-research`, `marketing-ideas`
+  - skills: `market-sizing`, `customer-research`, `marketing-ideas`
 - **`competitor`** — Competitor deep-dive (positioning, pricing, channels, weaknesses)
   - skills: `competitor-profiling`, `competitors`, `competitor-alternatives`
 - **`customer`** — Customer research (interviews, surveys, jobs-to-be-done)

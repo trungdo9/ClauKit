@@ -48,6 +48,12 @@
 
 9. **Notify (optional):** the source pipeline sends a Lark/Slack message ("🎉 New article published: <title> — <link>"). Wire to any notification MCP if configured.
 
+10. **Discoverability — live posts only.** A published URL that is in no sitemap and has never been submitted waits on an organic crawl. Once status is `published` **and** the post actually went live (`status: "publish"`, not `draft`):
+    - Confirm the URL appears in the site's sitemap. Most WordPress SEO plugins (Yoast/RankMath) regenerate automatically — verify rather than assume, and if the site has a hand-rolled sitemap, regenerate it via [[seo-sitemap]].
+    - Optionally request indexing (GSC URL Inspection, or IndexNow where supported) via [[seo-google]].
+    - **Skip both for drafts.** A draft has no public URL; submitting one is noise at best. Draft-default means this step is a no-op on most runs — that is correct, not a failure.
+    - Neither action is a gate: a sitemap that cannot be verified is logged, not an error. Do not roll back a successful publish over it.
+
 ## Notes
 
 - Credentials: env only (`WP_SITE_URL`, `WP_USER`, `WP_APP_PASSWORD` for WordPress). Never hardcode or log the password.

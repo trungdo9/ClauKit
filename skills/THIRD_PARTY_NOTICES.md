@@ -28,6 +28,14 @@ Source: [https://github.com/AgriciDaniel/claude-seo](https://github.com/AgriciDa
 
 License: MIT
 
+The non-SEO marketing skills under `skills/marketing/` (including `cold-email`, `cro`, `copywriting`, `emails`, `email-sequence`) are ADAPTED from the following source. Domain content (frameworks, checklists, reference tables, cited statistics) is carried over; the source's eval harness (`evals/evals.json`), its `.agents/product-marketing.md` context-file convention, and skills ClauKit does not ship are not included.
+
+**marketingskills**, Copyright (c) 2025 Corey Haines
+
+Source: [https://github.com/coreyhaines31/marketingskills](https://github.com/coreyhaines31/marketingskills)
+
+License: MIT
+
 Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
 
 The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.

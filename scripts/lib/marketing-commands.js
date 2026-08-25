@@ -84,7 +84,7 @@ const COMMANDS = {
     desc: "Market research — market sizing, competitors, customer interviews, ICP refinement",
     hint: "market|competitor|customer|icp <topic>",
     actions: [
-      { name: "market", what: "Market sizing (TAM/SAM/SOM) + trends", skills: ["customer-research", "marketing-ideas"] },
+      { name: "market", what: "Market sizing (TAM/SAM/SOM) + trends", skills: ["market-sizing", "customer-research", "marketing-ideas"] },
       { name: "competitor", what: "Competitor deep-dive (positioning, pricing, channels, weaknesses)", skills: ["competitor-profiling", "competitors", "competitor-alternatives"] },
       { name: "customer", what: "Customer research (interviews, surveys, jobs-to-be-done)", skills: ["customer-research"] },
       { name: "icp", what: "ICP refinement + persona synthesis", skills: ["customer-research", "product-marketing"] }

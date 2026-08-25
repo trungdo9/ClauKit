@@ -13,10 +13,10 @@
 - **6 automation skills** (5 MCP wrappers + marketing-orchestrator)
 - **2 integration skills** (`wordpress-rest` client + `mcp-wordpress` wrapper) — publish/update/audit WordPress content via `/mk:content publish` + `/mk:seo audit wp:<id>`
 
-**Skill breakdown (51 total):**
+**Skill breakdown (52 total):**
 - 25 from `AgriciDaniel/claude-seo` (1 root + 24 sub-skills: audit, technical, content, schema, geo, local, page, images, sitemap, drift, cluster, content-brief, competitor-pages, ecommerce, hreflang, programmatic, backlinks, sxo, flow, plan, maps, dataforseo, google, image-gen)
 - 22 from `coreyhaines31/marketingskills` (curated subset: ad-creative, ads, analytics, cold-email, competitor-*, content-strategy, copy-editing, copywriting, cro, customer-research, email-sequence, emails, launch, marketing-ideas, paywalls, popup, signup, sms, social-content, user-onboarding; `programmatic-seo` removed 2026-07-31 — confirmed duplicate of claude-seo's `seo-programmatic`, which stays)
-- 2 KitForge-authored: `product-marketing` (context hub), `seo-writing` (6-stage article-production pipeline — see below)
+- 3 KitForge-authored: `product-marketing` (context hub), `seo-writing` (6-stage article-production pipeline — see below), `market-sizing` (TAM/SAM/SOM — written 2026-08-25; `/mk:research market` promised sizing and no skill supplied a method)
 - 1 kept: `kit-builder` (build custom marketing components)
 
 ## Quick start
@@ -46,7 +46,7 @@ mk:campaign <campaign-name>
 | `/mk:email` | Email & SMS (campaign, cold, drip, sms) | `emails`, `cold-email`, `email-sequence`, `sms` |
 | `/mk:ads` | Paid advertising (google, meta, creative, ab-test) | `ads`, `ad-creative`, `cro` |
 | `/mk:cro` | Conversion optimization (audit, landing, signup, email) | `cro`, `signup`, `copywriting` |
-| `/mk:research` | Market research (market, competitor, customer, icp) | `customer-research`, `competitor-profiling`, `competitors`, `marketing-ideas` |
+| `/mk:research` | Market research (market, competitor, customer, icp) | `market-sizing`, `customer-research`, `competitor-profiling`, `competitors`, `marketing-ideas` |
 | `/mk:growth` | Growth tactics (launch, referral, free-tool) | `launch`, `marketing-ideas`, `content-strategy` |
 | `/mk:campaign` | Full 10-phase campaign pipeline (plan → research → insights → strategy → create → edit → publish → promote → measure → optimize loop) | `marketing-orchestrator` + all workflow skills |
 | `/mk:leads` | 5-phase lead pipeline (generate → qualify → nurture → convert → retain) | `cold-email`, `email-specialist`, `crm-specialist` |

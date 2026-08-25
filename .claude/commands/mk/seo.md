@@ -1,6 +1,6 @@
 ---
-description: SEO operations — audit/keywords/ai/programmatic/schema via the claude-seo engine, plan/write for the article-production pipeline (seo-writing), campaign for the closed-loop SEO campaign (baseline → plan → write → publish → measure → optimize)
-argument-hint: audit|keywords|ai|programmatic|schema|plan|write|campaign <target>
+description: SEO operations — audit/keywords/ai/programmatic/schema/drift via the claude-seo engine, plan/write for the article-production pipeline (seo-writing), campaign for the closed-loop SEO campaign (baseline → plan → write → publish → measure → optimize)
+argument-hint: audit|keywords|ai|programmatic|schema|drift|plan|write|campaign <target>
 ---
 
 ## Pre-flight (HARD FAIL)
@@ -16,7 +16,7 @@ REST: $2..$n (action-specific arguments)
 
 ## Workflow
 
-For **audit / keywords / ai / programmatic / schema** — activate the `seo` skill (.claude/skills/marketing/seo/SKILL.md), the claude-seo orchestrator. It dispatches sub-skills in parallel based on industry detection.
+For **audit / keywords / ai / programmatic / schema / drift** — activate the `seo` skill (.claude/skills/marketing/seo/SKILL.md), the claude-seo orchestrator. It dispatches sub-skills in parallel based on industry detection.
 
 For **plan / write** — activate the `seo-writer` agent + `seo-writing` skill (.claude/skills/marketing/seo-writing/SKILL.md) — the 6-stage article-production pipeline (strategy → outline → write → optimize → media → publish). Default publishing is DRAFT.
 
@@ -35,6 +35,11 @@ For **campaign** — load `.claude/workflows/seo-workflow.md` and drive the full
   - skills: `seo-programmatic`
 - **`schema`** — JSON-LD schema generation + validation
   - skills: `seo-schema`
+- **`drift`** — On-page regression check: snapshot a set of URLs, then diff a later fetch against that snapshot (title, meta, canonical, robots, schema, H1). Answers "did the page change?", which is a different question from "did rankings fall?" — run it before blaming decay for a drop.
+  - skills: `seo-drift`
+  - args: `baseline <url|wp:site>` (capture) · `compare <url>` (diff vs stored snapshot) · `history <url>` (change log)
+  - output: `plans/marketing/<site>/seo-drift/{baselines/, drift-log.md}`
+  - note: `compare` on a URL with no stored baseline reports `[NO BASELINE]` — it does not invent one. Capture during `campaign` Phase 1, or run `drift baseline` first.
 - **`plan`** — Article-production PLAN — seed keyword (or existing site) → topic cluster + prioritized, gap-analyzed writing backlog. Stops for human review before any writing. For an existing WordPress site, runs the inventory→audit→cluster→prioritize playbook.
   - agent: `seo-writer`; skills: `seo-writing`, `seo-cluster`, `seo-content-brief`, `seo-plan`; `seo-technical` + `wordpress-rest` (read-only inventory) for existing sites
   - args: `<seed-keyword>` or `wp:site` (existing WP site); flags: `--limit N` (cluster size), `--store local|supabase`
@@ -65,7 +70,7 @@ For `plan`/`write`: `plans/marketing/<site>/{pipeline.md, briefs/, articles/}`.
 ## Examples
 
 ```
-audit|keywords|ai|programmatic|schema|plan|write <example-target>
+audit|keywords|ai|programmatic|schema|drift|plan|write <example-target>
 audit wp:123                            # audit a live WordPress post by id
 audit https://example.com/my-article/   # audit a live WP article by URL
 plan "máy lọc nước" --limit 5           # seed keyword → cluster + write backlog (stops for review)
