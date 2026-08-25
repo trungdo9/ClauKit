@@ -1,6 +1,6 @@
-# ClauKit — The Opinionated Multi-Agent Orchestration Framework for Claude Code
+# KitForge — The Opinionated Multi-Agent Orchestration Framework for Coding Agents
 
-*126 skills · 30 agents · 57 gated commands · atomic-commit safety · MCP-ready · 3 installable kits*
+*126 skills · 30 agents · 57 gated commands · atomic-commit safety · MCP-ready · 3 installable kits · runs in Claude Code, exports to Codex + Antigravity via `ck convert`*
 
 [![GitHub stars](https://img.shields.io/github/stars/trungdo9/ClauKit?style=social)](https://github.com/trungdo9/ClauKit/stargazers)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
@@ -9,11 +9,11 @@
 
 Claude Code gives you the primitives — but no opinions on how to combine them. You're left to invent your own workflows, manage parallel agents by hand, and hope you don't `git push` a broken refactor. Most Claude Code templates throw a thousand skills at the wall and call it a day.
 
-**ClauKit is the opinionated alternative.** 126 curated skills, 30 specialized agents, 57 gated commands — each one earns its place. Built-in pre-flight checks block destructive operations. Multi-agent orchestration via `/ck:team` and `/ck:flow` runs parallel Claude Code work safely. **3 installable kits** — engineer (default), marketing, both.
+**KitForge is the opinionated alternative.** 126 curated skills, 30 specialized agents, 57 gated commands — each one earns its place. Built-in pre-flight checks block destructive operations. Multi-agent orchestration via `/ck:team` and `/ck:flow` runs parallel Claude Code work safely. **3 installable kits** — engineer (default), marketing, both.
 
-> Plan once. `/clear` context. Cook with confidence. That's the ClauKit workflow.
+> Plan once. `/clear` context. Cook with confidence. That's the KitForge workflow.
 
-## Why ClauKit
+## Why KitForge
 
 - **Gated pipelines, not gambling.** `/ck:refactor` and `/ck:cook` enforce pre-flight gates — clean working tree, tests green, not on `main`. See [`.claude/workflows/primary-workflow.md`](./.claude/workflows/primary-workflow.md). Skip the gates and the command refuses to run.
 - **Trio architecture — one concept, one entry point.** Every skill (knowledge) maps to an agent (persona) and a command (`/ck:<name>` trigger). No tool roulette. Full map in [`docs/clauKit-registry.md`](./docs/clauKit-registry.md).
@@ -21,11 +21,13 @@ Claude Code gives you the primitives — but no opinions on how to combine them.
 
 ## Quick Start
 
+> **Names:** the project is **KitForge**. The GitHub repo, the npm package id (`@trungdo9/ClauKit`) and the CLI binaries (`ck`, `claukit`) keep their original names — install and run exactly as before.
+
 ```bash
 # 1. Install from GitHub (not yet on npm)
 npm install -g https://github.com/trungdo9/ClauKit.git
 
-# 2. Drop ClauKit into your project — pick a kit
+# 2. Drop KitForge into your project — pick a kit
 cd /path/to/your-project
 ck init                       # Engineer kit (default): /ck: namespace
 ck init --kit marketing       # Marketing + automation: /mk: namespace
@@ -80,7 +82,7 @@ ck update            # Pull latest version from GitHub
 ck help              # Show help information
 ```
 
-> `ck init` copies `.claude/` — everything it installs, including `.claude/scripts/ck/` (the context-hygiene and headless helpers), lives under that one directory — merges hook entries into an existing `.claude/settings.json`, wires the kit's workflows into your root `CLAUDE.md`, and adds two ignore rules for ClauKit's regenerable plan artifacts to your root `.gitignore` (hand-written plan files and reports are deliberately *not* ignored — they are linked from PR bodies). Other assets shipped in the package (`.opencode/`, `AGENTS.md`, `docs/`) are only available via Option 3 (clone-as-template).
+> `ck init` copies `.claude/` — everything it installs, including `.claude/scripts/ck/` (the context-hygiene and headless helpers), lives under that one directory — merges hook entries into an existing `.claude/settings.json`, wires the kit's workflows into your root `CLAUDE.md`, and adds two ignore rules for KitForge's regenerable plan artifacts to your root `.gitignore` (hand-written plan files and reports are deliberately *not* ignored — they are linked from PR bodies). Other assets shipped in the package (`.opencode/`, `AGENTS.md`, `docs/`) are only available via Option 3 (clone-as-template).
 
 </details>
 
@@ -113,13 +115,13 @@ So this release adds almost no surface: **0 new agents, 0 new commands.** It har
 
 ## Use Cases & Workflows
 
-This section maps **every common situation** a developer faces to the exact ClauKit commands to use. Start with the master decision tree, then drill into the matching flow.
+This section maps **every common situation** a developer faces to the exact KitForge commands to use. Start with the master decision tree, then drill into the matching flow.
 
 ### 🧭 Master decision tree — which flow do I need?
 
 ```mermaid
 flowchart TD
-    Start([I want to use ClauKit]) --> Q1{What's the situation?}
+    Start([I want to use KitForge]) --> Q1{What's the situation?}
     Q1 -->|Brand new project| F1[Flow 1<br/>Bootstrap]
     Q1 -->|Cloned existing repo| F2[Flow 2<br/>Onboard]
     Q1 -->|Build new feature| F3[Flow 3<br/>Feature]
@@ -143,7 +145,7 @@ Start from zero — scaffold project, decide architecture, ship first version.
 
 ```mermaid
 flowchart LR
-    A[npm i -g ClauKit] --> B[ck init]
+    A[npm i -g github:trungdo9/ClauKit] --> B[ck init]
     B --> C{Bootstrap style?}
     C -->|step-by-step| D["/ck:bootstrap"]
     C -->|minimal Q&A| E["/ck:bootstrap auto"]
@@ -159,7 +161,7 @@ flowchart LR
     L --> M["/ck:git pr"]
 ```
 
-**When to use**: empty folder, fresh idea. Pick `auto` if you trust ClauKit defaults; `fast` for max parallelism; default for full control.
+**When to use**: empty folder, fresh idea. Pick `auto` if you trust KitForge defaults; `fast` for max parallelism; default for full control.
 
 ---
 
@@ -309,7 +311,7 @@ flowchart LR
     I --> J["/ck:git pr<br/>draft PR + declared tail"]
 ```
 
-**Tip**: `/ck:find` is your meta-helper across 126 skills + 57 commands. Use it whenever you think "there's probably a ClauKit tool for this".
+**Tip**: `/ck:find` is your meta-helper across 126 skills + 57 commands. Use it whenever you think "there's probably a KitForge tool for this".
 
 **Wrap-up notes**: `/ck:git cm` commits only *your session's* files (manifest from the file-claims registry — foreign WIP is reported, never staged). `/ck:git pr` finishes the branch: verify green → **draft-default** PR with an evidence-backed body → your project's declared post-PR steps (if any — see the `Delivery tail` block in `/ck:claude-md init`). If `gh`/`glab` auth fails, you get a paste-ready PR block instead of a dead end.
 
@@ -317,7 +319,7 @@ flowchart LR
 
 ### Flow 8 — 🎛 Controlled audit / migration / cross-checked review
 
-Deterministic large-ish fan-out + verification, **under explicit control** — gated, cost-previewed, inspectable. `/ck:flow` re-creates Claude Code's dynamic-workflow model on ClauKit's own controllable primitives; it does **NOT** use the native `ultracode` runtime.
+Deterministic large-ish fan-out + verification, **under explicit control** — gated, cost-previewed, inspectable. `/ck:flow` re-creates Claude Code's dynamic-workflow model on KitForge's own controllable primitives; it does **NOT** use the native `ultracode` runtime.
 
 ```mermaid
 flowchart LR
@@ -403,11 +405,11 @@ Specialized journeys with single-command entry points.
 
 **Dispatcher commands** (positional args, no dash): `/ck:plan`, `/ck:fix`, `/ck:git`, `/ck:docs`, `/ck:design`, `/ck:bootstrap`, `/ck:scout`. Combinable `--flags`: `/ck:cook` (`--fast/--auto/--from-plan/--no-test` — `--auto` is the only mode that runs Deploy), `/ck:fix` (`--auto/--review/--quick/--parallel/--flow`), `/ck:review` (`--flow`).
 
-**Controlled orchestration**: `/ck:flow` re-creates Claude Code's dynamic-workflow model on ClauKit's own controllable primitives (markdown recipes + Agent-tool fan-out/pipeline over the 30 agents, 4-axis inheritance, gated + cost-previewed) — it does **NOT** use the native `ultracode` runtime. Use it (or `/ck:fix --flow` / `/ck:review --flow`) for deterministic audits, migrations, and cross-checked reviews; use `/ck:team` when workstreams need persistent sessions + discussion.
+**Controlled orchestration**: `/ck:flow` re-creates Claude Code's dynamic-workflow model on KitForge's own controllable primitives (markdown recipes + Agent-tool fan-out/pipeline over the 30 agents, 4-axis inheritance, gated + cost-previewed) — it does **NOT** use the native `ultracode` runtime. Use it (or `/ck:fix --flow` / `/ck:review --flow`) for deterministic audits, migrations, and cross-checked reviews; use `/ck:team` when workstreams need persistent sessions + discussion.
 
 ## Multi-Agent Orchestration: `/ck:team` vs `/ck:flow`
 
-ClauKit ships two orchestration commands — each for a different kind of parallel work. Picking the wrong one wastes tokens; picking the right one saves hours.
+KitForge ships two orchestration commands — each for a different kind of parallel work. Picking the wrong one wastes tokens; picking the right one saves hours.
 
 ### Quick decision
 
@@ -416,7 +418,7 @@ ClauKit ships two orchestration commands — each for a different kind of parall
 | 3+ workstreams that need to **discuss / hand off context** mid-flight | `/ck:team` |
 | Deterministic fan-out over repo/N-files, **gated + cost-previewed** | `/ck:flow` |
 | Single-turn parallel reads, no inter-agent discussion | direct Agent tool (cheapest) |
-| Full autonomous orchestration (no explicit control needed) | — ClauKit does not expose `ultracode` |
+| Full autonomous orchestration (no explicit control needed) | — KitForge does not expose `ultracode` |
 
 ---
 
@@ -453,7 +455,7 @@ Flags: `--devs N` · `--researchers N` · `--reviewers N` · `--debuggers N` · 
 
 ### `/ck:flow` — Controllable deterministic fan-out
 
-Orchestrates from **within the main session** — decomposes a task into phases, fans out over the 21 ClauKit agents, gates between phases, and synthesizes a single confirmed-only report. Re-creates Claude Code's dynamic-workflow model on ClauKit's own primitives. **Does NOT use the native `ultracode` runtime or `Workflow` tool.**
+Orchestrates from **within the main session** — decomposes a task into phases, fans out over the 21 KitForge agents, gates between phases, and synthesizes a single confirmed-only report. Re-creates Claude Code's dynamic-workflow model on KitForge's own primitives. **Does NOT use the native `ultracode` runtime or `Workflow` tool.**
 
 **4-stage execution**
 
@@ -462,7 +464,7 @@ Orchestrates from **within the main session** — decomposes a task into phases,
 3. **ORCHESTRATE** — execute phases; inspect/abort offered between each phase (control advantage over the native runtime).
 4. **SYNTHESIZE** — orchestrator consolidates child reports into a single confirmed-only report.
 
-**Quality patterns** (borrowed from the native dynamic-workflow model, expressed as ClauKit fan-out/pipeline):
+**Quality patterns** (borrowed from the native dynamic-workflow model, expressed as KitForge fan-out/pipeline):
 
 | Pattern | What it does |
 |---|---|
@@ -486,9 +488,9 @@ Flag variants on existing commands: `/ck:fix --flow` · `/ck:review --flow`.
 
 ---
 
-### ClauKit orchestration vs Claude Code native features
+### KitForge orchestration vs Claude Code native features
 
-Claude Code ships built-in primitives: the **Agent tool** (subagents), **dynamic workflows** (research preview, native `ultracode` runtime), and **worktrees**. ClauKit's two orchestration commands build on the first two. The third it deliberately does *not* extend: ClauKit coordinates concurrent sessions through the file-claims registry and disjoint path sets rather than provisioning a tree per session — auto-provisioning fired on every concurrent session, paid a full dependency install each time, and left stale trees on disk.
+Claude Code ships built-in primitives: the **Agent tool** (subagents), **dynamic workflows** (research preview, native `ultracode` runtime), and **worktrees**. KitForge's two orchestration commands build on the first two. The third it deliberately does *not* extend: KitForge coordinates concurrent sessions through the file-claims registry and disjoint path sets rather than provisioning a tree per session — auto-provisioning fired on every concurrent session, paid a full dependency install each time, and left stale trees on disk.
 
 | Capability | Claude Code native (Agent tool / ultracode) | `/ck:team` | `/ck:flow` |
 |---|---|---|---|
@@ -497,7 +499,7 @@ Claude Code ships built-in primitives: the **Agent tool** (subagents), **dynamic
 | **Persistent cross-session memory** | No | Yes (`.claude/agent-memory/`) | No |
 | **Cost preview gate** | No | No | Yes — mandatory before any fan-out |
 | **Mid-run inspect / abort** | No | Via `TaskList` | Yes — offered between every phase |
-| **Pre-flight safety gates** | No | Inherited from ClauKit | Inherited from ClauKit |
+| **Pre-flight safety gates** | No | Inherited from KitForge | Inherited from KitForge |
 | **Reusable saved recipes** | No | No | Yes — `/ck:flow save <name>` |
 | **Token budget** | — | Higher (N × full context windows) | Moderate (fan-out per phase, haiku/opus mix) |
 | **Best for** | One-turn quick reads | 3+ workstreams that need to discuss | Audits, migrations, cross-checked reviews |
@@ -508,7 +510,7 @@ Claude Code ships built-in primitives: the **Agent tool** (subagents), **dynamic
 one-turn parallel reads, no discussion  →  Agent tool directly (cheapest)
 3+ workstreams + discussion + handoff   →  /ck:team
 deterministic fan-out + gates + cost    →  /ck:flow
-ultracode / native dynamic-workflow     →  not used — /ck:flow is the ClauKit substitute
+ultracode / native dynamic-workflow     →  not used — /ck:flow is the KitForge substitute
 ```
 
 ---
@@ -523,11 +525,11 @@ Install with `ck init --kit marketing` (or `--kit both`). Adds the **`/mk:` name
 
 ---
 
-## ClauKit vs Other AI Coding Tools
+## KitForge vs Other AI Coding Tools
 
-Different tools for different jobs. **Cursor** and **Windsurf** are agentic IDEs — they replace your editor. **Aggregate Claude Code templates** (community-curated, often 1000+ skills) take the kitchen-sink approach. **Google Antigravity** is an autonomous agent runtime. **ClauKit** is a curated framework that runs *inside* Claude Code — opinionated workflows, gated safety, multi-agent orchestration. Pick the right tool for the job; they're complementary, not exclusive.
+Different tools for different jobs. **Cursor** and **Windsurf** are agentic IDEs — they replace your editor. **Aggregate Claude Code templates** (community-curated, often 1000+ skills) take the kitchen-sink approach. **Google Antigravity** is an autonomous agent runtime. **KitForge** is a curated framework that runs *inside* Claude Code — opinionated workflows, gated safety, multi-agent orchestration. Pick the right tool for the job; they're complementary, not exclusive.
 
-| Capability | ClauKit | Aggregate CC templates | Cursor | Windsurf | Antigravity |
+| Capability | KitForge | Aggregate CC templates | Cursor | Windsurf | Antigravity |
 |---|---|---|---|---|---|
 | Category | Framework | Template | Agentic IDE | Agentic IDE | Autonomous runtime |
 | Multi-agent orchestration | ✅ `/ck:team` | Partial | Composer | Cascade | ✅ |
@@ -538,16 +540,16 @@ Different tools for different jobs. **Cursor** and **Windsurf** are agentic IDEs
 | Curated vs comprehensive | Curated (80) | Comprehensive (1000+) | N/A | N/A | N/A |
 | License | MIT | MIT | Commercial | Commercial | Commercial |
 
-### When NOT to use ClauKit
+### When NOT to use KitForge
 
-ClauKit isn't for everyone. If you want an editor with AI baked in → use [Cursor](https://cursor.com) or [Windsurf](https://windsurf.com). If you want every Claude Code skill ever published → browse [`github.com/topics/claude-code-template`](https://github.com/topics/claude-code-template) for aggregate templates. If you need a fully autonomous agent that runs unsupervised → look at AutoGPT or Antigravity. ClauKit is for developers who want **opinionated workflows inside Claude Code** with safety gates and curation — not raw scale.
+KitForge isn't for everyone. If you want an editor with AI baked in → use [Cursor](https://cursor.com) or [Windsurf](https://windsurf.com). If you want every Claude Code skill ever published → browse [`github.com/topics/claude-code-template`](https://github.com/topics/claude-code-template) for aggregate templates. If you need a fully autonomous agent that runs unsupervised → look at AutoGPT or Antigravity. KitForge is for developers who want **opinionated workflows inside Claude Code** with safety gates and curation — not raw scale.
 
 > *Comparison reflects published feature sets as of 2026-05-23. Sources: [Cursor docs](https://docs.cursor.com/), [Windsurf docs](https://docs.windsurf.com/), [Anthropic Claude Code](https://code.claude.com/docs), [Google Antigravity blog](https://antigravity.google/). Capabilities marked ✅/❌/Partial reflect each vendor's flagship offering and may evolve.*
 
 ## Project Structure
 
 ```
-claukit/
+ClauKit/                     # repo root — GitHub repo name, unchanged
 ├── .claude/                    # Claude Code configuration
 │   ├── agents/                 # Specialized agent definitions (30 agents: 18 engineering/ + 12 marketing/)
 │   ├── commands/               # Slash command implementations (57 commands)
@@ -684,58 +686,58 @@ All documentation is maintained in `./docs`:
 ## Frequently Asked Questions
 
 <details>
-<summary><strong>What is ClauKit and how is it different from aggregate Claude Code templates?</strong></summary>
+<summary><strong>What is KitForge and how is it different from aggregate Claude Code templates?</strong></summary>
 
-ClauKit is an opinionated multi-agent orchestration framework for Claude Code with 126 curated skills, 30 agents, and 57 gated commands. Unlike aggregate Claude Code templates (often 1000+ skills, kitchen-sink approach), ClauKit hand-selects each skill, enforces pre-flight safety gates on destructive operations, and ships a trio architecture (skill + agent + command) so every concept has exactly one entry point. See the [comparison table](#claukit-vs-other-ai-coding-tools) for side-by-side capabilities.
+KitForge is an opinionated multi-agent orchestration framework for Claude Code with 126 curated skills, 30 agents, and 57 gated commands. Unlike aggregate Claude Code templates (often 1000+ skills, kitchen-sink approach), KitForge hand-selects each skill, enforces pre-flight safety gates on destructive operations, and ships a trio architecture (skill + agent + command) so every concept has exactly one entry point. See the [comparison table](#kitforge-vs-other-ai-coding-tools) for side-by-side capabilities.
 
 </details>
 
 <details>
-<summary><strong>How do I write a good CLAUDE.md file with ClauKit?</strong></summary>
+<summary><strong>How do I write a good CLAUDE.md file with KitForge?</strong></summary>
 
-CLAUDE.md best practices in ClauKit: keep workflows in `.claude/workflows/` (referenced from CLAUDE.md), point to `docs/clauKit-registry.md` as single source of truth for available tools, and enforce the trio rule (skill = knowledge, agent = persona, command = trigger). See this repo's [CLAUDE.md](./CLAUDE.md) as a working example. To bootstrap a new project's CLAUDE.md, run `/ck:claude-md init`; audit an existing one with `/ck:claude-md verify`, slim a bloated one with `/ck:claude-md refactor`.
+CLAUDE.md best practices in KitForge: keep workflows in `.claude/workflows/` (referenced from CLAUDE.md), point to `docs/clauKit-registry.md` as single source of truth for available tools, and enforce the trio rule (skill = knowledge, agent = persona, command = trigger). See this repo's [CLAUDE.md](./CLAUDE.md) as a working example. To bootstrap a new project's CLAUDE.md, run `/ck:claude-md init`; audit an existing one with `/ck:claude-md verify`, slim a bloated one with `/ck:claude-md refactor`.
 
 </details>
 
 <details>
 <summary><strong>Can I run multiple Claude Code agents in parallel?</strong></summary>
 
-Yes — via `/ck:team <template>`. ClauKit spins up independent Claude Code sessions (devs, reviewers, researchers, debuggers) and coordinates outputs through a shared report directory. Pre-flight gates ensure no session pushes broken code. See [Flow 7 — Daily working session](#use-cases--workflows) and the [`team` skill](./.claude/skills/software/team/SKILL.md) for parallel agent execution patterns.
+Yes — via `/ck:team <template>`. KitForge spins up independent Claude Code sessions (devs, reviewers, researchers, debuggers) and coordinates outputs through a shared report directory. Pre-flight gates ensure no session pushes broken code. See [Flow 7 — Daily working session](#use-cases--workflows) and the [`team` skill](./.claude/skills/software/team/SKILL.md) for parallel agent execution patterns.
 
 </details>
 
 <details>
-<summary><strong>How does ClauKit handle Claude Code multi-session coordination?</strong></summary>
+<summary><strong>How does KitForge handle Claude Code multi-session coordination?</strong></summary>
 
 Each `/ck:team` session writes atomic commits on a **disjoint path set** declared up front, with results aggregated into a shared `plans/<plan-name>/reports/` directory. The orchestrator session reads these reports and produces a unified outcome. Two teammates whose paths would overlap are serialized, not parallelized. Multi-session coordination is gated — no session can push without passing `/ck:test` and `/ck:review`.
 
 </details>
 
 <details>
-<summary><strong>Does ClauKit support MCP (Model Context Protocol) servers?</strong></summary>
+<summary><strong>Does KitForge support MCP (Model Context Protocol) servers?</strong></summary>
 
 Yes. Run `/ck:use-mcp <server-name>` to integrate any MCP server (GitHub, Atlassian, Linear, Notion, Slack, custom). Configuration template at [`.claude/.mcp.json.example`](./.claude/.mcp.json.example). Claude Code loads MCP tool schemas on demand (deferred), and `/ck:use-mcp` calls them natively — isolating any verbose calls in a `general-purpose` subagent to keep the main context clean.
 
 </details>
 
 <details>
-<summary><strong>How is ClauKit different from Cursor or Windsurf?</strong></summary>
+<summary><strong>How is KitForge different from Cursor or Windsurf?</strong></summary>
 
-Cursor and Windsurf are agentic IDEs — they replace your editor. ClauKit is a framework that runs *inside* Claude Code (which itself runs alongside your editor). They are complementary: use Cursor/Windsurf as your IDE, then invoke ClauKit's `/ck:cook` or `/ck:plan` when you need structured multi-agent workflows. See the [full comparison table](#claukit-vs-other-ai-coding-tools).
-
-</details>
-
-<details>
-<summary><strong>How do I automate my Claude Code workflow with ClauKit?</strong></summary>
-
-ClauKit ships 57 commands that codify common Claude Code workflows: `/ck:plan` → `/ck:cook` → `/ck:test` → `/ck:review` → `/ck:git pr`. Each command activates the right skill + agent automatically. For full visual workflow maps see [Use Cases & Workflows](#use-cases--workflows) — covers greenfield, onboarding, feature build, bug fix, refactor, and daily session loops.
+Cursor and Windsurf are agentic IDEs — they replace your editor. KitForge is a framework that runs *inside* Claude Code (which itself runs alongside your editor). They are complementary: use Cursor/Windsurf as your IDE, then invoke KitForge's `/ck:cook` or `/ck:plan` when you need structured multi-agent workflows. See the [full comparison table](#kitforge-vs-other-ai-coding-tools).
 
 </details>
 
 <details>
-<summary><strong>Is ClauKit production-ready? Can I use it on commercial projects?</strong></summary>
+<summary><strong>How do I automate my Claude Code workflow with KitForge?</strong></summary>
 
-ClauKit is MIT-licensed — commercial use is allowed. Version 1.3.0 ships gated workflows that block destructive operations (dirty tree refactors, refactors on `main`, tests-red commits). See [`.claude/workflows/primary-workflow.md`](./.claude/workflows/primary-workflow.md) for safety guarantees and [GitHub Releases](https://github.com/trungdo9/ClauKit/releases) for release history. The framework is in active use; expect breaking changes between minor versions until 2.0.
+KitForge ships 57 commands that codify common Claude Code workflows: `/ck:plan` → `/ck:cook` → `/ck:test` → `/ck:review` → `/ck:git pr`. Each command activates the right skill + agent automatically. For full visual workflow maps see [Use Cases & Workflows](#use-cases--workflows) — covers greenfield, onboarding, feature build, bug fix, refactor, and daily session loops.
+
+</details>
+
+<details>
+<summary><strong>Is KitForge production-ready? Can I use it on commercial projects?</strong></summary>
+
+KitForge is MIT-licensed — commercial use is allowed. Version 1.5.1 ships gated workflows that block destructive operations (dirty tree refactors, refactors on `main`, tests-red commits). See [`.claude/workflows/primary-workflow.md`](./.claude/workflows/primary-workflow.md) for safety guarantees and [GitHub Releases](https://github.com/trungdo9/ClauKit/releases) for release history. The framework is in active use; expect breaking changes between minor versions until 2.0.
 
 </details>
 
@@ -766,10 +768,10 @@ eligibility in SERP.
 {
   "@context": "https://schema.org",
   "@type": "SoftwareApplication",
-  "name": "ClauKit",
+  "name": "KitForge",
   "applicationCategory": "DeveloperApplication",
   "operatingSystem": "Cross-platform",
-  "description": "Opinionated multi-agent orchestration framework for Claude Code with 126 curated skills, 30 agents, and 57 gated commands.",
+  "description": "Opinionated multi-agent orchestration framework for coding agents — 126 curated skills, 30 agents, and 57 gated commands. Runs in Claude Code; exports to Codex and Antigravity.",
   "url": "https://github.com/trungdo9/ClauKit",
   "license": "https://opensource.org/licenses/MIT",
   "author": { "@type": "Person", "name": "trungdo9" },
@@ -783,43 +785,43 @@ eligibility in SERP.
   "mainEntity": [
     {
       "@type": "Question",
-      "name": "What is ClauKit and how is it different from aggregate Claude Code templates?",
-      "acceptedAnswer": { "@type": "Answer", "text": "ClauKit is an opinionated multi-agent orchestration framework for Claude Code with 126 curated skills, 30 agents, and 57 gated commands. Unlike aggregate Claude Code templates (often 1000+ skills, kitchen-sink approach), ClauKit hand-selects each skill, enforces pre-flight safety gates on destructive operations, and ships a trio architecture (skill + agent + command)." }
+      "name": "What is KitForge and how is it different from aggregate Claude Code templates?",
+      "acceptedAnswer": { "@type": "Answer", "text": "KitForge is an opinionated multi-agent orchestration framework for Claude Code with 126 curated skills, 30 agents, and 57 gated commands. Unlike aggregate Claude Code templates (often 1000+ skills, kitchen-sink approach), KitForge hand-selects each skill, enforces pre-flight safety gates on destructive operations, and ships a trio architecture (skill + agent + command)." }
     },
     {
       "@type": "Question",
-      "name": "How do I write a good CLAUDE.md file with ClauKit?",
+      "name": "How do I write a good CLAUDE.md file with KitForge?",
       "acceptedAnswer": { "@type": "Answer", "text": "Keep workflows in .claude/workflows/ (referenced from CLAUDE.md), point to docs/clauKit-registry.md as single source of truth for available tools, and enforce the trio rule (skill = knowledge, agent = persona, command = trigger). To bootstrap a new project's CLAUDE.md, run /ck:claude-md init; audit with /ck:claude-md verify, slim down with /ck:claude-md refactor." }
     },
     {
       "@type": "Question",
       "name": "Can I run multiple Claude Code agents in parallel?",
-      "acceptedAnswer": { "@type": "Answer", "text": "Yes via /ck:team. ClauKit spins up independent Claude Code sessions (devs, reviewers, researchers, debuggers) and coordinates outputs through a shared report directory. Pre-flight gates ensure no session pushes broken code." }
+      "acceptedAnswer": { "@type": "Answer", "text": "Yes via /ck:team. KitForge spins up independent Claude Code sessions (devs, reviewers, researchers, debuggers) and coordinates outputs through a shared report directory. Pre-flight gates ensure no session pushes broken code." }
     },
     {
       "@type": "Question",
-      "name": "How does ClauKit handle Claude Code multi-session coordination?",
+      "name": "How does KitForge handle Claude Code multi-session coordination?",
       "acceptedAnswer": { "@type": "Answer", "text": "Each /ck:team session writes atomic commits on a disjoint path set declared up front, with results aggregated into a shared plans/<plan-name>/reports/ directory. The orchestrator session reads these reports and produces a unified outcome. Multi-session coordination is gated — no session can push without passing /ck:test and /ck:review." }
     },
     {
       "@type": "Question",
-      "name": "Does ClauKit support MCP (Model Context Protocol) servers?",
+      "name": "Does KitForge support MCP (Model Context Protocol) servers?",
       "acceptedAnswer": { "@type": "Answer", "text": "Yes. Run /ck:use-mcp <server-name> to integrate any MCP server (GitHub, Atlassian, Linear, Notion, Slack, custom). Configuration template at .claude/.mcp.json.example. Claude Code loads MCP tool schemas on demand (deferred), and /ck:use-mcp calls them natively, isolating any verbose calls in a general-purpose subagent to keep the main context clean." }
     },
     {
       "@type": "Question",
-      "name": "How is ClauKit different from Cursor or Windsurf?",
-      "acceptedAnswer": { "@type": "Answer", "text": "Cursor and Windsurf are agentic IDEs — they replace your editor. ClauKit is a framework that runs inside Claude Code (which itself runs alongside your editor). They are complementary: use Cursor/Windsurf as your IDE, then invoke ClauKit's /ck:cook or /ck:plan when you need structured multi-agent workflows." }
+      "name": "How is KitForge different from Cursor or Windsurf?",
+      "acceptedAnswer": { "@type": "Answer", "text": "Cursor and Windsurf are agentic IDEs — they replace your editor. KitForge is a framework that runs inside Claude Code (which itself runs alongside your editor). They are complementary: use Cursor/Windsurf as your IDE, then invoke KitForge's /ck:cook or /ck:plan when you need structured multi-agent workflows." }
     },
     {
       "@type": "Question",
-      "name": "How do I automate my Claude Code workflow with ClauKit?",
-      "acceptedAnswer": { "@type": "Answer", "text": "ClauKit ships 57 commands that codify common Claude Code workflows: /ck:plan → /ck:cook → /ck:test → /ck:review → /ck:git pr. Each command activates the right skill + agent automatically. Visual workflow maps in the Use Cases & Workflows section cover greenfield, onboarding, feature build, bug fix, refactor, and daily session loops." }
+      "name": "How do I automate my Claude Code workflow with KitForge?",
+      "acceptedAnswer": { "@type": "Answer", "text": "KitForge ships 57 commands that codify common Claude Code workflows: /ck:plan → /ck:cook → /ck:test → /ck:review → /ck:git pr. Each command activates the right skill + agent automatically. Visual workflow maps in the Use Cases & Workflows section cover greenfield, onboarding, feature build, bug fix, refactor, and daily session loops." }
     },
     {
       "@type": "Question",
-      "name": "Is ClauKit production-ready? Can I use it on commercial projects?",
-      "acceptedAnswer": { "@type": "Answer", "text": "ClauKit is MIT-licensed — commercial use is allowed. Version 1.3.0 ships gated workflows that block destructive operations (dirty tree refactors, refactors on main, tests-red commits). The framework is in active use; expect breaking changes between minor versions until 2.0." }
+      "name": "Is KitForge production-ready? Can I use it on commercial projects?",
+      "acceptedAnswer": { "@type": "Answer", "text": "KitForge is MIT-licensed — commercial use is allowed. Version 1.5.1 ships gated workflows that block destructive operations (dirty tree refactors, refactors on main, tests-red commits). The framework is in active use; expect breaking changes between minor versions until 2.0." }
     }
   ]
 }
