@@ -128,7 +128,7 @@ These mirror `.claude/workflows/marketing-rules.md` §2 + §7 and are re-checked
 - `references/playbook-100-articles.md` — worked example: existing WordPress site, ~100 posts, mediocre SEO → plan + write + publish
 - `references/research-tools.md` — SERP/keyword research options (WebSearch, Exa, DataForSEO, SerpAPI) + graceful fallback
 - [[seo-cluster]] · [[seo-content-brief]] · [[seo-content]] · [[seo-schema]] · [[seo-geo]] · [[seo-images]] · [[wordpress-rest]]
-- `skills/marketing/seo/SKILL.md` — claude-seo orchestrator (audit side)
+- `.claude/skills/marketing/seo/SKILL.md` — claude-seo orchestrator (audit side)
 
 ## Provenance
 

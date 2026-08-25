@@ -30,7 +30,7 @@ Extract: `{ title, slug, link, content (raw HTML), excerpt, seo: yoast_head_json
 Strip HTML to plaintext for readability/E-E-A-T scoring; keep raw HTML for structure (headings, links, images, schema).
 
 Hand the normalized object to:
-- `skills/marketing/seo/SKILL.md` (claude-seo orchestrator) for a full audit, OR
+- `.claude/skills/marketing/seo/SKILL.md` (claude-seo orchestrator) for a full audit, OR
 - `seo-audit` / `seo-content` / `seo-schema` sub-skills for targeted checks.
 
 ## Output

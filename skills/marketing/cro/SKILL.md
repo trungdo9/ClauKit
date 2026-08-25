@@ -58,7 +58,7 @@ When activated, this skill produces:
 - `.claude/workflows/cro-framework.md` — **required** 25-point framework (load before auditing)
 - `plans/marketing-context.md` — required hub (ICP, brand voice)
 - `.claude/workflows/marketing-rules.md` — quality gates (copy quality, brand voice, E-E-A-T)
-- `skills/marketing/README.md` — full kit overview
+- `.claude/skills/marketing/README.md` — full kit overview
 
 ## Provenance
 

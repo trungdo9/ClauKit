@@ -64,5 +64,5 @@ Load only the reference needed for the current step to keep context lean.
 ## Cross-references
 
 - `skills/integrations/mcp-wordpress/SKILL.md` — MCP wrapper (routes here as fallback)
-- `skills/marketing/seo/SKILL.md` — claude-seo orchestrator (audit consumer)
+- `.claude/skills/marketing/seo/SKILL.md` — claude-seo orchestrator (audit consumer)
 - `.claude/workflows/automation-rules.md` — MCP + idempotency + PII rules

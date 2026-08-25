@@ -60,7 +60,7 @@ ${output ? `Results written to \`${output}\`` : "Results written per skill outpu
 - Concise grammar in reports. List unresolved questions at end.
 - PII redaction enforced for all customer/lead data (see .claude/workflows/automation-rules.md).
 - Idempotency: re-runs must not duplicate resources (emails, leads, video assets).
-- Cross-references: \`.claude/workflows/marketing-rules.md\`, \`.claude/workflows/automation-rules.md\`, \`skills/marketing/README.md\`.
+- Cross-references: \`.claude/workflows/marketing-rules.md\`, \`.claude/workflows/automation-rules.md\`, \`.claude/skills/marketing/README.md\`.
 
 ## Examples
 

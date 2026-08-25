@@ -125,8 +125,8 @@ When activated, this skill produces:
 
 - \`plans/marketing-context.md\` — required hub
 - \`.claude/workflows/marketing-rules.md\` — content quality rules
-- \`skills/marketing/README.md\` — full kit overview
-${source === "AgriciDaniel/claude-seo" ? "- `skills/marketing/seo/SKILL.md` — orchestrator (parent)" : ""}
+- \`.claude/skills/marketing/README.md\` — full kit overview
+${source === "AgriciDaniel/claude-seo" ? "- `.claude/skills/marketing/seo/SKILL.md` — orchestrator (parent)" : ""}
 
 ## Provenance
 
