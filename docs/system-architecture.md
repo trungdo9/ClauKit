@@ -2,11 +2,11 @@
 
 **Last Updated**: 2026-07-16
 **Version**: 1.3.6
-**Project**: ClauKit
+**Project**: KitForge
 
 ## Overview
 
-ClauKit implements a multi-agent AI orchestration architecture where specialized agents collaborate through a file-based communication protocol, running entirely inside Claude Code. It enables developers to leverage AI assistance throughout the entire software development lifecycle via three installable kits (`engineer`, `marketing`, `both`).
+KitForge implements a multi-agent AI orchestration architecture where specialized agents collaborate through a file-based communication protocol, running entirely inside Claude Code. It enables developers to leverage AI assistance throughout the entire software development lifecycle via three installable kits (`engineer`, `marketing`, `both`).
 
 ## Architectural Pattern
 
@@ -229,7 +229,7 @@ Explore different approaches simultaneously
 ```
 /ck:flow prompt → Phase plan (cost-previewed, gated) → fan-out/pipeline over 30 agents → gate → next phase
 ```
-Re-creates Claude Code's dynamic-workflow model on ClauKit primitives — 4-axis inheritance, phase gates, cost preview; never uses native `ultracode`. Orchestrated variants: `/ck:fix --flow`, `/ck:review --flow`.
+Re-creates Claude Code's dynamic-workflow model on KitForge primitives — 4-axis inheritance, phase gates, cost preview; never uses native `ultracode`. Orchestrated variants: `/ck:fix --flow`, `/ck:review --flow`.
 
 #### 4.2 Standard Workflows
 
@@ -282,7 +282,7 @@ Re-creates Claude Code's dynamic-workflow model on ClauKit primitives — 4-axis
 ```
 
 **126 skills across 4 groups** (see `docs/clauKit-registry.md` § 1 for the full itemized list). The `global/` group was removed 2026-08-21 — `docs-seeker` retired and `global/common/` with it, and the path is dropped from the kit manifests
-- **`marketing/`** (50): claude-seo engine (`seo`, `seo-audit`, `seo-technical`, `seo-content`, `seo-schema`, `seo-geo`, +19 more `seo-*`), coreyhaines31-sourced (`copywriting`, `cro`, `ads`, `emails`, `analytics`, +18 more), ClauKit-authored (`product-marketing`, `kit-builder`)
+- **`marketing/`** (50): claude-seo engine (`seo`, `seo-audit`, `seo-technical`, `seo-content`, `seo-schema`, `seo-geo`, +19 more `seo-*`), coreyhaines31-sourced (`copywriting`, `cro`, `ads`, `emails`, `analytics`, +18 more), KitForge-authored (`product-marketing`, `kit-builder`)
 - **`automation/`** (6): `marketing-orchestrator`, `mcp-ga4`, `mcp-gsc`, `mcp-sendgrid`, `mcp-resend`, `mcp-reviewweb`
 - **`integrations/`** (2): `wordpress-rest`, `mcp-wordpress`
 - **`software/`** (68): top-level standalone (`git`, `research`, `planning`, `cook`, `refactor`, `debugging`, `code-review`, `dynamic-workflow`, `claude-md`, `team`, `port`, `to-tickets`, `chrome-devtools`, `agent-browser`, `security`, `problem-solving`, `sequential-thinking`, …) + subcategorized: `ai/` (`ai-artist`, `ai-multimodal`, `remotion`), `database/` (`postgresql`, `supabase`), `design/` (`aesthetic`, `frontend-design`, `ui-ux-pro-max`, `threejs`, …), `development/` (`csharp-developer`, `node-specialist`, `python-pro`, `react-specialist`, `nextjs-developer`, `typescript-pro`, `bootstrap`, `test-automation`, …), `document-skills/` (`docx`, `pdf`, `pptx`, `xlsx`), `git/`, `infrastructure/` (`docker-expert`)

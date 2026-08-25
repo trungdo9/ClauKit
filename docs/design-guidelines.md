@@ -2,11 +2,11 @@
 
 **Last Updated**: 2026-07-16
 **Version**: 1.3.6
-**Project**: ClauKit
+**Project**: KitForge
 
 ## Overview
 
-This document provides design guidelines, principles, and best practices for projects built with the ClauKit template (`@trungdo9/ClauKit`, installed via `ck init`).
+This document provides design guidelines, principles, and best practices for projects built with the KitForge template (`@trungdo9/ClauKit`, installed via `ck init`).
 
 ## Design Principles
 

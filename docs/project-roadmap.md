@@ -6,7 +6,7 @@
 
 ## Executive Summary
 
-ClauKit is an opinionated multi-agent orchestration framework for Claude Code, distributed as the `@trungdo9/ClauKit` npm package. The project has completed its initial foundation phase and is advancing towards enhanced capabilities.
+KitForge is an opinionated multi-agent orchestration framework for coding agents, distributed as the `@trungdo9/ClauKit` npm package. The project has completed its initial foundation phase and is advancing towards enhanced capabilities.
 
 ---
 
@@ -86,7 +86,7 @@ Closed the gap between documented behaviour and what 295 real sessions needed:
 #### 0a. Worktree fleet retired — 2026-08-05
 T1.6 (`wt-new`/`wt-doctor`/`wt-clean` + the `git/worktree` skill) is **removed**. In real multi-session use the auto-provisioning gate fired on every concurrent session, each worktree paid a full dependency install, and stale trees accumulated because teardown depended on a session reaching its finish step. Replaced by **coordination, not isolation** (file-claims registry + disjoint path sets + serialized overlaps) and a **baseline-first** rule in `tdd` (suite on the untouched tree before the first edit, recorded in `STATE.md`; scratch-branch fallback when already dirty; `git stash` still forbidden). `guard-destructive`'s worktree/symlink Tier A rules stay — they protect worktrees the user creates.
 - **What this cost, stated plainly:** parallel *editing* teammates in `/ck:team` are gone as a capability (overlapping path sets now serialize), and `/ck:refactor` halts on a shared tree rather than forking one. Read-only fan-out is unaffected. The `wt-doctor` health gate is replaced by a red-baseline halt, not dropped.
-- **Upgrade path:** `ck init` removes the leftover files from existing installs only where a content digest proves ClauKit shipped that exact file, and only after refreshing the docs that invoke it. A file you wrote or edited is reported, never touched.
+- **Upgrade path:** `ck init` removes the leftover files from existing installs only where a content digest proves KitForge shipped that exact file, and only after refreshing the docs that invoke it. A file you wrote or edited is reported, never touched.
 
 ### 1. Agent System Enhancement
 - Document and optimize existing 16 agents
@@ -191,7 +191,7 @@ T1.6 (`wt-new`/`wt-doctor`/`wt-clean` + the `git/worktree` skill) is **removed**
 - New skills: csharp-expert, security-audit, seo
 
 ### Recent Additions (2026-06-03)
-- `/ck:flow` command with dynamic-workflow skill: controllable recreation of Claude Code's dynamic-workflow model on ClauKit primitives (markdown recipes + Agent-tool fan-out/pipeline, 4-axis inheritance, gated + cost-previewed). No native ultracode runtime. Supports run/save/list modes with `--flow` orchestrated variants on `/ck:fix` and `/ck:review`.
+- `/ck:flow` command with dynamic-workflow skill: controllable recreation of Claude Code's dynamic-workflow model on KitForge primitives (markdown recipes + Agent-tool fan-out/pipeline, 4-axis inheritance, gated + cost-previewed). No native ultracode runtime. Supports run/save/list modes with `--flow` orchestrated variants on `/ck:fix` and `/ck:review`.
 
 ### Recent Changes (2026-07-16)
 - **Removed** `ui-ux-designer` agent (`engineering/ui-ux-designer.md`) — design work rerouted to `frontend-developer` + design skills (`aesthetic`, `frontend-design`, `ui-ux-pro-max`). Affected: `/ck:design`, `/ck:fix ui`, `/ck:cook`, `/ck:bootstrap` fast mode, `fix-pipeline` workflow.
@@ -202,7 +202,7 @@ T1.6 (`wt-new`/`wt-doctor`/`wt-clean` + the `git/worktree` skill) is **removed**
 - **Added** `obsidian` knowledge-only skill (`software/obsidian/` — SKILL.md + 4 lazy-loaded references) teaching Obsidian-flavored markdown (wikilinks, embeds, callouts, block refs), typed YAML frontmatter (merge-never-overwrite), vault conventions + link-integrity on rename/move, and an optional live-vault Local REST API MCP path (plugin ≥ 4.1.3, CVE-gated). No agent/command/runtime code — operates on plain `.md` files with normal tools. Exposed to marketing kit via `.claude/kits/marketing.json`; engineer/both auto-cover through the broad `software/` path. *(Superseded — removed 2026-08-11, see below.)*
 
 ### Recent Changes (2026-08-11)
-- **Removed** `obsidian` knowledge-only skill (`software/obsidian/` — SKILL.md + 4 references). Maintainer decision: no agent, no command, no runtime code, and no ClauKit pipeline ever routed to it, so it was auto-discoverable activation surface with nothing behind it — and vault authoring is out of scope for a software engineering kit. Dropped from `.claude/kits/marketing.json` (the only kit naming it explicitly; engineer/both reached it through the broad `software/` path). All 5 files registered in `RETIRED` (`bin/lib/retired-files.js`) with their shipped blob digests, so `ck init` cleans them from existing installs on content proof, never on a name guess. Counts: skills 130→129, `software/` 71→70, total registry entries 215→214.
+- **Removed** `obsidian` knowledge-only skill (`software/obsidian/` — SKILL.md + 4 references). Maintainer decision: no agent, no command, no runtime code, and no KitForge pipeline ever routed to it, so it was auto-discoverable activation surface with nothing behind it — and vault authoring is out of scope for a software engineering kit. Dropped from `.claude/kits/marketing.json` (the only kit naming it explicitly; engineer/both reached it through the broad `software/` path). All 5 files registered in `RETIRED` (`bin/lib/retired-files.js`) with their shipped blob digests, so `ck init` cleans them from existing installs on content proof, never on a name guess. Counts: skills 130→129, `software/` 71→70, total registry entries 215→214.
 
 ### In Development
 - Skills library expansion
@@ -377,6 +377,6 @@ T1.6 (`wt-new`/`wt-doctor`/`wt-clean` + the `git/worktree` skill) is **removed**
 
 ---
 
-**Maintained By**: ClauKit maintainers
+**Maintained By**: KitForge maintainers
 **Last Review**: 2026-07-16
 **Next Review Target**: 2026-10-16

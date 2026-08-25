@@ -6,7 +6,7 @@
 
 ## Overview
 
-ClauKit is an opinionated multi-agent orchestration framework that runs inside Claude Code. It ships pre-configured agents, slash commands, skills, and gated workflows via `ck init` (installs `.claude/` into any project). Three installable kits: `engineer` (default, `/ck:` namespace), `marketing` (`/mk:` namespace), `both`.
+KitForge is an opinionated multi-agent orchestration framework that runs inside Claude Code. It ships pre-configured agents, slash commands, skills, and gated workflows via `ck init` (installs `.claude/` into any project). Three installable kits: `engineer` (default, `/ck:` namespace), `marketing` (`/mk:` namespace), `both`.
 
 `ck init` also touches two files it does not simply copy, because copying alone leaves them inert: it merges hook entries into an existing `.claude/settings.json` (`bin/lib/settings-merge.js`), and it wires the kit's workflows into the project's root `CLAUDE.md` (`bin/lib/claude-md-wire.js`) — creating a minimal one when absent, appending a `## Workflows` section when present, and doing nothing when the project already references them. Claude Code only auto-reads `CLAUDE.md`, so without that pointer every gate in `.claude/workflows/` is a file nobody opens.
 
@@ -108,7 +108,7 @@ Several `/ck:` commands are dispatchers with positional-arg variants (no dash), 
 
 | Group | Count | Notes |
 |-------|------:|-------|
-| `marketing/` | 50 | 25 claude-seo engine skills + 23 coreyhaines31-sourced + 2 ClauKit-authored (`product-marketing`, `kit-builder`) |
+| `marketing/` | 50 | 25 claude-seo engine skills + 23 coreyhaines31-sourced + 2 KitForge-authored (`product-marketing`, `kit-builder`) |
 | `automation/` | 6 | MCP wrappers: `marketing-orchestrator`, `mcp-ga4`, `mcp-gsc`, `mcp-sendgrid`, `mcp-resend`, `mcp-reviewweb` |
 | `integrations/` | 2 | `wordpress-rest`, `mcp-wordpress` |
 | `software/` | 68 | Top-level standalone (38, incl. `git`) + subcategorized (30): `ai/` (3), `database/` (2), `design/` (9), `development/` (11), `document-skills/` (4), `infrastructure/` (1) |

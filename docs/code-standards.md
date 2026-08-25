@@ -2,11 +2,11 @@
 
 **Last Updated**: 2026-05-22
 **Version**: 1.1.0
-**Applies To**: All code within ClauKit project
+**Applies To**: All code within the KitForge project
 
 ## Overview
 
-This document defines coding standards, file organization patterns, naming conventions, and best practices for ClauKit. All code must adhere to these standards to ensure consistency, maintainability, and quality.
+This document defines coding standards, file organization patterns, naming conventions, and best practices for KitForge. All code must adhere to these standards to ensure consistency, maintainability, and quality.
 
 ## Core Development Principles
 
@@ -280,7 +280,7 @@ GET    /api/users/:userId/posts
  * Handles user authentication, registration, and profile management.
  *
  * @module services/user-service
- * @author ClauKit
+ * @author KitForge
  * @version 1.0.0
  */
 ```
@@ -688,7 +688,7 @@ Mistakes to avoid
 
 ## Hook Implementation Standards
 
-### Every Node file ClauKit installs is `.cjs` — never `.js`
+### Every Node file KitForge installs is `.cjs` — never `.js`
 
 Hooks, `statusline`, and everything under `.claude/scripts/ck/` are CommonJS, and they
 run inside the *user's* project. Node picks a `.js` file's module system from the
@@ -711,7 +711,7 @@ ReferenceError: require is not defined in ES module scope
   file, and their `settings.json` and shipped command docs keep invoking it. See
   `bin/lib/cjs-migrate.js` and `bin/lib/cjs-migrate-refs.js`.
 
-`bin/` is exempt — it executes inside ClauKit's own package, under ClauKit's
+`bin/` is exempt — it executes inside KitForge's own package, under KitForge's
 `package.json`.
 
 **Why this matters beyond the crash:** `scout-block` and `guard-destructive` are

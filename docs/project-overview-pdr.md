@@ -1,6 +1,6 @@
 # Project Overview & Product Development Requirements (PDR)
 
-**Project Name**: ClauKit
+**Project Name**: KitForge
 **Version**: 1.3.6
 **Last Updated**: 2026-07-16
 **Status**: Active Development
@@ -8,7 +8,7 @@
 
 ## Executive Summary
 
-ClauKit is an opinionated multi-agent orchestration framework for Claude Code, distributed as the npm package `@trungdo9/ClauKit` (CLI: `ck`/`claukit`). `ck init` copies `.claude/` (agents, commands, skills, workflows) into any project, giving it a standardized foundation for AI-assisted development. Three installable kits: `engineer` (default), `marketing`, `both`.
+KitForge is an opinionated multi-agent orchestration framework for coding agents, distributed as the npm package `@trungdo9/ClauKit` (CLI: `ck`/`claukit`). `ck init` copies `.claude/` (agents, commands, skills, workflows) into any project, giving it a standardized foundation for AI-assisted development. Three installable kits: `engineer` (default), `marketing`, `both`.
 
 ## Project Purpose
 
@@ -78,7 +78,7 @@ No `csharp-expert` agent exists — C#/.NET is covered by the `csharp-developer`
 - **Sequential Chaining**: Planning -> Implementation -> Testing -> Review -> Deploy
 - **Parallel Execution**: Multiple researchers exploring different approaches
 - **Query Fan-Out**: Simultaneous investigation of technical solutions
-- **Controlled Fan-Out/Pipeline** (`/ck:flow`): phase-gated, cost-previewed orchestration over agent personas — re-creates the dynamic-workflow model on ClauKit primitives, never the native `ultracode` runtime
+- **Controlled Fan-Out/Pipeline** (`/ck:flow`): phase-gated, cost-previewed orchestration over agent personas — re-creates the dynamic-workflow model on KitForge primitives, never the native `ultracode` runtime
 
 ### 2. Slash Commands (37 files: 25 `/ck:<name>` + 12 `/mk:<name>`)
 
@@ -141,7 +141,7 @@ No `csharp-expert` agent exists — C#/.NET is covered by the `csharp-developer`
 - `/ck:flow [save|list] <task>` - Controllable phase-gated fan-out/pipeline over agent personas (never native `ultracode`)
 
 **Discovery**:
-- `/ck:find <task>` - Recommend the right ClauKit skill/agent/command
+- `/ck:find <task>` - Recommend the right KitForge skill/agent/command
 
 **Marketing kit** (`/mk:` namespace, 12 commands — only with `--kit marketing`/`both`; every command except `/mk:plan` hard-fails without `plans/marketing-context.md`):
 - `/mk:plan`, `/mk:seo`, `/mk:content`, `/mk:email`, `/mk:ads`, `/mk:cro`, `/mk:research`, `/mk:growth`, `/mk:campaign`, `/mk:leads`, `/mk:nurture`, `/mk:video`
@@ -535,7 +535,7 @@ No `csharp-expert` agent exists — C#/.NET is covered by the `csharp-developer`
 - [Code Standards](./code-standards.md)
 - [System Architecture](./system-architecture.md)
 - [Project Roadmap](./project-roadmap.md)
-- [ClauKit Registry](./clauKit-registry.md) — skills + agents + commands single source of truth
+- [KitForge Registry](./clauKit-registry.md) — skills + agents + commands single source of truth
 - [Design Guidelines](./design-guidelines.md)
 - [Deployment Guide](./deployment-guide.md)
 

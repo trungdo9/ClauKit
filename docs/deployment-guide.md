@@ -2,11 +2,11 @@
 
 **Last Updated**: 2026-07-16
 **Version**: 1.3.6
-**Project**: ClauKit
+**Project**: KitForge
 
 ## Overview
 
-This guide covers deployment options and configurations for projects built with the ClauKit template (`@trungdo9/ClauKit`, installed via `ck init`).
+This guide covers deployment options and configurations for projects built with the KitForge template (`@trungdo9/ClauKit`, installed via `ck init`).
 
 ## Deployment Environments
 
