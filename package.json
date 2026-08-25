@@ -1,7 +1,7 @@
 {
   "name": "@trungdo9/ClauKit",
   "version": "1.5.1",
-  "description": "A CLI tool to initialize Claude agents configuration in your project.",
+  "description": "Multi-agent orchestration for coding agents — 126 curated skills, 30 agents, 57 gated commands, 3 installable kits. Installs into any project via `ck init`.",
   "main": "index.js",
   "bin": {
     "ck": "./bin/ck.js",
