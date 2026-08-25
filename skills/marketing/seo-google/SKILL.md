@@ -174,4 +174,4 @@ Fill the `{placeholder}` fields from the API responses above; leave a field `[NE
 
 ## Provenance
 
-Imported from `AgriciDaniel/claude-seo` and adapted for ClauKit. The source skill drove all calls through its own `claude-seo run <script>.py` CLI harness, which ClauKit doesn't ship — adapted here to direct REST calls (curl via Bash, or WebFetch) against the same Google endpoints, with routing to `mcp-gsc`/`mcp-ga4` noted where those wrappers already cover the ask. Endpoint shapes, quotas, and the 2026 GSC/GA4 AI-surface and DMA/consent-mode notes are preserved from source.
+Imported from `AgriciDaniel/claude-seo` and adapted for KitForge. The source skill drove all calls through its own `claude-seo run <script>.py` CLI harness, which ClauKit doesn't ship — adapted here to direct REST calls (curl via Bash, or WebFetch) against the same Google endpoints, with routing to `mcp-gsc`/`mcp-ga4` noted where those wrappers already cover the ask. Endpoint shapes, quotas, and the 2026 GSC/GA4 AI-surface and DMA/consent-mode notes are preserved from source.

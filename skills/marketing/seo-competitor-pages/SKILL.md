@@ -223,4 +223,4 @@ These rules apply on top of, not instead of, the truth-only rule in [[seo-conten
 
 ## Provenance
 
-Imported from `AgriciDaniel/claude-seo` and adapted for ClauKit. Page types, schema templates, keyword patterns, and fairness guidelines are preserved from the source; adaptations are ClauKit frontmatter/style, `plans/marketing/<campaign>/` output paths, and explicit scoping against the seo-writing pipeline's separate competitor-analysis mechanism (source repo did not need this distinction).
+Imported from `AgriciDaniel/claude-seo` and adapted for KitForge. Page types, schema templates, keyword patterns, and fairness guidelines are preserved from the source; adaptations are ClauKit frontmatter/style, `plans/marketing/<campaign>/` output paths, and explicit scoping against the seo-writing pipeline's separate competitor-analysis mechanism (source repo did not need this distinction).

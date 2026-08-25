@@ -190,7 +190,7 @@ In the site footer, a "vs" column with up to eight comparisons (ordered by searc
 
 ## Provenance
 
-Imported from `coreyhaines31/marketingskills` (MIT, © 2025 Corey Haines) and adapted for ClauKit.
+Imported from `coreyhaines31/marketingskills` (MIT, © 2025 Corey Haines) and adapted for KitForge.
 
 Adaptations: the upstream `competitors` skill covered four page formats; ClauKit splits it by reader intent, so this skill carries **only** Formats 3 and 4 (you-vs-competitor, competitor-vs-competitor) plus the vs-relevant halves of Essential Sections, Content Architecture, and the section templates. Formats 1 and 2 (singular and plural alternatives) moved to [[competitor-alternatives]]; the Research Process and centralized competitor-profile schema moved to [[competitor-profiling]]; the SEO Considerations block (keyword table, schema) was dropped in favour of the existing [[seo-competitor-pages]] skill.
 

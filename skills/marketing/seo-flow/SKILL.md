@@ -70,4 +70,4 @@ This is what makes SEO work at scale reliable instead of a black box — you can
 
 ## Provenance
 
-Imported from `AgriciDaniel/claude-seo` and adapted for ClauKit. The Article Production recipe is the ClauKit-native port of a production n8n SEO pipeline — see [[seo-writing]].
+Imported from `AgriciDaniel/claude-seo` and adapted for KitForge. The Article Production recipe is the ClauKit-native port of a production n8n SEO pipeline — see [[seo-writing]].

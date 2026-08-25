@@ -3,7 +3,7 @@
  * Generates 10 marketing/automation agents (Phase 4).
  *
  * 7 marketing agents:
- *   - Core (3 ClauKit-authored): content-strategist, market-researcher, email-specialist
+ *   - Core (3 KitForge-authored): content-strategist, market-researcher, email-specialist
  *   - SEO (4 from AgriciDaniel): seo-content, seo-technical, seo-schema, seo-geo
  *
  * 3 automation agents: campaign-manager, crm-specialist, video-producer
@@ -26,7 +26,7 @@ const { parseArgs, writeOnce, report, count } = require("./lib/gen-write");
 const AGENTS_ROOT = path.join(__dirname, "..", ".claude", "agents", "marketing");
 
 const AGENTS = {
-  // Core marketing agents (ClauKit-authored)
+  // Core marketing agents (KitForge-authored)
   "marketing/content-strategist.md": {
     name: "content-strategist",
     model: "sonnet",

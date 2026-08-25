@@ -127,4 +127,4 @@ If DataForSEO MCP tools are available, use `serp_organic_live_advanced` for real
 
 ## Provenance
 
-Imported from `AgriciDaniel/claude-seo` (`skills/seo-page/SKILL.md`) and adapted for ClauKit. Adaptations: ClauKit frontmatter, scoped to the marketing kit namespace (`/mk:`), added an explicit scope boundary against [[seo-writing]] Stage 4, references `plans/marketing-context.md`. Domain checks (on-page, content quality, technical, schema, images, CWV signals) and the error-handling table are preserved from the source.
+Imported from `AgriciDaniel/claude-seo` (`skills/seo-page/SKILL.md`) and adapted for KitForge. Adaptations: KitForge frontmatter, scoped to the marketing kit namespace (`/mk:`), added an explicit scope boundary against [[seo-writing]] Stage 4, references `plans/marketing-context.md`. Domain checks (on-page, content quality, technical, schema, images, CWV signals) and the error-handling table are preserved from the source.

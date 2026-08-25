@@ -81,4 +81,4 @@ Score existing or drafted content 0–2 per pillar; anything scoring 0 is a rewr
 
 ## Provenance
 
-Imported from `AgriciDaniel/claude-seo` and adapted for ClauKit. The section-writer method + truth-only/anti-fluff rules are the seo-writing pipeline's Stage 3, preserved verbatim.
+Imported from `AgriciDaniel/claude-seo` and adapted for KitForge. The section-writer method + truth-only/anti-fluff rules are the seo-writing pipeline's Stage 3, preserved verbatim.

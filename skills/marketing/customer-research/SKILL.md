@@ -171,4 +171,4 @@ Read `plans/marketing-context.md` first and skip anything it already answers.
 
 ## Provenance
 
-Imported from `coreyhaines31/marketingskills` (MIT, (c) 2025 Corey Haines) and adapted for ClauKit: ClauKit frontmatter, `/mk:` routing and output paths, `plans/marketing-context.md` replaces the upstream `.agents/product-marketing.md` context file, PII + falsifiability gates added, upstream handoffs to skills ClauKit lacks (`churn-prevention`, `prospecting`, `marketing-plan`) re-pointed; the SparkToro tool integration referenced upstream is not shipped here.
+Imported from `coreyhaines31/marketingskills` (MIT, (c) 2025 Corey Haines) and adapted for KitForge: KitForge frontmatter, `/mk:` routing and output paths, `plans/marketing-context.md` replaces the upstream `.agents/product-marketing.md` context file, PII + falsifiability gates added, upstream handoffs to skills ClauKit lacks (`churn-prevention`, `prospecting`, `marketing-plan`) re-pointed; the SparkToro tool integration referenced upstream is not shipped here.

@@ -252,4 +252,4 @@ Tools: <GA4, GTM, ...> · Attribution default: <model> · Updated: <YYMMDD>
 
 ## Provenance
 
-Imported from `coreyhaines31/marketingskills` (MIT, © 2025 Corey Haines) and adapted for ClauKit: ClauKit frontmatter, `/mk:` routing, `plans/marketing/` outputs, explicit boundary against the `mcp-ga4`/`mcp-gsc`/`seo-google` data-access skills; funnel-reading, attribution-model, and dashboard-cadence sections added because ClauKit has no separate `attribution` skill; upstream `ab-testing`, `revops`, and tools-registry references dropped (no ClauKit equivalent).
+Imported from `coreyhaines31/marketingskills` (MIT, © 2025 Corey Haines) and adapted for KitForge: KitForge frontmatter, `/mk:` routing, `plans/marketing/` outputs, explicit boundary against the `mcp-ga4`/`mcp-gsc`/`seo-google` data-access skills; funnel-reading, attribution-model, and dashboard-cadence sections added because ClauKit has no separate `attribution` skill; upstream `ab-testing`, `revops`, and tools-registry references dropped (no ClauKit equivalent).

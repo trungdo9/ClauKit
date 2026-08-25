@@ -190,4 +190,4 @@ Test one variable at a time. Families of tests, with hypotheses, in `references/
 
 ## Provenance
 
-Imported from `coreyhaines31/marketingskills` (`onboarding`, MIT, © 2025 Corey Haines) and adapted for ClauKit — renamed `onboarding` → `user-onboarding` to match the ClauKit skill directory. Adaptations: ClauKit frontmatter and `/mk:` routing, explicit in-product vs. email boundary with [[email-sequence]], `plans/marketing-context.md` as the context hub in place of upstream's `.agents/product-marketing.md`; upstream's eval harness and its cross-reference to an `ab-testing` skill (not shipped by ClauKit) were dropped.
+Imported from `coreyhaines31/marketingskills` (`onboarding`, MIT, © 2025 Corey Haines) and adapted for KitForge — renamed `onboarding` → `user-onboarding` to match the KitForge skill directory. Adaptations: KitForge frontmatter and `/mk:` routing, explicit in-product vs. email boundary with [[email-sequence]], `plans/marketing-context.md` as the context hub in place of upstream's `.agents/product-marketing.md`; upstream's eval harness and its cross-reference to an `ab-testing` skill (not shipped by KitForge) were dropped.

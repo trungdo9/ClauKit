@@ -182,4 +182,4 @@ Lead lists stay at `plans/marketing/<campaign>/leads.csv`, PII-redacted — neve
 
 ## Provenance
 
-Imported from `coreyhaines31/marketingskills` (`skills/cold-email/`, MIT, © 2025 Corey Haines) and adapted for ClauKit: ClauKit frontmatter and wikilink cross-references, scoped strictly to cold outbound against [[email-sequence]] and [[emails]], product-marketing context file replaced by `plans/marketing-context.md`, upstream pointers to skills ClauKit lacks (prospecting, sales-enablement, revops) dropped, deliverability and compliance sections added; the five source reference files are ported with the same adaptation.
+Imported from `coreyhaines31/marketingskills` (`skills/cold-email/`, MIT, © 2025 Corey Haines) and adapted for KitForge: KitForge frontmatter and wikilink cross-references, scoped strictly to cold outbound against [[email-sequence]] and [[emails]], product-marketing context file replaced by `plans/marketing-context.md`, upstream pointers to skills ClauKit lacks (prospecting, sales-enablement, revops) dropped, deliverability and compliance sections added; the five source reference files are ported with the same adaptation.

@@ -198,4 +198,4 @@ Every delivery includes:
 
 ## Provenance
 
-Imported from `coreyhaines31/marketingskills` (MIT, © 2025 Corey Haines) and adapted for ClauKit: ClauKit frontmatter and `/mk:` routing, context source switched from `.agents/product-marketing.md` to `plans/marketing-context.md`, truth-only + anti-fluff rules aligned with `.claude/workflows/marketing-rules.md` §2, unsourced upstream lift figures demoted to `[NEEDS DATA]`, and pointers to skills ClauKit does not ship (`offers`, `ab-testing`) re-pointed or dropped.
+Imported from `coreyhaines31/marketingskills` (MIT, © 2025 Corey Haines) and adapted for KitForge: KitForge frontmatter and `/mk:` routing, context source switched from `.agents/product-marketing.md` to `plans/marketing-context.md`, truth-only + anti-fluff rules aligned with `.claude/workflows/marketing-rules.md` §2, unsourced upstream lift figures demoted to `[NEEDS DATA]`, and pointers to skills ClauKit does not ship (`offers`, `ab-testing`) re-pointed or dropped.

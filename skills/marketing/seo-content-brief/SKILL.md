@@ -81,4 +81,4 @@ Does NOT cover:
 
 ## Provenance
 
-Imported from `AgriciDaniel/claude-seo` and adapted for ClauKit. The competitor-gap + outline method matches the seo-writing pipeline's Analyst stage (Stage 2).
+Imported from `AgriciDaniel/claude-seo` and adapted for KitForge. The competitor-gap + outline method matches the seo-writing pipeline's Analyst stage (Stage 2).

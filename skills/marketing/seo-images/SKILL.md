@@ -81,4 +81,4 @@ The writer (Stage 3) appends one `[[IMAGE_REQUEST:keyword-slug]]` per section. R
 
 ## Provenance
 
-Imported from `AgriciDaniel/claude-seo` and adapted for ClauKit. Placeholder-tag resolution matches the seo-writing pipeline's Stage 4 media flow.
+Imported from `AgriciDaniel/claude-seo` and adapted for KitForge. Placeholder-tag resolution matches the seo-writing pipeline's Stage 4 media flow.

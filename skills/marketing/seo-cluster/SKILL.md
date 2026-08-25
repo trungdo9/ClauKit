@@ -89,4 +89,4 @@ Anchor text = the natural target-keyword phrase, never "click here". One link pe
 
 ## Provenance
 
-Imported from `AgriciDaniel/claude-seo` and adapted for ClauKit. Facet frameworks + link-graph rules align with the seo-writing pipeline's Strategy Architect (Stage 1).
+Imported from `AgriciDaniel/claude-seo` and adapted for KitForge. Facet frameworks + link-graph rules align with the seo-writing pipeline's Strategy Architect (Stage 1).

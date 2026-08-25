@@ -196,4 +196,4 @@ Written to `plans/marketing/<campaign>/seo-hreflang.md`.
 
 ## Provenance
 
-Imported from `AgriciDaniel/claude-seo` and adapted for ClauKit. Validation checks, implementation methods, cultural-profile/content-parity/locale-format/machine-translation-QA references preserved from source; output path retargeted to `plans/marketing/<campaign>/`.
+Imported from `AgriciDaniel/claude-seo` and adapted for KitForge. Validation checks, implementation methods, cultural-profile/content-parity/locale-format/machine-translation-QA references preserved from source; output path retargeted to `plans/marketing/<campaign>/`.

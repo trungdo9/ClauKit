@@ -75,4 +75,4 @@ Pace with a bounded batch (e.g. N/day via `/loop` or a cron routine) rather than
 
 ## Provenance
 
-Imported from `AgriciDaniel/claude-seo` and adapted for ClauKit. Prioritization aligns with the seo-writing 100-article playbook (Phase 3).
+Imported from `AgriciDaniel/claude-seo` and adapted for KitForge. Prioritization aligns with the seo-writing 100-article playbook (Phase 3).

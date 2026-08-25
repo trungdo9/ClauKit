@@ -203,4 +203,4 @@ If DataForSEO MCP tools are available in the environment, use an AI-search-scrap
 
 ## Provenance
 
-Imported from `AgriciDaniel/claude-seo` (`skills/seo-geo/`) and adapted for ClauKit: ClauKit frontmatter and wikilink cross-references, forward-pointers to skills not yet fully ported ([[seo-technical]], [[seo-ecommerce]]) softened to avoid claiming reference files that don't exist yet, `claude-seo`-specific tool names generalized. The citability rubric, crawler table, and llms.txt evidence are preserved from source; `references/` ports the two substantive source reference files with the same adaptation.
+Imported from `AgriciDaniel/claude-seo` (`skills/seo-geo/`) and adapted for KitForge: KitForge frontmatter and wikilink cross-references, forward-pointers to skills not yet fully ported ([[seo-technical]], [[seo-ecommerce]]) softened to avoid claiming reference files that don't exist yet, `claude-seo`-specific tool names generalized. The citability rubric, crawler table, and llms.txt evidence are preserved from source; `references/` ports the two substantive source reference files with the same adaptation.

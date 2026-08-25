@@ -62,4 +62,4 @@ When activated, this skill produces:
 
 ## Provenance
 
-Imported from `coreyhaines31/marketingskills` and adapted for ClauKit. Adaptations: ClauKit frontmatter, scoped to marketing kit namespace (`/mk:`), wired to `cro-framework.md` 25-point checklist, references `plans/marketing-context.md`.
+Imported from `coreyhaines31/marketingskills` and adapted for KitForge. Adaptations: KitForge frontmatter, scoped to marketing kit namespace (`/mk:`), wired to `cro-framework.md` 25-point checklist, references `plans/marketing-context.md`.

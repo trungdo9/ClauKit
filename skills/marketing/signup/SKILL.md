@@ -182,4 +182,4 @@ No invented benchmarks. If a numeric impact estimate is not grounded in the user
 
 ## Provenance
 
-Imported from `coreyhaines31/marketingskills` (MIT, © 2025 Corey Haines) and adapted for ClauKit: ClauKit frontmatter, `/mk:` namespace routing, output path aligned to `/mk:cro`, boundaries redrawn against `cro` and `user-onboarding`. Dropped from upstream: the eval harness (`evals/evals.json`), the `.agents/product-marketing.md` context convention (replaced by `plans/marketing-context.md`), and cross-references to an `ab-testing` skill ClauKit does not ship (experiment guidance folded into `references/experiment-library.md`).
+Imported from `coreyhaines31/marketingskills` (MIT, © 2025 Corey Haines) and adapted for KitForge: KitForge frontmatter, `/mk:` namespace routing, output path aligned to `/mk:cro`, boundaries redrawn against `cro` and `user-onboarding`. Dropped from upstream: the eval harness (`evals/evals.json`), the `.agents/product-marketing.md` context convention (replaced by `plans/marketing-context.md`), and cross-references to an `ab-testing` skill ClauKit does not ship (experiment guidance folded into `references/experiment-library.md`).

@@ -177,4 +177,4 @@ A numeric score built from fewer than 4 factors reads as a real health grade whe
 
 ## Provenance
 
-Imported from `AgriciDaniel/claude-seo` (`skills/seo-backlinks/SKILL.md`, v2.2.4) and adapted for ClauKit: the analysis framework, scoring tables, and toxic-link criteria are preserved; the source's `claude-seo run <script>.py` CLI harness and Common Crawl bulk-graph download (no local script/download infra in ClauKit) were replaced with a WebSearch/WebFetch + optional-MCP preference ladder in the style of [[seo-writing]]'s `references/research-tools.md`.
+Imported from `AgriciDaniel/claude-seo` (`skills/seo-backlinks/SKILL.md`, v2.2.4) and adapted for KitForge: the analysis framework, scoring tables, and toxic-link criteria are preserved; the source's `claude-seo run <script>.py` CLI harness and Common Crawl bulk-graph download (no local script/download infra in ClauKit) were replaced with a WebSearch/WebFetch + optional-MCP preference ladder in the style of [[seo-writing]]'s `references/research-tools.md`.

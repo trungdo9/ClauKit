@@ -181,7 +181,7 @@ Each file contains:
 
 ## Provenance
 
-Imported from `coreyhaines31/marketingskills` (`skills/emails`, MIT, (c) 2025 Corey Haines) and adapted for ClauKit. The upstream skill is named `emails` but its subject is email *sequence* design; ClauKit splits that surface three ways — `email-sequence` (here, lifecycle/drip), [[emails]] (one-shot broadcasts), [[cold-email]] (outbound) — so the upstream body maps to this skill and the campaign-email material moves to [[emails]].
+Imported from `coreyhaines31/marketingskills` (`skills/emails`, MIT, (c) 2025 Corey Haines) and adapted for KitForge. The upstream skill is named `emails` but its subject is email *sequence* design; ClauKit splits that surface three ways — `email-sequence` (here, lifecycle/drip), [[emails]] (one-shot broadcasts), [[cold-email]] (outbound) — so the upstream body maps to this skill and the campaign-email material moves to [[emails]].
 
 Adaptations: ClauKit frontmatter with a trigger-rich description; `.agents/product-marketing.md` context convention replaced by `plans/marketing-context.md`; upstream "Task-Specific Questions" folded into the architecture fields and the output's open-questions section; architecture/exit-condition, suppression, branching and measurement-diagnostic sections added to fit ClauKit's sequence-spec output.
 

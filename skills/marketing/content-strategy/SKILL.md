@@ -246,4 +246,4 @@ Cluster trees and article backlogs are written by their own skills to their own 
 
 ## Provenance
 
-Imported from `coreyhaines31/marketingskills` and adapted for ClauKit. Adaptations: ClauKit frontmatter, `/mk:` namespace, `plans/marketing-context.md` replaces the upstream `.agents/product-marketing.md` context file, keyword-cluster and article-production material handed to the claude-seo stack ([[seo-cluster]], [[seo-plan]], [[seo-content-brief]], [[seo-writing]]), content-audit rubric added for the `content-strategist` agent's audit path, upstream eval harness and unmapped skill references dropped.
+Imported from `coreyhaines31/marketingskills` and adapted for KitForge. Adaptations: KitForge frontmatter, `/mk:` namespace, `plans/marketing-context.md` replaces the upstream `.agents/product-marketing.md` context file, keyword-cluster and article-production material handed to the claude-seo stack ([[seo-cluster]], [[seo-plan]], [[seo-content-brief]], [[seo-writing]]), content-audit rubric added for the `content-strategist` agent's audit path, upstream eval harness and unmapped skill references dropped.

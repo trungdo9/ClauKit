@@ -180,4 +180,4 @@ A battle card is the profile compressed to what someone needs mid-conversation: 
 
 ## Provenance
 
-Imported from `coreyhaines31/marketingskills` (MIT, (c) 2025 Corey Haines) and adapted for ClauKit: ClauKit frontmatter and `/mk:` namespace, output moved to `plans/marketing/<research>/competitors/`, hard-wired Firecrawl/DataForSEO MCP calls replaced with the graceful-degradation research ladder, product-marketing context path repointed at `plans/marketing-context.md`, and battle cards absorbed here because ClauKit ships no `sales-enablement` skill; upstream `prospecting` and `pricing` cross-references dropped for the same reason.
+Imported from `coreyhaines31/marketingskills` (MIT, (c) 2025 Corey Haines) and adapted for KitForge: KitForge frontmatter and `/mk:` namespace, output moved to `plans/marketing/<research>/competitors/`, hard-wired Firecrawl/DataForSEO MCP calls replaced with the graceful-degradation research ladder, product-marketing context path repointed at `plans/marketing-context.md`, and battle cards absorbed here because ClauKit ships no `sales-enablement` skill; upstream `prospecting` and `pricing` cross-references dropped for the same reason.

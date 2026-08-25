@@ -3,7 +3,7 @@
  * Generates marketing skill stubs (Phase 3): 25 claude-seo + 22 coreyhaines31.
  *
  * Creates well-structured SKILL.md files with:
- * - ClauKit frontmatter (name, description, allowed-tools)
+ * - KitForge frontmatter (name, description, allowed-tools)
  * - Scope + activation + key concepts
  * - Cross-references
  * - Provenance comment (source repo)
@@ -130,7 +130,7 @@ ${source === "AgriciDaniel/claude-seo" ? "- `skills/marketing/seo/SKILL.md` — 
 
 ## Provenance
 
-Imported from \`${source}\` and adapted for ClauKit. Adaptations: ClauKit frontmatter, scoped to marketing kit namespace (\`/mk:\`), references \`plans/marketing-context.md\`. For full original content, see source repo.
+Imported from \`${source}\` and adapted for KitForge. Adaptations: KitForge frontmatter, scoped to marketing kit namespace (\`/mk:\`), references \`plans/marketing-context.md\`. For full original content, see source repo.
 `;
 }
 
