@@ -49,7 +49,7 @@ function parseArgs(args) {
  */
 function showHelp(packageJson) {
   console.log(`
-ClauKit v${packageJson.version}
+KitForge v${packageJson.version}   ·   package @trungdo9/ClauKit   ·   cli: ck | claukit
 ${packageJson.description}
 
 Usage:

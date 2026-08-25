@@ -38,7 +38,7 @@ function initCommand(options = {}) {
   const projectRoot = process.cwd();
   const kit = resolveKit(options.kit);
 
-  console.log(`🚀 ClauKit v${packageJson.version}`);
+  console.log(`🚀 KitForge v${packageJson.version}`);
   console.log(`📂 Project: ${projectRoot}`);
   console.log(`📦 Kit: ${kit.name} (${kit.manifest.version || "?"})`);
   console.log(`📝 ${kit.manifest.description || ""}\n`);
@@ -180,7 +180,7 @@ function initCommand(options = {}) {
  * `ck update` — show latest version from GitHub.
  */
 async function updateCommand() {
-  console.log(`🚀 ClauKit Updater v${packageJson.version}\n`);
+  console.log(`🚀 KitForge Updater v${packageJson.version}\n`);
 
   try {
     const repo = packageJson.repository?.url?.replace("https://github.com/", "").replace(".git", "") || "trungdo9/ClauKit";
