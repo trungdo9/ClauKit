@@ -1,5 +1,14 @@
 # Changelog
 
+## [1.5.2](https://github.com/trungdo9/ClauKit/compare/v1.5.1...v1.5.2) (2026-08-25)
+
+**Two link-and-reference defects in the marketing kit, both of the same family: a path or a name that resolved in this repo and nowhere in an install.**
+
+### 🐞 Bug Fixes
+
+* **docs:** six marketing doc references rewritten from bare `skills/marketing/…` to `.claude/skills/marketing/…`. An install writes nothing outside `.claude/`, so a root-level `skills/` does not exist in a consuming project and each of those links was a 404 there while resolving fine here. Fixed at the source in three generators (`generate-marketing-agents.js`, `generate-marketing-commands.js`, `generate-marketing-skills.js`) so regeneration cannot reintroduce them, and in the four already-emitted docs (`wordpress-rest/SKILL.md`, `wordpress-rest/references/audit.md`, `marketing/cro/SKILL.md`, `marketing/seo-writing/SKILL.md`).
+* **marketing:** `/mk:email cold`, `/mk:leads` and `/mk:growth referral` listed skills that do not exist. `prospecting` has no directory under `skills/marketing/` at all and is dropped; `referrals` is mapped to the real `marketing-ideas`. Both names sat in the `marketing-commands.js` skill table, so the three generated `mk` commands named them at activation time and resolved nothing. Table corrected and the commands regenerated.
+
 ## [1.5.1](https://github.com/trungdo9/ClauKit/compare/v1.5.0...v1.5.1) (2026-08-11)
 
 **A `scripts/` code review, and the headline finding is that a gate shipped with no way to fire.** `branch-guard` went out in 1.5.0 with its verdict, its tests, and its documentation — and no registration anywhere, so a plain `git checkout -b` reached the shell unchecked. Same shape as the 1.5.0 finding it followed. Also: the delivery tail's parser held six defects at once, three dev-tree files were retired, and `ck init` now stops consumer projects from committing megabytes of regenerable diff.
