@@ -6,6 +6,7 @@
  * Usage:
  *   ck init [--kit <name>] [--force]
  *   ck update
+ *   ck convert <antigravity|codex> [--out <dir>] [--force]
  *   ck help
  *
  * See bin/lib/ for command implementations (kit-resolver, file-copier,
@@ -28,6 +29,7 @@ const { wireClaudeMd } = require("./lib/claude-md-wire");
 const { wireGitignore } = require("./lib/gitignore-wire");
 const { fetchLatestVersion, compareVersions } = require("./lib/github-client");
 const { parseArgs, showHelp } = require("./lib/cli-parser");
+const { convertCommand } = require("./lib/convert-command");
 
 const args = process.argv.slice(2);
 
@@ -220,6 +222,9 @@ switch (cmd) {
     break;
   case "update":
     updateCommand();
+    break;
+  case "convert":
+    convertCommand(options, commandArgs[1]);
     break;
   case "help":
   default:
