@@ -1,5 +1,95 @@
 # Changelog
 
+## [1.6.0](https://github.com/trungdo9/ClauKit/compare/v1.5.2...v1.6.0) (2026-09-03)
+
+**Nothing in this kit refused a push, and the falsify step was a suggestion.** Two gates that looked
+present were not: `guard-destructive` covers `git push --force` without a lease and nothing else,
+`branch-guard`'s `MOVES_HEAD` set is `{create, switch, detach}` so `push` and `merge` never reach it,
+and the only thing standing between an agent and shared `staging` was prose — which failed twice in a
+real estate, once with six commits already pulled so nothing could be reverted. Separately, the fix
+pipeline's falsification step read "*when* the root cause asserts existing behaviour, run the
+evidence check", leaving the model to decide whether its own claim needed proof.
+
+### 🚀 Features
+
+* **hooks:** `protected-branch-guard.cjs` — the first mechanical refusal of publishing to a
+  long-lived shared branch (`main`, `master`, `staging`, `uat`, `production`, `prod`; override the set
+  with `CK_PROTECTED_BRANCHES`). Refuses five shapes: an explicit protected destination (including
+  `HEAD:staging`, `+staging`, `x:refs/heads/main`), a delete of one, `--all`/`--mirror`,
+  `git merge <anything>` while HEAD stands on a protected branch, and — the one that matters —
+  **the implicit push**: bare `git push`, `git push origin`, `git push -u origin` while HEAD is
+  already standing on it. That is the shape both real incidents took; nobody typed a branch name.
+  Wired first in `PreToolUse[Bash]`, so it fires for **subagent** tool calls too, which is the
+  context both incidents happened in.
+  **What it allows is load-bearing, not an afterthought:** `git merge origin/staging` from a feature
+  branch (the `git` skill instructs it — only the *direction* is refused), `git push origin v1.6.0`
+  and `--tags` (a tag ref is not a branch), `--dry-run`, and every read-only or local command. A
+  guard that refused those would be switched off within a day, which is worse than not shipping it.
+  **`CK_AUTO_MODE` deliberately does NOT override it** — auto mode consents to moving a shared HEAD,
+  which is local and recoverable; publishing to `staging` is neither, and an unattended run is
+  exactly where both incidents happened. Consent is its own `CK_ALLOW_PROTECTED_PUSH=1`, printed
+  inside the refusal, and usable as a one-command prefix.
+* **fix:** the falsify step is now **[3.7] Falsify Gate**, MANDATORY in every mode and blocking
+  implement, with one `verify-plan` evidence row per claim. The [3.5] gate proves a diagnosis is
+  *specific*, not *true*: question 04 demands a `file:line`, and a confident wrong `file:line` is what
+  the pipeline kept shipping. Measured on one estate: 34 `buggy_code` + 23 `wrong_approach` + 6
+  `incorrect_claim` friction events, a hypothesis that collapsed only when the user demanded
+  verification, an env-variable misattribution reversed twice, and a wrong mechanism that reached a
+  **merged PR body** and became the record other people read. Three rules, each already violated in a
+  real run: CONFIRMED requires evidence *in the row*; a claim that is not CONFIRMED may not justify a
+  change or appear unlabelled in a commit or PR body; REFUTED **ends the run** rather than being
+  quietly repaired in passing. `--quick` does not skip it — a quick fix is where an unverified cause
+  is most likely and least examined. `--flow` no longer *adds* the stage; it promotes it from the main
+  agent writing its own table to N independent skeptic instances, which is what makes it adversarial
+  rather than self-assessed.
+
+### 🐞 Bug Fixes
+
+* **git:** `/ck:git pr` defaulted `TO_BRANCH` to `main`. In a repo running a
+  `feature → staging → [uat] → PROD` ladder, feature PRs belong on `staging`, so that default aimed
+  **every PR at production** and skipped two tiers. It now resolves the integration branch — first of
+  `origin/staging`, `origin/develop`, else the remote's own default HEAD — and promotion PRs stay
+  explicit, because a promotion must never be what happens when an argument is omitted.
+* **git:** an enforcement claim this command was making was false. It said *"the guard-destructive
+  hook enforces this"* about a rule that hook does not cover, and described one branch policy where
+  there are two independent ones: `branch-guard` is about not relocating other live sessions and is
+  silent when you are alone in the tree, while `protected-branch-guard` is about not publishing to
+  integration state and applies regardless. Both are now named with what each actually refuses, plus
+  the rule that neither refusal is to be worked around — no re-pointed remote, no added refspec, no
+  self-set override.
+
+### ✅ Tests
+
+* 329 → **349 tests**, 348 pass, 0 fail, 1 skip. `tests/protected-branch-guard.test.js` adds 20 in
+  two layers: unit rows through `assess()` with an injected branch resolver, then the hook
+  **spawned** in a real temporary repository with its **exit codes** asserted. The second layer is
+  not redundant — a unit-green `assess()` whose `main()` forgot to `exit(2)` would still let every
+  push through, and a mutation proving exactly that leaves 68 of the sibling matrix's rows green
+  while only its 6 end-to-end rows go red.
+* **Two defects the matrix caught before release**, both of which would have shipped: `git push
+  origin` (remote named, no refspec) was **allowed** from `staging`, because a lone positional was
+  read as a refspec and the "no refspec ⇒ default push" check was therefore skipped — the exact hole
+  the hook exists to close; and `git push origin refs/tags/v1.6.0` from `main` was **refused**,
+  breaking the documented release flow, because the first draft asked whether a refspec *resolved to
+  a branch* rather than whether one was *present*. Both fixed, both now carry a regression row.
+
+### 📚 Documentation
+
+* **README counts corrected against the filesystem** — tests **306 → 349** (2 sites; 306 was already
+  stale by 23 before this release) and wired hooks **5 → 6**. The two-guard sentence in § Stop losing
+  work now describes three, and states that the third does *not* take `CK_AUTO_MODE` — leaving it as
+  "both take `CK_AUTO_MODE=1` as consent" would have stated the override backwards for the guard
+  where it matters most.
+
+### 🔗 Notes
+
+* The hook file is **byte-identical** to the copy shipping in the Norskmat kit
+  (`protected-branch-guard.js`); only the extension differs, per each kit's module convention, and a
+  project receives exactly one of them. The one thing that would otherwise have differed — the
+  branch-ladder doc the refusal cites, since that kit has `.claude/rules/` and this one does not — is
+  **resolved at runtime** from whichever doc the receiving project actually has, with an honest
+  fallback when it has none. Change one copy ⇒ change the other.
+
 ## [1.5.2](https://github.com/trungdo9/ClauKit/compare/v1.5.1...v1.5.2) (2026-08-25)
 
 **Two link-and-reference defects in the marketing kit, both of the same family: a path or a name that resolved in this repo and nowhere in an install.**
