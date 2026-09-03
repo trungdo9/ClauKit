@@ -26,16 +26,16 @@ If there is an existing markdown implementation plan, use `/ck:cook <path-to-pla
 
 | Flag | Effect |
 |---|---|
-| *(none)* | **default** — full pipeline: diagnose → plan → implement → verify → post-impl docs/roadmap update. No review. Sequential. |
+| *(none)* | **default** — full pipeline: diagnose → **falsify** → plan → implement → verify → post-impl docs/roadmap update. No review. Sequential. |
 | `--auto` | **auto-detect** — inspect the issue and automatically enable other flags (e.g. add `--review` for risky/security changes, `--parallel` for independent issues, `--quick` for trivial). Report which flags were chosen and why before running. **Never auto-enables `--flow`** — orchestration is explicit opt-in only. |
 | `--review` | **+ review** — add Stage [7] `code-reviewer` subagent. Critical findings loop back to implement + retest. |
 | `--quick` | **minimal** — skip planning (Stage [4]) and post-impl docs/roadmap update. Use `debugger` only at diagnose (no `researcher`). Combine with `--review` to add review back. |
 | `--parallel` | **parallel subagents** — at Stage [3] run `debugger` + `researcher` in parallel; spawn multiple researchers/testers concurrently where independent. |
-| `--flow` | **orchestrated** — run the Scout Gate + Root-Cause Gate as discrete inspectable agent stages with structured handoff to `plans/<plan>/reports/`, plus an adversarial-verify stage on the root cause **before** implement. Activates the `dynamic-workflow` skill; cost preview shown. Combinable with any flag above. See `### --flow` below. |
+| `--flow` | **orchestrated** — run the Scout, Root-Cause and Falsify gates as discrete inspectable agent stages with structured handoff to `plans/<plan>/reports/`. The Falsify Gate is **already mandatory in every mode**; what `--flow` changes is *who* runs it — an **independent** agent instance rather than the author of the claim. Activates the `dynamic-workflow` skill; cost preview shown. Combinable with any flag above. See `### --flow` below. |
 
 ### `--flow` (orchestrated execution)
 
-Turns the two prose gates into **discrete, inspectable agent stages** ([2.5] Scout, [3.5] Root-Cause) with structured handoff to `plans/<plan>/reports/`, and adds a **[3.7] adversarial-verify** stage on the root cause before implement. Activates the `dynamic-workflow` skill ([.claude/skills/software/dynamic-workflow/SKILL.md](../../skills/software/dynamic-workflow/SKILL.md)) — source of truth for the pattern; this is just the trigger. **Complements** the canonical pipeline; does not replace it.
+Turns the three prose gates into **discrete, inspectable agent stages** ([2.5] Scout, [3.5] Root-Cause, [3.7] Falsify) with structured handoff to `plans/<plan>/reports/`. **[3.7] is not added by this flag** — it is mandatory in every mode ([fix-pipeline.md → *[3.7] Falsify Gate*](../../workflows/fix-pipeline.md)); `--flow` promotes it from the main agent writing its own evidence table to an **independent** agent instance adversarially attacking each claim, because the author of a claim is the worst judge of it. Activates the `dynamic-workflow` skill ([.claude/skills/software/dynamic-workflow/SKILL.md](../../skills/software/dynamic-workflow/SKILL.md)) — source of truth for the pattern; this is just the trigger. **Complements** the canonical pipeline; does not replace it.
 
 - **Full stage shape + 4-axis inheritance:** see [fix-pipeline.md → *Orchestrated Execution*](../../workflows/fix-pipeline.md).
 - **Persona routing:** scout → `scout`; diagnose → variant specialist (`debugger`/`tester`/`frontend-developer`); skeptics → independent agent instances; implement → main agent.
@@ -50,6 +50,7 @@ Turns the two prose gates into **discrete, inspectable agent stages** ([2.5] Sco
 | **[2.5] Scout Gate** (5 items — MANDATORY, blocks Diagnose) | ✓ | ✓ | ✓ | ✓ |
 | [3] Diagnose (`debugger` + `researcher`) | `debugger` + `researcher`, sequential | `debugger` only | unchanged | run subagents in parallel |
 | **[3.5] Root-Cause Gate** (6 questions — MANDATORY, blocks Implement) | ✓ | ✓ | ✓ | ✓ |
+| **[3.7] Falsify Gate** (one evidence row per claim — MANDATORY, blocks Implement) | ✓ | ✓ | ✓ | ✓ |
 | [4] Plan (`planner` writes implementation plan) | ✓ | **SKIP** | unchanged | — |
 | [5] Implement (main agent) | ✓ | ✓ | ✓ | ✓ |
 | [6] Verify (`tester`) | ✓ | ✓ | ✓ | spawn multiple `tester`s if independent suites |
@@ -59,7 +60,7 @@ Turns the two prose gates into **discrete, inspectable agent stages** ([2.5] Sco
 
 **Failure loop (circuit breaker):** verification failure → back to [3] (re-diagnose). Max **3 attempts** — on 3rd fail, STOP and escalate to user (suspected architecture issue). Review failure → back to [5] (re-implement + retest).
 
-**Ledger (run-state skill):** append one line to `plans/<plan>/STATE.md` after the Root-Cause Gate ([3.5], the diagnosis + evidence) and after Verify ([6], suite output) — a killed fix run resumes from the ledger, not from recollection. After [3.5], the root cause is itself a falsifiable claim: when it asserts existing behaviour ("X currently does Y"), run the `verify-plan` skill's evidence check on it before implementing.
+**Ledger (run-state skill):** append one line to `plans/<plan>/STATE.md` after the Root-Cause Gate ([3.5], the diagnosis + evidence), after the Falsify Gate ([3.7], the verdict per claim) and after Verify ([6], suite output) — a killed fix run resumes from the ledger, not from recollection.
 
 ### Thinking budget by flag combo
 
@@ -89,6 +90,7 @@ Each variant follows the **Fix Pipeline** ([.claude/workflows/fix-pipeline.md](.
 - **Stage [3]** (diagnose): `debugger` subagent reads `./logs.txt` → find root causes.
 - **Stage [3b]** (locate): `scout` subagent → find exact code location of issues.
 - **Stage [3.5]** (root-cause gate): answer 6 questions; if "why now" unknown → investigate further.
+- **Stage [3.7]** (falsify gate): one evidence row per claim; not-CONFIRMED may not justify the change.
 - **Stage [4]** (plan): `planner` subagent creates plan from reports.
 - **Stage [5]** (implement): main agent.
 - **Stage [6]** (verify): `tester` subagent.
@@ -107,6 +109,7 @@ Each variant follows the **Fix Pipeline** ([.claude/workflows/fix-pipeline.md](.
 - **Stage [3]** (diagnose): `debugger` finds root causes from CI logs.
 - **Stage [3b]** (locate): `scout` subagent → find exact code location of issues.
 - **Stage [3.5]** (root-cause gate): answer 6 questions; if "why now" unknown → investigate further.
+- **Stage [3.7]** (falsify gate): one evidence row per claim; not-CONFIRMED may not justify the change.
 - **Stage [4]** (plan): `planner` subagent creates plan from reports.
 - **Stage [5]** (implement): main agent.
 - **Stage [6]** (verify): `tester` subagent.
@@ -125,6 +128,7 @@ Each variant follows the **Fix Pipeline** ([.claude/workflows/fix-pipeline.md](.
 - **Stage [2.5]** (scout): scout 5 mandatory items (project type, symptom file + callers, related tests, 20 commits, conventions).
 - **Stage [3]** (diagnose): `tester` runs test suite → failures handed to `debugger` for root-cause.
 - **Stage [3.5]** (root-cause gate): answer 6 questions; if "why now" unknown → investigate further.
+- **Stage [3.7]** (falsify gate): one evidence row per claim; not-CONFIRMED may not justify the change.
 - **Stage [4]** (plan): `planner` subagent creates plan from reports.
 - **Stage [5]** (implement): main agent.
 - **Stage [6]** (verify): `tester` re-runs tests.
@@ -167,6 +171,8 @@ Command-only: append `baseline: <X/Y> (<sha7>)` and then `gate tdd → PASS (evi
 - **Stage [2.5]** (scout): scout 5 mandatory items (project type, symptom component + callers, related tests, 20 commits, design conventions).
 - **Stage [3]** (diagnose): `frontend-developer` subagent (NOT `debugger`).
 - **Stage [3.5]** (root-cause gate): answer 6 questions including "why now" (recent design change? dep upgrade? layout regression?).
+- **Stage [3.7]** (falsify gate): one evidence row per claim — for a UI fix a screenshot of the
+  unfixed parent container is evidence; a description of it is not.
 - **Stage [4]** (plan): SKIP — go directly to implement.
 - **Stage [5]** (implement): `frontend-developer` applies fix step by step.
 - **Stage [6]** (verify): two-layer check:
