@@ -22,8 +22,10 @@ Activate content-strategist agent + the action-specific skills. For `publish`, c
 
 - **`blog`** — SEO-optimized long-form blog post (E-E-A-T compliant)
   - skills: `copywriting`, `seo-content`, `copy-editing`
-- **`social`** — Multi-platform social content (Twitter, LinkedIn, Instagram)
-  - skills: `social-content`, `copywriting`
+- **`social`** — Multi-platform social content (Twitter, LinkedIn, Instagram, Facebook)
+  - skills: `social-content`, `copywriting`, `hashtag-strategy`, `image-prompt`
+  - Facebook Page/Reels/Feed strategy: `facebook-strategy`; Group content: `facebook-groups`
+  - No social publishing surface: output is DRAFT copy for a human to post. Never imply a post went live.
 - **`video`** — Video script (hook + body + CTA) for short-form or long-form
   - skills: `copywriting`, `video-producer`
 - **`copy`** — Conversion copy — landing pages, ads, CTAs

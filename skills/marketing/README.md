@@ -4,7 +4,7 @@
 
 ## What's included
 
-- **51 marketing skills** (SEO, content, email, ads, CRO, research, growth, etc. — incl. the `seo-writing` article-production pipeline)
+- **56 marketing skills** (SEO, content, social, email, ads, CRO, research, growth, etc. — incl. the `seo-writing` article-production pipeline)
 - **8 marketing agents** (content-strategist, market-researcher, email-specialist, 4 SEO specialists, seo-writer)
 - **3 automation agents** (campaign-manager, crm-specialist, video-producer)
 - **12 commands** under `/mk:` namespace
@@ -13,11 +13,12 @@
 - **6 automation skills** (5 MCP wrappers + marketing-orchestrator)
 - **2 integration skills** (`wordpress-rest` client + `mcp-wordpress` wrapper) — publish/update/audit WordPress content via `/mk:content publish` + `/mk:seo audit wp:<id>`
 
-**Skill breakdown (52 total):**
+**Skill breakdown (56 total):**
 - 25 from `AgriciDaniel/claude-seo` (1 root + 24 sub-skills: audit, technical, content, schema, geo, local, page, images, sitemap, drift, cluster, content-brief, competitor-pages, ecommerce, hreflang, programmatic, backlinks, sxo, flow, plan, maps, dataforseo, google, image-gen)
 - 22 from `coreyhaines31/marketingskills` (curated subset: ad-creative, ads, analytics, cold-email, competitor-*, content-strategy, copy-editing, copywriting, cro, customer-research, email-sequence, emails, launch, marketing-ideas, paywalls, popup, signup, sms, social-content, user-onboarding; `programmatic-seo` removed 2026-07-31 — confirmed duplicate of claude-seo's `seo-programmatic`, which stays)
 - 3 KitForge-authored: `product-marketing` (context hub), `seo-writing` (6-stage article-production pipeline — see below), `market-sizing` (TAM/SAM/SOM — written 2026-08-25; `/mk:research market` promised sizing and no skill supplied a method)
 - 1 kept: `kit-builder` (build custom marketing components)
+- 5 from `social-media-skills/skills` (organic-social cluster, adapted: `facebook-strategy`, `facebook-groups`, `engagement-routine`, `hashtag-strategy`, `image-prompt` — WoopSocial-specific publishing claims removed, cross-skill routing rewired to ClauKit skills, platform figures relabelled as dated third-party estimates)
 
 ## Quick start
 
@@ -42,12 +43,12 @@ mk:campaign <campaign-name>
 |---|---|---|
 | `/mk:plan [-o md\|html]` | Bootstrap or update marketing context (ICP, positioning, voice) · `-o html` also renders `marketing-context.html` view | `product-marketing`, `customer-research` |
 | `/mk:seo` | SEO ops — `audit\|keywords\|ai\|programmatic\|schema` via claude-seo engine; `plan\|write` = full article-production pipeline; `campaign` = 7-phase closed loop (`seo-workflow.md`) | `seo` (orchestrator), `seo-{audit,technical,content,schema,geo,...}`; `seo-writing` + `seo-writer` agent for plan/write/campaign |
-| `/mk:content` | Content creation (blog, social, video, copy) | `copywriting`, `seo-content`, `copy-editing`, `social-content` |
+| `/mk:content` | Content creation (blog, social, video, copy) | `copywriting`, `seo-content`, `copy-editing`, `social-content`, `hashtag-strategy`, `image-prompt`, `facebook-strategy` |
 | `/mk:email` | Email & SMS (campaign, cold, drip, sms) | `emails`, `cold-email`, `email-sequence`, `sms` |
 | `/mk:ads` | Paid advertising (google, meta, creative, ab-test) | `ads`, `ad-creative`, `cro` |
 | `/mk:cro` | Conversion optimization (audit, landing, signup, email) | `cro`, `signup`, `copywriting` |
 | `/mk:research` | Market research (market, competitor, customer, icp) | `market-sizing`, `customer-research`, `competitor-profiling`, `competitors`, `marketing-ideas` |
-| `/mk:growth` | Growth tactics (launch, referral, free-tool) | `launch`, `marketing-ideas`, `content-strategy` |
+| `/mk:growth` | Growth tactics (launch, referral, free-tool, community) | `launch`, `marketing-ideas`, `content-strategy`; `community` → `facebook-groups`, `facebook-strategy`, `engagement-routine` |
 | `/mk:campaign` | Full 10-phase campaign pipeline (plan → research → insights → strategy → create → edit → publish → promote → measure → optimize loop) | `marketing-orchestrator` + all workflow skills |
 | `/mk:leads` | 5-phase lead pipeline (generate → qualify → nurture → convert → retain) | `cold-email`, `email-specialist`, `crm-specialist` |
 | `/mk:nurture` | 5-phase lifecycle nurture (calendar → forms → tasks → gmail → bigquery) | `crm-specialist`, `user-onboarding`, `email-sequence` |
