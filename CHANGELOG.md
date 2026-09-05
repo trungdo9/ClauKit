@@ -1,5 +1,40 @@
 # Changelog
 
+## [1.6.1](https://github.com/trungdo9/ClauKit/compare/v1.6.0...v1.6.1) (2026-09-05)
+
+**Every "Activate the `X` skill" in this kit named a call that cannot succeed.** Skill discovery
+reads `.claude/skills/<name>/SKILL.md` and **exactly that depth**. This kit groups its 132 skills
+(`skills/software/…`, `skills/marketing/…`), so not one of them registers: `Skill(skill: "planning")`
+returns `Unknown skill`, and the `description:` written to auto-activate each one is never read. The
+instruction has been shipping since the kit had skills, and nothing failed loudly — an agent that
+takes it literally burns a tool call, one that does not is relying on the markdown link happening to
+sit next to the sentence.
+
+Measured on Claude Code 2.1.261 with three probe skills, identical frontmatter, one fresh session
+each: `.claude/skills/<name>/` registered; `.claude/skills/software/<name>/` and
+`.claude/skills/<newgroup>/<name>/` were both invisible. The third probe used a **brand-new group
+directory**, which is what separates *depth* from *directory name* — without it the finding reads as
+"`software/` is excluded", which is wrong.
+
+### 🐛 Bug Fixes
+
+* **skills:** 34 references across 30 files now say **"Read the `X` skill file"** instead of
+  "Activate the `X` skill" — agents, commands and skill-to-skill cross-references alike. Link targets
+  and display text are untouched; the rewrite is 34 insertions against 34 deletions.
+* **docs:** `CLAUDE.md` gains **"A grouped skill is NOT a registered skill"** — the measurement table,
+  the reason the grouping *stays*, and the rule never to assert a skill is registered without checking.
+
+### 📝 Notes
+
+**The grouping is deliberate and was kept.** Flattening all 132 would register them and load 132
+descriptions into every session, and **121 have no `ck:` command** because they were never entry
+points. The commands are the invocation surface; `skills/` is the methodology library those commands
+read by path. The defect was the prose claiming otherwise, not the tree.
+
+One call settles the general case, and it is cheap: `Skill(skill: "<name>")` in a fresh session, or
+`claude -p 'list available skills starting with <x>'`. A `SKILL.md` at a plausible path is not
+evidence that a skill exists.
+
 ## [1.6.0](https://github.com/trungdo9/ClauKit/compare/v1.5.2...v1.6.0) (2026-09-03)
 
 **Nothing in this kit refused a push, and the falsify step was a suggestion.** Two gates that looked
