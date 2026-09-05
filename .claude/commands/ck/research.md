@@ -3,7 +3,7 @@ description: ⚡⚡ Research technical topics — technology evaluation, best pr
 argument-hint: [topic]
 ---
 
-**Activate the `research` skill** ([.claude/skills/software/research/SKILL.md](../../skills/software/research/SKILL.md)) — single source of truth for research methodology. This command is the trigger.
+**Read the `research` skill file** ([.claude/skills/software/research/SKILL.md](../../skills/software/research/SKILL.md)) — single source of truth for research methodology. This command is the trigger.
 
 ## Topic
 <topic>$ARGUMENTS</topic>

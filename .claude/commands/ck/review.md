@@ -61,7 +61,7 @@ Elite software engineering expert — system architecture + technical decision-m
 
 ## Orchestrated Variant (`--flow`)
 
-`/ck:review --flow` adds a **specific deterministic shape**: dimension fan-out → per-finding adversarial verify → dedup → confirmed-only report. It **complements** the default multi-agent review above; default behavior unchanged. Activates the `dynamic-workflow` skill ([.claude/skills/software/dynamic-workflow/SKILL.md](../../skills/software/dynamic-workflow/SKILL.md)) — source of truth for the pattern; no methodology duplication here.
+`/ck:review --flow` adds a **specific deterministic shape**: dimension fan-out → per-finding adversarial verify → dedup → confirmed-only report. It **complements** the default multi-agent review above; default behavior unchanged. Reads the `dynamic-workflow` skill file ([.claude/skills/software/dynamic-workflow/SKILL.md](../../skills/software/dynamic-workflow/SKILL.md)) — source of truth for the pattern; no methodology duplication here.
 
 ```
 Phase 1 · Review fan-out (parallel, persona=code-reviewer, inherit repo gates)

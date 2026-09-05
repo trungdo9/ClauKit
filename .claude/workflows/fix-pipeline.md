@@ -146,7 +146,7 @@ For variants `--review` and `ui` (those with plan/docs update in the Variant Mat
 
 ## Orchestrated Execution (`--flow`)
 
-`/ck:fix --flow` runs this **same pipeline** as discrete, inspectable agent stages with structured handoff — it **complements, does not replace**, the canonical pipeline above. The prose gates ([2.5] Scout, [3.5] Root-Cause, [3.7] Falsify) become explicit agent stages whose answers are written to `plans/<plan>/reports/`. **[3.7] is not introduced by this flag** — it is mandatory in every mode; what changes is *who* runs it: N independent skeptic instances instead of the main agent writing its own evidence table, because the author of a claim is the worst judge of it. Activates the `dynamic-workflow` skill ([../skills/software/dynamic-workflow/SKILL.md](../skills/software/dynamic-workflow/SKILL.md)) — source of truth for the pattern; do not duplicate methodology here.
+`/ck:fix --flow` runs this **same pipeline** as discrete, inspectable agent stages with structured handoff — it **complements, does not replace**, the canonical pipeline above. The prose gates ([2.5] Scout, [3.5] Root-Cause, [3.7] Falsify) become explicit agent stages whose answers are written to `plans/<plan>/reports/`. **[3.7] is not introduced by this flag** — it is mandatory in every mode; what changes is *who* runs it: N independent skeptic instances instead of the main agent writing its own evidence table, because the author of a claim is the worst judge of it. Reads the `dynamic-workflow` skill file ([../skills/software/dynamic-workflow/SKILL.md](../skills/software/dynamic-workflow/SKILL.md)) — source of truth for the pattern; do not duplicate methodology here.
 
 ```
 [2.5] Scout Gate        → Agent[scout]: answer the 5 items → reports/scout-flow.md

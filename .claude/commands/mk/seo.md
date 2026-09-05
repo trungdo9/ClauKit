@@ -16,7 +16,7 @@ REST: $2..$n (action-specific arguments)
 
 ## Workflow
 
-For **audit / keywords / ai / programmatic / schema / drift** — activate the `seo` skill (.claude/skills/marketing/seo/SKILL.md), the claude-seo orchestrator. It dispatches sub-skills in parallel based on industry detection.
+For **audit / keywords / ai / programmatic / schema / drift** — read the `seo` skill file (.claude/skills/marketing/seo/SKILL.md), the claude-seo orchestrator. It dispatches sub-skills in parallel based on industry detection.
 
 For **plan / write** — activate the `seo-writer` agent + `seo-writing` skill (.claude/skills/marketing/seo-writing/SKILL.md) — the 6-stage article-production pipeline (strategy → outline → write → optimize → media → publish). Default publishing is DRAFT.
 

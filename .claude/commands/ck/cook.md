@@ -10,7 +10,7 @@ Think harder to drive the following feature end-to-end. Follow the cook skill me
 ## Role Responsibilities
 
 - You are a senior software engineer driving a feature from idea (or existing plan) to production-ready code.
-- Activate the `cook` skill ([.claude/skills/software/cook/SKILL.md](../../skills/software/cook/SKILL.md)) — the **single source of truth** for the gated lifecycle (Gate → Plan → Code → Test → Review → Docs → Deploy), the Exact-Requirements Gate, gating rules, and anti-patterns. Don't redefine methodology here; delegate to the skill.
+- Read the `cook` skill file ([.claude/skills/software/cook/SKILL.md](../../skills/software/cook/SKILL.md)) — the **single source of truth** for the gated lifecycle (Gate → Plan → Code → Test → Review → Docs → Deploy), the Exact-Requirements Gate, gating rules, and anti-patterns. Don't redefine methodology here; delegate to the skill.
 - Confirm priorities with the user before each major stage transition (unless `--auto` mode is set).
 - Honor **YAGNI**, **KISS**, **DRY**.
 - All subagent reports go to `plans/<plan>/reports/` (per Orchestration Protocol); read summaries, don't inline full outputs.
@@ -82,7 +82,7 @@ Stages are named; numbering lives in the cook skill (source of truth).
 
 ### Gate — Exact-Requirements Gate
 
-* Activate the `cook` skill; run its Stage 0 gate: derive the 5 items (expected output, acceptance criteria, scope boundary, constraints, touchpoints). Missing item → STOP, ask the user ONE question at a time. Mode behavior (`--auto` assumes + logs; `--from-plan` extracts from plan) is defined in the skill.
+* Read the `cook` skill file; run its Stage 0 gate: derive the 5 items (expected output, acceptance criteria, scope boundary, constraints, touchpoints). Missing item → STOP, ask the user ONE question at a time. Mode behavior (`--auto` assumes + logs; `--from-plan` extracts from plan) is defined in the skill.
 * The gate is **UNSKIPPABLE**. `--fast` and `--auto` never bypass it; `--from-plan` satisfies it from the plan file.
 * **Scope lock (item 3, defended):** when the task *could* span >1 repo/layer, emit the skill's A/B minimal-vs-thorough table (repos/layers touched + conventions followed/broken per option) and **halt for the pick** before planning. `--auto`: pick A, `[ASSUMED]`-log. Never create unrequested artifacts in a PR-bound branch.
 * Analyze the skills catalog via `/ck:find` (don't read the full registry); activate what's needed (e.g. `planning`, `research`, `code-review`, `scenario`, `test-automation`).
@@ -90,7 +90,7 @@ Stages are named; numbering lives in the cook skill (source of truth).
 
 ### Verify-Plan (Stage 0.5)
 
-**Mandatory when `--from-plan`; elsewhere run iff the plan asserts ≥1 falsifiable claim about existing behaviour.** Activate the `verify-plan` skill ([.claude/skills/software/verify-plan/SKILL.md](../../skills/software/verify-plan/SKILL.md)): extract every factual claim, prove/disprove each with git evidence + read-only queries + file reads, write the table to `plans/<plan>/reports/plan-verification.md`. **No code until the table is approved**; any REFUTED load-bearing claim → back to `planner`. Append the gate result to `STATE.md`.
+**Mandatory when `--from-plan`; elsewhere run iff the plan asserts ≥1 falsifiable claim about existing behaviour.** Read the `verify-plan` skill file ([.claude/skills/software/verify-plan/SKILL.md](../../skills/software/verify-plan/SKILL.md)): extract every factual claim, prove/disprove each with git evidence + read-only queries + file reads, write the table to `plans/<plan>/reports/plan-verification.md`. **No code until the table is approved**; any REFUTED load-bearing claim → back to `planner`. Append the gate result to `STATE.md`.
 
 * **Fan out by claim group (≥4 claims spanning ≥2 subsystems).** Extract the claim list in the main session — that stays cheap — group the claims by the file/subsystem they are *about* so no two dispatches re-read the same file, then **send every group's dispatch without waiting for the previous one** — N `debugger` calls in one message, or N background dispatches, never `run_in_background: false` on a group (see § Dispatch Tiers "Two routes"). Dispatching group 1, reading its verdict, then dispatching group 2 costs the sum of the groups instead of the slowest one. Each writes `reports/plan-verification-<group>.md`; the **main session merges them into the one `plan-verification.md` table** and appends the single gate line. Fewer claims, or all of them about one file → one dispatch; the fan-out is latency relief, not ceremony.
 * A group that comes back `UNVERIFIABLE` is not a pass — it re-dispatches or escalates a tier, same as any other verdict. Merging must not launder a missing verdict into a filled table.

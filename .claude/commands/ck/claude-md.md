@@ -10,7 +10,7 @@ TARGET: $2 (path to a CLAUDE.md — default `./CLAUDE.md`; supports nested ones,
 
 ## Activation
 
-Activate the `claude-md` skill — it is the single source of truth for methodology (structure standard, verify checklist, refactor gates). Use `docs-manager` agent persona for the work. This command only documents dispatch + variant deltas.
+Read the `claude-md` skill file — it is the single source of truth for methodology (structure standard, verify checklist, refactor gates). Use `docs-manager` agent persona for the work. This command only documents dispatch + variant deltas.
 
 ## Workflow
 

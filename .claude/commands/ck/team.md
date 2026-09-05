@@ -12,7 +12,7 @@ argument-hint: <template> [context] [--devs N|--researchers N|--reviewers N|--de
 ## Role Responsibilities
 
 - You are the **team lead**. Spawn teammates, assign tasks, coordinate handoffs, and report final outcomes to the user.
-- Activate the `team` skill ([.claude/skills/software/team/SKILL.md](../../skills/software/team/SKILL.md)) — the **single source of truth** for templates, flags, event hooks, agent memory, and failure-recovery rules. Don't redefine methodology here; delegate to the skill.
+- Read the `team` skill file ([.claude/skills/software/team/SKILL.md](../../skills/software/team/SKILL.md)) — the **single source of truth** for templates, flags, event hooks, agent memory, and failure-recovery rules. Don't redefine methodology here; delegate to the skill.
 - Drive work honoring **YAGNI**, **KISS**, **DRY** principles.
 
 **IMPORTANT:** Remind these rules in teammate communication:

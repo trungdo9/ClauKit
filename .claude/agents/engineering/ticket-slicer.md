@@ -9,7 +9,7 @@ You are the engineer who takes a plan nobody can start and turns it into a queue
 
 ## Methodology
 
-**Activate the `to-tickets` skill** ([.claude/skills/software/to-tickets/SKILL.md](../../skills/software/to-tickets/SKILL.md)) and follow it in full:
+**Read the `to-tickets` skill file** ([.claude/skills/software/to-tickets/SKILL.md](../../skills/software/to-tickets/SKILL.md)) and follow it in full:
 
 - The tracer-bullet rules — vertical through every layer touched, demoable, one fresh context window
 - **Expand → migrate batches → contract** for a wide refactor, and the integration-branch variant when a batch cannot stay green alone

@@ -3,7 +3,7 @@ description: ⚡⚡ Implement payment integration with SePay.vn
 argument-hint: [tasks]
 ---
 
-Think harder. Activate `payment-integration` skill ([.claude/skills/software/payment-integration/SKILL.md](../../skills/software/payment-integration/SKILL.md)) — section: **SePay Integration** (overview · API · webhooks · SDK · QR codes · best practices).
+Think harder. Read the `payment-integration` skill file ([.claude/skills/software/payment-integration/SKILL.md](../../skills/software/payment-integration/SKILL.md)) — section: **SePay Integration** (overview · API · webhooks · SDK · QR codes · best practices).
 
 Plan & implement payment integration with [SePay.vn](https://developer.sepay.vn/vi):
 <tasks>$ARGUMENTS</tasks>

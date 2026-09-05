@@ -68,7 +68,7 @@ Output-type flags drive the *what*; workflow flags drive the *how* (e.g. `good 3
 Input: `[product-type] [style] [industry]` (e.g. `SaaS minimal fintech`, `landing page elegant beauty`, `dashboard brutalism gaming`).
 
 1. Analyze requirements (product type · style · industry).
-2. Delegate to `frontend-developer` agent activating the `ui-ux-pro-max` skill (Style Intelligence):
+2. Delegate to `frontend-developer` agent reading the `ui-ux-pro-max` skill file (Style Intelligence):
    - Select style (50+ options: Minimalism · Brutalism · Glassmorphism · Neumorphism · Dark Mode · …)
    - Choose palette (21 options: SaaS Blue · Healthcare · Beauty/Spa · Fintech · …)
    - Pick font pairing (50 options: Elegant/Luxury · Modern/Tech · Professional · …)
