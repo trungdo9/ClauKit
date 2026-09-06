@@ -64,4 +64,5 @@ agent-browser --profile "$HOME/.<tên-profile>" get text body
 
 ## Dùng bởi
 
-- `.claude/skills/marketing/group-member-approval/SKILL.md` — duyệt member Facebook Group `TUYỂN DỤNG F&B [CareerFNB]`
+- `.claude/skills/marketing/facebook-group-member-approval/SKILL.md` — duyệt member Facebook Group `TUYỂN DỤNG F&B [CareerFNB]`
+- `.claude/skills/marketing/facebook-group-post-moderation/SKILL.md` — duyệt bài viết đăng trong cùng Group

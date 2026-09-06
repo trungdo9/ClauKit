@@ -1,12 +1,10 @@
 ---
-name: group-member-approval
+name: facebook-group-member-approval
 description: Đọc và xử lý hàng chờ "Yêu cầu tham gia" của Facebook Group TUYỂN DỤNG F&B [CareerFNB] (631265717502650) bằng agent-browser (Vercel Labs) qua profile Chrome riêng đã xác thực — áp logic SOP, luôn xác nhận với người trước khi bấm Phê duyệt/Từ chối. Dùng khi user nói "duyệt member group", "xử lý hàng chờ tham gia", "chạy phiên duyệt thứ 3/thứ 6", "mở participant_requests". KHÔNG BAO GIỜ tự bấm mà không hỏi xác nhận trước — đây là rào cứng của skill, không phải gợi ý.
 allowed-tools: Read, Bash, AskUserQuestion, Edit
 ---
 
 # Group Member Approval (agent-browser)
-
-> ⚠️ **Ví dụ tham khảo từ một project con** (`careerfnb-ag`), không phải skill tổng quát. Gắn cứng URL/ID của một Facebook Group cụ thể và tham chiếu vài file chỉ tồn tại trong project gốc đó (`social/group-cong-dong-fnb/browser-automation-workflow.md`, `wiki/social/community-guidelines/member-approval-sop.md`, `config.json`, `action-checklist.md`). Dùng file này làm **mẫu để copy/chỉnh lại** cho project khác — không mong đợi các đường dẫn đó tồn tại sẵn trong ClauKit. Phần dùng chung, tái sử dụng được thật sự là **[[browser-profile-login]]**.
 
 > Cổng vào của Group `TUYỂN DỤNG F&B [QUẢN LÝ - KHỐI VĂN PHÒNG - NHÀ HÀNG - CAFE] [CareerFNB]` (9,4K thành viên). Đây là thao tác thật trên tài sản thật — mọi click phải có người xác nhận trước, không có ngoại lệ.
 
@@ -19,11 +17,12 @@ allowed-tools: Read, Bash, AskUserQuestion, Edit
 | `wiki/social/community-guidelines/member-approval-sop.md` | **Logic quyết định** Duyệt/Từ chối — bước 1-4, đếm phân bố, ngoại lệ |
 | `social/group-cong-dong-fnb/config.json` | Trạng thái profile/tool hiện tại (`browser_automation.*`), baseline |
 | `plans/campaigns/global-member-gate-automation/action-checklist.md` | Checklist P0→P6, tiêu chí nghiệm thu |
+| `.claude/skills/marketing/facebook-group-post-moderation/SKILL.md` | Skill song song, duyệt **bài viết** (khác luồng, khác SOP) — không nhầm với skill này |
 
 ## Khi nào dùng skill này
 
 **Implicit:** cần đọc/xử lý hàng chờ member request của Group này, chạy phiên duyệt định kỳ (T3/T6), hoặc chạy thử lần đầu automation.
-**Explicit:** "Dùng skill group-member-approval để [việc]."
+**Explicit:** "Dùng skill facebook-group-member-approval để [việc]."
 
 ## Setup một lần
 
