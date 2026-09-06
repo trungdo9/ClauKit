@@ -71,6 +71,7 @@ Skill groups are now four: `software/`, `marketing/`, `automation/`, `integratio
 | `seo-dataforseo` | ✅ | `marketing/seo-dataforseo/` | claude-seo |
 | `seo-google` | ✅ | `marketing/seo-google/` | claude-seo |
 | `seo-image-gen` | ✅ | `marketing/seo-image-gen/` | claude-seo |
+| `gpt-image-vi` | ✅ | `marketing/gpt-image-vi/` | KitForge-authored — OpenAI `gpt-image-2` generator with verified diacritic-correct text (Vietnamese et al.). Bundles a batch engine (idempotent, sidecar cost audit, dry-run). Concrete backend for [[seo-image-gen]] when no image MCP is connected |
 | `seo-writing` | ✅ | `marketing/seo-writing/` | KitForge-authored — 6-stage article-production pipeline (ported from n8n). 7 references + 100-article WP playbook. Paired with `seo-writer` agent + `/mk:seo write\|plan` |
 
 **Coreyhaines31 (22 — imported from `coreyhaines31/marketingskills`, curated subset):**

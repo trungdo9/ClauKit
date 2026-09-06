@@ -32,7 +32,7 @@ Does NOT cover:
 
 ## Generation is an MCP concern, mapping is this skill's job
 
-This skill does not assume a specific image-generation backend is installed. Before generating, check whether an image-generation MCP is connected (for example `nanobanana-mcp`, exposing tools like `gemini_generate_image` / `set_aspect_ratio` — see `references/mcp-tools.md` for its parameter shapes). If no such MCP is configured, fall back to [[ai-artist]]'s prompting method with whatever generation tool is available, or tell the user what's missing. Never fabricate a saved file path or a generation result.
+This skill does not assume a specific image-generation backend is installed. Before generating, check whether an image-generation MCP is connected (for example `nanobanana-mcp`, exposing tools like `gemini_generate_image` / `set_aspect_ratio` — see `references/mcp-tools.md` for its parameter shapes). If no such MCP is configured, use [[gpt-image-vi]] — an OpenAI `gpt-image-2` backend with a batch engine and verified diacritic-correct label rendering — or fall back to [[ai-artist]]'s prompting method with whatever generation tool is available, or tell the user what's missing. Never fabricate a saved file path or a generation result.
 
 ## SEO use-case → generation parameters
 

@@ -153,7 +153,7 @@ User → /mk:seo audit <url>           (Layer 1: Directive)
 | AI Search | `seo-geo` (Generative Engine Optimization) |
 | Local | `seo-local`, `seo-maps` |
 | Commerce | `seo-ecommerce`, `seo-hreflang` |
-| Extensions | `seo-firecrawl`, `seo-dataforseo`, `seo-image-gen`, `seo-google`, `seo-backlinks`, `seo-sxo`, `seo-plan`, `seo-programmatic`, `seo-competitor-pages`, `seo-flow` |
+| Extensions | `seo-firecrawl`, `seo-dataforseo`, `seo-image-gen`, `gpt-image-vi`, `seo-google`, `seo-backlinks`, `seo-sxo`, `seo-plan`, `seo-programmatic`, `seo-competitor-pages`, `seo-flow` |
 
 ### When to use claude-seo
 
