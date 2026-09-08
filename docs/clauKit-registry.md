@@ -122,12 +122,13 @@ Skill groups are now four: `software/`, `marketing/`, `automation/`, `integratio
 | `mcp-resend` | ✅ | `automation/mcp-resend/` | Resend email wrapper (with manual fallback) |
 | `mcp-reviewweb` | ✅ | `automation/mcp-reviewweb/` | ReviewWeb reputation wrapper (with manual fallback) |
 
-### Integrations (2) — `skills/integrations/` — NEW
+### Integrations (3) — `skills/integrations/` — NEW
 
 | Name | Status | Folder | Scope |
 |---|:---:|---|---|
 | `wordpress-rest` | ✅ | `integrations/wordpress-rest/` | WordPress REST client — publish/update posts & pages (draft→publish), media, taxonomies, Yoast/RankMath SEO meta, audit. Env-only auth, idempotent, draft-default. Adapted (consumer) from WordPress agent-skills (GPL v2+, attributed in TPN). |
 | `mcp-wordpress` | ✅ | `integrations/mcp-wordpress/` | WordPress MCP wrapper (BYO server) with curl fallback to `wordpress-rest`. |
+| `shopify-publish` | ✅ | `integrations/shopify-publish/` | Shopify Content Publisher — connect to a live Shopify store via Admin REST/GraphQL API to publish, update, and manage blog articles & pages. Features zero-dependency Markdown-to-HTML conversion, automated Schema FAQ sanitization, SEO metafields, dry-run safety previews, and idempotent upserts. |
 
 ### Software · Top-level standalone (38 on disk; 39 rows below)
 
@@ -617,17 +618,17 @@ Verified against a real install rather than by reading the tables: 24 files plan
 | Skills · `marketing/` | 50 | 0 | 50 |
 | Skills · `automation/` | 6 | 0 | 6 |
 | Skills · `software/` | 68 | 0 | 68 |
-| Skills · `integrations/` | 2 | 0 | 2 |
+| Skills · `integrations/` | 3 | 0 | 3 |
 | Skills · removed (v2.0.0: old `geo`, old `seo/references`; 2026-07-31: `programmatic-seo`; 2026-08-11: `obsidian`; 2026-08-21: `docs-seeker`, `cti-expert`, `web-testing`) | — | — | — |
-| **Skills total** | **126** | **0** | **126** |
+| **Skills total** | **127** | **0** | **127** |
 | Agents · `engineering/` | 18 | 0 | 18 |
 | Agents · `marketing/` | 12 | 0 | 12 |
 | **Agents total** | **30** | **0** | **30** |
 | Commands (logical, per § 3 row scheme) | 57 | 0 | 57 |
-| **Grand total entries** | | | **213** |
+| **Grand total entries** | | | **214** |
 
-> **Counted from disk on 2026-08-21**, not carried forward:
-> - `find skills -name SKILL.md | wc -l` → **126** (software 68 · marketing 50 · automation 6 · integrations 2)
+> **Counted from disk on 2026-09-08**, not carried forward:
+> - `find skills -name SKILL.md | wc -l` → **127** (software 68 · marketing 50 · automation 6 · integrations 3)
 > - `software/` 68 = **38** top-level (`-mindepth 2 -maxdepth 2`) + **30** subcategorized (`-mindepth 3`)
 > - `ls .claude/agents/*/*.md | wc -l` → **30** (engineering 18 · marketing 12)
 > - Command *files*: 26 `ck/` + 12 `mk/` = 38. The 57 above is the logical count per § 3's row scheme, where dispatcher sub-actions (`/ck:fix ci`, `/ck:plan two`) count separately.

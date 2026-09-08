@@ -1,5 +1,17 @@
 # Changelog
 
+## [Unreleased] (2026-09-08)
+
+### ✨ Features & Enhancements
+* **skills(marketing):** Combine and localize `gpt-image-vi` and `image-prompt` skills for Asian/Vietnamese F&B marketing:
+  - Integrated visual gating (real photo/UGC/screenshot vs AI; deterministic SVG for numeric charts).
+  - Integrated 4-question strategic brief and 8-component natural-language prompt anatomy with overlay negative space design.
+  - Enforced Vietnamese & Asian demographics, contemporary tropical F&B architecture, and ethical AI disclosure.
+  - Upgraded `gpt-image-vi/scripts/gen-image.py` with default `medium` quality (saves 80% tokens), auto-resize `<= 960px`, and WebP compression via ImageMagick.
+* **skills(integrations):** Add `shopify-publish` skill (`skills/integrations/shopify-publish/`):
+  - Connects to Shopify Admin REST API to publish and manage blog articles & pages.
+  - Features automated Schema FAQ sanitization (strips `<script>` tags to prevent UI leakage), SEO metafields injection, dry-run previews, and idempotent upserts.
+
 ## [1.6.1](https://github.com/trungdo9/ClauKit/compare/v1.6.0...v1.6.1) (2026-09-05)
 
 **Every "Activate the `X` skill" in this kit named a call that cannot succeed.** Skill discovery

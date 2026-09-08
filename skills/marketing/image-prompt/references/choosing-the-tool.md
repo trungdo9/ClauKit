@@ -1,56 +1,35 @@
-# Choosing the tool
+# Choosing the Tool — Cây Quyết Định Công Cụ Tạo Hình Ảnh (F&B Marketing)
 
-The router. Match the job to the model, then hand off for the model-specific craft. This is a decision
-layer, not a tool tutorial.
+> Định tuyến nhu cầu hình ảnh đến đúng công cụ thực thi tối ưu nhất trong hệ sinh thái Career F&B & AAU Academy.
 
-> **Fast-moving landscape.** The specific "best for X" picks below are dated 2026 — **re-verify quarterly**
-> before quoting one as current. The principle — match the job to the tool — is stable; the winners shift,
-> and so do pricing and model IDs. Never quote a model ID or a price from memory.
+---
 
-## The decision tree
+## 🌳 Cây Quyết Định Theo Nhu Cầu Cốt Lõi (Dominant Requirement)
 
-Pick by the **dominant requirement** of the image.
+| Nhu cầu hình ảnh | Công cụ chỉ định | Lý do & Ưu thế vượt trội |
+|---|---|---|
+| **Cần chữ tiếng Việt chuẩn dấu (Hero, Infographic, Quy trình SOP)** | ⭐ **`gpt-image-vi`** (`scripts/gen-image.py` dùng `gpt-image-2`) | **Pipeline nội bộ số 1**: Vẽ chữ tiếng Việt chính xác 100% dấu, tự động nén WebP ≤ 960px (chỉ 11–75KB), tiết kiệm 80% token ở mode `medium`, tích hợp sẵn sidecar `.json` để kiểm soát chi phí. |
+| **Biểu đồ số liệu chính xác (Class C: % Cost, Doanh thu, Cột/Tròn)** | 🚫 **Mã nguồn SVG xác thực** | Tránh sai lệch tỉ lệ đồ họa do AI sinh ra. Đảm bảo tính minh bạch dữ liệu theo Luật 1. |
+| **Không gian quán thật, đội ngũ nhân sự thật, món ăn thực đơn** | 📸 **Ảnh chụp thực tế (Real Photo)** | Xây dựng uy tín và lòng tin thương hiệu tuyệt đối. Tuyệt đối không dùng AI giả mạo cơ sở hay nhân viên có thật. |
+| **Báo cáo DSR, Màn hình POS, Bảng tính P&L thực tế** | 💻 **Ảnh chụp màn hình (Screenshot)** | Bằng chứng thực tế trực quan và thuyết phục nhất cho các bài cẩm nang vận hành. |
+| **Ảnh chia sẻ từ học viên / cộng đồng F&B (~9.400 mems)** | 👥 **UGC có cấp phép (Consent)** | Khai thác tài sản cộng đồng chân thực, minh bạch. |
+| **Icon, Huy hiệu, Minh họa vector tối giản** | 🎨 **Recraft / SVG** | Đảm bảo độ sắc nét vector tuyệt đối ở mọi kích thước hiển thị. |
+| **Video ngắn minh họa, motion graphics (Reels/Shorts/TikTok)** | 🎬 **Veo / Remotion / Video Producer** | Chuyển tiếp tới pipeline sản xuất video ngắn. |
 
-- **In-image text / typographic design** — quote graphics, posters, packaging, text-heavy layouts →
-  **Ideogram** or **Nano Banana (Gemini)**. Both handle text well now. Pick by tooling and ecosystem, not
-  by a manufactured "best at text" claim: Ideogram brings design tooling and structured layout control;
-  Nano Banana brings Gemini reasoning, multi-image consistency, and conversational editing.
-- **Photoreal portraits or product realism** → **Nano Banana** or **Flux**; Midjourney externally. Avoid
-  Ideogram for real faces.
-- **Surreal, painterly, or editorial art** → **Midjourney**-class, which has the wider artistic range.
-- **Search-grounded infographics, accurate scenes, conversational editing** → **Nano Banana** (Gemini
-  reasoning, many reference images, inpainting-style editing).
-- **Editing an existing image** — "change one thing, keep the rest", inpaint, outpaint, fix → **Nano
-  Banana** (conversational) or **Flux** (instruction-based edits).
-- **A consistent character or product across a set** → reference-image models: **Nano Banana** (multiple
-  references) or **Flux** (multi-reference).
-- **Brand-exact colour, licence control, or open weights you can run and tune** → **Flux**, or Ideogram's
-  open weights.
-- **Vector / SVG for brand work** → **Recraft**, which is vector-native.
-- **Moving image** → a video model such as **Veo**, or animate a still through an image-to-video pipeline
-  → [[ai-multimodal]].
+---
 
-## Honest "which of these two?" calls
+## ⚙️ Quy Trình Thực Thi Tại Repo Này
 
-When two tools both fit — common with text graphics — **say both work, then pick by the deciding factor**:
-the workflow the user is already in, the controls they need (style references versus reference images
-versus editing), the ecosystem, cost, or open-weights access.
+Trong toàn bộ workspace này, khi bạn cần sinh ảnh có chữ tiếng Việt chuẩn dấu và tối ưu web tự động:
+👉 **Chuyển thẳng sang skill [[gpt-image-vi]] và gọi CLI `scripts/gen-image.py`**:
 
-**Do not manufacture a clean winner where there is not one.** An honest either-way answer with a named
-tiebreaker is more useful than a confident wrong pick.
+```bash
+# Sinh 1 ảnh với preset chuẩn (hero, flow, diagram, og)
+python3 scripts/gen-image.py single \
+  --prompt "..." \
+  --out wiki/aau.vn/images/<slug>/hero.png \
+  --preset hero
+```
 
-## What runs where, in this kit
-
-- **The prompting technique and the generation call** → [[ai-artist]] (Nano Banana / Gemini) or whichever
-  image-generation MCP the user actually has connected. **Check what is connected before promising a
-  generation** — and never fabricate a saved file path or a generation result.
-- **SEO asset presets** — OG cards, hero images, favicons, schema images, aspect ratios and packaging →
-  [[seo-image-gen]], with optimization and alt text in [[seo-images]].
-- **Ad visuals** — concept, offer, and creative variants → [[ad-creative]].
-- **Video** → [[ai-multimodal]], plus the `video-producer` agent where the automation kit is installed.
-
-## If no tool fits
-
-If the best answer is a **real photo, a screenshot, a chart, or UGC** — see `the-image-brief.md` — route
-there instead of forcing a generation. Saying "take the photo" is a valid and often correct output of this
-skill.
+- Không cần phỏng đoán hay chuyển qua các công cụ trung gian bên ngoài.
+- `scripts/gen-image.py` tự động xử lý API OpenAI, kết xuất định dạng 1536×1024 hoặc 1024×1024, tự động resize và nén sang định dạng WebP hiện đại đạt chuẩn Core Web Vitals của Google.
