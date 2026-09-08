@@ -17,7 +17,7 @@ Core guide for working with PostgreSQL — queries, schema design, performance, 
 - Setting up backups, replication, and maintenance
 - Using psql CLI
 
-> For Supabase-specific concerns (RLS policies, connection pooling, Edge Functions, supabase-js) → activate `supabase` skill instead.
+> For Supabase-specific concerns (RLS policies, connection pooling, Edge Functions, supabase-js) → read the `supabase` skill file instead.
 
 ## Quick Start
 

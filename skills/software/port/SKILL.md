@@ -42,7 +42,7 @@ Safely extract a feature from an external GitHub repository and integrate it int
 
 ### Phase 2 — Compare with local codebase (always)
 
-6. Detect local conventions: language, framework, lint config, test framework, module structure, naming (camelCase/snake_case), import style (relative/absolute), error-handling pattern. Activate `code-review` skill if available.
+6. Detect local conventions: language, framework, lint config, test framework, module structure, naming (camelCase/snake_case), import style (relative/absolute), error-handling pattern. Read the `code-review` skill file if available.
 7. Diff source vs local on three axes:
    - **Dependencies** — what does source pull in that local doesn't? Note version skew.
    - **Patterns** — class vs function, hooks vs class components, sync vs async, etc.

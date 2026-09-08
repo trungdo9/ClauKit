@@ -16,7 +16,7 @@ REST: $2..$n (action-specific arguments)
 
 ## Workflow
 
-Activate the `product-marketing` skill (.claude/skills/marketing/product-marketing/SKILL.md). It is the hub for marketing context.
+Read the `product-marketing` skill file (.claude/skills/marketing/product-marketing/SKILL.md). It is the hub for marketing context.
 
 ### Actions
 

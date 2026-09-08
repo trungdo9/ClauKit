@@ -3,7 +3,7 @@ description: ⚡⚡⚡ Controllable orchestration — plan phases, fan-out/pipel
 argument-hint: [<task> | save <name> | list] [--model <m>] [--dry-run]
 ---
 
-**Activate the `dynamic-workflow` skill** ([.claude/skills/software/dynamic-workflow/SKILL.md](../../skills/software/dynamic-workflow/SKILL.md)) — **single source of truth** for the orchestration model (decomposition, 4-axis inheritance, quality patterns, guardrails). This command is the **trigger**; it does NOT redefine methodology. Orchestrator runs IN the main session under explicit control.
+**Read the `dynamic-workflow` skill file** ([.claude/skills/software/dynamic-workflow/SKILL.md](../../skills/software/dynamic-workflow/SKILL.md)) — **single source of truth** for the orchestration model (decomposition, 4-axis inheritance, quality patterns, guardrails). This command is the **trigger**; it does NOT redefine methodology. Orchestrator runs IN the main session under explicit control.
 
 ## Variables
 

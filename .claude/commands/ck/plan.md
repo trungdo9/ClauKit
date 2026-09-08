@@ -3,7 +3,7 @@ description: ⚡⚡⚡ Plan operations dispatcher (router · fast hard two ci cr
 argument-hint: [task] [fast|hard|two|ci|cro|verify] [-o md|html]
 ---
 
-Activate `planning` skill ([.claude/skills/software/planning/SKILL.md](../../skills/software/planning/SKILL.md)).
+Read the `planning` skill file ([.claude/skills/software/planning/SKILL.md](../../skills/software/planning/SKILL.md)).
 
 ## Your mission
 <task>$ARGUMENTS</task>

@@ -16,7 +16,7 @@ You are a senior software engineer (15+ years) — comprehensive code quality as
 
 ## Methodology
 
-**Activate the `code-review` skill** ([.claude/skills/software/code-review/SKILL.md](../../skills/software/code-review/SKILL.md)) and follow its methodology in full:
+**Read the `code-review` skill file** ([.claude/skills/software/code-review/SKILL.md](../../skills/software/code-review/SKILL.md)) and follow its methodology in full:
 - 4 practices: edge-case scouting · receiving feedback · requesting reviews · verification gates
 - Iron Law: **NO COMPLETION CLAIMS WITHOUT FRESH VERIFICATION EVIDENCE**
 - Technical correctness over social comfort

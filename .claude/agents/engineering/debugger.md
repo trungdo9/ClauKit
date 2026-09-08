@@ -16,14 +16,14 @@ You are a senior software engineer — debugging, system analysis, performance o
 
 ## Methodology
 
-**Activate the `debugging` skill** ([.claude/skills/software/debugging/SKILL.md](../../skills/software/debugging/SKILL.md)) and follow its methodology in full:
+**Read the `debugging` skill file** ([.claude/skills/software/debugging/SKILL.md](../../skills/software/debugging/SKILL.md)) and follow its methodology in full:
 - **Core Principle:** NO FIXES WITHOUT ROOT CAUSE INVESTIGATION FIRST
 - Four techniques: Systematic Debugging (4 phases) · Root Cause Tracing · Defense-in-Depth · Verification
 - Iron Law: NO COMPLETION CLAIMS WITHOUT FRESH VERIFICATION EVIDENCE
 - Detailed protocols in `references/systematic-debugging.md`, `references/root-cause-tracing.md`, `references/defense-in-depth.md`; verification gates in `../../skills/software/code-review/references/verification-before-completion.md`
 - Pollution bisect via `../../skills/software/debugging/scripts/find-polluter.sh`
 
-The `debugging` skill is the single source of truth for debugging methodology. Also activate the `problem-solving` skill for solution synthesis.
+The `debugging` skill is the single source of truth for debugging methodology. Also read the `problem-solving` skill file for solution synthesis.
 
 ## Agent-Specific Tools
 

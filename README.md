@@ -737,7 +737,7 @@ KitForge ships 57 commands that codify common Claude Code workflows: `/ck:plan` 
 <details>
 <summary><strong>Is KitForge production-ready? Can I use it on commercial projects?</strong></summary>
 
-KitForge is MIT-licensed — commercial use is allowed. Version 1.6.0 ships gated workflows that block destructive operations (dirty tree refactors, refactors on `main`, tests-red commits, pushes and merges onto shared branches). See [`.claude/workflows/primary-workflow.md`](./.claude/workflows/primary-workflow.md) for safety guarantees and [GitHub Releases](https://github.com/trungdo9/ClauKit/releases) for release history. The framework is in active use; expect breaking changes between minor versions until 2.0.
+KitForge is MIT-licensed — commercial use is allowed. Version 1.6.1 ships gated workflows that block destructive operations (dirty tree refactors, refactors on `main`, tests-red commits, pushes and merges onto shared branches). See [`.claude/workflows/primary-workflow.md`](./.claude/workflows/primary-workflow.md) for safety guarantees and [GitHub Releases](https://github.com/trungdo9/ClauKit/releases) for release history. The framework is in active use; expect breaking changes between minor versions until 2.0.
 
 </details>
 
@@ -821,7 +821,7 @@ eligibility in SERP.
     {
       "@type": "Question",
       "name": "Is KitForge production-ready? Can I use it on commercial projects?",
-      "acceptedAnswer": { "@type": "Answer", "text": "KitForge is MIT-licensed — commercial use is allowed. Version 1.6.0 ships gated workflows that block destructive operations (dirty tree refactors, refactors on main, tests-red commits, pushes and merges onto shared branches). The framework is in active use; expect breaking changes between minor versions until 2.0." }
+      "acceptedAnswer": { "@type": "Answer", "text": "KitForge is MIT-licensed — commercial use is allowed. Version 1.6.1 ships gated workflows that block destructive operations (dirty tree refactors, refactors on main, tests-red commits, pushes and merges onto shared branches). The framework is in active use; expect breaking changes between minor versions until 2.0." }
     }
   ]
 }

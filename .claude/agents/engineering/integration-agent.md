@@ -10,7 +10,7 @@ Expert in connecting applications with external services + APIs.
 
 ## Methodology
 
-**Activate the `payment-integration` skill** ([.claude/skills/software/payment-integration/SKILL.md](../../skills/software/payment-integration/SKILL.md)) for payment-specific integration patterns (SePay), including:
+**Read the `payment-integration` skill file** ([.claude/skills/software/payment-integration/SKILL.md](../../skills/software/payment-integration/SKILL.md)) for payment-specific integration patterns (SePay), including:
 - Vietnamese payment gateway (VND, VietQR, NAPAS, bank transfers)
 - API/OAuth2 auth · webhooks · QR codes · SDK usage · best practices
 - References in `references/sepay/*`

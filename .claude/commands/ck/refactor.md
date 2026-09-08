@@ -8,7 +8,7 @@ argument-hint: [refactor-pattern]
 
 ## Instructions
 
-**Activate the `refactor` skill** ([.claude/skills/software/refactor/SKILL.md](../../skills/software/refactor/SKILL.md)) and follow its full pipeline:
+**Read the `refactor` skill file** ([.claude/skills/software/refactor/SKILL.md](../../skills/software/refactor/SKILL.md)) and follow its full pipeline:
 
 - **Pre-flight gate** — clean tree · tests green · types green · dedicated branch (BLOCK if any fails)
 - **7-Phase pipeline** — Scope → Dry-run → Batching → Execute → Atomic Commit → Verify → Final Verify

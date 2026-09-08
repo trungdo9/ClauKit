@@ -51,6 +51,39 @@ Rules for markdown links in shipped files (`.claude/agents/**`, `.claude/command
 
 Guarded by `tests/installer-packaging.test.js` → *"no shipped doc links to a file the install does not have"*: installs all three kits and checks every relative `.md` target. It caught 38. **Do not narrow that regex back to `^\.\.?/`** — that exemption is exactly what hid them.
 
+## A grouped skill is NOT a registered skill — say "Read", never "Activate"
+
+**Measured 2026-09-05, Claude Code 2.1.261.** Skill discovery reads `.claude/skills/<name>/SKILL.md`
+and **exactly that depth**. Two probe skills with identical frontmatter, differing only in depth:
+
+| installed path | registered? |
+|---|---|
+| `.claude/skills/<name>/SKILL.md` | ✅ invocable as `Skill(skill: "<name>")` |
+| `.claude/skills/<group>/<name>/SKILL.md` | ❌ `Unknown skill: <name>` |
+| `.claude/skills/<group>/<sub>/<name>/SKILL.md` | ❌ invisible |
+
+The second control used a brand-new group directory, so the cause is **depth**, not a group name.
+
+**This kit groups its 132 skills on purpose** (`skills/software/…`, `skills/marketing/…`) — the tree is
+a **reference library reached by path**, not a set of registered skills. That is a deliberate trade:
+flattening would register all 132 and load 132 descriptions into every session, and 121 of them have
+no `ck:` command because they were never meant to be entry points. The **commands** are the invocation
+surface; the skill files are the methodology those commands read.
+
+**So the prose must match the model:**
+
+- ✅ `**Read the \`planning\` skill file** ([.claude/skills/software/planning/SKILL.md](…))`
+- ❌ `**Activate the \`planning\` skill** (…)` — names a call that returns `Unknown skill`. An agent
+  that takes it literally burns a failed tool call; one that does not is relying on the link being
+  next to it.
+
+A subagent with a closed `tools:` list has no `Skill` tool at all, so for those the read is the *only*
+path — see `.claude/rules/agent-wiring-rules.md`.
+
+🔴 **Never claim a skill is registered without checking.** One call settles it:
+`Skill(skill: "<name>")` in a fresh session, or `claude -p 'list available skills starting with <x>'`.
+A `SKILL.md` sitting at a plausible path is not evidence.
+
 ## Documentation Management
 
 We keep all important docs in `./docs` folder and keep updating them, structure like below:

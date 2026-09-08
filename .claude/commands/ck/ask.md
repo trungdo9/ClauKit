@@ -8,7 +8,7 @@ argument-hint: [technical-question]
 
 ## Methodology
 
-**Activate the `ask` skill** ([.claude/skills/software/ask/SKILL.md](../../skills/software/ask/SKILL.md)) and follow its methodology in full:
+**Read the `ask` skill file** ([.claude/skills/software/ask/SKILL.md](../../skills/software/ask/SKILL.md)) and follow its methodology in full:
 - **4 Advisor Personas:** Systems Designer · Technology Strategist · Scalability Consultant · Risk Analyst
 - **5-step workflow:** Problem Understanding → Context Gathering → Expert Consultation → Synthesis → Strategic Validation
 - **Output formats:** short-form (lookup/explain) vs long-form (strategic/architectural)

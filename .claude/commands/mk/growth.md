@@ -1,6 +1,6 @@
 ---
 description: Growth tactics — product launches, referral programs, free tools, community
-argument-hint: launch|referral|free-tool <goal>
+argument-hint: launch|referral|free-tool|community <goal>
 ---
 
 ## Pre-flight (HARD FAIL)
@@ -26,6 +26,9 @@ Activate content-strategist + action-specific skills.
   - skills: `marketing-ideas`, `analytics`
 - **`free-tool`** — Free tool / lead magnet strategy (build, distribute, convert)
   - skills: `marketing-ideas`, `content-strategy`
+- **`community`** — Organic community play (Facebook Page + Group, engagement operating rhythm)
+  - skills: `facebook-groups`, `facebook-strategy`, `engagement-routine`
+  - Output is strategy + DRAFT posts. Group creation, in-group posting, moderation, and Insights are native/human — there is no Group API.
 
 ## Output
 
@@ -41,5 +44,5 @@ Results written to `plans/marketing/<campaign>/growth-<tactic>.md`
 ## Examples
 
 ```
-launch|referral|free-tool launch <example-target>
+launch|referral|free-tool|community launch <example-target>
 ```

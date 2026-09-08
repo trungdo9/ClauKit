@@ -36,6 +36,14 @@ Source: [https://github.com/coreyhaines31/marketingskills](https://github.com/co
 
 License: MIT
 
+The organic-social skills `facebook-strategy`, `facebook-groups`, `engagement-routine`, `hashtag-strategy`, and `image-prompt` under `skills/marketing/` are ADAPTED from the following source. Domain content (the REACH and TRIBE frameworks, platform playbooks, engagement cadence and triage model, prompt anatomy, tool-routing decision tree, cited statistics) is carried over; the source's eval harness (`evals/evals.json`), its `brand-profile`/`voice-builder` context-file convention, its references to the WoopSocial publishing product, and the ~30 sibling skills ClauKit does not ship are not included. Cross-skill routing was rewired to ClauKit skills, and the source's platform statistics were relabelled as dated third-party estimates requiring quarterly re-verification.
+
+**social-media-skills**, Copyright (c) 2026 Frank Heijdenrijk
+
+Source: [https://github.com/social-media-skills/skills](https://github.com/social-media-skills/skills)
+
+License: MIT
+
 Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
 
 The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.

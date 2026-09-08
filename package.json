@@ -1,6 +1,6 @@
 {
   "name": "@trungdo9/ClauKit",
-  "version": "1.6.0",
+  "version": "1.6.1",
   "description": "Multi-agent orchestration for coding agents — 126 curated skills, 30 agents, 57 gated commands, 3 installable kits. Installs into any project via `ck init`.",
   "main": "index.js",
   "bin": {

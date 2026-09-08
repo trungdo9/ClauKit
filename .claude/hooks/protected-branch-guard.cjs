@@ -78,17 +78,23 @@ const { execFileSync } = require('child_process');
  * The default set is a SUPERSET spanning both estates the hook ships into:
  * `main`/`master` (PROD), `staging` (integration), `uat` (pre-prod soak) per
  * rules/branching-rules.md §2, plus `prod`/`production` for repos that name the
- * production branch outright. Override with a comma-separated
- * CK_PROTECTED_BRANCHES; an empty value disables the branch list (not the hook).
+ * production branch outright.
+ *
+ * THE LIST IS NOT CONFIGURABLE, deliberately — `CK_PROTECTED_BRANCHES` was removed on
+ * 2026-09-06. It used to override this set, and an EMPTY value disabled the list
+ * outright: a guard any caller could switch off by exporting one empty string, in the
+ * same estate that had already seen two sessions publish to a shared branch unasked.
+ * An off switch is a guard's weakest point, not its flexibility. Extending the set for
+ * one repo now means editing this constant here, which is a reviewed change instead of
+ * an inline one.
+ *
+ * The cost, stated rather than hidden: a repo whose long-lived integration branch is not
+ * named below can no longer protect it through configuration. That is the accepted price
+ * of removing the off switch — the alternative kept a bypass available to everything.
  */
 const PROTECTED_DEFAULT = ['main', 'master', 'staging', 'uat', 'production', 'prod'];
 
 function protectedBranches() {
-  const raw = process.env.CK_PROTECTED_BRANCHES;
-  if (raw === '') return new Set();
-  if (typeof raw === 'string' && raw.trim() !== '') {
-    return new Set(raw.split(',').map((s) => s.trim()).filter(Boolean));
-  }
   return new Set(PROTECTED_DEFAULT);
 }
 
@@ -235,6 +241,34 @@ function currentBranch(cwd) {
 }
 
 /**
+ * Does this repo run a promotion ladder at all?
+ *
+ * The guard protects integration state, and `origin/staging` is what integration state
+ * looks like in this estate (rules/branching-rules.md §1: feature → staging → [uat] →
+ * PROD). A repo without it is not running that ladder — a small tooling repo whose whole
+ * convention is committing straight to `main` — and protecting `main` there is friction
+ * against its own practice with nothing to protect. Added 2026-09-06, replacing the
+ * per-repo CK_PROTECTED_BRANCHES that was removed the same day: this reads the repo's
+ * actual shape instead of trusting an environment variable nobody can audit.
+ *
+ * 🔴 IT FAILS ARMED, and the direction is the whole point. `git show-ref --verify`
+ * exits 1 for a genuinely absent ref and 128 for "not a repository" / a broken git. Only
+ * the first is evidence of no ladder; everything else — a missing binary, a permission
+ * error, a detached worktree — leaves the guard ON. An unreadable repo must never read
+ * as an unprotected one.
+ */
+function hasLadder(cwd) {
+  try {
+    execFileSync('git', ['show-ref', '--verify', '--quiet', 'refs/remotes/origin/staging'], {
+      cwd, stdio: 'ignore',
+    });
+    return true;
+  } catch (e) {
+    return !(e && e.status === 1);
+  }
+}
+
+/**
  * Classify one parsed git invocation.
  * Returns null (allow) or { branch, why } describing the refusal.
  */
@@ -243,6 +277,10 @@ function assess(g, cwd, prot, resolveBranch = currentBranch) {
   if (g.env.some((e) => e === 'CK_ALLOW_PROTECTED_PUSH=1')) return null;
 
   const base = g.dir ? path.resolve(cwd, g.dir) : cwd;
+
+  // Resolved per invocation, not once per command: a single line can carry `-C` into
+  // two different repos, and only one of them may run a ladder.
+  if (!hasLadder(base)) return null;
 
   if (g.sub === 'push') {
     if (hasFlag(g.flags, '--dry-run', '-n')) return null;
