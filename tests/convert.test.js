@@ -129,6 +129,12 @@ test('antigravity: writes agents/workflows/rules with frontmatter and JSON mcp c
 
   const mcp = JSON.parse(fs.readFileSync(path.join(project, '.agents/mcp_config.json'), 'utf-8'));
   assert.strictEqual(mcp.mcpServers.github.command, 'npx');
+
+  assert.ok(fs.existsSync(path.join(project, 'AGENTS.md')));
+  assert.ok(fs.existsSync(path.join(project, 'GEMINI.md')));
+  const skillsJson = JSON.parse(fs.readFileSync(path.join(project, '.agents/skills.json'), 'utf-8'));
+  assert.ok(Array.isArray(skillsJson.entries));
+  assert.ok(skillsJson.entries.some(e => e.path === '.agents/skills'));
 });
 
 test('--out redirects the whole write elsewhere, leaving the project untouched', () => {

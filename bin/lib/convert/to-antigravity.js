@@ -21,6 +21,7 @@
  * (plural) path, so that bug does not apply here.
  */
 
+const fs = require("fs");
 const path = require("path");
 const { rewriteSkillRefs } = require("./link-rewrite");
 const { newSummary, writeFileSafe, copyDirSafe } = require("./write-safe");
@@ -52,14 +53,52 @@ function ruleMd(content) {
   return rewriteSkillRefs(content, { displayPrefix: DISPLAY_PREFIX, hrefBase: HREF_BASE });
 }
 
+function collectSkillEntries(skillsDir, relBase = ".agents/skills") {
+  const entries = [{ path: relBase }];
+  if (!skillsDir || !fs.existsSync(skillsDir)) return entries;
+
+  const seen = new Set();
+  function walk(dir, relPath) {
+    const items = fs.readdirSync(dir, { withFileTypes: true });
+    let hasSkill = false;
+    for (const item of items) {
+      if (item.isFile() && item.name.toLowerCase() === "skill.md") {
+        hasSkill = true;
+      }
+    }
+    if (hasSkill && relPath !== relBase) {
+      const parentRel = path.dirname(relPath);
+      if (!seen.has(parentRel)) {
+        seen.add(parentRel);
+        entries.push({ path: parentRel });
+      }
+    }
+    for (const item of items) {
+      if (item.isDirectory()) {
+        walk(path.join(dir, item.name), `${relPath}/${item.name}`);
+      }
+    }
+  }
+
+  walk(skillsDir, relBase);
+  return entries;
+}
+
 function generate(projectRoot, outRoot, scanned, options = {}) {
   const summary = newSummary();
   const agentsRoot = path.join(outRoot, ".agents");
 
   copyDirSafe(projectRoot, scanned.skillsSrc, path.join(agentsRoot, "skills"), options, summary);
 
+  if (scanned.skillsSrc) {
+    const skillEntries = collectSkillEntries(scanned.skillsSrc, ".agents/skills");
+    writeFileSafe(projectRoot, path.join(agentsRoot, "skills.json"), JSON.stringify({ entries: skillEntries }, null, 2) + "\n", options, summary);
+  }
+
   if (scanned.claudeMd) {
     writeFileSafe(projectRoot, path.join(agentsRoot, "rules", "claude.md"), ruleMd(scanned.claudeMd), options, summary);
+    writeFileSafe(projectRoot, path.join(outRoot, "AGENTS.md"), ruleMd(scanned.claudeMd), options, summary);
+    writeFileSafe(projectRoot, path.join(outRoot, "GEMINI.md"), ruleMd(scanned.claudeMd), options, summary);
   }
   for (const w of scanned.workflows) {
     writeFileSafe(projectRoot, path.join(agentsRoot, "rules", w.file), ruleMd(w.content), options, summary);

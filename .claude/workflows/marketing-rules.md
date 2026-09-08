@@ -56,10 +56,29 @@ Marketing tasks should NEVER include code-implementation steps. If a marketing t
 - ❌ Marketing copy that buries the value prop below the fold
 - ❌ Pasting external blog verbatim into our content (plagiarism)
 - ❌ Writing raw customer/lead PII into `plans/marketing/` content or audit files (redact per automation-rules R4)
+- ❌ Publishing to CMS without `--dry-run` or without author sign-off
+- ❌ Citing numbers from unverified or `status: RAW` machine files
 
-## 8. Cross-references
+## 8. Editorial Review & Quality Gate (16 tiêu chí)
 
+Mọi bài viết marketing (Pillar/Hub/Cluster/Guide) trước khi xuất bản hoặc nghiệm thu bắt buộc phải kiểm tra theo quy chuẩn tại `.claude/workflows/editorial-review-checklist.md`.
+Bao gồm:
+- 16 tiêu chí nghiệm thu bài viết (Quality Gates).
+- Luật tra cứu 4 bước và xếp hạng 4 cấp độ nguồn dữ liệu.
+- Khung kiểm toán P&L kênh bán, 5 chi phí delivery và công thức lợi nhuận đóng góp.
+- Kiểm tra 100% mã HTTP 200 của internal links và tính hợp lệ của schema JSON-LD.
+
+## 9. Safe CMS Publishing Protocol
+
+- Mọi script xuất bản CMS có tính năng ghi (`--publish`, `--draft`) bắt buộc phải chạy thử nghiệm với cờ `--dry-run` trước.
+- Tuyệt đối không xuất bản trực tiếp (`--publish`) khi chưa có sự xác nhận của chủ dự án hoặc vượt qua toàn bộ 16 tiêu chí kiểm tra.
+- Sau khi xuất bản, bắt buộc thực hiện Post-publish Verification: kiểm tra cache buster (`?cb=...`), kiểm tra TOC anchor links và sao lưu nội dung về `wiki/<tenant>/posts/`.
+
+## 10. Cross-references
+
+- `.claude/workflows/editorial-review-checklist.md` — Quy chuẩn 16 tiêu chí duyệt bài & kiểm toán P&L
 - `.claude/workflows/cro-framework.md` — CRO 25-point framework
 - `plans/marketing-context.md` — required context hub
 - `.claude/skills/marketing/README.md` — full kit overview
 - `docs/marketing-kit/` — kit QA reports + implementation docs
+
