@@ -21,7 +21,7 @@ node .claude/scripts/workspace-health.cjs
 | Check | On WARN/FAIL |
 |---|---|
 | **kit drift** | A repo is behind its upstream kit. Update it **from inside that repo** — a workspace root that is deliberately bespoke must not be updated by the kit CLI at all, because an overlay lets upstream win on any name collision. An `unstamped` tree has no version to compare, so an update there applies unconditionally: review that first diff. |
-| **root backup** | An untracked root with no recent snapshot has no recovery path at all. Run `.claude/scripts/backup-workspace-config.sh`. FAIL here means one `rm -rf` is permanent. |
+| **root backup** | An untracked root with no recent snapshot has no recovery path at all. Run `.claude/scripts/ck/backup-workspace-config.sh`. FAIL here means one `rm -rf` is permanent. |
 | **memory index** | `MEMORY.md` is nearing the size where it stops loading. Compact it: one line per entry, merge duplicates, retire entries whose fact is now enforced by a build gate — the gate is the enforcement, the memory is only a reminder of it. |
 | **router size** | `CLAUDE.md` costs this on **every turn of every session**. Extract prose to `docs/` and leave a pointer. Never drop a directive to hit a number: a defensible 250-line router beats a 150-line one missing a rule. |
 | **doc links** | A dead pointer reads as a missing rule. Fix the path — but if the target does not exist anywhere, the doc is describing code that was removed. Say so instead of repointing the link at whatever is nearest. |

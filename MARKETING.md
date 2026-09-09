@@ -2,7 +2,7 @@
 
 > Everything to automate marketing — from campaign planning to community engagement — inside Claude Code via the `/mk:` namespace.
 
-Install with `ck init --kit marketing` (or `--kit both`). Adds **51 marketing skills, 12 agents, 12 commands, 6 workflows, 5 MCP wrappers, WordPress publishing**.
+Install with `ck init --kit marketing` (or `--kit both`). Adds **51 marketing skills, 12 agents, 12 commands, 12 workflows, 5 MCP wrappers, WordPress publishing**.
 
 > **The marketing rule**: `/mk:plan` once → it writes the context hub (`plans/marketing-context.md`) → every other `/mk:` command reads from it. Plan once, run many. Every `/mk:` command **except** `/mk:plan` hard-fails without the hub.
 
@@ -185,6 +185,47 @@ flowchart LR
 
 ---
 
+### Flow 5 — 📱 Social Omnichannel (Facebook, YouTube, TikTok, Messaging, LinkedIn)
+
+Produce and syndicate content across diverse social networks and community channels from a single verified core asset (`.claude/workflows/social-workflow.md`).
+
+```mermaid
+flowchart LR
+    A["Core Asset<br/>(Pillar / Case Study)"] --> B["Phase 2: 1-to-N<br/>Repurposing Matrix"]
+    B --> C1["YouTube Long-form<br/>(Authority · Lab test)"]
+    B --> C2["Shorts · TikTok · Reels<br/>(60s viral hooks · DIY)"]
+    B --> C3["Social Feeds<br/>(Facebook · LinkedIn)"]
+    B --> C4["Community Groups<br/>(Peer Q&A · Exchange)"]
+    B --> C5["Messaging<br/>(Zalo OA · Direct)"]
+    C1 & C2 & C3 & C4 & C5 --> D["Phase 4: Format Review<br/>(PII · Clean markdown · Brand voice)"]
+    D --> E["Phase 5–6: Publish & Schedule<br/>→ Community Engagement & CRM Leads"]
+```
+
+**When to use**: Brand building, omnichannel reach, community cultivation, and visual social proof. Supports 3 target audience models: B2B (Enterprise/Industrial), B2C (Consumers/DIY), and C2C (Peer community exchange).
+
+---
+
+### Flow 6 — 🏛️ Enterprise Multi-Site & Multi-Brand Architecture (Hub-and-Spoke Pattern)
+
+For enterprises operating multiple brand storefronts, specialized niche websites, or service portals under a single corporate umbrella (`.claude/workflows/multi-site-workflow.md`).
+
+```mermaid
+flowchart TD
+    Hub["🏢 Shared Core Hub<br/>(20+ Knowledge Pillars · Media Lake · Specs · CRM)"]
+    Hub --> Site1["🌐 Tenant 1: Wholesale Storefront<br/>(Commercial & Transactional Intent)"]
+    Hub --> Site2["🌐 Tenant 2: Engineering / EPC<br/>(Informational & Solutions Intent)"]
+    Hub --> Site3["🌐 Tenant 3: Niche Distribution<br/>(Industrial Filter Media Intent)"]
+    Site1 & Site2 & Site3 --> Matrix["Anti-Cannibalization Matrix<br/>Semantic Interlinking & PageRank Routing"]
+    Matrix --> CLI["Tenant-Gated CLI Execution<br/>publish-post.js --site=&lt;slug&gt;"]
+```
+
+**Core principles:**
+- **Hub-and-Spoke topology**: Shared truth lives in `shared/` (or `wiki/knowledge/`, `wiki/media/`, `wiki/resources/`). Tenant spokes live in `sites/<domain>/`.
+- **Zero Keyword Cannibalization**: Each domain owns an independent search intent (e.g. bulk wholesale vs turn-key EPC engineering vs specialized equipment).
+- **Single Source of Truth**: Edit technical specifications or pricing once in the shared core hub $\rightarrow$ all tenant sites automatically inherit without drift.
+
+---
+
 ## 4. Use cases — scenario → command
 
 | Scenario | Command | Chain after |
@@ -205,6 +246,8 @@ flowchart LR
 | 🌱 Growth tactics | `/mk:growth` | (launch · referral · free-tool) |
 | 📈 Lead pipeline | `/mk:leads` | → `/mk:nurture` |
 | 🎬 AI video | `/mk:video` | (script → render → distribute) |
+| 📱 Social omnichannel campaign | `/mk:content social <theme>` | → `social-workflow.md` (repurpose 1-to-N) |
+| 🏛️ Multi-site enterprise rollout | `/mk:content` + `multi-site-workflow.md` | → tenant-specific publish `--site=<slug>` |
 
 ### Real-world playbooks
 
@@ -293,6 +336,21 @@ Artifacts land in `plans/marketing/<site>/`: `inventory.md` (triaged posts), `pi
 /mk:growth launch "<product>"             # launch tactics + free-tool ideas
 /mk:content copy "<waitlist landing>"
 /mk:email campaign "<launch announcement>"
+```
+
+**11. Enterprise multi-site & social omnichannel rollout.** One core technical pillar syndicated across 3 tenant domains + 5 social networks without cannibalization.
+```
+/mk:plan                                  # Core brand & technical context hub
+# 1. Multi-site intent-partitioned syndication (multi-site-workflow.md)
+/mk:seo plan "<technical pillar>"         # Ground technical specifications from shared core
+/mk:content blog "<pillar> - wholesale"   # Tenant 1 (Transactional/Commercial)
+/mk:content blog "<pillar> - solutions"   # Tenant 2 (Services/EPC)
+/mk:content blog "<pillar> - materials"   # Tenant 3 (Specialized Equipment)
+# 2. Social omnichannel repurposing (social-workflow.md)
+/mk:video "<pillar> lab demo"             # YouTube long-form authority (8-12 min)
+/mk:content social "<pillar> 60s hook"    # Shorts / TikTok / Reels (45-60s)
+/mk:content social "<pillar> in-depth"    # Facebook & LinkedIn posts
+/mk:content social "<pillar> community"   # Peer group discussion starter (#Q&A / #Exchange)
 ```
 
 ### Patterns at a glance

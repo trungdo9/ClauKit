@@ -635,7 +635,7 @@ Verified against a real install rather than by reading the tables: 24 files plan
 >
 > Four rows here had drifted before this pass: `global/` 1, `software/` 71, and the 130/215 totals — the `obsidian` removal updated the header and not this table. § 1's top-level heading said 40 against 39 on disk, which is now stated with its reconciliation instead of a bare number.
 
-Adjacent inventories (not registry entries — hooks and scripts are itemised in **§ 9**): **15 workflows** (`.claude/workflows/*.md`, incl. `skill-activation.md`), **4 hooks**, **5 scripts**, **1 PR-body template** (`git/references/pr-body.md`), **6 behavioral eval scenarios** (`tests/behavior/scenarios/`).
+Adjacent inventories (not registry entries — hooks and scripts are itemised in **§ 9**): **17 workflows** (`.claude/workflows/*.md`, incl. `social-workflow.md`, `multi-site-workflow.md`, `skill-activation.md`), **4 hooks**, **5 scripts**, **1 PR-body template** (`git/references/pr-body.md`), **6 behavioral eval scenarios** (`tests/behavior/scenarios/`).
 
 ## 7 · Open Issues
 

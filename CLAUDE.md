@@ -13,6 +13,8 @@ Your role is to analyze user requirements, delegate tasks to appropriate sub-age
 - Development rules: `./.claude/workflows/development-rules.md`
 - Orchestration protocols: `./.claude/workflows/orchestration-protocol.md`
 - Documentation management: `./.claude/workflows/documentation-management.md`
+- Social omnichannel workflow: `./.claude/workflows/social-workflow.md`
+- Multi-site enterprise architecture workflow: `./.claude/workflows/multi-site-workflow.md`
 - And other workflows: `./.claude/workflows/*`
 
 ## Kits
@@ -25,6 +27,8 @@ KitForge supports multiple installable kits via `ck init --kit <name>`:
 Kit manifests: `.claude/kits/*.json`. Adding a new kit = drop a JSON file, no CLI changes.
 
 **Marketing kit details:** When user requests marketing work, activate the marketing kit skills/agents/commands. See `skills/marketing/README.md` for full kit overview, command list, and workflow index. Marketing kit docs: `docs/marketing-kit/` (QA + implementation reports). Marketing-context hub: `plans/marketing-context.md` (required by all `/mk:` commands — hard fail if absent).
+
+**Social omnichannel & Multi-site architecture:** Marketing kit natively supports omnichannel social campaigns (`.claude/workflows/social-workflow.md` across Facebook, YouTube, TikTok, Messaging, LinkedIn) and Hub-and-Spoke enterprise multi-brand/multi-site governance (`.claude/workflows/multi-site-workflow.md`).
 
 **Claude-SEO engine:** The marketing kit's SEO backbone is `AgriciDaniel/claude-seo` (25 sub-skills + 18 agents, runs in parallel, 3-layer architecture: directive → orchestration → execution). All `/mk:seo*` commands route through this engine. See Phase 6 "Claude-SEO Workflow" section in the marketing-kit plan for usage patterns.
 

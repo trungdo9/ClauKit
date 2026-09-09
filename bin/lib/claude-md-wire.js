@@ -44,6 +44,8 @@ const LABELS = {
   "sales-workflow.md": "Sales workflow",
   "crm-workflow.md": "CRM workflow",
   "video-workflow.md": "Video workflow",
+  "social-workflow.md": "Social omnichannel workflow",
+  "multi-site-workflow.md": "Multi-site enterprise architecture workflow",
   "design-workflow.md": "Design workflow",
   "marketing-rules.md": "Marketing rules",
   "automation-rules.md": "Automation rules",
