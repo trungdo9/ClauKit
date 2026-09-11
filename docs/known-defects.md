@@ -81,7 +81,7 @@ ClauKit technical debt measured during BA kit development. None of these block t
 
 ## 5. R17 — `resolveSourcePath` path containment
 
-**What:** The `resolveSourcePath` function in `bin/lib/manifest-resolveSourcePath.js` joins every relative manifest path against `PACKAGE_ROOT` using `path.join`, which does not provide path containment. Absolute paths are silently rebased, and relative paths can escape the package root depending on root depth.
+**What:** The `resolveSourcePath` function in `bin/lib/kit-resolver.js:109-118` joins every relative manifest path against `PACKAGE_ROOT` using `path.join`, which does not provide path containment. Absolute paths are silently rebased, and relative paths can escape the package root depending on root depth.
 
 **Evidence (measured 2026-09-10):**
 
