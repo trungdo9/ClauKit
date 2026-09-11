@@ -90,7 +90,7 @@ T1.6 (`wt-new`/`wt-doctor`/`wt-clean` + the `git/worktree` skill) is **removed**
 
 ### 0b. BA Kit — Wave 0 SHIPPED 2026-09-11 (plan `260910-1533-ba-kit`)
 Business analysis kit (6 commands, 6 skills, traceability spine, PRD→SRS→tickets chain) is complete and committed. Four capabilities cut intentionally (redirected to existing commands: `/delegate`→`/ck:team`, `/brainstorm`→`/ck:brainstorm`, `/ask`→`/ck:ask`, `/prototype-next`→`/ck:cook`). **Wave 0 deliverables:**
-- **5 of 8 dispatchers:** `/ba:plan` (hub creation) · `/ba:prd` (PRD generation) · `/ba:spec` (SRS + test composition) · `/ba:diagram` (C4/UML/ER) · `/ba:qc` (consistency audit)
+- **6 of 9 dispatchers shipped (wave 0 + 1.5):** `/ba:plan` (hub creation) · `/ba:prd` (PRD + EPIC breakdown, roadmap) · `/ba:spec` (FR/NFR/UC/US/AC/TC entities, compose to SRS) · `/ba:diagram` (mermaid: sequence · flow · state · erd) · `/ba:qc` (gap analysis over the traceability spine) · `/ba:deliver` (scope · UAT · acceptance · release-notes · go-live · handover); `reverse`, `api`, `export` are W2–W4
 - **6 skills:** `traceability` (spine model + CLI) · `ba-context` (hub) · `prd` (generator) · `spec` (composer) · `diagramming` (renderers) · `deliver` (publisher)
 - **Spine model:** entity files (source of truth) → derived index → compose → tickets (`/ck:tickets` hand-off via `ticket-slicer`)
 - **Tests:** `tests/ba-spine.test.js` (13) · `tests/ba-deliver.test.js` (4)

@@ -146,6 +146,8 @@ No `csharp-expert` agent exists — C#/.NET is covered by the `csharp-developer`
 **Marketing kit** (`/mk:` namespace, 12 commands — only with `--kit marketing`/`both`; every command except `/mk:plan` hard-fails without `plans/marketing-context.md`):
 - `/mk:plan`, `/mk:seo`, `/mk:content`, `/mk:email`, `/mk:ads`, `/mk:cro`, `/mk:research`, `/mk:growth`, `/mk:campaign`, `/mk:leads`, `/mk:nurture`, `/mk:video`
 
+**Business-analysis kit** (`/ba:` namespace, 6 commands — in-package third kit, installed on its own via `ck init --kit ba`; the `/ck:tickets` → `/ck:cook` handoff needs `engineer` in the same project): `/ba:plan` (context hub) · `/ba:prd` (PRD + EPIC breakdown, roadmap) · `/ba:spec` (FR/NFR/UC/US/AC/TC entities, compose to SRS) · `/ba:diagram` (mermaid: sequence · flow · state · erd) · `/ba:qc` (gap analysis over the traceability spine) · `/ba:deliver` (scope · UAT · acceptance · release-notes · go-live · handover). Traceability spine: per-entity markdown (source of truth) → derived index → compose → ticket handoff via `/ck:tickets`. Shipped wave 0 + 1.5.
+
 ### 3. Workflow System
 
 **Primary Workflows**:
