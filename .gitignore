@@ -67,6 +67,9 @@ plans/**/*
 plans/**/reports/review-package-*.md
 plans/**/reports/*-brief-*.md
 plans/**/*.derived.json
+# BA kit: composed deliverables are committed artifacts (D-11), not a cache —
+# an ignored deliverable is a 404 for the ticket that cites it.
+!plans/**/deliverables/*.md
 screenshots/*
 docs/screenshots/*
 docs/journals/*

@@ -1,10 +1,14 @@
 #!/usr/bin/env node
 
 /**
- * traceability.cjs — CLI over the BA traceability spine (index / gap / validate).
+ * traceability.cjs — CLI over the BA traceability spine (index / gap / validate / compose).
  *
  * Usage: node .claude/scripts/ba/traceability.cjs <action> <project-dir> [--json]
  * Exit:  0 = clean · 1 = findings · 2 = usage error / project dir missing
+ *
+ * `compose` (ruling R7) renders the two committed deliverables (D-11) — see
+ * `./lib/spine-compose.cjs`. It is a script, not an LLM re-render, because a
+ * committed deliverable must be byte-stable over an unchanged entity tree.
  *
  * Why a script and not a prompt (`plan-lint.cjs`'s idiom): a model-generated
  * index does not round-trip byte-stably and cannot be gated by exit code —
@@ -28,9 +32,9 @@ function die(msg, code) {
 function main() {
   const [action, projectDir, ...rest] = process.argv.slice(2);
   const json = rest.includes('--json');
-  const USAGE = 'usage: traceability.cjs <index|gap|validate> <project-dir> [--json]';
+  const USAGE = 'usage: traceability.cjs <index|gap|validate|compose> <project-dir> [--json]';
 
-  if (!['index', 'gap', 'validate'].includes(action)) die(USAGE, 2);
+  if (!['index', 'gap', 'validate', 'compose'].includes(action)) die(USAGE, 2);
   if (!projectDir || !fs.existsSync(projectDir)) die(`project dir not found: ${projectDir}`, 2);
   if (!fs.existsSync(path.join(projectDir, 'entities'))) {
     die(`no entities/ under ${projectDir} — expected <project-dir>/entities/*.md`, 2);
@@ -67,6 +71,19 @@ function main() {
     else if (!violations.length) console.log('✓ validate clean');
     else for (const v of violations) console.log(`[${v.check}] ${v.file} — ${v.msg}`);
     process.exit(violations.length ? 1 : 0);
+  }
+
+  if (action === 'compose') {
+    const { compose } = require('./lib/spine-compose.cjs');
+    const result = compose(projectDir);
+    if (!result.ok) {
+      if (json) console.log(JSON.stringify(result.violations));
+      else for (const v of result.violations) console.log(`[${v.check}] ${v.file} — ${v.msg}`);
+      process.exit(1);
+    }
+    if (json) console.log(JSON.stringify({ files: result.files.map((f) => path.basename(f)) }));
+    else console.log(`✓ composed ${result.files.map((f) => path.basename(f)).join(', ')}`);
+    return;
   }
 }
 
