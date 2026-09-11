@@ -1,6 +1,7 @@
 # Phase 09 — Test wiring: derived kit loops, generic exemptions
 
-**Depends on:** 01. **Blocks:** nothing in track A; track B's phase 08 relies on the mechanism it proves.
+**Depends on:** 01 for the mechanism; **runs after 08.3** in execution order (D-13). **Blocks:** nothing in track A; track B's phase 08 relies on the mechanism it proves.
+**Runs last of the code phases, on purpose.** The four guard loops derive from `.claude/kits/*.json`, so every file the wave-1.5 block ships (08.1–08.3) enters the link check, the shipped-path check and the ESM check **by existing** — but only for files that are on disk when this phase runs. Running it before the block would leave `deliver.md`, the `deliver` skill and two new `.cjs` files unguarded, which is the defect class the literals caused in the first place.
 **Still parameterize rather than add a fourth literal.** `ba` *is* in the package now (D-12), so `['engineer','marketing','both','ba']` would work — but deriving the list from `.claude/kits/*.json` costs the same and is strictly better: a fifth kit then enters all four guards **by existing**, which is the defect the literals caused in the first place.
 
 **Interfaces**
@@ -68,14 +69,14 @@ Any future script tree joins *"no CommonJS file is shipped as .js into a host pr
 
 ## Exit gate
 
-**Exit gate:** `node --test "tests/*.test.js" 2>&1 | grep -E '^ℹ (tests|pass|fail|skipped)'` → `ℹ tests 358` · `ℹ pass 356` · `ℹ fail 1` · `ℹ skipped 1` (baseline 349/347/1/1; **+9 from `tests/ba-spine.test.js`**, phase 02 — this phase widens guard *coverage* without adding test count). Detail in Gate 1–3 below.
+**Exit gate:** `node --test "tests/*.test.js" 2>&1 | grep -E '^ℹ (tests|pass|fail|skipped)'` → `ℹ tests 366` · `ℹ pass 364` · `ℹ fail 1` · `ℹ skipped 1` (baseline 349/347/1/1; **+9** `tests/ba-spine.test.js` from phase 02, **+4** more in the same file from 08.1, **+4** `tests/ba-deliver.test.js` from 08.2 — this phase widens guard *coverage* without adding test count). Detail in Gate 1–3 below.
 
 ### Gate 1 — the suite, against the recorded baseline
 
 ```bash
 cd <repo> && node --test "tests/*.test.js" 2>&1 | grep -E '^ℹ (tests|pass|fail|skipped)'
 ```
-→ `ℹ tests 358` · `ℹ pass 356` · `ℹ fail 1` · `ℹ skipped 1`. The `fail 1` is the pre-existing `tests/protected-branch-guard.test.js:196`. **A second failing test fails this gate** — and the four guards now run against a real `ck init --kit ba`, so any `ba` link or path defect surfaces right here.
+→ `ℹ tests 366` · `ℹ pass 364` · `ℹ fail 1` · `ℹ skipped 1`. The `fail 1` is the pre-existing `tests/protected-branch-guard.test.js:196`. **A second failing test fails this gate** — and the four guards now run against a real `ck init --kit ba`, so any `ba` link or path defect surfaces right here, **including every file the wave-1.5 block added**.
 
 ### Gate 2 — the loops are genuinely derived, not re-hardcoded
 
