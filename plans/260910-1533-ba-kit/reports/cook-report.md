@@ -71,7 +71,13 @@ No env vars, no keys. Optional: a mermaid renderer (`mmdc`) — absent ⇒ diagr
 
 The support session's review returned 1 security High (path traversal through a user-typed project slug), 1 standards High (bare `fs` calls behind a "never throws" CLI contract), 5 Mediums, 4 Lows and 1 failed closing criterion (composed deliverables lacked the class marker). Both Highs were reproduced before fixing (a relative `../` path wrote deliverables outside the repo; a missing dir threw raw ENOENT). All were fixed in one cycle — details and evidence in `STATE.md` under `review: fix cycle 1`. Net: the CLI refuses climbing relative paths, maps I/O errors to exit 2, always returns JSON on `--json`, stamps every deliverable with its class; the six command files validate the slug; the deliver tests are concurrency-safe. Suite unchanged at 366/364/1/1. Committed as 947d854.
 
-**Cycle 2** (the support session's adversarial verification + its spec axis): a skipped `deliver all` now reports the derived rewrites it makes; every class marker carries the real project slug instead of a `<project>` placeholder (compose and the six templates); the deliver library lost a dead helper and its unreachable guards return a structured error. Ruling recorded: the CLI admits an absolute project path on purpose (the commands never build one from a slug; tests and operators do). Loop cap: 2 of 3 cycles used. Re-review pending.
+**Cycle 2** (the support session's adversarial verification + its spec axis): a skipped `deliver all` now reports the derived rewrites it makes; every class marker carries the real project slug instead of a `<project>` placeholder (compose and the six templates); the deliver library lost a dead helper and its unreachable guards return a structured error. Ruling recorded: the CLI admits an absolute project path on purpose (the commands never build one from a slug; tests and operators do). Committed as 3e1f6d5.
+
+**Verdict (2d17922d, 17:09):** adversarial verify refuted all four Highs against the fixed tree; re-review of the delta closed 12 findings with 0 regressions and 1 open Medium; closing gate 12/12; suite 366/364/1/1; **Critical 0 · High 0**. The open Medium (rules § 11 listed four of six CLI actions) was closed by the driver as a one-line cycle 3. Loop cap: 3 of 3 review cycles used, 3 of 5 for the feature — no further review cycle without a retro. Gate approval: the user's `continue` at 18:08, after the verdict's approval request was in the ledger.
+
+## Status at close
+
+**Ready for the user's merge decision.** Implement 01→10 complete, wave 1.5 included, review gate passed, docs refreshed in phase 10. Not done: push, PR, and the other session's uncommitted plan revision (`plan.md`, `phase-09`, `phase-08.{1,2,3}`, its review reports) — those files are its claims and must be committed by it or by you before the plan on `main` matches the shipped code.
 
 ## Unresolved questions
 
