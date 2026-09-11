@@ -58,6 +58,7 @@ const HEADER = [
 const PLAN_RULES = [
   "plans/**/reports/review-package-*.md",
   "plans/**/reports/*-brief-*.md",
+  "plans/**/*.derived.json",
 ];
 
 const PLAN_HEADER = [

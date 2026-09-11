@@ -66,6 +66,7 @@ plans/**/*
 # …except the two that a script regenerates from git on demand.
 plans/**/reports/review-package-*.md
 plans/**/reports/*-brief-*.md
+plans/**/*.derived.json
 screenshots/*
 docs/screenshots/*
 docs/journals/*

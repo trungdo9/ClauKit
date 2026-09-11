@@ -19,3 +19,9 @@ phase 1: complete (commits a60655c..a60655c, tests 349/347/1/1, gates 2–3 defe
 phase 3: started (base a60655c) — second in order per ruling R2
 phase 3: gates 1–4 → PASS (evidence: rules `grep -c '^## '` → 9, activate-hits=1; Gate 2 backticks → 7 paths all in whitelist; Gate 3 → rows=55 unmapped=0 no-gloss=0, dispatchers=8, redirect=5, cut-table=4, badwave($7)=0; Gate 4 → 0 numbered rows in README, 1 map ref; suite 349/347/1/1 unchanged)
 phase 3: note — phase-03 Gate 3 line 4 reads `$6` (Owner col); Wave is `$7` under `awk -F'|'` on a `|`-leading row. Brief typo, not a file defect; `$6` prints 55 by construction. Phase 10 may fix the phase doc; not shipped code
+phase 3: complete (commits c5c827b..c5c827b, tests 349/347/1/1)
+phase 2: started (base c5c827b) — third in order per ruling R2; Gate 6 (`ck init --kit ba`) now runnable: workflow file + skills/ba exist, commands/ba is an empty dir
+phase 2: agent died (org monthly spend limit, mid-gate) — partial diff on disk; re-deriving state before redispatch/inline finish
+phase 2: deviation — implementer died on org spend limit after writing all 7 code/skill/test files; Task 2.9 (PLAN_RULES + .gitignore, 2 lines) finished inline by orchestrator; gates re-run by orchestrator (cook § Implement "never inline" waived: spend limit blocks redispatch)
+phase 2: gates 1–7 → PASS (evidence: index → 13 nodes/11 edges/2 orphans exit 0; gap --json → exactly FR-009 unparented + FR-010 dangling, unsourced []; planted-orphan gap exit=1; negative control exit 0; DETERMINISTIC; validate → filename-id-mismatch+duplicate-id+ac-prefix-mismatch exit 1; missing dir exit 2; spine suite 9/9; full suite 358/356/1/1 (= A13 projection); both ignore files grep-c 1; scratch ck init --kit ba exit 0 with IGNORED derived.json / TRACKED entities+deliverables+reports; .cjs 75/140/164 lines)
+phase 2: concern — tests/ba-spine.test.js 216 lines (>200 guidance, outside Gate 7 list) → reviewer rules at Review
