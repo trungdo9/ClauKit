@@ -23,7 +23,7 @@
 | 19 | Soạn US (User Story) | mô tả nhu cầu theo góc nhìn người dùng (US = câu chuyện người dùng) | `/ba:spec us` | ba | W1 |
 | 20 | Soạn AC (Acceptance Criteria, Given/When/Then) | làm sao biết là xong (AC = tiêu chí nghiệm thu) | `/ba:spec ac` | ba | W0 |
 | 21 | Soạn TC (test case) từ AC | kịch bản kiểm thử suy ra từ tiêu chí nghiệm thu | `/ba:spec tc` | ba | W2 |
-| 22 | Lắp ráp SRS (Software Requirements Specification) | đặc tả chi tiết cho dev (SRS = đặc tả yêu cầu phần mềm) | `/ba:spec srs` | ba | W2 |
+| 22 | Lắp ráp SRS (Software Requirements Specification) | đặc tả chi tiết cho dev (SRS = đặc tả yêu cầu phần mềm) | `/ba:spec compose` | ba | W0 |
 | 23 | Ghi nhận quy tắc nghiệp vụ (business rules) | những ràng buộc bắt buộc phải tuân theo | `/ba:spec rules` | ba | W3 |
 | 24 | Xây từ điển dữ liệu (data dictionary) | định nghĩa từng trường dữ liệu dùng chung | `/ba:spec data` | ba | W3 |
 | 25 | Ánh xạ phụ thuộc giữa các FR | FR nào phải xong trước FR nào (FR = yêu cầu chức năng) | `/ba:spec deps` | ba | W4 |

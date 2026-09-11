@@ -118,6 +118,23 @@ Source: [plan-verification-spine.md](plan-verification-spine.md) — 20 rows, 19
 - 1 UNVERIFIABLE (A13 projection 358/356/1/1) — re-check at phase 02 exit.
 - Note: the installer report's "pending re-emit" is done — [plan-verification-installer.md](plan-verification-installer.md) is on disk with B1–B27.
 
+## Wave 1.5 (D-13, phases 08.1–08.3) — verified 2026-09-11 after phase 07, HEAD 6331527
+
+The plan was revised by a second session (2d17922d) while phases 06–07 ran. Both sessions verified it independently; the table merges both sets. Evidence rows live in the six reports:
+
+| group | report | rows | result |
+|---|---|---|---|
+| spine (08.1 vs shipped `.claude/scripts/ba/**`, tests, .gitignore) | [plan-verification-w15-spine.md](plan-verification-w15-spine.md) | 25 | 24 CONFIRMED · 1 REFUTED line-cite (`spine-compose.cjs:138-146` → kind list is `:139-148`, TC line `:147` omitted; substance holds) |
+| deliver/bp (08.2, 08.3 vs commands, skills, agents, docs) | [plan-verification-w15-deliver.md](plan-verification-w15-deliver.md) | 31 | 29 CONFIRMED · **1 load-bearing defect** (08.2 task 8.2.11 worked table has 4 columns vs 6 in its spec `:164`; Gate 6 awk `$5` fails on the worked shape, reproduced 3/3) · 1 stale map row (`/ba:spec srs`) |
+| plan/process (plan.md diff, phase-09 edit, STATE:41-48) | [plan-verification-w15-plan.md](plan-verification-w15-plan.md) | 24 | 22 CONFIRMED · 1 REFUTED line-cite (`ck.js:49` → exit is `:54`, triaged 4×) · 2 UNVERIFIABLE non-load-bearing. Reproduced: `discoverPhases`/`phase-brief.cjs` per-id regex is order-dependent for `phase-08` vs `phase-08.1`; `plan-lint` PASS/14; no stale `358` in phase-09; Gate-3 awk skips `D`-rows. **Gap:** plan.md's "08.1 Gate 0" (mapping check) has no phase-file counterpart → run by the coordinator (STATE.md, PASS) |
+| 2d17922d — 08.1 | [plan-verification-08.1.md](plan-verification-08.1.md) | 43 | **2 load-bearing REFUTED**: task 8.1.6 + Gate 1 name `FR-002`/`FR-003` (tree has only FR-011/FR-012); Gate 8 expects exit=1 from `git check-ignore -v` on allowlisted paths (`-v` exits 0 printing the negated pattern) |
+| 2d17922d — 08.2 | [plan-verification-08.2.md](plan-verification-08.2.md) | 28 | 1 REFUTED mechanism: Gate 4 credits `.gitignore:72` for a consumer's TRACKED deliverables — consumers have no `plans/**/*` rule at all; outcome holds |
+| 2d17922d — 08.3 | [plan-verification-08.3.md](plan-verification-08.3.md) | 26 | mostly UNVERIFIABLE-until-07/08.1/08.2 by construction; `/ba:diagram flow` now exists (phase 07, 6331527) |
+
+**Rulings recorded in STATE.md (plan files are 2d17922d's claims; daa2b6c5 binds the implementers instead of editing):** R15 08.2 builds the 6-column D-13 table per `:164` · R16 demo CRs take parents `[FR-011]`/`[FR-012]` · R17 Gate 8 uses `git check-ignore -q; echo $?` (1 = not ignored) · R18 consumer-tracking prose names PLAN_RULES, not `.gitignore:72` · R14 map row 22 → `/ba:spec compose` (applied, phase 08 commit).
+
+**Verdict for wave 1.5: PASS** — `phase 0: gate verify-plan (wave 1.5, D-13) → PASS` appended to STATE.md. No REFUTED claim about existing repo behaviour is load-bearing; the four load-bearing defects are plan-internal (a fixture id mismatch, a gate's exit-code semantics, a worked-example column count, a mechanism cite) and each has an additive ruling that changes no approach.
+
 ## Ambiguity resolutions carried into Implement
 
 1. `requires.shared` = exactly three entries, written in `ba.json` at phase 01 (M4). Rationale text in shipped prose must cite `discord-hook-setup.md`, not `hooks/README.md` (M1) — flag to phase 03 implementer if the rules file repeats the reason.

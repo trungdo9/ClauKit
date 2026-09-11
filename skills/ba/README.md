@@ -35,6 +35,14 @@ Source of truth is one markdown file per entity, not a database: `plans/ba/<proj
 
 Handoff to dev tickets is a redirect, not a `ba` feature: it needs the `engineer` kit installed in the same project (`/ck:tickets`).
 
+## Quy trình chuẩn
+
+```
+/ba:plan → /ba:prd → /ba:spec → /ba:qc gap (exit 0 = handover gate) → /ba:spec compose → /ck:tickets <SRS> → /ck:cook <ticket>
+```
+
+`/ck:tickets` slices `plans/ba/<project>/deliverables/SRS-001.md` directly — no conversion step — and writes its tickets to its own `plans/<YYMMDD-HHmm>-<slug>/tickets/`. Spec-sliced tickets carry the acceptance criteria but no file paths; run `/ck:scout` before `/ck:cook` when the area is cold. Full chain and the three seam facts: `.claude/workflows/business-analysis-rules.md` § 9.
+
 ## Output language
 
 Prose bodies are Vietnamese; artifact keywords (`PRD-###`, `FR-###`, `Given`/`When`/`Then`, `source:`, `confidence:`, etc.) stay English so generated entities wire straight into BDD/Playwright and Jira. No i18n beyond that split.
