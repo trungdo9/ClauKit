@@ -72,7 +72,7 @@ Commands:
   help      Show this help
 
 Options for 'init':
-  --kit <name>    Install a specific kit (engineer|marketing|both|<custom.json>)
+  --kit <name>    Install a specific kit (engineer|marketing|both|ba|<custom.json>)
   --kit list      List available kits
   --force         Overwrite existing files
 

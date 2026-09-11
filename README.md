@@ -1,6 +1,6 @@
 # KitForge — The Opinionated Multi-Agent Orchestration Framework for Coding Agents
 
-*127 skills · 30 agents · 57 gated commands · atomic-commit safety · MCP-ready · 3 installable kits · runs in Claude Code, exports to Codex + Antigravity via `ck convert`*
+*142 skills · 30 agents · 63 gated commands · atomic-commit safety · MCP-ready · 4 installable kits · runs in Claude Code, exports to Codex + Antigravity via `ck convert`*
 
 [![GitHub stars](https://img.shields.io/github/stars/trungdo9/ClauKit?style=social)](https://github.com/trungdo9/ClauKit/stargazers)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
@@ -9,7 +9,7 @@
 
 Claude Code gives you the primitives — but no opinions on how to combine them. You're left to invent your own workflows, manage parallel agents by hand, and hope you don't `git push` a broken refactor. Most Claude Code templates throw a thousand skills at the wall and call it a day.
 
-**KitForge is the opinionated alternative.** 126 curated skills, 30 specialized agents, 57 gated commands — each one earns its place. Built-in pre-flight checks block destructive operations. Multi-agent orchestration via `/ck:team` and `/ck:flow` runs parallel Claude Code work safely. **3 installable kits** — engineer (default), marketing, both.
+**KitForge is the opinionated alternative.** 142 curated skills, 30 specialized agents, 63 gated commands — each one earns its place. Built-in pre-flight checks block destructive operations. Multi-agent orchestration via `/ck:team` and `/ck:flow` runs parallel Claude Code work safely. **4 installable kits** — engineer (default), marketing, both, ba.
 
 > Plan once. `/clear` context. Cook with confidence. That's the KitForge workflow.
 
@@ -17,7 +17,7 @@ Claude Code gives you the primitives — but no opinions on how to combine them.
 
 - **Gated pipelines, not gambling.** `/ck:refactor` and `/ck:cook` enforce pre-flight gates — clean working tree, tests green, not on `main`. See [`.claude/workflows/primary-workflow.md`](./.claude/workflows/primary-workflow.md). Skip the gates and the command refuses to run.
 - **Trio architecture — one concept, one entry point.** Every skill (knowledge) maps to an agent (persona) and a command (`/ck:<name>` trigger). No tool roulette. Full map in [`docs/clauKit-registry.md`](./docs/clauKit-registry.md).
-- **Curated, not crawled.** 127 skills hand-selected for AI dev workflows — research, planning, refactoring, testing, code review, SEO, payments. Each maintained, each documented, each in the registry. No abandoned scaffolds.
+- **Curated, not crawled.** 142 skills hand-selected for AI dev workflows — research, planning, refactoring, testing, code review, SEO, payments, business analysis. Each maintained, each documented, each in the registry. No abandoned scaffolds.
 
 ## Quick Start
 
@@ -32,6 +32,7 @@ cd /path/to/your-project
 ck init                       # Engineer kit (default): /ck: namespace
 ck init --kit marketing       # Marketing + automation: /mk: namespace
 ck init --kit both            # Both kits combined
+ck init --kit ba              # Business analysis: /ba: namespace
 ck init --kit list            # List available kits
 
 # 3. Launch Claude Code — try /ck:find to discover commands
@@ -522,6 +523,14 @@ Install with `ck init --kit marketing` (or `--kit both`). Adds the **`/mk:` name
 > **The marketing rule**: `/mk:plan` once → it writes the context hub → every other `/mk:` command reads from it. Plan once, run many.
 
 **→ Full marketing guide** (introduction, audience, workflow diagrams, use cases): **[`MARKETING.md`](./MARKETING.md)**. Kit-internal reference (skills, agents, MCP setup): [`skills/marketing/README.md`](./skills/marketing/README.md).
+
+## 📋 BA Kit
+
+Install with `ck init --kit ba`. Adds the **`/ba:` namespace** — 6 business analysis skills, 6 commands, traceability spine, and PRD→SRS→tickets chain. Each BA project roots in `plans/ba-context.md` and maintains entity files under `plans/ba/<project>/entities/`, from which `/ba:prd`, `/ba:spec`, and `/ba:diagram` generate deliverables. Pairs with the engineer kit's `/ck:tickets` command for seamless handoff.
+
+**The flow**: `/ba:plan` (create hub) → `/ba:prd` (generate requirements) → `/ba:spec` (compose SRS + test specs) → `/ba:diagram` (architecture diagrams) → `/ba:qc` (consistency audit) → `/ba:deliver` (publish deliverables) → `/ck:tickets` (engineer kit: slice into tasks). Needs the engineer kit for tickets; runs as `ba` alone for requirements discovery.
+
+**→ Kit reference** (skills, commands, workflow): [`skills/ba/README.md`](./skills/ba/README.md).
 
 ---
 

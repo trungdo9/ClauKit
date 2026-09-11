@@ -6,7 +6,7 @@
 
 ## Overview
 
-KitForge implements a multi-agent AI orchestration architecture where specialized agents collaborate through a file-based communication protocol, running entirely inside Claude Code. It enables developers to leverage AI assistance throughout the entire software development lifecycle via three installable kits (`engineer`, `marketing`, `both`).
+KitForge implements a multi-agent AI orchestration architecture where specialized agents collaborate through a file-based communication protocol, running entirely inside Claude Code. It enables developers to leverage AI assistance throughout the entire software development lifecycle via four installable kits (`engineer`, `marketing`, `both`, `ba`).
 
 ## Architectural Pattern
 
@@ -154,7 +154,7 @@ Issues, blockers, or questions
 
 #### 3.1 Command Categories
 
-**37 command files** — 25 under `.claude/commands/ck/` (`/ck:<name>`) + 12 under `.claude/commands/mk/` (`/mk:<name>`). All engineer-kit commands live under the `ck:` prefix (applied 2026-05-17); `/skill:*` commands referenced in older docs never existed as files and are not part of the current command set.
+**45 command files** — 27 under `.claude/commands/ck/` (`/ck:<name>`) + 12 under `.claude/commands/mk/` (`/mk:<name>`) + 6 under `.claude/commands/ba/` (`/ba:<name>`). All engineer-kit commands live under the `ck:` prefix (applied 2026-05-17); `/skill:*` commands referenced in older docs never existed as files and are not part of the current command set.
 
 | Category | Commands |
 |----------|----------|
@@ -172,6 +172,7 @@ Issues, blockers, or questions
 | Code Review | `/ck:review [--flow]` |
 | Research | `/ck:research` |
 | Marketing kit (12, `/mk:` namespace) | `/mk:plan`, `/mk:seo`, `/mk:content`, `/mk:email`, `/mk:ads`, `/mk:cro`, `/mk:research`, `/mk:growth`, `/mk:campaign`, `/mk:leads`, `/mk:nurture`, `/mk:video` |
+| BA kit (6, `/ba:` namespace) | `/ba:plan`, `/ba:prd`, `/ba:spec`, `/ba:diagram`, `/ba:qc`, `/ba:deliver` |
 
 #### 3.2 Command Workflow Pattern
 
@@ -281,7 +282,8 @@ Re-creates Claude Code's dynamic-workflow model on KitForge primitives — 4-axi
         └── examples.md
 ```
 
-**126 skills across 4 groups** (see `docs/clauKit-registry.md` § 1 for the full itemized list). The `global/` group was removed 2026-08-21 — `docs-seeker` retired and `global/common/` with it, and the path is dropped from the kit manifests
+**142 skills across 5 groups** (see `docs/clauKit-registry.md` § 1 for the full itemized list). The `global/` group was removed 2026-08-21 — `docs-seeker` retired and `global/common/` with it, and the path is dropped from the kit manifests
+- **`ba/`** (6): KitForge-authored traceability spine (`traceability`, `ba-context`, `prd`, `spec`, `diagramming`, `deliver`) — entity-driven requirements discovery, PRD→SRS→tickets chain
 - **`marketing/`** (50): claude-seo engine (`seo`, `seo-audit`, `seo-technical`, `seo-content`, `seo-schema`, `seo-geo`, +19 more `seo-*`), coreyhaines31-sourced (`copywriting`, `cro`, `ads`, `emails`, `analytics`, +18 more), KitForge-authored (`product-marketing`, `kit-builder`)
 - **`automation/`** (6): `marketing-orchestrator`, `mcp-ga4`, `mcp-gsc`, `mcp-sendgrid`, `mcp-resend`, `mcp-reviewweb`
 - **`integrations/`** (2): `wordpress-rest`, `mcp-wordpress`
@@ -293,6 +295,10 @@ No `ffmpeg`, `shopify`, `mongodb`, `turborepo`, `csharp-expert`, or `security-au
 
 **Invocation**: `Skill` tool in CLI
 **Usage**: Agents invoke skills to access specialized knowledge
+
+#### 5.3 BA Kit–Engineer Kit Composition
+
+The BA kit (`/ba:` namespace, 6 skills) and engineer kit (`/ck:` namespace, 68 software skills) compose in one project via the **traceability spine**. `/ba:spec compose` renders SRS/UAT specs from entity files and emits a structured output that `/ck:tickets` (engineer kit) consumes as a first-class source, joining BA requirements discovery with engineer-kit ticket-slicing. No new dependencies or integrations required — both kits' skills reference `scenario/SKILL.md` and the shared workflows `primary-workflow.md` + `development-rules.md`, which constitutes their seam. This composition is not a new integration but a deliberate design: the two kits partition work by role (BA vs engineer) while sharing a unified ticket-driven pipeline.
 
 ### 6. Integration Layer
 

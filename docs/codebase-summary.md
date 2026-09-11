@@ -19,12 +19,13 @@ ClauKit/
 │   │   ├── engineering/        # 17 engineer-kit agent definitions
 │   │   └── marketing/          # 11 marketing-kit agent definitions
 │   ├── commands/
-│   │   ├── ck/                 # 26 engineer-kit command files (/ck:<name>)
-│   │   └── mk/                 # 12 marketing-kit command files (/mk:<name>)
+│   │   ├── ck/                 # 27 engineer-kit command files (/ck:<name>)
+│   │   ├── mk/                 # 12 marketing-kit command files (/mk:<name>)
+│   │   └── ba/                 # 6 BA-kit command files (/ba:<name>)
 │   ├── hooks/                  # Git hooks and scripts (scout-block.cjs dispatcher)
-│   ├── kits/                   # Kit manifests (*.json) — engineer/marketing/both
+│   ├── kits/                   # Kit manifests (*.json) — engineer/marketing/both/ba
 │   ├── scripts/ck/             # 7 shipped helpers + lib/ — see § Scripts below
-│   ├── skills/                 # 126 SKILL.md files — see § Skills Library below
+│   ├── skills/                 # 142 SKILL.md files — see § Skills Library below
 │   ├── workflows/              # Development workflow definitions (*.md)
 │   ├── settings.json           # Claude Code settings
 │   ├── metadata.json           # Installed-project metadata (kit, version)
@@ -157,6 +158,12 @@ Cross-platform Node, zero dependencies, installed via the manifests' `scripts` k
 - **Headless:** `ci-review.cjs` (narrow-grant `claude -p` PR review; GitHub Actions wrapper at `.github/workflows/ck-review.yml.template`) · `delivery-tail.cjs` (executes the project-declared post-PR step list; no declaration = no-op)
 - **`lib/`:** `common.cjs` (argv-only git, ref guards) · `shell-parse.cjs` + `branch-checks.cjs` (branch guard) · `plan-checks.cjs` (plan lint) · `tail-parse.cjs` + `tail-checks.cjs` + `tail-runtime.cjs` (delivery tail: parse / approve+render / execute)
 
+### 6b. Scripts (`.claude/scripts/ba/`)
+
+BA kit spine processors — Node entry point with embedded lib modules:
+- **`traceability.cjs`:** CLI entry point for the BA entity traceability spine (entity files → derived index → compose → tickets). Actions: `parse` (entities → JSON), `index` (build traceability matrix), `compose` (render specs), `deliver` (generate deliverables). All I/O to `plans/ba/<project>/`.
+- **`lib/`:** `spine-parse.cjs` (entity file parsing) · `spine-index.cjs` (derivation) · `spine-compose.cjs` (SRS/UAT rendering) · `spine-deliver.cjs` (coordinating publish) · `deliver-templates.cjs` (template engines for PRD/SRS/handover)
+
 ### 7. Statusline Scripts
 
 Three implementations for cross-platform statusline:
@@ -242,11 +249,12 @@ type(scope): description
 
 Not regenerated this pass — no `repomix-output.xml` is committed to the repo (generated on demand by `/ck:docs update`, gitignored). Run `repomix` locally for current token/file counts rather than trusting stale numbers here.
 
-**Verified counts** (via `ls`/`find` against the filesystem, 2026-08-01):
-- Agent definitions: 29 (17 engineering + 12 marketing)
-- Command files: 37 (25 `ck/` + 12 `mk/`)
-- Skill files: 131 `SKILL.md`
-- Workflow files: 15 in `.claude/workflows/` (7 shipped by the engineer kit + 8 by the marketing kit; `cro-framework.md` shipped by both — see `.claude/kits/*.json`)
+**Verified counts** (via `ls`/`find` against the filesystem, 2026-09-11):
+- Agent definitions: 30 (18 engineering + 12 marketing; ba kit ships no agents)
+- Command files: 45 (27 `ck/` + 12 `mk/` + 6 `ba/`)
+- Skill files: 142 `SKILL.md` (68 software · 50 marketing · 6 automation · 2 integrations · 6 ba · 10 legacy compat)
+- Workflow files: 19 in `.claude/workflows/` (7 shipped by the engineer kit + 11 by the marketing kit + 1 by the ba kit; `cro-framework.md` shared — see `.claude/kits/*.json`)
+- Test files: `tests/ba-spine.test.js` (13 tests) · `tests/ba-deliver.test.js` (4 tests) · `tests/lib/kits.js` (shared kit-loading helpers) · plus 15 engineer-kit test files
 
 ## Integration Capabilities
 

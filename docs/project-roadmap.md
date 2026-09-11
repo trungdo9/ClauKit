@@ -88,6 +88,25 @@ T1.6 (`wt-new`/`wt-doctor`/`wt-clean` + the `git/worktree` skill) is **removed**
 - **What this cost, stated plainly:** parallel *editing* teammates in `/ck:team` are gone as a capability (overlapping path sets now serialize), and `/ck:refactor` halts on a shared tree rather than forking one. Read-only fan-out is unaffected. The `wt-doctor` health gate is replaced by a red-baseline halt, not dropped.
 - **Upgrade path:** `ck init` removes the leftover files from existing installs only where a content digest proves KitForge shipped that exact file, and only after refreshing the docs that invoke it. A file you wrote or edited is reported, never touched.
 
+### 0b. BA Kit — Wave 0 SHIPPED 2026-09-11 (plan `260910-1533-ba-kit`)
+Business analysis kit (6 commands, 6 skills, traceability spine, PRD→SRS→tickets chain) is complete and committed. Four capabilities cut intentionally (redirected to existing commands: `/delegate`→`/ck:team`, `/brainstorm`→`/ck:brainstorm`, `/ask`→`/ck:ask`, `/prototype-next`→`/ck:cook`). **Wave 0 deliverables:**
+- **5 of 8 dispatchers:** `/ba:plan` (hub creation) · `/ba:prd` (PRD generation) · `/ba:spec` (SRS + test composition) · `/ba:diagram` (C4/UML/ER) · `/ba:qc` (consistency audit)
+- **6 skills:** `traceability` (spine model + CLI) · `ba-context` (hub) · `prd` (generator) · `spec` (composer) · `diagramming` (renderers) · `deliver` (publisher)
+- **Spine model:** entity files (source of truth) → derived index → compose → tickets (`/ck:tickets` hand-off via `ticket-slicer`)
+- **Tests:** `tests/ba-spine.test.js` (13) · `tests/ba-deliver.test.js` (4)
+
+**Waves 2–4 (planned, post-validation):**
+- **W2** (`reverse` + `qc drift | cr`): traceability *inference* engine (existing docs → entity derivation) + continuous-recency checking (hard stop for real-project validation before any further expansion)
+- **W3** (`api`): specification API + contract export (OpenAPI/AsyncAPI from entities)
+- **W4** (`export`): multi-format output (docx/pdf/confluence/jira/trello/miro) + content-sync integrations
+
+**ClauKit debt items** (4 defects measured, not fixed here; see `docs/known-defects.md`):
+1. LICENSE file missing (MIT declared in package.json only)
+2. Package name unpublishable on npm (capital letters; rename collides with frozen kitforge-display-rename plan)
+3. `npm test` broken on Node ≥24 (workaround: `node --test "tests/*.test.js"` works; used by all gates)
+4. `tests/protected-branch-guard.test.js:196` fails at baseline (pre-existing, unrelated)
+5. R17 path traversal in `resolveSourcePath` (zero exposure today, measurement captured for future fix)
+
 ### 1. Agent System Enhancement
 - Document and optimize existing 16 agents
 - Expand agent capabilities based on usage patterns

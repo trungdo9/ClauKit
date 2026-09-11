@@ -23,6 +23,7 @@ KitForge supports multiple installable kits via `ck init --kit <name>`:
 - **`engineer`** (default) — software engineering, `/ck:` namespace
 - **`marketing`** — marketing automation, `/mk:` namespace. See `skills/marketing/README.md`
 - **`both`** — engineer + marketing combined
+- **`ba`** — business analysis, `/ba:` namespace. See `skills/ba/README.md`
 
 Kit manifests: `.claude/kits/*.json`. Adding a new kit = drop a JSON file, no CLI changes.
 
