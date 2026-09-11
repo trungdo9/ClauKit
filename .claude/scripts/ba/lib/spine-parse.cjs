@@ -2,7 +2,7 @@
  * spine-parse.cjs — parse one BA entity file (frontmatter + id) into a Node.
  *
  * No I/O beyond `fs.readFileSync`. Hand-rolled frontmatter reader: the contract
- * is 9 scalar keys plus one inline array (`parents: [EPIC-001]`), so pulling in
+ * is 12 scalar keys plus one inline array (`parents: [EPIC-001]`), so pulling in
  * `js-yaml` for that is not justified in a zero-dependency package.
  *
  * Single source for the id scheme: this file owns `DOC_ID` / `ITEM_ID` /
@@ -14,8 +14,8 @@ const fs = require('fs');
 const path = require('path');
 
 const DOC_ID = /^(PRD|SRS)-\d{3}$/;
-const ITEM_ID = /^(EPIC|FR|NFR|UC|US|TC)-\d{3}$|^AC-\d{3}\.\d{1,2}$/;
-const KIND_ORDER = ['PRD', 'SRS', 'EPIC', 'FR', 'NFR', 'UC', 'US', 'AC', 'TC'];
+const ITEM_ID = /^(EPIC|FR|NFR|UC|US|TC|CR)-\d{3}$|^AC-\d{3}\.\d{1,2}$/;
+const KIND_ORDER = ['PRD', 'SRS', 'EPIC', 'FR', 'NFR', 'UC', 'US', 'AC', 'TC', 'CR']; // CR appended last to keep CR-free trees byte-identical
 const DOC_KINDS = new Set(['PRD', 'SRS']);
 const ITEM_KINDS = new Set(KIND_ORDER.filter((k) => !DOC_KINDS.has(k)));
 const PARENT_KINDS = {
@@ -28,11 +28,16 @@ const PARENT_KINDS = {
   US: ['EPIC', 'FR', 'UC'],
   AC: ['US', 'FR'],
   TC: ['AC', 'FR', 'NFR'],
+  CR: ['EPIC', 'FR', 'NFR', 'UC', 'US'],
 };
 
 const CONFIDENCE = new Set(['high', 'med', 'low']);
 const OUT_OF_SCOPE_KINDS = new Set(['EPIC', 'FR']);
 const TOUCHES_KINDS = new Set(['FR', 'US']);
+const CR_STATUS = new Set(['proposed', 'approved', 'rejected', 'done']);
+const STATUS_KINDS = new Set(['CR']);
+const IMPACT_KINDS = new Set(['CR']);
+const RELEASE_KINDS = new Set(['FR', 'US']);
 /** Keys checked by plain presence; `title` and `doc` get their own bespoke checks. */
 const REQUIRED_KEYS = ['id', 'kind', 'project', 'parents', 'source', 'confidence'];
 
@@ -122,6 +127,19 @@ function parseEntity(absPath, projectDir) {
     push('bad-touches', `touches is not allowed on kind '${prefix}'`);
   }
 
+  if (prefix === 'CR' && blank(data.status)) push('missing-status', 'CR requires status');
+  if (!blank(data.status) && !CR_STATUS.has(data.status)) push('bad-status', `status '${data.status}' must be one of [${[...CR_STATUS].join(', ')}]`);
+  if (!blank(data.status) && !STATUS_KINDS.has(prefix)) {
+    push('status-on-wrong-kind', `status is not allowed on kind '${prefix}'`);
+  }
+  if (prefix === 'CR' && blank(data.impact)) push('missing-impact', 'CR requires impact');
+  if (!blank(data.impact) && !IMPACT_KINDS.has(prefix)) {
+    push('impact-on-wrong-kind', `impact is not allowed on kind '${prefix}'`);
+  }
+  if (!blank(data.release) && !RELEASE_KINDS.has(prefix)) {
+    push('bad-release', `release is not allowed on kind '${prefix}'`);
+  }
+
   const node = {
     id,
     kind: blank(kind) ? prefix : kind,
@@ -133,8 +151,11 @@ function parseEntity(absPath, projectDir) {
     confidence: blank(data.confidence) ? null : data.confidence,
     out_of_scope: blank(data.out_of_scope) ? null : data.out_of_scope,
     touches: blank(data.touches) ? null : data.touches,
+    status: blank(data.status) ? null : data.status,
+    impact: blank(data.impact) ? null : data.impact,
+    release: blank(data.release) ? null : data.release,
   };
   return { node, errors };
 }
 
-module.exports = { parseEntity, DOC_ID, ITEM_ID, KIND_ORDER, DOC_KINDS, PARENT_KINDS };
+module.exports = { parseEntity, DOC_ID, ITEM_ID, KIND_ORDER, DOC_KINDS, PARENT_KINDS, CR_STATUS };

@@ -161,4 +161,27 @@ function writeIndex(projectDir, index) {
   return out;
 }
 
-module.exports = { buildIndex, findGaps, validate, writeIndex };
+/**
+ * `changelog(index) => CRRow[]` — CR nodes in id order. The Change Log IS this
+ * view: there is no register file to keep in step with the entities, which is
+ * the failure mode a hand-written log has and a derived one cannot.
+ */
+function changelog(index) {
+  return index.nodes
+    .filter((n) => n.kind === 'CR')
+    .sort((a, b) => {
+      const byNum = numericPart(a.id) - numericPart(b.id);
+      if (byNum) return byNum;
+      return cmp(a.id, b.id);
+    })
+    .map((n) => ({
+      id: n.id,
+      title: n.title,
+      status: n.status,
+      impact: n.impact,
+      parents: n.parents,
+      file: n.file,
+    }));
+}
+
+module.exports = { buildIndex, findGaps, validate, writeIndex, changelog };

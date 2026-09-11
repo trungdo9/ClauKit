@@ -21,7 +21,7 @@ EPIC-001 ──> FR-012 ──> UC-004        (how the actor does it)
 One action per kind, and each derives from the kind above it. Without this ordering the kit is a
 template pile — a spec written from imagination, not from the product decisions already on record.
 
-## The seven actions
+## The eight actions
 
 | action | derives from | writes |
 |---|---|---|
@@ -31,7 +31,10 @@ template pile — a spec written from imagination, not from the product decision
 | `us` | `EPIC-*`, `FR-*`, or `UC-*` | `US-###.md` |
 | `ac` | `US-*` or `FR-*` | `AC-###.#.md` |
 | `tc` | `AC-*`, `FR-*`, or `NFR-*` | `TC-###.md` |
+| `cr` | an existing entity (EPIC/FR/NFR/UC/US) | `CR-###.md` |
 | `compose` | the whole index | `deliverables/{PRD-001,SRS-001}.md` |
+
+**CR derives from an existing entity and never creates one.** A change with no entity to point at is not a change request, it is a new requirement — run `fr`.
 
 ## Refuse out-of-order generation
 

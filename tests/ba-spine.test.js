@@ -14,7 +14,7 @@ const os = require('node:os');
 const path = require('node:path');
 
 const REPO = path.join(__dirname, '..');
-const { buildIndex, findGaps, validate } = require(path.join(REPO, '.claude/scripts/ba/lib/spine-index.cjs'));
+const { buildIndex, findGaps, validate, changelog } = require(path.join(REPO, '.claude/scripts/ba/lib/spine-index.cjs'));
 const CLI = path.join(REPO, '.claude/scripts/ba/traceability.cjs');
 
 let WORK;
@@ -29,12 +29,15 @@ function mkProject() {
   return dir;
 }
 
-function entity({ id, kind, title, doc, parents, source, confidence, out_of_scope, touches }) {
+function entity({ id, kind, title, doc, parents, source, confidence, out_of_scope, touches, status, impact, release }) {
   const lines = ['---', `id: ${id}`, `kind: ${kind}`, 'project: acme', `title: ${title}`];
   if (doc !== undefined) lines.push(`doc: ${doc}`);
   lines.push(`parents: [${parents.join(', ')}]`, `source: ${source}`, `confidence: ${confidence}`);
   if (out_of_scope !== undefined) lines.push(`out_of_scope: ${out_of_scope}`);
   if (touches !== undefined) lines.push(`touches: ${touches}`);
+  if (status !== undefined) lines.push(`status: ${status}`);
+  if (impact !== undefined) lines.push(`impact: ${impact}`);
+  if (release !== undefined) lines.push(`release: ${release}`);
   lines.push('---', '', `# ${id} — ${title}`, '');
   return lines.join('\n');
 }
@@ -44,13 +47,13 @@ function writeEntity(dir, opts) {
 }
 
 /**
- * `synth(dir, { clean })` writes 13 entity files into `<dir>/entities/`.
+ * `synth(dir, { clean, crs })` writes 13 entity files into `<dir>/entities/`.
  * `touches` is legal only on FR/US (`bad-touches`), so it lands on `FR-001`,
  * not on the EPIC — `out_of_scope` (required on EPIC) lands on `EPIC-001`.
  * Both Node fields the D-6 contract adds are exercised, on the kinds the
- * contract actually allows them on.
+ * contract actually allows them on. With `crs: true`, adds two CR entities.
  */
-function synth(dir, { clean = false } = {}) {
+function synth(dir, { clean = false, crs = false } = {}) {
   writeEntity(dir, { id: 'PRD-001', kind: 'PRD', title: 'Hoàn tiền đơn hàng', parents: [], source: 'doc:brainstorm.md p.1', confidence: 'med' });
   writeEntity(dir, {
     id: 'EPIC-001', kind: 'EPIC', title: 'Duyệt hoàn tiền', doc: 'PRD-001', parents: ['PRD-001'],
@@ -74,6 +77,16 @@ function synth(dir, { clean = false } = {}) {
     id: 'FR-010', kind: 'FR', title: 'FR số 10', doc: 'SRS-001',
     parents: clean ? ['EPIC-001'] : ['EPIC-999'], source: 'src/order/refund.service.ts:10', confidence: 'high',
   });
+  if (crs) {
+    writeEntity(dir, {
+      id: 'CR-001', kind: 'CR', title: 'Yêu cầu thay đổi 1', doc: 'SRS-001', parents: ['FR-001'],
+      source: 'ticket:CHANGE-001', confidence: 'high', status: 'approved', impact: 'Cập nhật UI hoàn tiền',
+    });
+    writeEntity(dir, {
+      id: 'CR-002', kind: 'CR', title: 'Yêu cầu thay đổi 2', doc: 'SRS-001', parents: ['FR-002'],
+      source: 'ticket:CHANGE-002', confidence: 'high', status: 'rejected', impact: 'Xóa tính năng cũ',
+    });
+  }
 }
 
 function run(args) {
@@ -188,6 +201,110 @@ test('the derived index is ignored in a consumer project, entity files are not',
   const ignored = (f) => spawnSync('git', ['check-ignore', '-q', f], { cwd: p }).status === 0;
   assert.strictEqual(ignored('plans/ba/demo/traceability.derived.json'), true, 'the derived index must be ignored');
   assert.strictEqual(ignored('plans/ba/demo/entities/FR-001.md'), false, 'the entity file — source of truth — must not be');
+});
+
+test('a CR indexes, and changelog orders by id', () => {
+  const dir = mkProject();
+  synth(dir, { crs: true });
+  const { index } = buildIndex(dir);
+  const rows = changelog(index);
+  assert.deepStrictEqual(
+    rows.map((r) => r.id),
+    ['CR-001', 'CR-002'],
+  );
+  assert.deepStrictEqual(
+    rows.map((r) => r.status),
+    ['approved', 'rejected'],
+  );
+  assert.ok(rows.every((r) => r.impact), 'every impact non-empty');
+});
+
+test('a CR whose parents exist is not a gap', () => {
+  const dir = mkProject();
+  synth(dir, { clean: true, crs: true });
+  const { index } = buildIndex(dir);
+  const { orphans, unsourced } = findGaps(index);
+  assert.deepStrictEqual(orphans, []);
+  assert.deepStrictEqual(unsourced, []);
+});
+
+test('status and impact are required on CR and rejected everywhere else', () => {
+  const dir = mkProject();
+  synth(dir, { clean: true, crs: true });
+
+  // CR without status
+  const noStatus = mkProject();
+  synth(noStatus, { clean: true, crs: true });
+  const crPath = path.join(noStatus, 'entities/CR-001.md');
+  let content = fs.readFileSync(crPath, 'utf8');
+  content = content.replace(/^status: approved$/m, '');
+  fs.writeFileSync(crPath, content);
+  const { index: idx1, errors: e1 } = buildIndex(noStatus);
+  const v1 = validate(idx1, e1);
+  assert.ok(v1.some((v) => v.check === 'missing-status'), 'CR without status fails');
+
+  // CR without impact
+  const noImpact = mkProject();
+  synth(noImpact, { clean: true, crs: true });
+  const crImpactPath = path.join(noImpact, 'entities/CR-001.md');
+  let contentNoImpact = fs.readFileSync(crImpactPath, 'utf8');
+  contentNoImpact = contentNoImpact.replace(/^impact: .*$/m, '');
+  fs.writeFileSync(crImpactPath, contentNoImpact);
+  const { index: idx2, errors: e2 } = buildIndex(noImpact);
+  const v2 = validate(idx2, e2);
+  assert.ok(v2.some((v) => v.check === 'missing-impact'), 'CR without impact fails');
+
+  // status on FR (wrong kind)
+  const frWithStatus = mkProject();
+  synth(frWithStatus, { clean: true });
+  const frPath = path.join(frWithStatus, 'entities/FR-001.md');
+  let frContent = fs.readFileSync(frPath, 'utf8');
+  const insertAfter = 'confidence: high';
+  frContent = frContent.replace(insertAfter, `${insertAfter}\nstatus: approved`);
+  fs.writeFileSync(frPath, frContent);
+  const { index: idx3, errors: e3 } = buildIndex(frWithStatus);
+  const v3 = validate(idx3, e3);
+  assert.ok(v3.some((v) => v.check === 'status-on-wrong-kind'), 'status on FR fails');
+
+  // release on EPIC (wrong kind)
+  const epicWithRelease = mkProject();
+  synth(epicWithRelease, { clean: true });
+  const epicPath = path.join(epicWithRelease, 'entities/EPIC-001.md');
+  let epicContent = fs.readFileSync(epicPath, 'utf8');
+  const insertEpic = 'out_of_scope:';
+  epicContent = epicContent.replace(insertEpic, `release: v1.2\n${insertEpic}`);
+  fs.writeFileSync(epicPath, epicContent);
+  const { index: idx4, errors: e4 } = buildIndex(epicWithRelease);
+  const v4 = validate(idx4, e4);
+  assert.ok(v4.some((v) => v.check === 'bad-release'), 'release on EPIC fails');
+
+  // release on FR (should NOT fail)
+  const frWithRelease = mkProject();
+  synth(frWithRelease, { clean: true });
+  const frRPath = path.join(frWithRelease, 'entities/FR-001.md');
+  let frRContent = fs.readFileSync(frRPath, 'utf8');
+  frRContent = frRContent.replace('confidence: high', 'confidence: high\nrelease: v1.2');
+  fs.writeFileSync(frRPath, frRContent);
+  const { index: idx5, errors: e5 } = buildIndex(frWithRelease);
+  const v5 = validate(idx5, e5);
+  assert.ok(!v5.some((v) => v.check === 'bad-release'), 'release on FR is allowed');
+});
+
+test('CR is appended to KIND_ORDER, so a CR-free tree keeps its node order', () => {
+  const { KIND_ORDER } = require(path.join(REPO, '.claude/scripts/ba/lib/spine-parse.cjs'));
+  assert.strictEqual(KIND_ORDER.indexOf('CR'), KIND_ORDER.length - 1, 'CR is the last kind');
+
+  const dir = mkProject();
+  synth(dir, { clean: true });
+  const { index } = buildIndex(dir);
+  const expectedOrder = [
+    'PRD-001', 'SRS-001', 'EPIC-001', 'FR-001', 'FR-002', 'FR-003', 'FR-004',
+    'FR-005', 'FR-006', 'FR-007', 'FR-008', 'FR-009', 'FR-010',
+  ];
+  assert.deepStrictEqual(index.nodes.map((n) => n.id), expectedOrder);
+  assert.ok(index.nodes.every((n) => n.status === null), 'all statuses null');
+  assert.ok(index.nodes.every((n) => n.impact === null), 'all impacts null');
+  assert.ok(index.nodes.every((n) => n.release === null), 'all releases null');
 });
 
 function walkFiles(dir, out = []) {

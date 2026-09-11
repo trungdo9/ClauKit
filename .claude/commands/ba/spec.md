@@ -1,6 +1,6 @@
 ---
 description: BA specification — FR/NFR/UC/US/AC/TC entities, and compose to a signed SRS
-argument-hint: fr|nfr|uc|us|ac|tc|compose [<project-slug>]
+argument-hint: fr|nfr|uc|us|ac|tc|cr|compose [<project-slug>]
 ---
 
 ## Pre-flight (HARD FAIL)
@@ -15,7 +15,7 @@ Direct to `/ba:plan`, exit. Rule 6 — `/ba:plan` is the only exception, and thi
 
 ## Variables
 
-ACTION: $1 (required — one of `fr nfr uc us ac tc compose`)
+ACTION: $1 (required — one of `fr nfr uc us ac tc cr compose`)
 PROJECT: $2 (default: derived from the repo directory name, kebab-cased)
 
 ## Workflow
@@ -48,6 +48,11 @@ writes none, because `compose` (and, later, `/ck:tickets`) inherits it.
   has no single AC). Read the `scenario` skill file
   ([.claude/skills/software/scenario/SKILL.md](../../skills/software/scenario/SKILL.md)) for the
   design method; this action reuses it rather than restating it.
+- **`cr`** — one `CR-###.md` per change request, `parents` naming the entities the change touches
+  (one or more of `EPIC`, `FR`, `NFR`, `UC`, `US`). Read the `spec` skill file for the Change
+  Request form and validation rules; a CR derives from an existing entity and never creates one.
+  The command writes `status: proposed`; approval is recorded by editing the entity, because
+  `status: approved` gates billing in phase 08.2.
 - **`compose`** — runs `index` first (so the document and the graph are rendered from one read),
   then `node .claude/scripts/ba/traceability.cjs compose plans/ba/<project-slug>`. That script runs
   `validate` internally: violations ⇒ it prints them and exits 1, writing nothing; clean ⇒ it

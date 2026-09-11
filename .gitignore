@@ -70,6 +70,10 @@ plans/**/*.derived.json
 # BA kit: composed deliverables are committed artifacts (D-11), not a cache —
 # an ignored deliverable is a 404 for the ticket that cites it.
 !plans/**/deliverables/*.md
+# …and their source of truth: an entity file is the spine (D-6), so a committed
+# deliverable must not be composed from ignored inputs. Fixture trees become
+# reproducible; the derived index stays ignored by the rule above.
+!plans/**/entities/*.md
 screenshots/*
 docs/screenshots/*
 docs/journals/*

@@ -32,9 +32,9 @@ function die(msg, code) {
 function main() {
   const [action, projectDir, ...rest] = process.argv.slice(2);
   const json = rest.includes('--json');
-  const USAGE = 'usage: traceability.cjs <index|gap|validate|compose> <project-dir> [--json]';
+  const USAGE = 'usage: traceability.cjs <index|gap|validate|compose|changelog> <project-dir> [--json]';
 
-  if (!['index', 'gap', 'validate', 'compose'].includes(action)) die(USAGE, 2);
+  if (!['index', 'gap', 'validate', 'compose', 'changelog'].includes(action)) die(USAGE, 2);
   if (!projectDir || !fs.existsSync(projectDir)) die(`project dir not found: ${projectDir}`, 2);
   if (!fs.existsSync(path.join(projectDir, 'entities'))) {
     die(`no entities/ under ${projectDir} — expected <project-dir>/entities/*.md`, 2);
@@ -83,7 +83,39 @@ function main() {
     }
     if (json) console.log(JSON.stringify({ files: result.files.map((f) => path.basename(f)) }));
     else console.log(`✓ composed ${result.files.map((f) => path.basename(f)).join(', ')}`);
+
+    // Warn about git-ignored deliverables
+    const deliverables = ['SRS-001.md', 'PRD-001.md'];
+    for (const d of result.files) {
+      const dname = path.basename(d);
+      if (deliverables.includes(dname)) {
+        const ignoreResult = require('child_process').spawnSync('git', ['check-ignore', '-q', d], { cwd: projectDir });
+        if (ignoreResult.status === 0) {
+          console.warn(`⚠ ${d} is git-ignored in this project — add \`!plans/**/deliverables/*.md\` to .gitignore or the signed document will not be committed (D-11)`);
+        }
+      }
+    }
     return;
+  }
+
+  if (action === 'changelog') {
+    const { changelog } = spine;
+    const rows = changelog(index);
+    if (json) {
+      console.log(JSON.stringify(rows));
+    } else if (!rows.length) {
+      console.log('✓ no change requests');
+    } else {
+      const maxIdLen = Math.max(...rows.map((r) => r.id.length));
+      const maxStatusLen = Math.max(...rows.map((r) => r.status.length));
+      for (const r of rows) {
+        const id = r.id.padEnd(maxIdLen);
+        const status = r.status.padEnd(maxStatusLen);
+        const parents = r.parents.join(', ');
+        console.log(`${id}  ${status}  ${parents}  ${r.impact}`);
+      }
+    }
+    process.exit(0);
   }
 }
 
