@@ -28,9 +28,9 @@
 | 24 | Xây từ điển dữ liệu (data dictionary) | định nghĩa từng trường dữ liệu dùng chung | `/ba:spec data` | ba | W3 |
 | 25 | Ánh xạ phụ thuộc giữa các FR | FR nào phải xong trước FR nào (FR = yêu cầu chức năng) | `/ba:spec deps` | ba | W4 |
 | 26 | Kiểm tra nhất quán chéo giữa các FR | phát hiện FR mâu thuẫn nhau (FR = yêu cầu chức năng) | `/ba:spec consistency` | ba | W4 |
-| 27 | Sơ đồ luồng nghiệp vụ (flow) | các bước xử lý nối tiếp nhau | `/ba:diagram flow` | ba | W2 |
-| 28 | Sơ đồ tuần tự (sequence) | ai gọi ai, theo thứ tự thời gian | `/ba:diagram sequence` | ba | W2 |
-| 29 | Sơ đồ trạng thái (state) | một thực thể chuyển từ trạng thái này sang trạng thái khác | `/ba:diagram state` | ba | W3 |
+| 27 | Sơ đồ luồng nghiệp vụ (flow) | các bước xử lý nối tiếp nhau | `/ba:diagram flow` | ba | W0 |
+| 28 | Sơ đồ tuần tự (sequence) | ai gọi ai, theo thứ tự thời gian | `/ba:diagram sequence` | ba | W0 |
+| 29 | Sơ đồ trạng thái (state) | một thực thể chuyển từ trạng thái này sang trạng thái khác | `/ba:diagram state` | ba | W0 |
 | 30 | Sơ đồ bối cảnh hệ thống (context) | hệ thống này nối với những hệ thống/người nào bên ngoài | `/ba:diagram context` | ba | W3 |
 | 31 | Sơ đồ luồng dữ liệu (DFD) | dữ liệu di chuyển qua các bước xử lý ra sao | `/ba:diagram dfd` | ba | W4 |
 | 32 | Bản đồ hành trình người dùng (journey map) | trải nghiệm người dùng từ đầu đến cuối | `/ba:diagram journey` | ba | W4 |
