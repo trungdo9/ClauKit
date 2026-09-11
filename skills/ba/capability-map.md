@@ -10,12 +10,12 @@
 | 6 | Cập nhật hub ngữ cảnh BA | làm mới thông tin dự án khi có thay đổi | `/ba:plan update` | ba | W0 |
 | 7 | Quản lý bảng thuật ngữ (glossary) | thống nhất cách gọi tên giữa các bên | `/ba:plan glossary` | ba | W1 |
 | 8 | Quản lý danh sách người liên quan (stakeholder) | ai quyết, ai duyệt, ai chỉ cần biết | `/ba:plan stakeholders` | ba | W1 |
-| 9 | Soạn PRD (Product Requirements Document) | tài liệu mô tả sản phẩm cần làm gì và vì sao | `/ba:prd draft` | ba | W0 |
+| 9 | Soạn PRD (Product Requirements Document) | tài liệu mô tả sản phẩm cần làm gì và vì sao | `/ba:prd prd` | ba | W0 |
 | 10 | Định nghĩa persona người dùng | vẽ chân dung người sẽ dùng sản phẩm | `/ba:prd persona` | ba | W1 |
 | 11 | Định nghĩa mục tiêu & chỉ số thành công | đo bằng gì để biết sản phẩm thành công | `/ba:prd goals` | ba | W1 |
 | 12 | Xác định phạm vi trong/ngoài | cái gì làm đợt này, cái gì để sau | `/ba:prd scope` | ba | W2 |
 | 13 | Ghi nhận rủi ro & giả định | những điều chưa chắc, có thể sai | `/ba:prd risks` | ba | W3 |
-| 14 | Lộ trình sản phẩm trong PRD | thứ tự làm theo thời gian | `/ba:prd roadmap` | ba | W4 |
+| 14 | Lộ trình sản phẩm trong PRD | thứ tự làm theo thời gian | `/ba:prd roadmap` | ba | W0 |
 | 15 | Duyệt & ký nhận PRD | chốt bản PRD trước khi triển khai | `/ba:prd signoff` | ba | W4 |
 | 16 | Soạn FR (Functional Requirement) | hệ thống phải làm được gì (FR = yêu cầu chức năng) | `/ba:spec fr` | ba | W0 |
 | 17 | Soạn NFR (Non-Functional Requirement) | hệ thống phải nhanh/an toàn/ổn định cỡ nào (NFR = yêu cầu phi chức năng) | `/ba:spec nfr` | ba | W1 |
