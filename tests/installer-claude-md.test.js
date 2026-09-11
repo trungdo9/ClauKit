@@ -15,6 +15,8 @@ const fs = require('node:fs');
 const os = require('node:os');
 const path = require('node:path');
 
+const { packagedKits } = require('./lib/kits');
+
 const REPO = path.join(__dirname, '..');
 const CK = path.join(REPO, 'bin', 'ck.js');
 
@@ -176,7 +178,9 @@ test('a rule never cites a path its kit does not ship', () => {
   // does not ship — the exact thing `workflowLines` already refuses to do for
   // workflow pointers ("worse than no pointer"). The rule itself is
   // self-contained and stays; only its citation is conditional.
-  for (const kit of ['engineer', 'marketing', 'both']) {
+  const kits = packagedKits();
+  assert.ok(kits.length >= 3, 'the kit glob returned nothing — the loop would pass vacuously');
+  for (const kit of kits) {
     const p = fresh();
     spawnSync('node', [CK, 'init', '--kit', kit], { cwd: p, encoding: 'utf-8' });
     const text = fs.readFileSync(path.join(p, 'CLAUDE.md'), 'utf-8');

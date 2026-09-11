@@ -24,6 +24,7 @@ const os = require('node:os');
 const path = require('node:path');
 
 const { RULES, PLAN_RULES, existingPatterns } = require('../bin/lib/gitignore-wire');
+const { packagedKits, shipsCkScripts } = require('./lib/kits');
 
 const REPO = path.join(__dirname, '..');
 const CK = path.join(REPO, 'bin', 'ck.js');
@@ -162,7 +163,9 @@ test('every kit-declared path survives npm pack', () => {
     return packed.some((f) => f === p || f.startsWith(p.replace(/\/?$/, '/'))
       || f === stripped || f.startsWith(stripped.replace(/\/?$/, '/')));
   };
-  for (const name of ['engineer', 'marketing', 'both']) {
+  const kits = packagedKits();
+  assert.ok(kits.length >= 3, 'the kit glob returned nothing — the loop would pass vacuously');
+  for (const name of kits) {
     const manifest = JSON.parse(fs.readFileSync(path.join(REPO, `.claude/kits/${name}.json`), 'utf-8'));
     const declared = [
       ...Object.values(manifest.paths || {}).flat(),
@@ -272,7 +275,9 @@ test('no shipped doc links to a file the install does not have', () => {
   // blind immediately next to it.
   const LINK = /\]\(([^)\s]+?\.md)(?:#[^)\s]*)?\)/g;
   const broken = [];
-  for (const kit of ['engineer', 'marketing', 'both']) {
+  const kits = packagedKits();
+  assert.ok(kits.length >= 3, 'the kit glob returned nothing — the loop would pass vacuously');
+  for (const kit of kits) {
     const p = fresh();
     init(p, [], kit);
     for (const f of walk(path.join(p, '.claude'))) {
@@ -307,7 +312,7 @@ test('no shipped doc names a .claude/ path the install does not have', () => {
   // pointing at `primary-workflow.md` / `development-rules.md` it did not install.
   // Fixed in `kits/marketing.json` § requires.shared, not by deleting the pointers.
   //
-  // The other 2 are why `EXEMPT_SCRIPTS_IN_MARKETING` exists rather than a manifest
+  // The other 2 are why `EXEMPT_CK_SCRIPTS_WHEN_UNSHIPPED` exists rather than a manifest
   // entry: `hooks/README.md` and `planning/SKILL.md` name `.claude/scripts/ck/*.cjs`,
   // and marketing's omission of that tree is DELIBERATE — `hooks/branch-guard.cjs`
   // documents it and fails open on exactly that layout. Shipping the helpers to
@@ -321,7 +326,9 @@ test('no shipped doc names a .claude/ path the install does not have', () => {
     '.claude/settings.local.json',  // created by Claude Code / the user, never shipped
     '.claude/config.json',          // ditto — the hook docs tell the reader to create it
   ]);
-  const EXEMPT_SCRIPTS_IN_MARKETING = /^\.claude\/scripts\/ck\//;  // see above — deliberate omission
+  const EXEMPT_CK_SCRIPTS_WHEN_UNSHIPPED = /^\.claude\/scripts\/ck\//;  // see above — deliberate omission
+  // When kits stopped being enumerable, the check above became generic: any kit that
+  // does not ship `.claude/scripts/ck/` now skips this regex, not just marketing.
   const EXEMPT_FILE = new Set([
     'commands/ck/flow.md',              // documents `/ck:flow save <name>` — names its own future output
     'workflows/development-rules.md',   // its subject IS path conventions; it cites paths it does not point at
@@ -338,7 +345,10 @@ test('no shipped doc names a .claude/ path the install does not have', () => {
   };
   const TICKED = /`(\.claude\/[^`\s]*\.(?:md|sh|js|cjs|json))`/g;
   const missing = [];
-  for (const kit of ['engineer', 'marketing', 'both']) {
+  const kits = packagedKits();
+  assert.ok(kits.length >= 3, 'the kit glob returned nothing — the loop would pass vacuously');
+  for (const kit of kits) {
+    const manifest = JSON.parse(fs.readFileSync(path.join(REPO, `.claude/kits/${kit}.json`), 'utf-8'));
     const p = fresh();
     init(p, [], kit);
     for (const f of walk(path.join(p, '.claude'))) {
@@ -348,7 +358,7 @@ test('no shipped doc names a .claude/ path the install does not have', () => {
         const target = m[1];
         if (/[*<>{}]/.test(target)) continue;             // glob or placeholder, not a literal path
         if (EXEMPT_TARGET.has(target)) continue;
-        if (kit === 'marketing' && EXEMPT_SCRIPTS_IN_MARKETING.test(target)) continue;
+        if (!shipsCkScripts(manifest) && EXEMPT_CK_SCRIPTS_WHEN_UNSHIPPED.test(target)) continue;
         if (!fs.existsSync(path.join(p, target))) missing.push(`[${kit}] ${rel} -> ${target}`);
       }
     }

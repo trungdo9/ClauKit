@@ -28,7 +28,9 @@ const REPO = path.join(__dirname, '..');
 const CK = path.join(REPO, 'bin', 'ck.js');
 
 /** Every file ClauKit installs into a project and then invokes with `node`. */
-const SHIPPED_NODE_DIRS = ['.claude/hooks', '.claude/scripts/ck'];
+const SHIPPED_NODE_DIRS = ['.claude/hooks',
+  ...fs.readdirSync(path.join(REPO, '.claude/scripts'), { withFileTypes: true })
+       .filter(e => e.isDirectory()).map(e => `.claude/scripts/${e.name}`)];
 
 let work;
 
