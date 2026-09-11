@@ -1,0 +1,16 @@
+# run-state — plan: plans/260910-1533-ba-kit/plan.md
+
+run: started 2026-09-11 via /ck:cook --from-plan (interactive gates; HEAD 744c271; no foreign file-claims; tree dirty only with untracked plans/260910-1533-ba-kit/)
+phase 0: gate requirements → PASS (evidence: --from-plan; 5 items extracted from plan.md § Global Constraints (constraints, touchpoints), § Success metrics (acceptance), § Files this plan must NOT touch + § Waves 1–4 (scope boundary), § Architecture (expected output); scope lock: option B pre-picked in plan § Scope options)
+phase 0: [ASSUMED] phase 11 (optional prior-art scan) skipped unless user opts in at the verify-plan approval gate
+baseline: 347/349 (744c271) — `node --test "tests/*.test.js"` → ℹ tests 349 / pass 347 / fail 1 / skipped 1; the 1 fail = tests/protected-branch-guard.test.js:196 "spawned in a real repository, the exit codes are the gate" (0 !== 2), pre-existing per plan § Repo baseline — do not chase
+phase 0: resumed 2026-09-11 (derived from ledger + git: HEAD still 744c271, 0 phases started, reports/ empty; verify-plan not yet run → resume at Stage 0.5)
+phase 0: gate verify-plan → PASS (evidence: 6 group reports in reports/plan-verification-*.md merged into reports/plan-verification.md — ~110 rows, 8 REFUTED: 7 are plan-internal cross-ref/line typos (plan.md:25→phase 08, phase-04:61 "Q6", phase-11 "Phase 14"/"phase 06", cli-parser :64,94→:75, hooks/README.md→discord-hook-setup.md:117, ck.js:49→:54) with the underlying facts independently reproduced; 1 is an interface gap (phase-02 Node lacks out_of_scope that phase-05 Gate 1 reads) → ruling R1; 0 refuted claims about existing behaviour are load-bearing; 1 UNVERIFIABLE (post-phase-02 test-count projection, re-check at phase 02))
+phase 0: [ASSUMED] verify-plan table approved — autonomous run, no user gate reachable; phase 11 (optional prior-art scan) skipped
+phase 0: ruling R1 — Node = {…, out_of_scope: string|null, touches: string|null} copied from frontmatter; phase-02 Interfaces + task 2.5 amended in place (verify-plan-spine row 20)
+phase 0: ruling R2 — execution order 01 → 03 → 02 → 04 → 05 → 06 → 07 → 08 → 09 → 10; phase-02 Gate 6 runs `ck init --kit ba` which needs phase-03's business-analysis-rules.md (bin/ck.js:54 exits 1 on a missing path); plan.md deps table permits (02←01, 03←01)
+phase 0: ruling R3 — PLAN_RULES (bin/lib/gitignore-wire.js:58) + root .gitignore edit owned by phase 02 task 2.9; "phase 09 task 9.4" in plan.md:259 / phase-06:95 is stale (grep: no task 9.4 in phase-09)
+phase 0: ruling R4 — ten frontmatter keys per plan.md § Spine model; esm-host scope-join is phase 09 (phase-02:93 amended); phase-02 header stale "Depends on: phase 04" removed
+phase 0: ruling R5 — the installer wires plans/**/*.derived.json (ck.js wireGitignore + PLAN_RULES); /ba:plan prints no gitignore line (phase-06 6.5 "wave 0 has no installer" is D-8-era text)
+phase 0: ruling R6 — requires.shared unchanged (3 entries); rationale must cite .claude/hooks/discord-hook-setup.md:117, not hooks/README.md (plan.md:111, phase-01:59) — pass to phase 03 implementer for the rules/README prose
+phase 1: started (base 744c271) — order per ruling R2; Gate 1 now, Gates 2–3 deferred to after phase 08

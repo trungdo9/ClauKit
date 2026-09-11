@@ -1,0 +1,22 @@
+{
+  "name": "ba",
+  "description": "BA Kit — business analysis, /ba: namespace. PRD → SRS → spine → tickets. 5 commands, 8 skills.",
+  "namespace": "ba",
+  "version": "0.1.0",
+  "paths": {
+    "commands":  [".claude/commands/ba/"],
+    "skills":    [".claude/skills/ba/"],
+    "scripts":   [".claude/scripts/ba/"],
+    "workflows": [".claude/workflows/business-analysis-rules.md"],
+    "hooks":     [".claude/hooks/"],
+    "statusline":[".claude/statusline.cjs", ".claude/statusline.sh", ".claude/statusline.ps1"],
+    "config":    [".claude/settings.json", ".claude/mcp.json", ".claude/.env.example", ".claude/.mcp.json.example"]
+  },
+  "requires": {
+    "shared": [
+      ".claude/skills/software/scenario/SKILL.md",
+      ".claude/workflows/primary-workflow.md",
+      ".claude/workflows/development-rules.md"
+    ]
+  }
+}
