@@ -6,7 +6,7 @@
 **Interfaces**
 - Consumes: `EPIC-*` entities (05) · the entity contract + `traceability.cjs` (02) · `plans/ba-context.md` (04).
 - Produces:
-  - `.claude/commands/ba/spec.md` — actions `fr` `nfr` `uc` `us` `ac` `tc` `compose`. **`compose` renders BOTH deliverables** — `PRD-001.md` and `SRS-001.md` — because it is one pass over one index; giving `/ba:prd` its own compose action would duplicate the renderer for no gain. (D-11 named both files without saying which command makes them; this is that decision.)
+  - `.claude/commands/ba/spec.md` — actions `fr` `nfr` `uc` `us` `ac` `tc` `compose`. **`compose` renders BOTH deliverables** — `PRD-001.md` and `SRS-001.md` — because it is one pass over one index; giving `/ba:prd` its own compose action would duplicate the renderer for no gain. (D-11 named both files without saying which command makes them; this is that decision.) **Ruling R7 (verify-plan 2026-09-11):** `compose` is a deterministic script — a fourth `traceability.cjs` subcommand `compose <project-dir>` backed by `.claude/scripts/ba/lib/spine-compose.cjs` (< 200 lines) — and `/ba:spec compose` invokes it; an LLM re-render cannot satisfy Gate 5 byte-stability.
   - `.claude/skills/ba/spec/SKILL.md` + `references/{entity-bodies.md,compose-format.md}`
   - Runtime entities under `entities/`: `SRS-001.md`, `FR-*`, `NFR-*`, `UC-*`, `US-*`, `AC-*.*`, `TC-*`
   - **Runtime deliverables — COMMITTED: `plans/ba/<project>/deliverables/{PRD-001.md, SRS-001.md}`** — the artifacts a client signs (D-11), and the **input `/ck:tickets` consumes** (phase 08). See § Task 6.5.
@@ -159,7 +159,7 @@ Byte-stability is what makes a **committed** deliverable safe (task 6.5): withou
 ```bash
 cp plans/ba/demo/deliverables/SRS-001.md /tmp/a.md
 cp plans/ba/demo/deliverables/PRD-001.md /tmp/b.md
-# re-run `/ba:spec compose`
+# re-run compose (ruling R7): node .claude/scripts/ba/traceability.cjs compose plans/ba/demo
 diff /tmp/a.md plans/ba/demo/deliverables/SRS-001.md && diff /tmp/b.md plans/ba/demo/deliverables/PRD-001.md && echo BYTE-STABLE
 grep -ciE 'sinh tự động|generated|không sửa tay' plans/ba/demo/deliverables/SRS-001.md
 grep -cE '[0-9]{4}-[0-9]{2}-[0-9]{2}T|Generated at|Sinh lúc' plans/ba/demo/deliverables/SRS-001.md
