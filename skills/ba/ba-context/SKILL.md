@@ -1,6 +1,6 @@
 ---
 name: ba-context
-description: Foundation BA skill. Create or update the BA context hub (plans/ba-context.md) — scope, actors, system boundary, sources, NFRs, glossary, sign-off, tracker. Activated by /ba:plan; every other /ba: command hard-fails without it.
+description: Foundation BA skill. Create or update the BA context hub (plans/ba-context.md) — scope, actors, system boundary, sources, NFRs, glossary, sign-off, tracker. Read by /ba:plan; every other /ba: command hard-fails without it.
 license: MIT
 ---
 

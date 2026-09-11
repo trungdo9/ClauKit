@@ -50,7 +50,7 @@ const HEADER = [
  * megabytes of regenerable diff into history. Only ClauKit's own root
  * .gitignore had these two rules, and that file is not shipped.
  *
- * Scoped to the two regenerable NAME PATTERNS, not to `plans/**` or even to
+ * Scoped to the regenerable NAME PATTERNS, not to `plans/**` or even to
  * `reports/`: a plan's `plan.md`, `STATE.md` and its hand-written reports are
  * linked from the PR body and must stay committable — an ignored report is a 404
  * in a review.

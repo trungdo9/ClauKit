@@ -16,7 +16,7 @@ Direct to `/ba:plan`, exit. Rule 6 — `/ba:plan` is the only exception, and thi
 ## Variables
 
 ACTION: $1 (default: gap)
-PROJECT: $2 (default: derived from the repo directory name, kebab-cased)
+PROJECT: $2 (default: derived from the repo directory name, kebab-cased) — must match `^[a-z0-9][a-z0-9-]*$`; a slash, `..`, or whitespace ⇒ refuse and exit (the slug becomes a filesystem path)
 
 ## Workflow
 

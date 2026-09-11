@@ -37,6 +37,19 @@ function main() {
 
   if (!['index', 'gap', 'validate', 'compose', 'changelog', 'deliver'].includes(action)) die(USAGE, 2);
   if (!projectDir || !fs.existsSync(projectDir)) die(`project dir not found: ${projectDir}`, 2);
+  // Containment: the commands build this path as `plans/ba/<slug>` from a user-typed slug, so a
+  // `..` in it would point every writer (index, compose, deliver) at another tree. A RELATIVE
+  // path must carry no `..` segment and must resolve inside the current working directory — the
+  // project this CLI serves. An ABSOLUTE path is the operator's explicit choice and is taken as-is
+  // (the commands never build one from a slug).
+  if (!path.isAbsolute(projectDir)) {
+    const root = process.cwd();
+    const resolved = path.resolve(projectDir);
+    const climbs = projectDir.split(/[\\/]+/).includes('..');
+    if (climbs || (resolved !== root && !resolved.startsWith(root + path.sep))) {
+      die(`project dir must be inside the current project (${root}) and contain no '..': ${projectDir}`, 2);
+    }
+  }
   if (!fs.existsSync(path.join(projectDir, 'entities'))) {
     die(`no entities/ under ${projectDir} — expected <project-dir>/entities/*.md`, 2);
   }
@@ -125,9 +138,14 @@ function main() {
     if (!what || !DELIVERABLES[what] && what !== 'all') {
       die('usage: traceability.cjs deliver <project-dir> [scope|uat|acceptance|release-notes|golive|handover|all] [--force] [--json]', 2);
     }
-    const result = deliver(projectDir, what, { force, json });
+    const result = deliver(projectDir, what, { force });
+    const names = (list) => (list || []).map((f) => path.basename(f));
     if (!result.ok) {
-      if (!result.violations || result.violations.length === 0) {
+      if (json) {
+        // Always a JSON object on --json, even on the failing branch — an empty stdout with
+        // exit 1 is indistinguishable from a crash to a script.
+        console.log(JSON.stringify({ files: names(result.files), skipped: names(result.skipped), violations: result.violations || [] }));
+      } else if (!result.violations || result.violations.length === 0) {
         for (const s of result.skipped || []) console.error(`⊘ ${s} exists (class: owned) — pass --force to re-seed`);
       } else {
         for (const v of result.violations) console.error(`[${v.check}] ${v.file} — ${v.msg}`);
@@ -135,7 +153,7 @@ function main() {
       process.exit(1);
     }
     if (json) {
-      console.log(JSON.stringify({ files: (result.files || []).map((f) => path.basename(f)) }));
+      console.log(JSON.stringify({ files: names(result.files), skipped: names(result.skipped) }));
     } else {
       if (result.files && result.files.length > 0) console.log(`✓ delivered ${result.files.map((f) => path.basename(f)).join(', ')}`);
       if (result.skipped && result.skipped.length > 0) {
@@ -146,6 +164,14 @@ function main() {
   }
 }
 
-if (require.main === module) main();
+if (require.main === module) {
+  try {
+    main();
+  } catch (e) {
+    // The contract is exit 0 / 1 / 2, never a stack trace: an I/O failure (an entity deleted
+    // mid-run, an unreadable deliverables/ dir) is a usage-class failure, not a finding.
+    die(e && e.message ? e.message : String(e), 2);
+  }
+}
 
 module.exports = { main, ...spine };

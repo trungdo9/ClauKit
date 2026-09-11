@@ -27,6 +27,7 @@ function cmp(a, b) {
  * dir. `orphans`/`unsourced` stay empty here; that is `findGaps`'s job.
  */
 function buildIndex(projectDir) {
+  projectDir = path.resolve(projectDir); // so `.` or a trailing slash still yields the real dir name for `project:`
   const errors = [];
   const entitiesDir = path.join(projectDir, 'entities');
   const nodes = [];

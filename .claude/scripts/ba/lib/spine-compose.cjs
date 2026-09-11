@@ -19,6 +19,7 @@ const path = require('path');
 const { buildIndex, validate } = require('./spine-index.cjs');
 
 const HEADER = [
+  '<!-- ba-deliverable: compose · class: derived · nguồn: plans/ba/<project>/entities/ -->',
   '<!-- Tài liệu này được sinh tự động (generated) bởi `/ba:spec compose`.',
   '     KHÔNG sửa tay (do not hand-edit) — sửa file nguồn dưới entities/ rồi chạy lại compose. -->',
 ].join('\n');
@@ -155,7 +156,7 @@ function composePRD(byId, projectDir) {
   return finalize([HEADER, rawBody(path.join(projectDir, prd.file)).trim()].join('\n\n'));
 }
 
-/** `compose(projectDir) => { ok, violations? , files? }`. Never throws on a clean or dirty index. */
+/** `compose(projectDir) => { ok, violations? , files? }`. Throws only on I/O errors (ENOENT etc.); the CLI maps those to exit 2. */
 function compose(projectDir) {
   const { index, errors } = buildIndex(projectDir);
   const violations = validate(index, errors);

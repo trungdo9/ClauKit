@@ -17,7 +17,7 @@ Direct to `/ba:plan`, exit. Rule 6 — `/ba:plan` is the only exception, and thi
 
 TYPE: $1 (required — one of `sequence flow state erd`)
 INPUT: $2 (required — an entity id, e.g. `FR-012`, or free text describing the interaction)
-PROJECT: $3 (default: derived from the repo directory name, kebab-cased)
+PROJECT: $3 (default: derived from the repo directory name, kebab-cased) — must match `^[a-z0-9][a-z0-9-]*$`; a slash, `..`, or whitespace ⇒ refuse and exit (the slug becomes a filesystem path)
 
 ## Workflow
 

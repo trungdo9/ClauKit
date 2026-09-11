@@ -40,7 +40,7 @@ Direct to `/ba:plan`, exit. **The single exception is `/ba:plan`, which creates 
 
 ## 7. Output language
 
-(D-4) Vietnamese prose bodies, English artifact keywords. Frozen tokens — the nine kinds and nothing else (D-10): `PRD-###` `SRS-###` `EPIC-###` `FR-###` `NFR-###` `UC-###` `US-###` `AC-###.#` `TC-###`, plus `Given`/`When`/`Then`, `Actor:`, `Precondition:`, `source:`, `confidence:`. Reason: keeps generated ACs and test cases wireable to BDD/Playwright and to Jira.
+(D-4) Vietnamese prose bodies, English artifact keywords. Frozen tokens — the ten kinds and nothing else (D-10, D-13): `PRD-###` `SRS-###` `EPIC-###` `FR-###` `NFR-###` `UC-###` `US-###` `AC-###.#` `TC-###` `CR-###`, plus `Given`/`When`/`Then`, `Actor:`, `Precondition:`, `source:`, `confidence:`. Reason: keeps generated ACs and test cases wireable to BDD/Playwright and to Jira.
 
 ## 8. Storage: one file per entity; the index is derived
 

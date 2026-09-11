@@ -42,10 +42,10 @@ function die(msg, code) {
 }
 
 /**
- * `deliver(projectDir, what, { force, json } = {})` — the main entry point.
- * Returns { ok, files?, skipped?, violations? }. Never throws.
+ * `deliver(projectDir, what, { force } = {})` — the main entry point.
+ * Returns { ok, files?, skipped?, violations? }. Throws only on I/O errors; the CLI maps those to exit 2.
  */
-function deliver(projectDir, what, { force = false, json = false } = {}) {
+function deliver(projectDir, what, { force = false } = {}) {
   const { index, errors } = buildIndex(projectDir);
   const violations = validate(index, errors);
   if (violations.length) {
@@ -70,6 +70,7 @@ function deliver(projectDir, what, { force = false, json = false } = {}) {
           const ctx = { projectDir, index, gaps: findGaps(index), crs: changelog(index), SIGN_BLOCK };
           const text = render(ctx);
           fs.writeFileSync(outPath, text);
+          warnIfIgnored(outPath, projectDir);
           files.push(outPath);
         }
       }
@@ -100,14 +101,21 @@ function deliver(projectDir, what, { force = false, json = false } = {}) {
   const ctx = { projectDir, index, gaps: findGaps(index), crs: changelog(index), SIGN_BLOCK };
   const text = render(ctx);
   fs.writeFileSync(outPath, text);
-
-  // Check if output would be git-ignored
-  const ignoreResult = require('child_process').spawnSync('git', ['check-ignore', '-q', outPath], { cwd: projectDir });
-  if (ignoreResult.status === 0) {
-    console.warn(`⚠ ${outPath} is git-ignored in this project — add \`!plans/**/deliverables/*.md\` to .gitignore or the signed document will not be committed (D-11)`);
-  }
+  warnIfIgnored(outPath, projectDir);
 
   return { ok: true, files: [outPath] };
+}
+
+/**
+ * One stderr line when a written deliverable would be git-ignored (verify-plan R-VP3). A consumer
+ * project's `plans/` is not ignored — `ck init` writes only PLAN_RULES (the derived index and
+ * regenerable reports) — so this fires only where a project's own .gitignore excludes `plans/`.
+ */
+function warnIfIgnored(outPath, projectDir) {
+  const r = require('child_process').spawnSync('git', ['check-ignore', '-q', outPath], { cwd: projectDir });
+  if (r.status === 0) {
+    console.warn(`⚠ ${outPath} is git-ignored in this project — add \`!plans/**/deliverables/*.md\` to .gitignore or the signed document will not be committed (D-11)`);
+  }
 }
 
 module.exports = { deliver, DELIVERABLES, SIGN_BLOCK };

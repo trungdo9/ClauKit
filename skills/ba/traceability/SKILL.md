@@ -26,12 +26,15 @@ The wave-1 composer renders an entity into D-4's exact block: `## FR-012 — …
 - Name the file `<id>.md`, filename identical to `id`.
 - Shape the body per `references/entity-template.md`: Vietnamese prose, English keywords (`Actor:`, `Precondition:`, `Given`/`When`/`Then`).
 
-## The three helper subcommands
+## The six helper subcommands
 
 ```
 node .claude/scripts/ba/traceability.cjs index    <project-dir> [--json]
 node .claude/scripts/ba/traceability.cjs gap      <project-dir> [--json]
 node .claude/scripts/ba/traceability.cjs validate <project-dir> [--json]
+node .claude/scripts/ba/traceability.cjs compose  <project-dir>          # PRD-001.md + SRS-001.md, byte-stable
+node .claude/scripts/ba/traceability.cjs changelog <project-dir> [--json] # CR rows, a report (exit 0)
+node .claude/scripts/ba/traceability.cjs deliver  <project-dir> <what> [--force] [--json]
 ```
 
 | exit | meaning |

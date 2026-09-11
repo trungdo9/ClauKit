@@ -67,6 +67,10 @@ No env vars, no keys. Optional: a mermaid renderer (`mmdc`) — absent ⇒ diagr
 - **Phase 10 (haiku) needed three doc-cite fixes after its gates passed:** a nonexistent `bin/lib/manifest-resolveSourcePath.js` cite (→ `kit-resolver.js:109-118`), "29 agents" ×2 (→ 30), registry total 227 (→ 235). Found by sweeping every path/command/skill/number the phase's diff added against the tree; all other names resolve.
 - Stage 5 Docs beyond phase 10 and the **final whole-branch Review** are assigned to 2d17922d by the user ruling — see § Unresolved.
 
+## Review — cycle 1 (2d17922d reviews, daa2b6c5 fixes)
+
+The support session's review returned 1 security High (path traversal through a user-typed project slug), 1 standards High (bare `fs` calls behind a "never throws" CLI contract), 5 Mediums, 4 Lows and 1 failed closing criterion (composed deliverables lacked the class marker). Both Highs were reproduced before fixing (a relative `../` path wrote deliverables outside the repo; a missing dir threw raw ENOENT). All were fixed in one cycle — details and evidence in `STATE.md` under `review: fix cycle 1`. Net: the CLI refuses climbing relative paths, maps I/O errors to exit 2, always returns JSON on `--json`, stamps every deliverable with its class; the six command files validate the slug; the deliver tests are concurrency-safe. Suite unchanged at 366/364/1/1. Re-review pending.
+
 ## Unresolved questions
 
 1. **Final Review + Docs handoff.** The user ruling assigns the whole-branch `code-reviewer` (opus) pass and Stage-5 Docs to session 2d17922d. If that session does not pick it up, run `/ck:review` on `744c271..HEAD`; sonnet/opus dispatches from this session hit the org limit today (weekly reset Sep 14 09:00 ICT). Parked findings for that review: `deliver <owned> --json` prints nothing to stdout on a skipped-only run (traceability.cjs:131-145); `tests/ba-spine.test.js` is 333 lines (over the 200-line guidance, accepted by the plan).
