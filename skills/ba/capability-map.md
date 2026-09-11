@@ -74,7 +74,7 @@
 | D10 | Backlog Epic→Feature→Story + sprint plan | 🟡 | spine `EPIC→FR→US` + `/ck:tickets` and skill `plans-kanban` (sprint plan) | ba + ck | W0 |
 | D11 | Release plan / roadmap | 🟡 | `/ba:prd roadmap` — **stays 🟡**: dates and version policy are not derivable from a spine | ba | W0 |
 | D12 | Change Request form + Change Log | 🟡 | `/ba:spec cr` (form) + `traceability.cjs changelog` (log) | ba | W1.5 |
-| D13 | Business Process Definition | 🟡 | `/ba:spec bp` (08.3) | ba | W1.5 |
+| D13 | Business Process Definition | 🟡 | `/ba:spec bp` | ba | W1.5 |
 
 ## Deliberately not in this kit
 

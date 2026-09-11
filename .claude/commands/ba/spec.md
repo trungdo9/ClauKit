@@ -1,6 +1,6 @@
 ---
 description: BA specification — FR/NFR/UC/US/AC/TC entities, and compose to a signed SRS
-argument-hint: fr|nfr|uc|us|ac|tc|cr|compose [<project-slug>]
+argument-hint: fr|nfr|uc|us|ac|tc|cr|bp|compose [<project-slug>]
 ---
 
 ## Pre-flight (HARD FAIL)
@@ -53,6 +53,15 @@ writes none, because `compose` (and, later, `/ck:tickets`) inherits it.
   Request form and validation rules; a CR derives from an existing entity and never creates one.
   The command writes `status: proposed`; approval is recorded by editing the entity, because
   `status: approved` gates billing in phase 08.2.
+- **`bp`** — one `BP-<slug>.md` per business process definition, `<slug>` kebab-cased from the
+  process name. Before writing, read the `spec` skill file, then read the `references/bp-structure.md`
+  document shape. **Run `/ba:diagram flow` first** (phase 07), so the `## Sơ đồ` section holds a
+  real render or an honest `[UNRENDERED]` label. Write `plans/ba/<project>/deliverables/BP-<slug>.md`.
+  Then run `node .claude/scripts/ba/traceability.cjs index plans/ba/<project> --json` and check
+  every `FR-`/`UC-`/`NFR-` id the document cites against `nodes[].id` — refuse to report success
+  on an unknown id. **Refuse when the file already exists** (class `owned` rule); the file is
+  committed and hand-edited — rerun refuses and names the path. No entity is written — one writer
+  per store: `/ba:spec <kind>` writes `entities/`, `bp` and `deliver` write `deliverables/`.
 - **`compose`** — runs `index` first (so the document and the graph are rendered from one read),
   then `node .claude/scripts/ba/traceability.cjs compose plans/ba/<project-slug>`. That script runs
   `validate` internally: violations ⇒ it prints them and exits 1, writing nothing; clean ⇒ it

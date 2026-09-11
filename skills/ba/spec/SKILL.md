@@ -42,6 +42,16 @@ A `us` run against a project with no `FR-*` entities is a spec written from imag
 derived from a decision anyone made. **Refuse, and say which action to run first** (`fr`, off the
 EPIC it should derive from). Same refusal for `uc`/`ac`/`tc` run before their parent kind exists.
 
+## Business Process Definition
+
+The `bp` action writes one narrative document per process, eight sections per `references/bp-structure.md`:
+narrative, roles/actors, trigger, inputs/outputs, steps, business rules (as `FR-###` citations only,
+never new prose), exceptions, and diagram. Class `owned` — seeded once, then hand-edited. Refuses
+to overwrite an existing file. **No new kind** — BP is a document action, not a spine entity;
+citations in steps are checked against the index, and business rules **must** be validated against
+existing FRs to prevent duplicate sources of truth. Anti-patterns: prose rule without an FR, or
+`## Sơ đồ` with neither a fence nor `[UNRENDERED]`.
+
 ## `tc` derives from AC and nothing else, and reuses rather than rewrites
 
 D-10 folded the `test` dispatcher into this action. Rather than carrying a scenario-design method
