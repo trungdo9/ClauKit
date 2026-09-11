@@ -14,3 +14,8 @@ phase 0: ruling R4 — ten frontmatter keys per plan.md § Spine model; esm-host
 phase 0: ruling R5 — the installer wires plans/**/*.derived.json (ck.js wireGitignore + PLAN_RULES); /ba:plan prints no gitignore line (phase-06 6.5 "wave 0 has no installer" is D-8-era text)
 phase 0: ruling R6 — requires.shared unchanged (3 entries); rationale must cite .claude/hooks/discord-hook-setup.md:117, not hooks/README.md (plan.md:111, phase-01:59) — pass to phase 03 implementer for the rules/README prose
 phase 1: started (base 744c271) — order per ruling R2; Gate 1 now, Gates 2–3 deferred to after phase 08
+phase 1: gate 1 → PASS (evidence: `node bin/ck.js init --kit list` → `ba v0.1.0 …`; manifest parse → pathKeys=commands,skills,scripts,workflows,hooks,statusline,config shared=3 allDotClaude=true; suite 349/347/1/1 unchanged)
+phase 1: complete (commits a60655c..a60655c, tests 349/347/1/1, gates 2–3 deferred to after phase 08 per plan § Ordering constraint)
+phase 3: started (base a60655c) — second in order per ruling R2
+phase 3: gates 1–4 → PASS (evidence: rules `grep -c '^## '` → 9, activate-hits=1; Gate 2 backticks → 7 paths all in whitelist; Gate 3 → rows=55 unmapped=0 no-gloss=0, dispatchers=8, redirect=5, cut-table=4, badwave($7)=0; Gate 4 → 0 numbered rows in README, 1 map ref; suite 349/347/1/1 unchanged)
+phase 3: note — phase-03 Gate 3 line 4 reads `$6` (Owner col); Wave is `$7` under `awk -F'|'` on a `|`-leading row. Brief typo, not a file defect; `$6` prints 55 by construction. Phase 10 may fix the phase doc; not shipped code
