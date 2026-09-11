@@ -1,4 +1,4 @@
-<!-- ba-deliverable: golive · class: owned · nguồn: plans/ba/<project>/entities/ -->
+<!-- ba-deliverable: golive · class: owned · nguồn: plans/ba/demo/entities/ -->
 
 <!-- Seeded bởi `/ba:deliver golive`. Sau khi seed, điền các ô `[TO FILL]`. Chạy lại sẽ bị từ chối. -->
 

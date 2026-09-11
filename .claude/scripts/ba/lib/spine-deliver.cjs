@@ -36,11 +36,6 @@ const SIGN_BLOCK = `## Ký xác nhận
 | BA | [TO FILL] | [TO FILL] | [TO FILL] |
 | Chủ sản phẩm (PO) — phía khách hàng | [TO FILL] | [TO FILL] | [TO FILL] |`;
 
-function die(msg, code) {
-  console.error(`✗ ${msg}`);
-  process.exit(code);
-}
-
 /**
  * `deliver(projectDir, what, { force } = {})` — the main entry point.
  * Returns { ok, files?, skipped?, violations? }. Throws only on I/O errors; the CLI maps those to exit 2.
@@ -79,8 +74,8 @@ function deliver(projectDir, what, { force = false } = {}) {
   }
 
   if (!DELIVERABLES[what]) {
-    console.error(`usage: traceability.cjs deliver <project-dir> [scope|uat|acceptance|release-notes|golive|handover|all] [--force] [--json]`);
-    return { ok: false, violations: [] };
+    // Unreachable from the CLI (it validates `what` first, exit 2); a structured answer for direct callers.
+    return { ok: false, violations: [{ file: '', check: 'unknown-deliverable', msg: `unknown deliverable '${what}' — one of ${Object.keys(DELIVERABLES).join('|')}|all` }] };
   }
 
   const spec = DELIVERABLES[what];
@@ -94,8 +89,8 @@ function deliver(projectDir, what, { force = false } = {}) {
   // Render and write
   const render = templates[what];
   if (!render) {
-    console.error(`usage: traceability.cjs deliver <project-dir> [scope|uat|acceptance|release-notes|golive|handover|all] [--force] [--json]`);
-    return { ok: false, violations: [] };
+    // Unreachable from the CLI (it validates `what` first, exit 2); a structured answer for direct callers.
+    return { ok: false, violations: [{ file: '', check: 'unknown-deliverable', msg: `unknown deliverable '${what}' — one of ${Object.keys(DELIVERABLES).join('|')}|all` }] };
   }
 
   const ctx = { projectDir, index, gaps: findGaps(index), crs: changelog(index), SIGN_BLOCK };

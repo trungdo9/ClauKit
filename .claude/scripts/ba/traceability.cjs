@@ -146,6 +146,9 @@ function main() {
         // exit 1 is indistinguishable from a crash to a script.
         console.log(JSON.stringify({ files: names(result.files), skipped: names(result.skipped), violations: result.violations || [] }));
       } else if (!result.violations || result.violations.length === 0) {
+        // `all` re-renders the derived files even when the owned ones are skipped — say so, or
+        // the rewrite is invisible (exit 1 + skip lines only).
+        if (result.files && result.files.length) console.log(`✓ delivered ${names(result.files).join(', ')}`);
         for (const s of result.skipped || []) console.error(`⊘ ${s} exists (class: owned) — pass --force to re-seed`);
       } else {
         for (const v of result.violations) console.error(`[${v.check}] ${v.file} — ${v.msg}`);

@@ -1,4 +1,4 @@
-<!-- ba-deliverable: release-notes · class: derived · nguồn: plans/ba/<project>/entities/ -->
+<!-- ba-deliverable: release-notes · class: derived · nguồn: plans/ba/demo/entities/ -->
 
 # RELEASE-NOTES-001 — Thông báo phát hành
 

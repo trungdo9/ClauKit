@@ -18,8 +18,11 @@ const fs = require('fs');
 const path = require('path');
 const { buildIndex, validate } = require('./spine-index.cjs');
 
+/** The D-13 class line every deliverable opens with; the slug is the real project dir name. */
+const marker = (projectDir) =>
+  `<!-- ba-deliverable: compose · class: derived · nguồn: plans/ba/${path.basename(path.resolve(projectDir))}/entities/ -->`;
+
 const HEADER = [
-  '<!-- ba-deliverable: compose · class: derived · nguồn: plans/ba/<project>/entities/ -->',
   '<!-- Tài liệu này được sinh tự động (generated) bởi `/ba:spec compose`.',
   '     KHÔNG sửa tay (do not hand-edit) — sửa file nguồn dưới entities/ rồi chạy lại compose. -->',
 ].join('\n');
@@ -138,6 +141,7 @@ function composeSRS(index, byId, projectDir) {
   const byKind = (kind) => index.nodes.filter((n) => n.kind === kind);
 
   const sections = [
+    marker(projectDir),
     HEADER,
     `# SRS-001 — ${title}`,
     ['## Phạm vi', scope].join('\n\n'),
@@ -153,7 +157,7 @@ function composeSRS(index, byId, projectDir) {
 function composePRD(byId, projectDir) {
   const prd = byId.get('PRD-001');
   if (!prd) return null;
-  return finalize([HEADER, rawBody(path.join(projectDir, prd.file)).trim()].join('\n\n'));
+  return finalize([marker(projectDir), HEADER, rawBody(path.join(projectDir, prd.file)).trim()].join('\n\n'));
 }
 
 /** `compose(projectDir) => { ok, violations? , files? }`. Throws only on I/O errors (ENOENT etc.); the CLI maps those to exit 2. */

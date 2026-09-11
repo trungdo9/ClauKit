@@ -7,6 +7,9 @@
 const { rawBody, stripHeading, finalize } = require('./spine-compose.cjs');
 const path = require('path');
 
+/** The real project dir name for the class marker — the same value `project:` carries. */
+const slug = (projectDir) => path.basename(path.resolve(projectDir || '.'));
+
 function renderScope({ index, projectDir }) {
   const prd = index.nodes.find((n) => n.id === 'PRD-001');
   const title = prd ? prd.title : 'PRD-001';
@@ -18,7 +21,7 @@ function renderScope({ index, projectDir }) {
     if (n.out_of_scope) exclusions.add(`${n.id}: ${n.out_of_scope}`);
   }
   return finalize([
-    `<!-- ba-deliverable: scope · class: derived · nguồn: plans/ba/<project>/entities/ -->`,
+    `<!-- ba-deliverable: scope · class: derived · nguồn: plans/ba/${slug(projectDir)}/entities/ -->`,
     ``, `# SCOPE-001 — ${title}`, ``, `## Tầm nhìn (vision)`, ``, vision, ``,
     `## Phạm vi (in scope)`, ``, `| EPIC | Tiêu đề | Ngoài phạm vi |`, `|---|---|---|`,
     ...epics.map((e) => `| ${e.id} | ${e.title} | ${e.out_of_scope || '[UNKNOWN]'} |`), ``,
@@ -28,7 +31,7 @@ function renderScope({ index, projectDir }) {
   ].join('\n'));
 }
 
-function renderUAT({ index, gaps, SIGN_BLOCK }) {
+function renderUAT({ index, gaps, SIGN_BLOCK, projectDir }) {
   const tcs = index.nodes.filter((n) => n.kind === 'TC').sort((a, b) => a.id.localeCompare(b.id));
   const byId = new Map(index.nodes.map((n) => [n.id, n]));
   const tcRows = tcs.map((tc) => {
@@ -38,7 +41,7 @@ function renderUAT({ index, gaps, SIGN_BLOCK }) {
   const acCount = index.nodes.filter((n) => n.kind === 'AC').length;
   const acWithTC = index.nodes.filter((n) => n.kind === 'AC' && index.nodes.some((t) => t.kind === 'TC' && t.parents.includes(n.id))).length;
   return finalize([
-    `<!-- ba-deliverable: uat · class: owned · nguồn: plans/ba/<project>/entities/ -->`, ``,
+    `<!-- ba-deliverable: uat · class: owned · nguồn: plans/ba/${slug(projectDir)}/entities/ -->`, ``,
     `<!-- Seeded bởi \`/ba:deliver uat\`. Sau khi seed, file này do người dùng sở hữu — điền các ô \`[TO FILL]\`. Chạy lại sẽ bị từ chối; cần \`--force\`. -->`, ``,
     `# UAT-001 — Báo cáo kiểm thử chấp nhận`, ``,
     `| TC | AC cha | Kết quả (pass/fail/blocked) | Ngày | Người kiểm thử |`,
@@ -48,7 +51,7 @@ function renderUAT({ index, gaps, SIGN_BLOCK }) {
   ].join('\n'));
 }
 
-function renderAcceptance({ index, SIGN_BLOCK }) {
+function renderAcceptance({ index, SIGN_BLOCK, projectDir }) {
   const frs = index.nodes.filter((n) => n.kind === 'FR').sort((a, b) => a.id.localeCompare(b.id));
   const byId = new Map(index.nodes.map((n) => [n.id, n]));
   const crs = index.nodes.filter((n) => n.kind === 'CR' && n.status === 'approved').sort((a, b) => a.id.localeCompare(b.id));
@@ -57,7 +60,7 @@ function renderAcceptance({ index, SIGN_BLOCK }) {
     return `| ${fr.id} | ${fr.title} | ${epic?.id || '[UNKNOWN]'} |`;
   });
   return finalize([
-    `<!-- ba-deliverable: acceptance · class: owned · nguồn: plans/ba/<project>/entities/ -->`, ``,
+    `<!-- ba-deliverable: acceptance · class: owned · nguồn: plans/ba/${slug(projectDir)}/entities/ -->`, ``,
     `<!-- Seeded bởi \`/ba:deliver acceptance\`. Sau khi seed, file này do người dùng sở hữu — điền các ô \`[TO FILL]\`. Chạy lại sẽ bị từ chối. -->`, ``,
     `# ACCEPTANCE-001 — Biên bản nghiệm thu`, ``,
     `## Phạm vi đã bàn giao`, ``, `| FR | Tiêu đề | EPIC |`, `|---|---|---|`, ...frLines, ``,
@@ -69,7 +72,7 @@ function renderAcceptance({ index, SIGN_BLOCK }) {
   ].join('\n'));
 }
 
-function renderReleaseNotes({ index }) {
+function renderReleaseNotes({ index, projectDir }) {
   const items = index.nodes.filter((n) => (n.kind === 'FR' || n.kind === 'US') && n.release);
   const unreleased = index.nodes.filter((n) => (n.kind === 'FR' || n.kind === 'US') && !n.release);
   const byRelease = new Map();
@@ -78,7 +81,7 @@ function renderReleaseNotes({ index }) {
     byRelease.get(item.release).push(item);
   }
   const sections = [
-    `<!-- ba-deliverable: release-notes · class: derived · nguồn: plans/ba/<project>/entities/ -->`, ``,
+    `<!-- ba-deliverable: release-notes · class: derived · nguồn: plans/ba/${slug(projectDir)}/entities/ -->`, ``,
     `# RELEASE-NOTES-001 — Thông báo phát hành`, ``,
   ];
   for (const rel of Array.from(byRelease.keys()).sort().reverse()) {
@@ -90,9 +93,9 @@ function renderReleaseNotes({ index }) {
   return finalize(sections.join('\n'));
 }
 
-function renderGoLive() {
+function renderGoLive({ projectDir } = {}) {
   return finalize([
-    `<!-- ba-deliverable: golive · class: owned · nguồn: plans/ba/<project>/entities/ -->`, ``,
+    `<!-- ba-deliverable: golive · class: owned · nguồn: plans/ba/${slug(projectDir)}/entities/ -->`, ``,
     `<!-- Seeded bởi \`/ba:deliver golive\`. Sau khi seed, điền các ô \`[TO FILL]\`. Chạy lại sẽ bị từ chối. -->`, ``,
     `# GOLIVE-001 — Danh sách kiểm tra sẵn sàng`, ``,
     `## Danh sách kiểm tra sẵn sàng (Business)`, ``,
@@ -105,9 +108,9 @@ function renderGoLive() {
   ].join('\n'));
 }
 
-function renderHandover() {
+function renderHandover({ projectDir } = {}) {
   return finalize([
-    `<!-- ba-deliverable: handover · class: owned · nguồn: plans/ba/<project>/entities/ -->`, ``,
+    `<!-- ba-deliverable: handover · class: owned · nguồn: plans/ba/${slug(projectDir)}/entities/ -->`, ``,
     `<!-- Seeded bởi \`/ba:deliver handover\`. Sau khi seed, điền các ô \`[TO FILL]\`. Chạy lại sẽ bị từ chối. -->`, ``,
     `# HANDOVER-001 — Bàn giao vận hành`, ``,
     `**Ghi chú:** Nội dung là trách nhiệm của agent \`docs-manager\` (engineer kit). Template cung cấp hình dạng. Không credentials — chỉ tên nơi secret được lưu.`, ``,

@@ -1,4 +1,4 @@
-<!-- ba-deliverable: scope · class: derived · nguồn: plans/ba/<project>/entities/ -->
+<!-- ba-deliverable: scope · class: derived · nguồn: plans/ba/demo/entities/ -->
 
 # SCOPE-001 — Đặt lịch hẹn khám bệnh trực tuyến
 
