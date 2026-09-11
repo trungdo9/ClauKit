@@ -1,6 +1,6 @@
 {
   "name": "ba",
-  "description": "BA Kit — business analysis, /ba: namespace. PRD → SRS → spine → tickets. 5 commands, 8 skills.",
+  "description": "BA Kit — business analysis, /ba: namespace. PRD → SRS → spine → tickets. 6 commands, 9 skills.",
   "namespace": "ba",
   "version": "0.1.0",
   "paths": {

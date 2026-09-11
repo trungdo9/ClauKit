@@ -1,4 +1,4 @@
-# BA capability map — 55 capabilities, 12 commands
+# BA capability map — 55 capabilities, 13 delivery-governance items, 9 dispatchers
 
 | # | Capability | Plain gloss | Command + action | Owner | Wave |
 |---:|---|---|---|:--:|:--:|
@@ -57,6 +57,24 @@
 | 53 | Đồng bộ FR/AC thành ticket cho dev | biến yêu cầu đã duyệt thành việc dev có thể nhận (FR = yêu cầu chức năng, AC = tiêu chí nghiệm thu) | `/ck:tickets --jira` | **ck** | — |
 | 54 | Tổng quan trạng thái entity (QC dashboard) | nhìn nhanh việc nào xong, việc nào chưa | `/ck:plan` (bảng kanban, dùng skill `plans-kanban`) | **ck** | — |
 | 55 | Sinh sơ đồ tri thức từ tài liệu (knowledge graph) | biến văn bản thành sơ đồ khái niệm liên kết | `/ck:scout` (dùng skill `gkg`) | **ck** | — |
+
+## Delivery-governance capabilities (D-13)
+
+| # | § 10i item | Verdict then | Resolved by | Owner | Wave |
+|---|---|---|---|---|---|
+| D1 | Scope Statement | 🟡 | `/ba:deliver scope` | ba | W1.5 |
+| D2 | SRS / backlog with clear AC | ✅ | `/ba:spec compose` *(already ✅ — row 22)* | ba | W0 |
+| D3 | Biên bản nghiệm thu | ❌ | `/ba:deliver acceptance` | ba | W1.5 |
+| D4 | User manual by role | 🟡 | `/ba:export userguide` (W4) | ba | W4 |
+| D5 | Release Notes | ❌ | `/ba:deliver release-notes` | ba | W1.5 |
+| D6 | Go-live checklist + rollback | ❌ | `/ba:deliver golive` (business half) + `/ck:docs` → the project's deployment guide (technical half) | ba + ck | W1.5 |
+| D7 | Data migration + reconciliation | ❌ | `/ba:spec ac` on the migration FR (the criterion) + the `database-admin` agent (the plan) | ba + ck | W0 |
+| D8 | Handover / ops doc | 🟡 | `/ba:deliver handover` (shape) + the `docs-manager` agent (content) | ba + ck | W1.5 |
+| D9 | UAT sign-off | ❌ | `/ba:deliver uat` | ba | W1.5 |
+| D10 | Backlog Epic→Feature→Story + sprint plan | 🟡 | spine `EPIC→FR→US` + `/ck:tickets` and skill `plans-kanban` (sprint plan) | ba + ck | W0 |
+| D11 | Release plan / roadmap | 🟡 | `/ba:prd roadmap` — **stays 🟡**: dates and version policy are not derivable from a spine | ba | W0 |
+| D12 | Change Request form + Change Log | 🟡 | `/ba:spec cr` (form) + `traceability.cjs changelog` (log) | ba | W1.5 |
+| D13 | Business Process Definition | 🟡 | `/ba:spec bp` (08.3) | ba | W1.5 |
 
 ## Deliberately not in this kit
 

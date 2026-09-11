@@ -32,9 +32,10 @@ function die(msg, code) {
 function main() {
   const [action, projectDir, ...rest] = process.argv.slice(2);
   const json = rest.includes('--json');
-  const USAGE = 'usage: traceability.cjs <index|gap|validate|compose|changelog> <project-dir> [--json]';
+  const force = rest.includes('--force');
+  const USAGE = 'usage: traceability.cjs <index|gap|validate|compose|changelog|deliver> <project-dir> [--json] [--force]';
 
-  if (!['index', 'gap', 'validate', 'compose', 'changelog'].includes(action)) die(USAGE, 2);
+  if (!['index', 'gap', 'validate', 'compose', 'changelog', 'deliver'].includes(action)) die(USAGE, 2);
   if (!projectDir || !fs.existsSync(projectDir)) die(`project dir not found: ${projectDir}`, 2);
   if (!fs.existsSync(path.join(projectDir, 'entities'))) {
     die(`no entities/ under ${projectDir} — expected <project-dir>/entities/*.md`, 2);
@@ -116,6 +117,32 @@ function main() {
       }
     }
     process.exit(0);
+  }
+
+  if (action === 'deliver') {
+    const { deliver, DELIVERABLES } = require('./lib/spine-deliver.cjs');
+    const what = rest[0];
+    if (!what || !DELIVERABLES[what] && what !== 'all') {
+      die('usage: traceability.cjs deliver <project-dir> [scope|uat|acceptance|release-notes|golive|handover|all] [--force] [--json]', 2);
+    }
+    const result = deliver(projectDir, what, { force, json });
+    if (!result.ok) {
+      if (!result.violations || result.violations.length === 0) {
+        for (const s of result.skipped || []) console.error(`⊘ ${s} exists (class: owned) — pass --force to re-seed`);
+      } else {
+        for (const v of result.violations) console.error(`[${v.check}] ${v.file} — ${v.msg}`);
+      }
+      process.exit(1);
+    }
+    if (json) {
+      console.log(JSON.stringify({ files: (result.files || []).map((f) => path.basename(f)) }));
+    } else {
+      if (result.files && result.files.length > 0) console.log(`✓ delivered ${result.files.map((f) => path.basename(f)).join(', ')}`);
+      if (result.skipped && result.skipped.length > 0) {
+        console.error(`⊘ skipped ${result.skipped.map((f) => path.basename(f)).join(', ')}`);
+      }
+    }
+    process.exit(result.ok && (!result.skipped || result.skipped.length === 0) ? 0 : 1);
   }
 }
 

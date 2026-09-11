@@ -179,4 +179,4 @@ function compose(projectDir) {
   return { ok: true, files };
 }
 
-module.exports = { compose };
+module.exports = { compose, HEADER, rawBody, stripHeading, finalize };
