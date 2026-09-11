@@ -65,17 +65,17 @@ function deliver(projectDir, what, { force = false } = {}) {
           const ctx = { projectDir, index, gaps: findGaps(index), crs: changelog(index), SIGN_BLOCK };
           const text = render(ctx);
           fs.writeFileSync(outPath, text);
-          warnIfIgnored(outPath, projectDir);
           files.push(outPath);
         }
       }
     }
+    warnIfIgnored(files, projectDir);
     return { ok: skipped.length === 0, files, skipped };
   }
 
   if (!DELIVERABLES[what]) {
     // Unreachable from the CLI (it validates `what` first, exit 2); a structured answer for direct callers.
-    return { ok: false, violations: [{ file: '', check: 'unknown-deliverable', msg: `unknown deliverable '${what}' — one of ${Object.keys(DELIVERABLES).join('|')}|all` }] };
+    return { ok: false, violations: [{ file: '', id: '', check: 'unknown-deliverable', msg: `unknown deliverable '${what}' — one of ${Object.keys(DELIVERABLES).join('|')}|all` }] };
   }
 
   const spec = DELIVERABLES[what];
@@ -90,26 +90,35 @@ function deliver(projectDir, what, { force = false } = {}) {
   const render = templates[what];
   if (!render) {
     // Unreachable from the CLI (it validates `what` first, exit 2); a structured answer for direct callers.
-    return { ok: false, violations: [{ file: '', check: 'unknown-deliverable', msg: `unknown deliverable '${what}' — one of ${Object.keys(DELIVERABLES).join('|')}|all` }] };
+    return { ok: false, violations: [{ file: '', id: '', check: 'unknown-deliverable', msg: `unknown deliverable '${what}' — one of ${Object.keys(DELIVERABLES).join('|')}|all` }] };
   }
 
   const ctx = { projectDir, index, gaps: findGaps(index), crs: changelog(index), SIGN_BLOCK };
   const text = render(ctx);
   fs.writeFileSync(outPath, text);
-  warnIfIgnored(outPath, projectDir);
+  warnIfIgnored([outPath], projectDir);
 
   return { ok: true, files: [outPath] };
 }
 
 /**
- * One stderr line when a written deliverable would be git-ignored (verify-plan R-VP3). A consumer
- * project's `plans/` is not ignored — `ck init` writes only PLAN_RULES (the derived index and
- * regenerable reports) — so this fires only where a project's own .gitignore excludes `plans/`.
+ * One stderr line per ignored deliverable (verify-plan R-VP3). A consumer project's `plans/` is
+ * not ignored — `ck init` writes only PLAN_RULES (derived index, regenerable reports) — so this
+ * fires only where a project's own .gitignore excludes `plans/`.
+ * One spawn per run, not per file: without `-q`, `git check-ignore` prints every ignored path it was given.
+ * Absolute paths, because the previous call passed cwd-relative paths with `cwd: projectDir`, so a
+ * relative <project-dir> would make git look for plans/ba/<p>/plans/ba/<p>/… and the warning could never fire.
  */
-function warnIfIgnored(outPath, projectDir) {
-  const r = require('child_process').spawnSync('git', ['check-ignore', '-q', outPath], { cwd: projectDir });
-  if (r.status === 0) {
-    console.warn(`⚠ ${outPath} is git-ignored in this project — add \`!plans/**/deliverables/*.md\` to .gitignore or the signed document will not be committed (D-11)`);
+function warnIfIgnored(outPaths, projectDir) {
+  if (!outPaths.length) return;
+  // One spawn per run, not per file: without `-q`, `git check-ignore` prints every ignored path it was given.
+  // Absolute paths, because the previous call passed cwd-relative paths with `cwd: projectDir`, so a relative
+  // <project-dir> made git look for plans/ba/<p>/plans/ba/<p>/… and the warning could never fire.
+  const root = path.resolve(projectDir);
+  const abs = outPaths.map((p) => path.resolve(p));
+  const r = require('child_process').spawnSync('git', ['check-ignore', ...abs], { cwd: root, encoding: 'utf8' });
+  for (const p of String(r.stdout || '').split('\n').filter(Boolean)) {
+    console.warn(`⚠ ${p} is git-ignored in this project — add \`!plans/**/deliverables/*.md\` to .gitignore or the signed document will not be committed (D-11)`);
   }
 }
 

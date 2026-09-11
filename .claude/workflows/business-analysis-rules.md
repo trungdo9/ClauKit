@@ -88,7 +88,7 @@ What the software kit already owns, in one place — ask for these there, not he
 - `.claude/skills/ba/ba-context/SKILL.md` — context hub bootstrap (`plans/ba-context.md`)
 - `.claude/skills/ba/README.md` — BA kit landing page
 - `.claude/skills/ba/capability-map.md` — 55-capability map, single source (rule 5 example)
-- `.claude/scripts/ba/traceability.cjs` — spine CLI (`index` / `gap` / `validate` / `compose`)
+- `.claude/scripts/ba/traceability.cjs` — spine CLI (`index` / `gap` / `validate` / `compose` / `changelog` / `deliver`)
 - `.claude/commands/ba/qc.md` — `/ba:qc gap`, the handover gate (rule 9)
 - `.claude/skills/software/scenario/SKILL.md` — test-scenario methodology read by `/ba:spec tc` (shipped via `requires.shared`)
 - `.claude/workflows/development-rules.md` — shared engineering rules (required by `requires.shared`)
