@@ -14,8 +14,12 @@ Skill này cung cấp quy chuẩn giao tiếp khách hàng, bộ tri thức kỹ
 ├── rules/
 │   ├── response-rules.json           # Quy chuẩn xưng hô, định dạng không Markdown, biểu cảm, chống spam
 │   ├── product-knowledge.json        # Kho tri thức kỹ thuật & liên kết Master Data AMIS CRM
-│   └── pricing-policy.json           # Chính sách giá sỉ, chiết khấu, VAT và Gross Margin ≥ 20%
+│   ├── pricing-policy.json           # Chính sách giá sỉ, chiết khấu, VAT và Gross Margin ≥ 20%
+│   └── escalation-rules.json         # 8 điều kiện CHUYỂN NGƯỜI THẬT + SLA (đọc bởi scripts/lib/zalo-lead-scoring.js)
 ```
+
+* **Chuyển người thật (Human Handoff)**: 8 điều kiện tại `rules/escalation-rules.json` — hỏi giá cụ thể · hỏi chiết khấu · xin mẫu thử · cần COA/MSDS · số lượng lớn · ký hợp đồng · khiếu nại · bot không đủ tự tin. Chạm bất kỳ điều kiện nào ⇒ **cấm bot tự gửi tin**, đưa vào danh sách chờ nhân viên kinh doanh. Đổi luật = sửa file JSON, không sửa script. Vận hành bởi ca trực `zalo-chat-assistant` (Ngân) — xem `CLAUDE.md` §3.Z.
+* **Chính sách bán hàng & hậu mãi**: `wiki/business/sales-policies/` (MOQ, giao hàng, thanh toán) và `wiki/business/support-policies/` (gửi mẫu, khiếu nại). Ô `<<CẦN ĐIỀN>>` còn trống ⇒ chuyển người thật, **không tự điền số**.
 
 * **Data Sources (Nguồn Dữ Liệu Gốc)**:
   * Master Product Catalog & Real-time Stock: `wiki/crm/products/amis-products.json` (Đồng bộ trực tiếp từ MISA AMIS CRM).
