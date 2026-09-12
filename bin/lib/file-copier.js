@@ -82,6 +82,43 @@ function copyFileSafe(src, dst) {
   fs.writeFileSync(dst, buf);
 }
 
+/**
+ * Copy only the files under src that do not yet exist under dst. Never touches
+ * an existing file. Returns the number of files written.
+ *
+ * Why: a kit's `requires.shared` can ship a single file inside a directory
+ * another kit ships whole (ba → .claude/skills/software/scenario/SKILL.md,
+ * marketing → .claude/skills/software/planning/SKILL.md). Installing that kit
+ * first creates the directory, and `copyPath` then skipped the whole tree on
+ * the next kit — `ba` then `engineer` left 1 of 68 software skills installed
+ * and `/ck:tickets` without its `to-tickets` skill. Same rule the installer
+ * already applies to settings.json and CLAUDE.md: add what is missing, rewrite
+ * nothing; `--force` remains the only writer of an existing file.
+ */
+function copyMissing(source, target) {
+  let written = 0;
+  for (const file of fs.readdirSync(source)) {
+    let sourcePath = path.join(source, file);
+    const targetPath = path.join(target, file);
+    let stat;
+    try {
+      stat = fs.statSync(sourcePath); // follows symlinks; throws on a broken one
+    } catch (e) {
+      console.warn(`   ⚠️  Skipping broken symlink: ${path.relative(PACKAGE_ROOT, sourcePath)}`);
+      continue;
+    }
+    if (stat.isDirectory()) {
+      if (fs.lstatSync(sourcePath).isSymbolicLink()) sourcePath = fs.realpathSync(sourcePath);
+      if (!fs.existsSync(targetPath)) fs.mkdirSync(targetPath, { recursive: true });
+      written += copyMissing(sourcePath, targetPath);
+    } else if (!fs.existsSync(targetPath)) {
+      copyFileSafe(sourcePath, targetPath);
+      written++;
+    }
+  }
+  return written;
+}
+
 /** Files under dst that the kit does not ship — i.e. the user's own. */
 function filesNotShipped(src, dst) {
   const walk = (dir, base = "") => {
@@ -121,6 +158,15 @@ function copyPath(src, dst, options = {}) {
 
   if (fs.existsSync(dst)) {
     if (!options.force) {
+      if (stat.isDirectory()) {
+        // Partially present (another kit shipped one file inside it) → add the
+        // rest. Fully present → nothing to add, report the skip as before.
+        const added = copyMissing(src, dst);
+        if (added > 0) {
+          console.log(`   ✅ ${relDst} (merged · ${added} missing file(s) added, existing kept)`);
+          return "copied";
+        }
+      }
       console.log(`   ⚠️  SKIP (exists): ${relDst}`);
       return "skipped";
     }
@@ -161,4 +207,4 @@ function listFiles(dir, prefix = "") {
   });
 }
 
-module.exports = { copyDirectory, copyPath, listFiles, streamCopy, copyFileSafe };
+module.exports = { copyDirectory, copyMissing, copyPath, listFiles, streamCopy, copyFileSafe };

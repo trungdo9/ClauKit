@@ -10,7 +10,7 @@ within hours of being written, and reading it instead of the stamp files produce
 twice before the script caught it.
 
 ```bash
-node .claude/scripts/workspace-health.cjs
+node .claude/scripts/ck/workspace-health.cjs
 ```
 
 `--json` when another step consumes the result. Exit 0 = all pass · 1 = something to look at ·

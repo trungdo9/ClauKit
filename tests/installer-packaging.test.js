@@ -344,6 +344,13 @@ test('no shipped doc names a .claude/ path the install does not have', () => {
     return out;
   };
   const TICKED = /`(\.claude\/[^`\s]*\.(?:md|sh|js|cjs|json))`/g;
+  // Second form, same meaning: a runnable `node .claude/scripts/…` line. It lives in
+  // fenced code blocks, so the backtick regex never sees it — `commands/ck/health.md`
+  // shipped `node .claude/scripts/workspace-health.cjs` for months after the helpers
+  // moved under `scripts/ck/` (22d3d80), and `/ck:health` died with "Cannot find
+  // module" in every install. Same exemptions apply: `scripts/ck/` is a deliberate
+  // omission in kits that do not ship it.
+  const RUN = /\bnode\s+(\.claude\/scripts\/[^\s`"')]+)/g;
   const missing = [];
   const kits = packagedKits();
   assert.ok(kits.length >= 3, 'the kit glob returned nothing — the loop would pass vacuously');
@@ -354,7 +361,8 @@ test('no shipped doc names a .claude/ path the install does not have', () => {
     for (const f of walk(path.join(p, '.claude'))) {
       const rel = path.relative(path.join(p, '.claude'), f).split(path.sep).join('/');
       if (EXEMPT_FILE.has(rel)) continue;
-      for (const m of fs.readFileSync(f, 'utf-8').matchAll(TICKED)) {
+      const text = fs.readFileSync(f, 'utf-8');
+      for (const m of [...text.matchAll(TICKED), ...text.matchAll(RUN)]) {
         const target = m[1];
         if (/[*<>{}]/.test(target)) continue;             // glob or placeholder, not a literal path
         if (EXEMPT_TARGET.has(target)) continue;
