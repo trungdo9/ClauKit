@@ -1,0 +1,67 @@
+{
+  "masterDataSource": "wiki/crm/products/amis-products.json",
+  "masterPricingMatrix": "wiki/business/pricing-matrices/amis-crm-pricing.md",
+  "syncCommand": "node scripts/amis-crm.js --sync-products",
+  "products": [
+    {
+      "id": "antiSlipAggregate",
+      "name": "Hạt oxit nhôm Aluminium Oxide tạo độ nhám",
+      "specs": "Dải hạt chuẩn 0.3 - 0.8 mm (F30 - F54), độ cứng Mohs 9.0",
+      "packaging": "25 kg/bao hoặc bao Jumbo 1 tấn",
+      "applications": "Chống trượt sàn công nghiệp epoxy, phun cát làm sạch bề mặt kim loại",
+      "referenceWholesalePriceVND": 35000,
+      "priceUnit": "kg"
+    },
+    {
+      "id": "softenerResin",
+      "name": "Hạt nhựa Cation làm mềm nước",
+      "brands": ["Purolite C100 (Anh Quốc)", "Indion 225Na (Ấn Độ)"],
+      "specs": "Dung lượng trao đổi ion ≥ 1.9 - 2.0 eq/L, dạng hạt gel hình cầu gốc Na+",
+      "packaging": "25 Lít/bao (hoặc ~20 kg/bao)",
+      "certifications": ["CO/CQ gốc nhà sản xuất", "Phiếu kiểm định Quatest 3 đạt chuẩn nước ăn uống và cấp lò hơi"],
+      "referenceWholesalePriceVND": 650000,
+      "priceUnit": "Bao (25L)"
+    },
+    {
+      "id": "runxinValve",
+      "name": "Van điều khiển tự động Runxin chính hãng",
+      "models": [
+        {"model": "F63C1", "type": "Hẹn giờ Timer", "flowRate": "4.0 - 5.0 m3/h"},
+        {"model": "F63C3", "type": "Đo lưu lượng khối nước Meter", "flowRate": "4.0 - 5.0 m3/h"}
+      ],
+      "specs": "Cổ kết nối Top 2.5 inch miệng cột composite, đường ống In/Out ren trong phi 34 mm",
+      "warranty": "12 tháng đổi mới linh kiện chính hãng",
+      "packaging": "Bộ nguyên đai gồm thân van, lưới lọc trên/dưới, adaptor nguồn 12V"
+    },
+    {
+      "id": "roChemicals",
+      "name": "Bộ 3 hóa chất bảo vệ & tẩy rửa màng RO",
+      "items": [
+        {"name": "Natri Metabisulfite ≥ 98% (Na2S2O5)", "role": "Khử Clo dư bảo vệ màng TFC chống oxy hóa", "packaging": "Bao/Can 25kg"},
+        {"name": "Xút vảy NaOH ≥ 99%", "role": "Nâng pH và tẩy rửa cặn hữu cơ CIP", "packaging": "Bao 25kg"},
+        {"name": "Chất chống cáu cặn màng RO (Antiscalant)", "role": "Chống bám cặn Silica và CaCO3", "packaging": "Can 25kg"}
+      ],
+      "certifications": ["Phiếu an toàn hóa chất MSDS", "CO/CQ gốc"]
+    },
+    {
+      "id": "activatedCarbon",
+      "name": "Than hoạt tính gáo dừa & than khoáng",
+      "brands": [
+        {"name": "Than gáo dừa Trà Bắc TB1/TB2", "iodine": "900 - 1050 mg/g", "mesh": "3x6, 4x8, 6x12, 8x20"},
+        {"name": "Than Ấn Độ Indiac/Kalimati", "iodine": "900 - 1100 mg/g", "hardness": "≥ 98%"},
+        {"name": "Than viên nén phi 4mm", "ctc": "50 - 65%", "role": "Khử mùi khí thải phòng sơn và VOCs"}
+      ]
+    },
+    {
+      "id": "waterMediaGeneral",
+      "name": "Vật liệu lọc đa tầng & Thiết bị môi trường",
+      "items": [
+        "Cát Mangan Hatico khử phèn sắt/asen",
+        "Cát thạch anh & Sỏi đỡ lọc trong",
+        "Hóa chất keo tụ PAC 30% Al13",
+        "Cột composite 0844 - 4872"
+      ],
+      "logistics": "Giao hàng toàn quốc qua xe tải và chành xe đối tác (Thái Nguyên, Bình Dương, Long An, Bắc Ninh, v.v.)"
+    }
+  ]
+}
