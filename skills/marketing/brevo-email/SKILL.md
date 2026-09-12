@@ -46,9 +46,9 @@ BREVO_API_KEY=xkeysib-xxxxxx-xxxxxx
 
 ---
 
-## 3. Hướng Dẫn Thực Thi CLI (`scripts/brevo-email.js`)
+## 3. Hướng Dẫn Vận Hành CLI (`./scripts/brevo-email.js`)
 
-Bộ công cụ CLI `scripts/brevo-email.js` hỗ trợ đầy đủ các lệnh sau:
+Bộ công cụ CLI [`scripts/brevo-email.js`](./scripts/brevo-email.js) được đóng gói khép kín bên trong thư mục skill, hỗ trợ đầy đủ các lệnh sau:
 
 ### A. Kiểm Tra Tài Khoản & Người Gửi (Senders)
 ```bash

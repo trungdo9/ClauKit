@@ -85,7 +85,9 @@ $$\text{Tổng Điểm (Lead Score)} = \text{Fit Score (0 – 50)} + \text{Inten
 
 ---
 
-## 4. Hướng Dẫn Thực Thi CLI (`scripts/growth-lead-hunter.js`)
+## 4. Hướng Dẫn Thực Thi CLI (`./scripts/growth-lead-hunter.js`)
+
+Bộ công cụ [`scripts/growth-lead-hunter.js`](./scripts/growth-lead-hunter.js) được đóng gói khép kín bên trong thư mục skill, hỗ trợ các thao tác qua dòng lệnh:
 
 ```bash
 # 1. Quét tìm kiếm lead nhà máy theo ngành và địa bàn

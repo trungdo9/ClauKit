@@ -31,7 +31,9 @@ SERPROBOT_PROJECT_ID=4955904
 
 ---
 
-## 3. Hướng Dẫn Thực Thi CLI (`scripts/fetch-serprobot.js`)
+## 3. Hướng Dẫn Thực Thi CLI (`./scripts/fetch-serprobot.js`)
+
+Bộ công cụ [`scripts/fetch-serprobot.js`](./scripts/fetch-serprobot.js) được đóng gói khép kín bên trong thư mục skill, hỗ trợ toàn bộ các thao tác qua dòng lệnh:
 
 ### A. Lấy Báo Cáo Thứ Hạng Tổng Hợp (Thường Dùng Nhất)
 ```bash
