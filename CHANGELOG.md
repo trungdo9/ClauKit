@@ -1,8 +1,14 @@
 # Changelog
 
-## [Unreleased] (2026-09-08)
+## [1.7.0](https://github.com/trungdo9/ClauKit/compare/v1.6.1...v1.7.0) (2026-09-12)
 
 ### ✨ Features & Enhancements
+* **ba kit:** New installable kit — `ck init --kit ba`, `/ba:` namespace, public MIT like the rest. Business analysis from discovery to signed hand-over:
+  - 6 dispatcher commands: `/ba:plan` (context hub), `/ba:prd` (PRD + roadmap), `/ba:spec` (FR/NFR/UC/US/AC/TC/CR/BP + `compose` → PRD-001/SRS-001), `/ba:diagram` (sequence/flow/state/ERD as Mermaid), `/ba:qc gap`, `/ba:deliver` (scope, UAT, acceptance, release-notes, go-live, handover).
+  - Traceability spine: one markdown file per entity under `plans/ba/<project>/entities/` (10 kinds, 13 frontmatter keys), derived index git-ignored via the generic `plans/**/*.derived.json` rule; CLI `.claude/scripts/ba/traceability.cjs index|gap|validate|compose|changelog|deliver` with exit codes 0/1/2, byte-stable output, path containment.
+  - Deliverables split `derived` (regenerated, never hand-edited) vs `owned` (seeded once, `--force` to re-seed); committed under `plans/ba/<project>/deliverables/`.
+  - Hand-off: `/ck:tickets <SRS path>` → `/ck:cook` (needs the engineer kit in the same project). `requires.shared` is exactly 3 files, so `ba` installs standalone.
+  - Rules in `.claude/workflows/business-analysis-rules.md`; kit README with a worked sample at `skills/ba/README.md`. Vietnamese bodies, English artifact keywords.
 * **skills(marketing):** Combine and localize `gpt-image-vi` and `image-prompt` skills for Asian/Vietnamese F&B marketing:
   - Integrated visual gating (real photo/UGC/screenshot vs AI; deterministic SVG for numeric charts).
   - Integrated 4-question strategic brief and 8-component natural-language prompt anatomy with overlay negative space design.
@@ -11,6 +17,10 @@
 * **skills(integrations):** Add `shopify-publish` skill (`skills/integrations/shopify-publish/`):
   - Connects to Shopify Admin REST API to publish and manage blog articles & pages.
   - Features automated Schema FAQ sanitization (strips `<script>` tags to prevent UI leakage), SEO metafields injection, dry-run previews, and idempotent upserts.
+
+### 🐛 Bug Fixes
+* **installer:** `copyPath` skipped any destination directory that already existed, so installing a second kit whose `requires.shared` had placed one file inside a directory the first kit ships whole left that directory almost empty — `ba` then `engineer` installed 1 of 68 software skills and `/ck:tickets` lost its `to-tickets` skill; `marketing` then `engineer` lost `skills/software` and `agents/engineering`. A partially present directory now gets its missing files added; existing files are never touched without `--force`. (+2 installer tests)
+* **commands(ck):** `/ck:health` pointed at `node .claude/scripts/workspace-health.cjs`; the helper has lived under `scripts/ck/` since 1.6.0, so the command failed with "Cannot find module" in every install. The packaging guard now also resolves `node .claude/scripts/…` lines inside fenced blocks, not just backticked paths.
 
 ## [1.6.1](https://github.com/trungdo9/ClauKit/compare/v1.6.0...v1.6.1) (2026-09-05)
 
