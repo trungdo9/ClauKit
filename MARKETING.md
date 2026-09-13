@@ -2,7 +2,7 @@
 
 > Everything to automate marketing — from campaign planning to community engagement — inside Claude Code via the `/mk:` namespace.
 
-Install with `ck init --kit marketing` (or `--kit both`). Adds **51 marketing skills, 12 agents, 12 commands, 12 workflows, 5 MCP wrappers, WordPress publishing**.
+Install with `ck init --kit marketing` (or `--kit both`). Adds **51 marketing skills, 12 agents, 12 commands, 13 workflows, 5 MCP wrappers, WordPress publishing**.
 
 > **The marketing rule**: `/mk:plan` once → it writes the context hub (`plans/marketing-context.md`) → every other `/mk:` command reads from it. Plan once, run many. Every `/mk:` command **except** `/mk:plan` hard-fails without the hub.
 
@@ -17,6 +17,7 @@ The marketing kit turns Claude Code into a full marketing team. It ships:
 - **Curated skills** — SEO (via `AgriciDaniel/claude-seo`, 25 sub-skills + 18 agents), the `seo-writing` article-production pipeline (seed keyword → published article), content, email/SMS, paid ads, CRO, research, growth, lead pipeline, AI video.
 - **A context hub** — `plans/marketing-context.md` (ICP, positioning, brand voice, competitors, goals, channels) — the single source of truth keeping every output on-brand.
 - **Gated, idempotent automation** — draft-by-default publishing, PII redaction, deterministic keys so re-runs never duplicate sends.
+- **Campaign Dispatch & Closed-Loop Execution Protocol** — autonomous multi-lane task routing, micro-batching (1–2 content drafts/run), backpressure throttling (<4 unreviewed drafts guard), and SLA watchdog preventing campaign task abandonment.
 - **Bring-your-own MCP** — GA4, GSC, SendGrid, Resend, ReviewWeb, WordPress — each with a manual fallback so the kit works with zero MCP servers configured.
 
 ---
@@ -27,8 +28,8 @@ The marketing kit turns Claude Code into a full marketing team. It ships:
 |---|---|---|
 | **Solo founder** | Full campaign cycle without an agency | `/mk:plan` + `/mk:campaign` |
 | **SMB shop owner** | Content + ads at scale | `/mk:content` + `/mk:ads` |
-| **Marketing manager** | Standardized, repeatable process | All 6 workflows |
-| **Agency** | Client delivery framework | All commands + workflows |
+| **Marketing manager** | Standardized, repeatable process | All workflows |
+| **Agency / Operator** | Campaign dispatching & execution closed-loop | `campaign-dispatcher` + all workflows |
 | **B2B SaaS** | Lead pipeline | `/mk:leads` + `/mk:nurture` |
 | **Content creator** | Multi-platform content | `/mk:content` + `/mk:video` |
 | **E-commerce** | Product + ads | `/mk:ads` + `/mk:cro` |
@@ -49,6 +50,7 @@ flowchart TD
     Setup -->|yes| Q1{What's the goal?}
     Plan --> Q1
     Q1 -->|Full campaign A→Z| Camp["/mk:campaign<br/>10-phase pipeline"]
+    Q1 -->|"Dispatch & execute checklists<br/>(closed loop)"| Disp["node scripts/campaign-dispatcher.js<br/>triage·multi-lane·throttle·SLA"]
     Q1 -->|Create content| Content["/mk:content<br/>blog·social·video·copy"]
     Q1 -->|Publish to WordPress| Pub["/mk:content publish<br/>draft→live"]
     Q1 -->|SEO work| Seo["/mk:seo<br/>audit·keywords·ai·schema"]
@@ -84,6 +86,35 @@ flowchart LR
 ```
 
 **When to use**: you want the whole machine. For a single asset, reach for the focused commands instead. Sub-workflows (`/mk:leads`, `/mk:nurture`, `/mk:video`) are orchestrated by this pipeline — campaign name is passed automatically.
+
+---
+
+### Flow 1b — 🧭 Campaign Dispatch & Closed-Loop Execution Protocol
+
+Solves the **planning-to-publishing bottleneck** (`.claude/workflows/campaign-dispatch-protocol.md`). While `/mk:campaign` produces plans and checklists, this protocol bridges the execution loop by dispatching, executing, and auditing tasks across 5 specialized operational lanes without human forgetfulness or queue buildup.
+
+```mermaid
+flowchart LR
+    A["plans/campaigns/**/<br/>action-checklist.md"] --> B["Campaign Dispatcher<br/>(node scripts/campaign-dispatcher.js)"]
+    B --> C{Backpressure Check<br/>drafts/ &ge; 4?}
+    C -->|Yes: Throttle On| D[Reroute to Technical Lane<br/>Halt new article drafts]
+    C -->|No: Safe Capacity| E[Execute Micro-Batch<br/>--limit=1 or 2]
+    E --> F1[Lane 1: SEO Content &rarr; drafts/]
+    E --> F2[Lane 2: Technical SEO &rarr; Direct CMS]
+    E --> F3[Lane 3: B2B Quotes &rarr; crm/quotes/]
+    E --> F4[Lane 4: Social / Email]
+    E --> F5[Lane 5: Human Escalation &rarr; Alert]
+    F1 --> G[Publisher Gate<br/>Audit & Publish 1–3/day]
+```
+
+**Key Capabilities:**
+1. **Multi-Lane Task Routing**: Routes tasks to Content (`drafts/`), Technical (direct CMS execution), B2B CRM/Quotes, Omnichannel, or Human Escalation.
+2. **Micro-Batching & Throughput Balancing**: Bounded to **1–2 content drafts per shift** (2–4/day) to match downstream publisher review capacity and avoid Google search crawl/spam penalties.
+3. **Backpressure Throttle**: When `drafts/` contains **≥ 4 unreviewed drafts**, creation halts and throughput automatically pivots to technical/link tasks.
+4. **Surge vs. Idle Dynamics**:
+   - *Surge*: Strict priority queueing ($P0 \rightarrow P1 \rightarrow P2$) + SLA Watchdog alerts for $P0 > 24\text{h}$.
+   - *Idle*: Automatically pivots to **Evergreen Elevation** (optimizing positions 11–20, enriching thin content <1,000 words); zero fake tasks when finished.
+5. **Human-AI CLI Parity**: Both AI agents and developers execute tasks identically via `node scripts/campaign-dispatcher.js [--execute-next] [--limit=2] [--execute=<ID>]`.
 
 ---
 

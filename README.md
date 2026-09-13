@@ -518,9 +518,11 @@ ultracode / native dynamic-workflow     →  not used — /ck:flow is the KitFor
 
 ## 🎯 Marketing Kit
 
-Install with `ck init --kit marketing` (or `--kit both`). Adds the **`/mk:` namespace** — 50 marketing skills, 12 agents, 12 commands, plus WordPress publishing. Every `/mk:` command (except `/mk:plan`) **hard-fails without `plans/marketing-context.md`** — the hub holding your ICP, positioning, brand voice, competitors, goals, and channels.
+Install with `ck init --kit marketing` (or `--kit both`). Adds the **`/mk:` namespace** — 50 marketing skills, 12 agents, 12 commands, 13 workflows, plus WordPress publishing. Every `/mk:` command (except `/mk:plan`) **hard-fails without `plans/marketing-context.md`** — the hub holding your ICP, positioning, brand voice, competitors, goals, and channels.
 
 > **The marketing rule**: `/mk:plan` once → it writes the context hub → every other `/mk:` command reads from it. Plan once, run many.
+
+- **Campaign Dispatch & Closed-Loop Execution**: Ships [`.claude/workflows/campaign-dispatch-protocol.md`](./.claude/workflows/campaign-dispatch-protocol.md) and `scripts/campaign-dispatcher.js`. Bridges the planning-to-publishing gap by dispatching tasks across 5 specialized lanes, enforcing micro-batching (1–2 content drafts/run) to match downstream publisher velocity (1–3/day), safeguarding staging with backpressure throttling (<4 drafts threshold), and automating SLA watchdog alerts for overdue P0 items.
 
 **→ Full marketing guide** (introduction, audience, workflow diagrams, use cases): **[`MARKETING.md`](./MARKETING.md)**. Kit-internal reference (skills, agents, MCP setup): [`skills/marketing/README.md`](./skills/marketing/README.md).
 
