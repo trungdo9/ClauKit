@@ -13,7 +13,7 @@
  * COMMIT WARNS, PUSH BLOCKS. Working from the root is a legitimate flow — it is how
  * cross-repo work gets done — so a commit gets a named warning and the person
  * decides. Push is the outward-facing, non-revertible step and is what the repo's
- * gates usually exist for, so it is refused with a one-line override. The warning
+ * gates usually exist for, so it is refused — no override. The warning
  * names the repo's actual hook files, read from its own `.claude/hooks/`, so it
  * stays true in any workspace rather than hardcoding one kit's hook names.
  *
@@ -29,7 +29,6 @@
  * by design: installed into a repo it would exit on its first line for every Bash call,
  * which is cost without benefit.
  *
- * Override: ALLOW_ROOT_PUSH=1 (env, or as a command prefix).
  * Exit: 0 = allow (warnings on stderr) · 2 = deny.
  */
 
@@ -143,19 +142,16 @@ function main() {
   }
   if (!hits.length) process.exit(0);
 
-  const consented = process.env.ALLOW_ROOT_PUSH === '1' || /\bALLOW_ROOT_PUSH=1\b/.test(command);
   const pushes = hits.filter(h => h.verb === 'push');
 
-  if (pushes.length && !consented) {
+  if (pushes.length) {
     const repos = [...new Set(pushes.map(h => h.repo))];
     const absent = repos.flatMap(r => missingHooks(workspaceRoot, r));
     const names = absent.length ? ` — its own ${absent.join(', ')} never fire` : '';
     console.error(
       `BLOCKED (root session → ${repos.join(', ')}): a push from the workspace root loads the ROOT hook ` +
       `set, so that repo's gates do not see it${names}.\n` +
-      `Do one of:\n` +
-      `  • open a session with cwd inside the repo and push from there (the intended flow), or\n` +
-      `  • re-run prefixed with ALLOW_ROOT_PUSH=1 if you have decided those gates do not apply.`
+      `Open a session with cwd inside the repo and push from there.`
     );
     process.exit(2);
   }
