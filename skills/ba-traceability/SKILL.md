@@ -1,5 +1,5 @@
 ---
-name: traceability
+name: ba-traceability
 description: Assign a stable id to every business-analysis requirement and record its parent graph as one markdown file per entity, so gap/doc-drift/CR-impact/dashboard/knowledge-graph views can all be built off one index instead of five bespoke features. Use when authoring or validating a PRD/SRS/EPIC/FR/NFR/UC/US/AC/TC entity, before signing off a deliverable, or before `/ba:qc gap`.
 license: MIT
 ---
@@ -61,5 +61,5 @@ node .claude/scripts/ba/traceability.cjs deliver  <project-dir> <what> [--force]
 
 - `references/id-scheme.md` — the 9 kinds, the two id regexes, the ten-key frontmatter table (single source; `spine-parse.cjs` implements it, never restates it in prose).
 - `references/entity-template.md` — the binding entity shape, one worked example per kind, and the storage → deliverable rendering.
-- **Read the `business-analysis-rules` workflow** ([.claude/workflows/business-analysis-rules.md](../../../workflows/business-analysis-rules.md)) for the kit-wide rules this skill's checks enforce.
-- `/ba:plan` bootstraps the context hub every `/ba:` command reads first ([.claude/commands/ba/plan.md](../../../commands/ba/plan.md)).
+- **Read the `business-analysis-rules` workflow** ([.claude/workflows/business-analysis-rules.md](../../workflows/business-analysis-rules.md)) for the kit-wide rules this skill's checks enforce.
+- `/ba:plan` bootstraps the context hub every `/ba:` command reads first ([.claude/commands/ba/plan.md](../../commands/ba/plan.md)).

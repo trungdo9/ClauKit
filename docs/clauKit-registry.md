@@ -246,18 +246,18 @@ All are active (`dynamic-workflow` added 2026-06-03, paired with `/ck:flow`; bas
 |---|:---:|---|---|
 | `docker-expert` | ✅ | `infrastructure/docker-expert/` | Production Docker: multi-stage builds, image optimization, security hardening, supply chain security — sourced from VoltAgent/awesome-claude-code-subagents |
 
-### BA (6) — `.claude/skills/ba/`
+### BA (6) — `.claude/skills/ba-*/` (registered, depth 1)
 
 Business analysis skills — entity traceability, PRD/SRS generation, specification composition, diagramming, QC, and deliverable publishing. All KitForge-authored. Workflows: PRD → SRS → tickets (via `/ck:tickets` + `ticket-slicer`).
 
 | Name | Status | Folder | Source |
 |---|:---:|---|---|
-| `traceability` | ✅ | `ba/traceability/` | KitForge-authored — spine entity model + derived index (entity files → JSON) + compose workflow + CLI inspector |
-| `ba-context` | ✅ | `ba/ba-context/` | KitForge-authored — hub skill, creates/updates `plans/ba-context.md` (project metadata: scope, constraints, timeline). Activated by `/ba:plan` |
-| `prd` | ✅ | `ba/prd/` | KitForge-authored — Product Requirement Document generator (entity-driven → stage 1 of PRD→SRS→tickets chain). Activated by `/ba:prd` |
-| `spec` | ✅ | `ba/spec/` | KitForge-authored — Specification composer (SRS, UAT, acceptance criteria, test scenarios). Multiple TC (test case) modes: derive from entities · inherit from SRS · author manual. Activated by `/ba:spec` |
-| `diagramming` | ✅ | `ba/diagramming/` | KitForge-authored — C4 · UML · flowchart · ER · swimlane generation + Mermaid rendering. Activated by `/ba:diagram` |
-| `deliver` | ✅ | `ba/deliver/` | KitForge-authored — deliverable publisher (PRD, SRS, UAT, acceptance, release notes, handover). Durable ledger + status tracking. Activated by `/ba:deliver` |
+| `ba-traceability` | ✅ | `ba-traceability/` | KitForge-authored — spine entity model + derived index (entity files → JSON) + compose workflow + CLI inspector |
+| `ba-context` | ✅ | `ba-context/` | KitForge-authored — hub skill, creates/updates `plans/ba-context.md` (project metadata: scope, constraints, timeline). Activated by `/ba:plan` |
+| `ba-prd` | ✅ | `ba-prd/` | KitForge-authored — Product Requirement Document generator (entity-driven → stage 1 of PRD→SRS→tickets chain). Activated by `/ba:prd` |
+| `ba-spec` | ✅ | `ba-spec/` | KitForge-authored — Specification composer (SRS, UAT, acceptance criteria, test scenarios). Multiple TC (test case) modes: derive from entities · inherit from SRS · author manual. Activated by `/ba:spec` |
+| `ba-diagramming` | ✅ | `ba-diagramming/` | KitForge-authored — C4 · UML · flowchart · ER · swimlane generation + Mermaid rendering. Activated by `/ba:diagram` |
+| `ba-deliver` | ✅ | `ba-deliver/` | KitForge-authored — deliverable publisher (PRD, SRS, UAT, acceptance, release notes, handover). Durable ledger + status tracking. Activated by `/ba:deliver` |
 
 ---
 
@@ -420,7 +420,7 @@ All commands under `/ba:` namespace. Each requires the traceability spine contex
 | Command | Description |
 |---|---|
 | `/ba:plan [project] [--new]` | Create/update BA project hub (`plans/ba-context.md`). `--new`: scaffold a project from scratch |
-| `/ba:prd [project] [--entities]` | Generate PRD from entity files (via `ba-context` + `prd` skills). `--entities`: include raw entity table |
+| `/ba:prd [project] [--entities]` | Generate PRD from entity files (via `ba-context` + `ba-prd` skills). `--entities`: include raw entity table |
 | `/ba:spec [project] [tc mode] [--force]` | Compose SRS + test spec from entities. TC modes: `derive` (from entities) · `inherit` (from SRS) · `author` (manual). `--force`: overwrite existing |
 | `/ba:diagram [project] [type]` | Diagram generation (C4/UML/ER/flowchart/swimlane) · `type` defaults to C4 |
 | `/ba:qc [project]` | QC gap analysis — consistency checks + coverage audit across the spec spine |
@@ -487,7 +487,7 @@ Other trios (`testing` → covered by `test-automation`/`chrome-devtools`, `desi
 | Cook (feature lifecycle) | `cook` (5-stage gated methodology) | (uses team) | `/ck:cook` |
 | Problem-solving | `problem-solving` | – | – |
 | Sequential thinking | `sequential-thinking` | – | – |
-| Business analysis (PRD→SRS→tickets chain) | `traceability`, `ba-context`, `prd`, `spec`, `diagramming`, `deliver` | – (native ba kit, no agents) | `/ba:plan`, `/ba:prd`, `/ba:spec`, `/ba:diagram`, `/ba:qc`, `/ba:deliver` |
+| Business analysis (PRD→SRS→tickets chain) | `ba-traceability`, `ba-context`, `ba-prd`, `ba-spec`, `ba-diagramming`, `ba-deliver` | – (native ba kit, no agents) | `/ba:plan`, `/ba:prd`, `/ba:spec`, `/ba:diagram`, `/ba:qc`, `/ba:deliver` |
 | Technical/BA seam | – (BA skills) | – | `/ck:plan` (tech implementation) vs `/ba:plan` (BA context hub) — same verb, disjoint objects, different namespaces, intentional |
 | Misc skills (knowledge only) | `preview`, `mintlify`, `tech-graph`, design subskills | – | – |
 | Scaffold methodology (knowledge only, future) | 12 scaffolds | – | – |

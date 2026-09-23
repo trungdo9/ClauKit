@@ -1,5 +1,5 @@
 ---
-name: spec
+name: ba-spec
 description: Write the six spec entities — FR, NFR, UC, US, AC, TC — each strictly derived from the kind above it in the chain, then compose them into the two signed deliverables PRD-001.md and SRS-001.md. Use when a project has EPICs but no FRs yet, before writing a UC/US/AC/TC, or before /ck:tickets needs a signed SRS.
 license: MIT
 ---
@@ -56,7 +56,7 @@ existing FRs to prevent duplicate sources of truth. Anti-patterns: prose rule wi
 
 D-10 folded the `test` dispatcher into this action. Rather than carrying a scenario-design method
 here, **read the `scenario` skill file**
-([.claude/skills/software/scenario/SKILL.md](../../../skills/software/scenario/SKILL.md)) —
+([.claude/skills/software/scenario/SKILL.md](../../skills/software/scenario/SKILL.md)) —
 § Design Process (`:39`) and § Scenario Template (`:48`). That skill already covers happy / error /
 edge / recovery paths (§ Scenario Types, `:26`) and the layer→tool mapping (§ Tool Mapping, `:62`).
 This skill contributes exactly one thing on top: **every TC's `parents` names the `AC` it
@@ -98,6 +98,6 @@ inserted.
 
 ## Cross-references
 
-- **Read the `traceability` skill file** ([.claude/skills/ba/traceability/SKILL.md](../traceability/SKILL.md)) — the id scheme, entity contract, and `validate`/`index` CLI this skill's actions call before and after writing.
-- **Read the `scenario` skill file** ([.claude/skills/software/scenario/SKILL.md](../../../skills/software/scenario/SKILL.md)) — the design method `tc` reuses instead of restating.
-- **Read the `business-analysis-rules` workflow** ([.claude/workflows/business-analysis-rules.md](../../../workflows/business-analysis-rules.md)) — rule 1 (sourcing), rule 2 (confidence), rule 6 (hard-fail pre-flight), rule 7 (output language), rule 8 (storage; do-not-hand-edit a committed deliverable).
+- **Read the `ba-traceability` skill file** ([.claude/skills/ba-traceability/SKILL.md](../ba-traceability/SKILL.md)) — the id scheme, entity contract, and `validate`/`index` CLI this skill's actions call before and after writing.
+- **Read the `scenario` skill file** ([.claude/skills/software/scenario/SKILL.md](../../skills/software/scenario/SKILL.md)) — the design method `tc` reuses instead of restating.
+- **Read the `business-analysis-rules` workflow** ([.claude/workflows/business-analysis-rules.md](../../workflows/business-analysis-rules.md)) — rule 1 (sourcing), rule 2 (confidence), rule 6 (hard-fail pre-flight), rule 7 (output language), rule 8 (storage; do-not-hand-edit a committed deliverable).

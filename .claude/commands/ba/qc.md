@@ -20,7 +20,7 @@ PROJECT: $2 (default: derived from the repo directory name, kebab-cased) — mus
 
 ## Workflow
 
-Read the `traceability` skill file ([.claude/skills/ba/traceability/SKILL.md](../../skills/ba/traceability/SKILL.md)) —
+Read the `ba-traceability` skill file ([.claude/skills/ba-traceability/SKILL.md](../../skills/ba-traceability/SKILL.md)) —
 the spine contract: what an orphan is (`unparented` / `dangling`), what `unsourced` means, and why the
 index is derived.
 
@@ -49,7 +49,7 @@ helper's code. Run `/ba:spec compose` after a clean `gap`, not before.
 - Vietnamese prose, English artifact keywords — see `.claude/workflows/business-analysis-rules.md` § 7.
 - `gap` exit 0 is the handover gate of the standard chain — `.claude/workflows/business-analysis-rules.md` § 9.
 - Concise grammar. List unresolved questions at end.
-- Cross-references: `.claude/workflows/business-analysis-rules.md`, `.claude/skills/ba/traceability/SKILL.md`, `.claude/scripts/ba/traceability.cjs`.
+- Cross-references: `.claude/workflows/business-analysis-rules.md`, `.claude/skills/ba-traceability/SKILL.md`, `.claude/scripts/ba/traceability.cjs`.
 
 ## Examples
 

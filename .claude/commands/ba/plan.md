@@ -16,11 +16,11 @@ PROJECT: $2 (default: derived from the repo directory name, kebab-cased) — mus
 
 ## Workflow
 
-Read the `ba-context` skill file ([.claude/skills/ba/ba-context/SKILL.md](../../skills/ba/ba-context/SKILL.md)) —
+Read the `ba-context` skill file ([.claude/skills/ba-context/SKILL.md](../../skills/ba-context/SKILL.md)) —
 the hub for BA project context.
 
-Before writing any requirement id anywhere, read the `traceability` skill file
-([.claude/skills/ba/traceability/SKILL.md](../../skills/ba/traceability/SKILL.md)).
+Before writing any requirement id anywhere, read the `ba-traceability` skill file
+([.claude/skills/ba-traceability/SKILL.md](../../skills/ba-traceability/SKILL.md)).
 
 ### Actions
 

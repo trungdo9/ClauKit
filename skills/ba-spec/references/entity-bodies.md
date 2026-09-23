@@ -27,7 +27,7 @@ gateway. [UNVERIFIED] cho tới khi có SLA chính thức.
 
 ## UC — `**Precondition:**`, then the actor's flow
 
-An anti-pattern in the `spec` skill file: a UC with no `Precondition:`.
+An anti-pattern in the `ba-spec` skill file: a UC with no `Precondition:`.
 
 ```markdown
 # UC-007 — CSKH duyệt đơn hoàn tiền

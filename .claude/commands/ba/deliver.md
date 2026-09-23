@@ -20,7 +20,7 @@ PROJECT: $2 (default: derived from the repo directory name, kebab-cased) — mus
 
 ## Workflow
 
-Read the `deliver` skill file ([.claude/skills/ba/deliver/SKILL.md](../../skills/ba/deliver/SKILL.md)) —
+Read the `ba-deliver` skill file ([.claude/skills/ba-deliver/SKILL.md](../../skills/ba-deliver/SKILL.md)) —
 the six deliverable actions and what each document is for in a fixed-price delivery.
 
 Run `node .claude/scripts/ba/traceability.cjs deliver plans/ba/<project-slug> <action> [--force]`.
@@ -43,7 +43,7 @@ Class `derived` (scope, release-notes) — overwritten freely, byte-stable, neve
 Class `owned` (uat, acceptance, golive, handover) — seeded once, human-owned after that, generator
 refuses to overwrite without `--force`.
 
-Both classes **committed** — see the `deliver` skill file for why.
+Both classes **committed** — see the `ba-deliver` skill file for why.
 
 ## Notes
 
@@ -51,13 +51,13 @@ Both classes **committed** — see the `deliver` skill file for why.
 - Every deliverable declares its class in its header; `qc drift` uses this to know which files must
   remain byte-stable (derived) and which the human owns (owned).
 - Hand-editing a `derived` file, using `--force` over filled-in content in an `owned` file, and
-  typing coverage numbers by hand are anti-patterns — see the `deliver` skill file.
+  typing coverage numbers by hand are anti-patterns — see the `ba-deliver` skill file.
 - The `handover` deliverable's **content** is the `docs-manager` agent's job (engineer kit, installed in the same project); this template supplies
   only the shape.
 - A `golive` file's **technical half** (deploy steps, rollback procedure, cut-over runbook) belongs
   in the project's deployment guide — run `/ck:docs` to create one if absent.
 - Concise grammar. List unresolved questions at end.
-- Cross-references: `.claude/workflows/business-analysis-rules.md`, `.claude/skills/ba/deliver/SKILL.md`.
+- Cross-references: `.claude/workflows/business-analysis-rules.md`, `.claude/skills/ba-deliver/SKILL.md`.
 
 ## Examples
 

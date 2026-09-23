@@ -466,3 +466,80 @@ test('the repo ships no script that nothing invokes', () => {
     if (m) assert.ok(fs.existsSync(path.join(REPO, m[1])), `npm run ${name} points at a missing file: ${m[1]}`);
   }
 });
+
+// ── Skill registration and kit separation ──────────────────────────────────
+// Claude Code registers `.claude/skills/<name>/SKILL.md` at exactly that depth;
+// a grouped `<group>/<name>/` skill is a file read by path, never a registered
+// skill (measured, root CLAUDE.md). The BA kit registers its six skills on
+// purpose, so they sit at depth 1 — and the `ba-` prefix is what keeps them
+// separate from every other kit once they share the flat namespace. These
+// tests pin both halves: registration (depth + frontmatter) and separation
+// (prefix, ownership, no name collision).
+
+const frontmatterName = (file) => {
+  const m = fs.readFileSync(file, 'utf-8').match(/^---\r?\n([\s\S]*?)\r?\n---/);
+  if (!m) return null;
+  const n = m[1].match(/^name:\s*(.+?)\s*$/m);
+  return n ? n[1] : null;
+};
+
+const depthOneSkills = (skillsDir) => fs.existsSync(skillsDir)
+  ? fs.readdirSync(skillsDir).filter((d) => fs.existsSync(path.join(skillsDir, d, 'SKILL.md')))
+  : [];
+
+test('ba installs exactly six registered skills, each ba-prefixed and self-named', () => {
+  const p = fresh();
+  const r = init(p, [], 'ba');
+  assert.strictEqual(r.status, 0, r.stderr);
+  const skills = depthOneSkills(path.join(p, '.claude', 'skills')).sort();
+  assert.deepStrictEqual(skills, ['ba-context', 'ba-deliver', 'ba-diagramming', 'ba-prd', 'ba-spec', 'ba-traceability']);
+  for (const s of skills) {
+    assert.strictEqual(frontmatterName(path.join(p, '.claude', 'skills', s, 'SKILL.md')), s, `${s}: frontmatter name must equal its directory`);
+  }
+  // The shared `scenario` skill stays grouped: ba reads it by path and must not
+  // register an engineer skill as its own.
+  assert.ok(fs.existsSync(path.join(p, '.claude/skills/software/scenario/SKILL.md')));
+});
+
+test('no kit other than ba installs a ba- skill', () => {
+  const kits = packagedKits().filter((k) => k !== 'ba');
+  assert.ok(kits.length >= 3, 'the kit glob returned nothing — the loop would pass vacuously');
+  for (const kit of kits) {
+    const p = fresh();
+    init(p, [], kit);
+    const leaked = fs.existsSync(path.join(p, '.claude', 'skills'))
+      ? fs.readdirSync(path.join(p, '.claude', 'skills')).filter((d) => d === 'ba' || d.startsWith('ba-'))
+      : [];
+    assert.deepStrictEqual(leaked, [], `[${kit}] must not ship BA skills`);
+  }
+});
+
+test('every depth-1 skill in the package is ba-prefixed, has frontmatter, and names itself', () => {
+  // Depth 1 is the registered namespace. Only the BA kit lives there; anything
+  // else at that depth would be registered by accident and could collide.
+  const root = path.join(REPO, 'skills');
+  for (const d of depthOneSkills(root)) {
+    assert.ok(d.startsWith('ba-'), `${d}: only ba-* skills may sit at the registered depth`);
+    assert.strictEqual(frontmatterName(path.join(root, d, 'SKILL.md')), d, `${d}: missing or mismatched frontmatter name`);
+  }
+});
+
+test('no two shipped skills share a frontmatter name, and no grouped skill claims the ba- prefix', () => {
+  const seen = new Map();
+  const walk = (dir) => {
+    for (const e of fs.readdirSync(dir, { withFileTypes: true })) {
+      if (e.name === 'node_modules') continue;
+      const full = path.join(dir, e.name);
+      if (e.isDirectory()) walk(full);
+      else if (e.name === 'SKILL.md') {
+        const n = frontmatterName(full);
+        if (!n) continue;
+        const rel = path.relative(path.join(REPO, 'skills'), full);
+        if (n.startsWith('ba-')) assert.ok(/^ba-[^/\\]+[/\\]SKILL\.md$/.test(rel), `${rel}: the ba- prefix is reserved for the BA kit`);
+        if (seen.has(n)) assert.fail(`duplicate skill name '${n}': ${seen.get(n)} and ${rel}`);
+        seen.set(n, rel);
+      }
+    }
+  };
+  walk(path.join(REPO, 'skills'));
+});

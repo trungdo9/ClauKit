@@ -1,5 +1,5 @@
 ---
-name: diagramming
+name: ba-diagramming
 description: Draw BA diagrams in mermaid — sequence, flow, state, erd — derived from the entity spine first, free text second, and ship every one compiled or labelled [UNRENDERED], never a third state. Use when a PRD/SRS needs a picture of who-calls-whom, a decision flow, an entity's lifecycle, or the data model, or before /ba:spec compose embeds one.
 license: MIT
 ---
@@ -24,7 +24,7 @@ diagram for an entity that never changes state is decoration, not documentation.
 
 ## Input is the spine first, free text second
 
-Given `FR-012`, read the entity and its `UC`/`US` children — read the `traceability` skill file
+Given `FR-012`, read the entity and its `UC`/`US` children — read the `ba-traceability` skill file
 first (link below) — and draw from them, so the diagram and the spec cannot disagree. Free text is
 the fallback for a whiteboard moment before an FR exists, and what it produces carries
 `confidence: low` like anything else unsourced (rule 2) — a diagram is a claim about the system
@@ -69,6 +69,6 @@ state is exactly what rule 4 exists to forbid.
 
 ## Cross-references
 
-- **Read the `traceability` skill file** ([.claude/skills/ba/traceability/SKILL.md](../traceability/SKILL.md)) — the entity contract this skill reads before drawing anything.
-- **Read the `business-analysis-rules` workflow** ([.claude/workflows/business-analysis-rules.md](../../../workflows/business-analysis-rules.md)) — rule 2 (confidence, for free-text input), rule 4 (the render gate this skill implements), rule 6 (hard-fail pre-flight), rule 7 (output language).
-- `.claude/commands/ba/diagram.md` ([../../../commands/ba/diagram.md](../../../commands/ba/diagram.md)) — the four actions this skill backs.
+- **Read the `ba-traceability` skill file** ([.claude/skills/ba-traceability/SKILL.md](../ba-traceability/SKILL.md)) — the entity contract this skill reads before drawing anything.
+- **Read the `business-analysis-rules` workflow** ([.claude/workflows/business-analysis-rules.md](../../workflows/business-analysis-rules.md)) — rule 2 (confidence, for free-text input), rule 4 (the render gate this skill implements), rule 6 (hard-fail pre-flight), rule 7 (output language).
+- `.claude/commands/ba/diagram.md` ([../../commands/ba/diagram.md](../../commands/ba/diagram.md)) — the four actions this skill backs.

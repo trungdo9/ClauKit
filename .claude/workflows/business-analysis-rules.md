@@ -24,9 +24,9 @@ Render gate. No renderer available ⇒ ship the source, label it `[UNRENDERED]`,
 
 Skills under `.claude/skills/ba/` sit at group depth and are **not registered**; `Skill(skill: "traceability")` returns `Unknown skill`. Measured; see the root `CLAUDE.md`. Quote the canonical form verbatim so it can be copied, with the target counted from `.claude/workflows/`:
 
-**Read the `traceability` skill file** ([.claude/skills/ba/traceability/SKILL.md](../skills/ba/traceability/SKILL.md))
+**Read the `ba-traceability` skill file** ([.claude/skills/ba-traceability/SKILL.md](../skills/ba-traceability/SKILL.md))
 
-**Read the `ba-context` skill file** ([.claude/skills/ba/ba-context/SKILL.md](../skills/ba/ba-context/SKILL.md))
+**Read the `ba-context` skill file** ([.claude/skills/ba-context/SKILL.md](../skills/ba-context/SKILL.md))
 
 ## 6. Hard-fail pre-flight
 
@@ -44,7 +44,7 @@ Direct to `/ba:plan`, exit. **The single exception is `/ba:plan`, which creates 
 
 ## 8. Storage: one file per entity; the index is derived
 
-Entity files under `plans/ba/<project>/entities/<ID>.md` are the source of truth; `traceability.derived.json` is regenerated and git-ignored; never hand-edit it. One entity per file. Precedent: `to-tickets`. See the `traceability` skill file (rule 5) for the contract.
+Entity files under `plans/ba/<project>/entities/<ID>.md` are the source of truth; `traceability.derived.json` is regenerated and git-ignored; never hand-edit it. One entity per file. Precedent: `to-tickets`. See the `ba-traceability` skill file (rule 5) for the contract.
 
 - `plans/ba/<project>/deliverables/{PRD-001.md,SRS-001.md}` are **committed** (D-11), not a cache — regenerate them with `/ba:spec compose` before every commit that touches an entity; never hand-edit a rendered deliverable, the next `compose` run discards the edit and the loss lands in git history looking like an intentional revert of a signed document.
 
@@ -84,8 +84,8 @@ What the software kit already owns, in one place — ask for these there, not he
 
 ## 11. Cross-references
 
-- `.claude/skills/ba/traceability/SKILL.md` — traceability spine contract (entity kinds, derived-index rebuild, gap report)
-- `.claude/skills/ba/ba-context/SKILL.md` — context hub bootstrap (`plans/ba-context.md`)
+- `.claude/skills/ba-traceability/SKILL.md` — traceability spine contract (entity kinds, derived-index rebuild, gap report)
+- `.claude/skills/ba-context/SKILL.md` — context hub bootstrap (`plans/ba-context.md`)
 - `.claude/skills/ba/README.md` — BA kit landing page
 - `.claude/skills/ba/capability-map.md` — 55-capability map, single source (rule 5 example)
 - `.claude/scripts/ba/traceability.cjs` — spine CLI (`index` / `gap` / `validate` / `compose` / `changelog` / `deliver`)

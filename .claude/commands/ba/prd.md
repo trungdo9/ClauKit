@@ -20,11 +20,11 @@ PROJECT: $2 (default: derived from the repo directory name, kebab-cased) — mus
 
 ## Workflow
 
-Read the `prd` skill file ([.claude/skills/ba/prd/SKILL.md](../../skills/ba/prd/SKILL.md)) — the
+Read the `ba-prd` skill file ([.claude/skills/ba-prd/SKILL.md](../../skills/ba-prd/SKILL.md)) — the
 methodology for product definition.
 
-Before writing any id, read the `traceability` skill file
-([.claude/skills/ba/traceability/SKILL.md](../../skills/ba/traceability/SKILL.md)).
+Before writing any id, read the `ba-traceability` skill file
+([.claude/skills/ba-traceability/SKILL.md](../../skills/ba-traceability/SKILL.md)).
 
 ### Actions
 
@@ -46,7 +46,7 @@ only `PRD-001.md` § 7 — no new files, no re-index required.
 - Vietnamese prose, English artifact keywords — see `.claude/workflows/business-analysis-rules.md` § 7.
 - Every EPIC carries `out_of_scope`; `validate` rejects an EPIC without it.
 - Concise grammar. List unresolved questions at end.
-- Cross-references: `.claude/workflows/business-analysis-rules.md`, `.claude/skills/ba/prd/SKILL.md`.
+- Cross-references: `.claude/workflows/business-analysis-rules.md`, `.claude/skills/ba-prd/SKILL.md`.
 
 ## Examples
 

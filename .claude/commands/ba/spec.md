@@ -20,14 +20,14 @@ PROJECT: $2 (default: derived from the repo directory name, kebab-cased) — mus
 
 ## Workflow
 
-Read the `spec` skill file ([.claude/skills/ba/spec/SKILL.md](../../skills/ba/spec/SKILL.md)) —
+Read the `ba-spec` skill file ([.claude/skills/ba-spec/SKILL.md](../../skills/ba-spec/SKILL.md)) —
 the derivation chain and the methodology behind every action below.
 
-Before writing any id, read the `traceability` skill file
-([.claude/skills/ba/traceability/SKILL.md](../../skills/ba/traceability/SKILL.md)).
+Before writing any id, read the `ba-traceability` skill file
+([.claude/skills/ba-traceability/SKILL.md](../../skills/ba-traceability/SKILL.md)).
 
-Every writing action follows the same four steps: **read the `spec` skill file → read the
-`traceability` skill file → write the entity file(s) → run `validate`, and refuse to report
+Every writing action follows the same four steps: **read the `ba-spec` skill file → read the
+`ba-traceability` skill file → write the entity file(s) → run `validate`, and refuse to report
 success while it exits 1.** A generator that writes an invalid entity is worse than one that
 writes none, because `compose` (and, later, `/ck:tickets`) inherits it.
 
@@ -49,12 +49,12 @@ writes none, because `compose` (and, later, `/ck:tickets`) inherits it.
   ([.claude/skills/software/scenario/SKILL.md](../../skills/software/scenario/SKILL.md)) for the
   design method; this action reuses it rather than restating it.
 - **`cr`** — one `CR-###.md` per change request, `parents` naming the entities the change touches
-  (one or more of `EPIC`, `FR`, `NFR`, `UC`, `US`). Read the `spec` skill file for the Change
+  (one or more of `EPIC`, `FR`, `NFR`, `UC`, `US`). Read the `ba-spec` skill file for the Change
   Request form and validation rules; a CR derives from an existing entity and never creates one.
   The command writes `status: proposed`; approval is recorded by editing the entity, because
   `status: approved` gates billing in phase 08.2.
 - **`bp`** — one `BP-<slug>.md` per business process definition, `<slug>` kebab-cased from the
-  process name. Before writing, read the `spec` skill file, then read the `references/bp-structure.md`
+  process name. Before writing, read the `ba-spec` skill file, then read the `references/bp-structure.md`
   document shape. **Run `/ba:diagram flow` first** (phase 07), so the `## Sơ đồ` section holds a
   real render or an honest `[UNRENDERED]` label. Write `plans/ba/<project>/deliverables/BP-<slug>.md`.
   Then run `node .claude/scripts/ba/traceability.cjs index plans/ba/<project> --json` and check
@@ -77,7 +77,7 @@ success while it exits 1.
 
 `plans/ba/<project-slug>/entities/{FR,NFR,UC,US,AC,TC}-*.md` — one file per entity. `compose`
 additionally writes `plans/ba/<project-slug>/deliverables/PRD-001.md` and `SRS-001.md`, both
-**committed** (D-11) — see the `spec` skill file's anti-patterns for why they are never hand-edited.
+**committed** (D-11) — see the `ba-spec` skill file's anti-patterns for why they are never hand-edited.
 
 ## Notes
 
@@ -86,8 +86,8 @@ additionally writes `plans/ba/<project-slug>/deliverables/PRD-001.md` and `SRS-0
 - `compose` is byte-stable over an unchanged entity tree; re-running it with no entity edits
   produces no diff.
 - Concise grammar. List unresolved questions at end.
-- Cross-references: `.claude/workflows/business-analysis-rules.md`, `.claude/skills/ba/spec/SKILL.md`,
-  `.claude/skills/ba/traceability/SKILL.md`.
+- Cross-references: `.claude/workflows/business-analysis-rules.md`, `.claude/skills/ba-spec/SKILL.md`,
+  `.claude/skills/ba-traceability/SKILL.md`.
 
 ## Examples
 

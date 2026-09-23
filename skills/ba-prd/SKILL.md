@@ -1,5 +1,5 @@
 ---
-name: prd
+name: ba-prd
 description: Write the product-definition entity pair — PRD-001 plus one EPIC per user-visible capability — from plans/ba-context.md, then order the existing EPIC set into a Now/Next/Later roadmap without inventing new entities. Use when a project has a context hub but no PRD yet, before /ba:spec derives FRs from EPICs, or to re-sequence an existing roadmap.
 license: MIT
 ---
@@ -63,6 +63,6 @@ roadmap table shape.
 
 ## Cross-references
 
-- **Read the `traceability` skill file** ([.claude/skills/ba/traceability/SKILL.md](../traceability/SKILL.md)) — the id scheme and entity contract every `PRD-001.md`/`EPIC-*.md` must satisfy.
-- **Read the `ba-context` skill file** ([.claude/skills/ba/ba-context/SKILL.md](../ba-context/SKILL.md)) — the hub this skill reads before writing anything.
-- **Read the `business-analysis-rules` workflow** ([.claude/workflows/business-analysis-rules.md](../../../workflows/business-analysis-rules.md)) — rule 1 (sourcing), rule 6 (hard-fail pre-flight), rule 7 (output language).
+- **Read the `ba-traceability` skill file** ([.claude/skills/ba-traceability/SKILL.md](../ba-traceability/SKILL.md)) — the id scheme and entity contract every `PRD-001.md`/`EPIC-*.md` must satisfy.
+- **Read the `ba-context` skill file** ([.claude/skills/ba-context/SKILL.md](../ba-context/SKILL.md)) — the hub this skill reads before writing anything.
+- **Read the `business-analysis-rules` workflow** ([.claude/workflows/business-analysis-rules.md](../../workflows/business-analysis-rules.md)) — rule 1 (sourcing), rule 6 (hard-fail pre-flight), rule 7 (output language).

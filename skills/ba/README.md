@@ -9,7 +9,7 @@ ck init --kit ba          # cài kit BA vào .claude/ của project
 ck init --kit engineer    # (tuỳ chọn) cần cho bước cuối: /ck:tickets → /ck:cook
 ```
 
-Cài xong có **6 command**, **6 skill**, 1 file rules ([.claude/workflows/business-analysis-rules.md](../../workflows/business-analysis-rules.md)) và 1 helper CLI (`.claude/scripts/ba/traceability.cjs`).
+Cài xong có **6 command**, **6 skill đã đăng ký** (`ba-context`, `ba-prd`, `ba-spec`, `ba-traceability`, `ba-diagramming`, `ba-deliver` — gọi được bằng tool `Skill`, nằm ở `.claude/skills/ba-*/`), 1 file rules ([.claude/workflows/business-analysis-rules.md](../../workflows/business-analysis-rules.md)) và 1 helper CLI (`.claude/scripts/ba/traceability.cjs`).
 
 ## Các command
 
@@ -128,4 +128,4 @@ Ticket mang sẵn AC từ SRS; cook chỉ hỏi đúng một thứ spec không b
 - Helper CLI dùng trực tiếp khi cần: `node .claude/scripts/ba/traceability.cjs index|gap|validate|compose|changelog|deliver plans/ba/<project>` — exit `0` sạch · `1` có finding · `2` lỗi gọi.
 - Ngôn ngữ: thân tiếng Việt, khoá tiếng Anh (`FR-###`, `Given/When/Then`, `source:`) để nối thẳng vào BDD/Jira.
 
-Đọc thêm: rules đầy đủ ở [business-analysis-rules.md](../../workflows/business-analysis-rules.md); mô hình spine ở [traceability/SKILL.md](traceability/SKILL.md).
+Đọc thêm: rules đầy đủ ở [business-analysis-rules.md](../../workflows/business-analysis-rules.md); mô hình spine ở [traceability/SKILL.md](../ba-traceability/SKILL.md).

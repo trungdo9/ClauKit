@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.8.0 (2026-09-23)
+
+### 🐛 Bug Fixes
+* **ba kit:** none of the six BA skills was ever registered. `ck init --kit ba` installed them at `.claude/skills/ba/<name>/SKILL.md` — one level below the only depth Claude Code discovers — so `Skill(skill: "prd")` returned `Unknown skill` and only the six `/ba:*` commands were visible. They now ship flat and prefixed: `ba-context`, `ba-prd`, `ba-spec`, `ba-traceability`, `ba-diagramming`, `ba-deliver` (frontmatter `name:` equals the directory). `ba-deliver` also gained the frontmatter it never had. `skills/ba/` keeps only `README.md` + `capability-map.md`. Kit `ba` → 0.2.0.
+* **ba kit — separation, now a test:** depth 1 is reserved for `ba-*`; the `ba-` prefix is reserved for the BA kit; no other kit installs a `ba-*` skill; no two shipped skills share a `name:`. The shared `software/scenario` skill stays grouped (read by path, not registered by `ba`). (+4 installer tests)
+* **upgrade from 1.7.0:** the 17 grouped BA files are in `RETIRED` and the 8 BA docs naming them in `STALE`, so a plain `ck init --kit ba` refreshes the commands, removes the old copies on digest proof, and leaves no empty directories. `syncRetired` now removes emptied parent directories up to `.claude/` instead of one level — a retired skill deletes `SKILL.md` before `references/`, which left the skill directory behind. (+1 retirement test)
+
 ## [1.7.0](https://github.com/trungdo9/ClauKit/compare/v1.6.1...v1.7.0) (2026-09-12)
 
 ### ✨ Features & Enhancements

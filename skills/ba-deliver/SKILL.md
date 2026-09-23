@@ -1,3 +1,9 @@
+---
+name: ba-deliver
+description: Render the six downstream delivery documents — Scope Statement, UAT Report, Acceptance Record, Release Notes, Go-Live Checklist, Handover Brief — deterministically from the BA entity tree. Use via /ba:deliver when a project needs a signed-off delivery artifact, or to re-derive a derived document after the entity tree changed.
+license: MIT
+---
+
 # Delivery — the six downstream documents (D-13)
 
 The `/ba:deliver` dispatcher closes the downstream gap by rendering six template-driven deliverables

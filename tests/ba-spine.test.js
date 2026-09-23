@@ -322,7 +322,9 @@ test('no shipped ba doc tells the reader to activate a grouped skill', () => {
   // registered (measured, root CLAUDE.md); "Activate the `x` skill" burns a
   // failed tool call in every session that believes it. Say "Read" instead.
   const files = [
-    ...walkFiles(path.join(REPO, '.claude/skills/ba')),
+    ...fs.readdirSync(path.join(REPO, 'skills'))
+      .filter((d) => d === 'ba' || d.startsWith('ba-'))
+      .flatMap((d) => walkFiles(path.join(REPO, '.claude/skills', d))),
     ...walkFiles(path.join(REPO, '.claude/commands/ba')),
     path.join(REPO, '.claude/workflows/business-analysis-rules.md'),
   ].filter((f) => fs.existsSync(f) && fs.statSync(f).isFile());

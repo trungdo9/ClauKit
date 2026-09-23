@@ -23,7 +23,7 @@ KitForge supports multiple installable kits via `ck init --kit <name>`:
 - **`engineer`** (default) — software engineering, `/ck:` namespace
 - **`marketing`** — marketing automation, `/mk:` namespace. See `skills/marketing/README.md`
 - **`both`** — engineer + marketing combined
-- **`ba`** — business analysis, `/ba:` namespace. See `skills/ba/README.md`
+- **`ba`** — business analysis, `/ba:` namespace, 6 **registered** `ba-*` skills. See `skills/ba/README.md`
 
 Kit manifests: `.claude/kits/*.json`. Adding a new kit = drop a JSON file, no CLI changes.
 
@@ -84,6 +84,18 @@ surface; the skill files are the methodology those commands read.
 
 A subagent with a closed `tools:` list has no `Skill` tool at all, so for those the read is the *only*
 path — see `.claude/rules/agent-wiring-rules.md`.
+
+**The one deliberate exception — the BA kit (v1.8.0).** Its six skills ship flat at
+`skills/ba-<name>/` so they register (`ba-context` · `ba-prd` · `ba-spec` · `ba-traceability` ·
+`ba-diagramming` · `ba-deliver`); the cost is six descriptions per session. `skills/ba/` keeps only
+the kit docs (`README.md`, `capability-map.md`). Rules, each pinned by `installer-packaging.test.js`:
+
+- **Depth 1 is reserved for `ba-*`.** Any other skill placed there would register by accident.
+- **The `ba-` prefix is reserved for the BA kit**, and every flat skill's `name:` equals its directory.
+- **No other kit installs a `ba-*` skill**, and the BA kit's shared `software/scenario` stays grouped
+  — BA reads it by path, it does not register an engineer skill as its own.
+- Moving a skill between depths is a retirement: old paths go in `RETIRED`, the prose that named them
+  in `STALE` (`bin/lib/retired-files.js`).
 
 🔴 **Never claim a skill is registered without checking.** One call settles it:
 `Skill(skill: "<name>")` in a fresh session, or `claude -p 'list available skills starting with <x>'`.
