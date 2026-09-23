@@ -2,11 +2,12 @@
   "name": "ba",
   "description": "BA Kit — business analysis, /ba: namespace. PRD → SRS → spine → tickets. 6 commands, 6 registered ba-* skills.",
   "namespace": "ba",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "paths": {
     "commands":  [".claude/commands/ba/"],
     "skills":    [
-      ".claude/skills/ba/",
+      ".claude/skills/ba/README.md",
+      ".claude/skills/ba/capability-map.md",
       ".claude/skills/ba-context/",
       ".claude/skills/ba-prd/",
       ".claude/skills/ba-spec/",
@@ -19,6 +20,14 @@
     "hooks":     [".claude/hooks/"],
     "statusline":[".claude/statusline.cjs", ".claude/statusline.sh", ".claude/statusline.ps1"],
     "config":    [".claude/settings.json", ".claude/mcp.json", ".claude/.env.example", ".claude/.mcp.json.example"]
+  },
+  "sourceMap": {
+    ".claude/skills/ba-context/":      ".claude/skills/ba/context/",
+    ".claude/skills/ba-prd/":          ".claude/skills/ba/prd/",
+    ".claude/skills/ba-spec/":         ".claude/skills/ba/spec/",
+    ".claude/skills/ba-traceability/": ".claude/skills/ba/traceability/",
+    ".claude/skills/ba-diagramming/":  ".claude/skills/ba/diagramming/",
+    ".claude/skills/ba-deliver/":      ".claude/skills/ba/deliver/"
   },
   "requires": {
     "shared": [

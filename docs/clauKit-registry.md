@@ -246,18 +246,18 @@ All are active (`dynamic-workflow` added 2026-06-03, paired with `/ck:flow`; bas
 |---|:---:|---|---|
 | `docker-expert` | ✅ | `infrastructure/docker-expert/` | Production Docker: multi-stage builds, image optimization, security hardening, supply chain security — sourced from VoltAgent/awesome-claude-code-subagents |
 
-### BA (6) — `.claude/skills/ba-*/` (registered, depth 1)
+### BA (6) — source `skills/ba/<name>/` → installs as `.claude/skills/ba-<name>/` (registered, depth 1, via `ba.json` `sourceMap`)
 
 Business analysis skills — entity traceability, PRD/SRS generation, specification composition, diagramming, QC, and deliverable publishing. All KitForge-authored. Workflows: PRD → SRS → tickets (via `/ck:tickets` + `ticket-slicer`).
 
 | Name | Status | Folder | Source |
 |---|:---:|---|---|
-| `ba-traceability` | ✅ | `ba-traceability/` | KitForge-authored — spine entity model + derived index (entity files → JSON) + compose workflow + CLI inspector |
-| `ba-context` | ✅ | `ba-context/` | KitForge-authored — hub skill, creates/updates `plans/ba-context.md` (project metadata: scope, constraints, timeline). Activated by `/ba:plan` |
-| `ba-prd` | ✅ | `ba-prd/` | KitForge-authored — Product Requirement Document generator (entity-driven → stage 1 of PRD→SRS→tickets chain). Activated by `/ba:prd` |
-| `ba-spec` | ✅ | `ba-spec/` | KitForge-authored — Specification composer (SRS, UAT, acceptance criteria, test scenarios). Multiple TC (test case) modes: derive from entities · inherit from SRS · author manual. Activated by `/ba:spec` |
-| `ba-diagramming` | ✅ | `ba-diagramming/` | KitForge-authored — C4 · UML · flowchart · ER · swimlane generation + Mermaid rendering. Activated by `/ba:diagram` |
-| `ba-deliver` | ✅ | `ba-deliver/` | KitForge-authored — deliverable publisher (PRD, SRS, UAT, acceptance, release notes, handover). Durable ledger + status tracking. Activated by `/ba:deliver` |
+| `ba-traceability` | ✅ | `ba/traceability/` | KitForge-authored — spine entity model + derived index (entity files → JSON) + compose workflow + CLI inspector |
+| `ba-context` | ✅ | `ba/context/` | KitForge-authored — hub skill, creates/updates `plans/ba-context.md` (project metadata: scope, constraints, timeline). Activated by `/ba:plan` |
+| `ba-prd` | ✅ | `ba/prd/` | KitForge-authored — Product Requirement Document generator (entity-driven → stage 1 of PRD→SRS→tickets chain). Activated by `/ba:prd` |
+| `ba-spec` | ✅ | `ba/spec/` | KitForge-authored — Specification composer (SRS, UAT, acceptance criteria, test scenarios). Multiple TC (test case) modes: derive from entities · inherit from SRS · author manual. Activated by `/ba:spec` |
+| `ba-diagramming` | ✅ | `ba/diagramming/` | KitForge-authored — C4 · UML · flowchart · ER · swimlane generation + Mermaid rendering. Activated by `/ba:diagram` |
+| `ba-deliver` | ✅ | `ba/deliver/` | KitForge-authored — deliverable publisher (PRD, SRS, UAT, acceptance, release notes, handover). Durable ledger + status tracking. Activated by `/ba:deliver` |
 
 ---
 

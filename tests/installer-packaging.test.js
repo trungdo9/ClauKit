@@ -24,6 +24,7 @@ const os = require('node:os');
 const path = require('node:path');
 
 const { RULES, PLAN_RULES, existingPatterns } = require('../bin/lib/gitignore-wire');
+const { mapToSource } = require('../bin/lib/kit-resolver');
 const { packagedKits, shipsCkScripts } = require('./lib/kits');
 
 const REPO = path.join(__dirname, '..');
@@ -158,7 +159,9 @@ test('every kit-declared path survives npm pack', () => {
   // A declared path is satisfied when the tarball carries it, or carries its
   // de-symlinked twin (`.claude/skills/x` ships as `skills/x` — npm drops the
   // .claude/skills symlink), matching resolveSourcePath()'s fallback.
-  const satisfied = (p) => {
+  // A `sourceMap`ped path is checked at its package location (mapToSource).
+  const satisfied = (dst) => {
+    const p = mapToSource(dst);
     const stripped = p.replace(/^\.claude[\\/]/, '');
     return packed.some((f) => f === p || f.startsWith(p.replace(/\/?$/, '/'))
       || f === stripped || f.startsWith(stripped.replace(/\/?$/, '/')));
@@ -471,10 +474,11 @@ test('the repo ships no script that nothing invokes', () => {
 // Claude Code registers `.claude/skills/<name>/SKILL.md` at exactly that depth;
 // a grouped `<group>/<name>/` skill is a file read by path, never a registered
 // skill (measured, root CLAUDE.md). The BA kit registers its six skills on
-// purpose, so they sit at depth 1 — and the `ba-` prefix is what keeps them
-// separate from every other kit once they share the flat namespace. These
-// tests pin both halves: registration (depth + frontmatter) and separation
-// (prefix, ownership, no name collision).
+// purpose: they live grouped in the package at `skills/ba/<name>/` and install
+// at depth 1 as `.claude/skills/ba-<name>/` through ba.json's `sourceMap` — and
+// the `ba-` prefix is what keeps them separate from every other kit once they
+// share the flat namespace. These tests pin both halves: registration (depth +
+// frontmatter) and separation (prefix, ownership, no name collision).
 
 const frontmatterName = (file) => {
   const m = fs.readFileSync(file, 'utf-8').match(/^---\r?\n([\s\S]*?)\r?\n---/);
@@ -514,13 +518,22 @@ test('no kit other than ba installs a ba- skill', () => {
   }
 });
 
-test('every depth-1 skill in the package is ba-prefixed, has frontmatter, and names itself', () => {
-  // Depth 1 is the registered namespace. Only the BA kit lives there; anything
-  // else at that depth would be registered by accident and could collide.
+test('no skill sits at depth 1 in the package; every BA skill is grouped and sourceMapped', () => {
+  // Depth 1 of an INSTALL is the registered namespace; the package keeps every
+  // skill grouped, and only ba.json's sourceMap lifts one to depth 1. A SKILL.md
+  // dropped straight into skills/<name>/ would register in this repo by accident.
   const root = path.join(REPO, 'skills');
-  for (const d of depthOneSkills(root)) {
-    assert.ok(d.startsWith('ba-'), `${d}: only ba-* skills may sit at the registered depth`);
-    assert.strictEqual(frontmatterName(path.join(root, d, 'SKILL.md')), d, `${d}: missing or mismatched frontmatter name`);
+  assert.deepStrictEqual(depthOneSkills(root), [], 'skills belong in a group directory — use a sourceMap to register one');
+  const ba = JSON.parse(fs.readFileSync(path.join(REPO, '.claude/kits/ba.json'), 'utf-8'));
+  const grouped = depthOneSkills(path.join(root, 'ba')).sort();
+  assert.ok(grouped.length >= 6, 'the BA skill glob returned nothing — the loop would pass vacuously');
+  const mapped = Object.entries(ba.sourceMap || {}).map(([to, from]) => [to.match(/^\.claude\/skills\/(ba-[^/]+)\/$/)?.[1], from]);
+  assert.deepStrictEqual(mapped.map(([, from]) => from.replace(/^\.claude\/skills\/ba\/|\/$/g, '')).sort(), grouped,
+    'every skills/ba/<name>/ needs exactly one sourceMap entry, and no entry may point elsewhere');
+  for (const [to, from] of mapped) {
+    assert.ok(to, `${from}: must install as .claude/skills/ba-<name>/`);
+    assert.strictEqual(to, `ba-${path.basename(from)}`, `${from}: installs as ba-<its dir name>`);
+    assert.strictEqual(frontmatterName(path.join(REPO, from.replace(/^\.claude\//, ''), 'SKILL.md')), to, `${from}: frontmatter name must be ${to}`);
   }
 });
 
@@ -535,7 +548,7 @@ test('no two shipped skills share a frontmatter name, and no grouped skill claim
         const n = frontmatterName(full);
         if (!n) continue;
         const rel = path.relative(path.join(REPO, 'skills'), full);
-        if (n.startsWith('ba-')) assert.ok(/^ba-[^/\\]+[/\\]SKILL\.md$/.test(rel), `${rel}: the ba- prefix is reserved for the BA kit`);
+        if (n.startsWith('ba-')) assert.ok(/^ba[/\\][^/\\]+[/\\]SKILL\.md$/.test(rel), `${rel}: the ba- prefix is reserved for the BA kit`);
         if (seen.has(n)) assert.fail(`duplicate skill name '${n}': ${seen.get(n)} and ${rel}`);
         seen.set(n, rel);
       }

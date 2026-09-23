@@ -85,17 +85,25 @@ surface; the skill files are the methodology those commands read.
 A subagent with a closed `tools:` list has no `Skill` tool at all, so for those the read is the *only*
 path — see `.claude/rules/agent-wiring-rules.md`.
 
-**The one deliberate exception — the BA kit (v1.8.0).** Its six skills ship flat at
-`skills/ba-<name>/` so they register (`ba-context` · `ba-prd` · `ba-spec` · `ba-traceability` ·
-`ba-diagramming` · `ba-deliver`); the cost is six descriptions per session. `skills/ba/` keeps only
-the kit docs (`README.md`, `capability-map.md`). Rules, each pinned by `installer-packaging.test.js`:
+**The one deliberate exception — the BA kit (v1.8.0).** Its six skills **install** flat at
+`.claude/skills/ba-<name>/` so they register (`ba-context` · `ba-prd` · `ba-spec` · `ba-traceability` ·
+`ba-diagramming` · `ba-deliver`); the cost is six descriptions per session. In the **package** they stay
+grouped at `skills/ba/<name>/` beside the kit docs (`README.md`, `capability-map.md`), and
+`.claude/kits/ba.json` → `sourceMap` maps each install path to its source dir (`bin/lib/kit-resolver.js`
+→ `mapToSource`, applied inside `resolveSourcePath` so the copy loop and STALE refreshes both see it).
+Consequence: **in this repo the BA skills are not registered** (`.claude/skills` → `./skills`, depth 2) —
+test them through an install, not in a ClauKit session. Rules, each pinned by `installer-packaging.test.js`:
 
-- **Depth 1 is reserved for `ba-*`.** Any other skill placed there would register by accident.
-- **The `ba-` prefix is reserved for the BA kit**, and every flat skill's `name:` equals its directory.
+- **No skill sits at depth 1 in the package.** Only a `sourceMap` entry lifts one to depth 1 of an install.
+- **The `ba-` prefix is reserved for the BA kit**: `skills/ba/<name>/` installs as `ba-<name>`, and its
+  `name:` must equal `ba-<name>`. Every `skills/ba/<name>/` has exactly one `sourceMap` entry.
+- **Shipped links are written for the installed position** (`.claude/skills/ba-<name>/`), so from
+  inside a BA skill `../ba-traceability/SKILL.md` is right even though it does not resolve in the repo.
 - **No other kit installs a `ba-*` skill**, and the BA kit's shared `software/scenario` stays grouped
   — BA reads it by path, it does not register an engineer skill as its own.
-- Moving a skill between depths is a retirement: old paths go in `RETIRED`, the prose that named them
-  in `STALE` (`bin/lib/retired-files.js`).
+- Moving a skill between **install** depths is a retirement: old paths go in `RETIRED`, the prose that
+  named them in `STALE` (`bin/lib/retired-files.js`). Moving only its package source is not — install
+  paths are what a project has.
 
 🔴 **Never claim a skill is registered without checking.** One call settles it:
 `Skill(skill: "<name>")` in a fresh session, or `claude -p 'list available skills starting with <x>'`.
