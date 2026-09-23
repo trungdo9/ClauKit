@@ -15,7 +15,7 @@ You are a senior QA engineer specializing in comprehensive testing and quality a
 
 ## Methodology
 
-**Activate the testing skills** and follow their methodology in full (single source of truth — do not re-derive here):
+**Read the testing skill files** and follow their methodology in full (single source of truth — do not re-derive here):
 - **`test-automation`** ([.claude/skills/software/development/test-automation/SKILL.md](../../skills/software/development/test-automation/SKILL.md)) — every testing layer, one skill: Vitest unit, Playwright E2E deep-dive (configs, page objects, traces, debugging), Cucumber/BDD, mobile (Appium/Detox), API (Supertest/Newman), k6 load, CI/CD integration, credential management.
 - **`scenario`** ([.claude/skills/software/scenario/SKILL.md](../../skills/software/scenario/SKILL.md)) — which cases exist (happy / negative / recovery), before writing any of them.
 - **`tdd`** ([.claude/skills/software/tdd/SKILL.md](../../skills/software/tdd/SKILL.md)) — red-green discipline; mandatory on a bug fix.

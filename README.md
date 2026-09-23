@@ -312,7 +312,7 @@ flowchart LR
     I --> J["/ck:git pr<br/>draft PR + declared tail"]
 ```
 
-**Tip**: `/ck:find` is your meta-helper across 127 skills + 57 commands. Use it whenever you think "there's probably a KitForge tool for this".
+**Tip**: `/ck:find` is your meta-helper across 142 skills + 57 commands. Use it whenever you think "there's probably a KitForge tool for this".
 
 **Wrap-up notes**: `/ck:git cm` commits only *your session's* files (manifest from the file-claims registry — foreign WIP is reported, never staged). `/ck:git pr` finishes the branch: verify green → **draft-default** PR with an evidence-backed body → your project's declared post-PR steps (if any — see the `Delivery tail` block in `/ck:claude-md init`). If `gh`/`glab` auth fails, you get a paste-ready PR block instead of a dead end.
 
@@ -563,7 +563,7 @@ ClauKit/                     # repo root — GitHub repo name, unchanged
 │   ├── agents/                 # Specialized agent definitions (30 agents: 18 engineering/ + 12 marketing/)
 │   ├── commands/               # Slash command implementations (57 commands)
 │   ├── hooks/                  # PreToolUse/PostToolUse hooks (6 wired in settings.json)
-│   ├── skills/                 # Specialized skills library (127 skills)
+│   ├── skills/                 # Specialized skills library (142 skills)
 │   ├── scripts/ck/             # Shipped helpers (7 + lib/): context hygiene, gates, headless
 │   ├── workflows/              # Development workflow definitions
 │   ├── settings.json           # Claude Code settings

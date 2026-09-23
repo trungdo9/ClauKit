@@ -69,9 +69,9 @@ and **exactly that depth**. Two probe skills with identical frontmatter, differi
 
 The second control used a brand-new group directory, so the cause is **depth**, not a group name.
 
-**This kit groups its 132 skills on purpose** (`skills/software/…`, `skills/marketing/…`) — the tree is
+**This kit groups its 136 skills on purpose** (`skills/software/…`, `skills/marketing/…`) — the tree is
 a **reference library reached by path**, not a set of registered skills. That is a deliberate trade:
-flattening would register all 132 and load 132 descriptions into every session, and 121 of them have
+flattening would register all 136 and load 136 descriptions into every session, and most of them have
 no `ck:` command because they were never meant to be entry points. The **commands** are the invocation
 surface; the skill files are the methodology those commands read.
 
