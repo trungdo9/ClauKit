@@ -11,7 +11,7 @@
  * file. Generation metadata (the `generated` timestamp) lives in
  * `traceability.derived.json` instead — see `spine-index.cjs`.
  *
- * Block shape is D-4, binding — see `skills/ba-spec/references/compose-format.md`.
+ * Block shape is D-4, binding — see `skills/ba/spec/references/compose-format.md`.
  */
 
 const fs = require('fs');

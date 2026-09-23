@@ -95,37 +95,6 @@ function getKitPaths(kitOrManifest) {
 }
 
 /**
- * Install path → package path, from every kit's `sourceMap`.
- *
- * Manifest paths are DESTINATIONS. A kit may keep a directory somewhere else in
- * the package and install it under another name: the BA skills live grouped at
- * `skills/ba/<name>/` so the source tree reads as one kit, but Claude Code only
- * registers `.claude/skills/<name>/SKILL.md` at exactly that depth, so they
- * install as `.claude/skills/ba-<name>/`. Keyed by install path so every caller
- * of resolveSourcePath — the copy loop, STALE refreshes — gets the mapping, not
- * just the copy loop. Longest prefix wins; keys and values end in `/` for dirs.
- */
-let sourceMapCache = null;
-function sourceMap() {
-  if (sourceMapCache) return sourceMapCache;
-  const entries = [];
-  for (const { manifest } of listKits()) {
-    for (const [to, from] of Object.entries(manifest.sourceMap || {})) entries.push([to, from]);
-  }
-  sourceMapCache = entries.sort((a, b) => b[0].length - a[0].length);
-  return sourceMapCache;
-}
-
-function mapToSource(relPath) {
-  const norm = relPath.replace(/\\/g, "/");
-  for (const [to, from] of sourceMap()) {
-    if (norm === to || norm === to.replace(/\/$/, "")) return from;
-    if (to.endsWith("/") && norm.startsWith(to)) return from + norm.slice(to.length);
-  }
-  return relPath;
-}
-
-/**
  * Resolve a manifest-declared relPath to its REAL location inside the package.
  *
  * Manifests reference `.claude/skills/...`, but in the dev repo `.claude/skills`
@@ -138,7 +107,6 @@ function mapToSource(relPath) {
  * path (non-existent) when no fallback applies — caller still detects "missing".
  */
 function resolveSourcePath(relPath) {
-  relPath = mapToSource(relPath);
   const primary = path.join(PACKAGE_ROOT, relPath);
   if (fs.existsSync(primary)) return primary;
   // Strip a leading `.claude/` and retry at package root (covers the
@@ -179,7 +147,6 @@ module.exports = {
   resolveKit,
   getKitPaths,
   resolveSourcePath,
-  mapToSource,
   checkKitPathsAvailable,
   printKitList
 };

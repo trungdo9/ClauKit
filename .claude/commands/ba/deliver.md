@@ -20,7 +20,7 @@ PROJECT: $2 (default: derived from the repo directory name, kebab-cased) — mus
 
 ## Workflow
 
-Read the `ba-deliver` skill file ([.claude/skills/ba-deliver/SKILL.md](../../skills/ba-deliver/SKILL.md)) —
+Read the `ba-deliver` skill file ([.claude/skills/ba/deliver/SKILL.md](../../skills/ba/deliver/SKILL.md)) —
 the six deliverable actions and what each document is for in a fixed-price delivery.
 
 Run `node .claude/scripts/ba/traceability.cjs deliver plans/ba/<project-slug> <action> [--force]`.
@@ -57,7 +57,7 @@ Both classes **committed** — see the `ba-deliver` skill file for why.
 - A `golive` file's **technical half** (deploy steps, rollback procedure, cut-over runbook) belongs
   in the project's deployment guide — run `/ck:docs` to create one if absent.
 - Concise grammar. List unresolved questions at end.
-- Cross-references: `.claude/workflows/business-analysis-rules.md`, `.claude/skills/ba-deliver/SKILL.md`.
+- Cross-references: `.claude/workflows/business-analysis-rules.md`, `.claude/skills/ba/deliver/SKILL.md`.
 
 ## Examples
 

@@ -21,12 +21,12 @@ PROJECT: $3 (default: derived from the repo directory name, kebab-cased) — mus
 
 ## Workflow
 
-Read the `ba-diagramming` skill file ([.claude/skills/ba-diagramming/SKILL.md](../../skills/ba-diagramming/SKILL.md)) —
+Read the `ba-diagramming` skill file ([.claude/skills/ba/diagramming/SKILL.md](../../skills/ba/diagramming/SKILL.md)) —
 the four types, the spine-first input rule, and the render gate (rule 4 of the
 [business-analysis-rules workflow](../../workflows/business-analysis-rules.md)).
 
 When INPUT is an entity id, read the `ba-traceability` skill file
-([.claude/skills/ba-traceability/SKILL.md](../../skills/ba-traceability/SKILL.md)) and the entity
+([.claude/skills/ba/traceability/SKILL.md](../../skills/ba/traceability/SKILL.md)) and the entity
 file(s) it names before drawing anything — the diagram must not disagree with the spec. Free text
 is the fallback; anything drawn from it carries `confidence: low`.
 
@@ -68,8 +68,8 @@ caption, or an inline block inside a composed document when the caller asks for 
 - Mermaid only (D-10) — Claude Artifacts and GitHub both render it natively; other notations arrive
   when a real project asks.
 - Concise grammar. List unresolved questions at end.
-- Cross-references: `.claude/workflows/business-analysis-rules.md`, `.claude/skills/ba-diagramming/SKILL.md`,
-  `.claude/skills/ba-traceability/SKILL.md`.
+- Cross-references: `.claude/workflows/business-analysis-rules.md`, `.claude/skills/ba/diagramming/SKILL.md`,
+  `.claude/skills/ba/traceability/SKILL.md`.
 
 ## Examples
 

@@ -118,28 +118,59 @@ test('removal waits until the prose that invokes it has been refreshed', () => {
     'and the reason must name the blocker, so the user can act on it');
 });
 
-test('upgrade: a v1.7.0 ba install loses its grouped skills, dirs included, and keeps the kit docs', () => {
-  // v1.7.0 shipped the six BA skills at `.claude/skills/ba/<name>/`, one level
-  // below the depth Claude Code registers. Rewind every retired file to its first
-  // shipped blob and every STALE BA doc likewise, then upgrade without --force.
+const BA_SKILLS = ['context', 'deliver', 'diagramming', 'prd', 'spec', 'traceability'];
+const BA_DOCS = STALE.filter((e) => e.path.startsWith('.claude/commands/ba/')
+  || e.path.endsWith('business-analysis-rules.md') || e.path === '.claude/skills/ba/README.md');
+const source = (rel) => fs.readFileSync(path.join(REPO, rel.replace(/^\.claude\/skills\//, 'skills/')));
+
+/** Every BA skill and doc in `p` is byte-equal to what the package ships today. */
+function assertCurrentBa(p) {
+  const left = fs.readdirSync(path.join(p, '.claude/skills/ba')).sort();
+  assert.deepStrictEqual(left, ['README.md', 'capability-map.md', ...BA_SKILLS].sort(),
+    'skills/ba/ holds the kit docs and the six skill directories, nothing else');
+  for (const n of BA_SKILLS) {
+    const rel = `.claude/skills/ba/${n}/SKILL.md`;
+    assert.ok(fs.readFileSync(path.join(p, rel)).equals(source(rel)), `${rel} must be the current version`);
+  }
+  for (const d of BA_DOCS) {
+    assert.ok(fs.readFileSync(path.join(p, d.path)).equals(source(d.path)), `${d.path} must be refreshed`);
+  }
+  const flat = fs.readdirSync(path.join(p, '.claude/skills')).filter((d) => d.startsWith('ba-'));
+  assert.deepStrictEqual(flat, [], 'no flat ba-* skill directory may remain');
+}
+
+test('upgrade: a v1.7.0 ba install is refreshed in place and loses ba/ba-context/', () => {
+  // v1.7.0 shipped five BA skills at today's `.claude/skills/ba/<name>/` paths
+  // (older content) and the context skill at `ba/ba-context/`. Rewind all of it,
+  // then upgrade without --force: the copy loop skips existing files, so STALE
+  // must refresh them and RETIRED must remove the renamed one.
   const p = project();
   assert.strictEqual(spawnSync('node', [CK, 'init', '--kit', 'ba'], { cwd: p, encoding: 'utf-8' }).status, 0);
-  const grouped = RETIRED.filter((r) => r.path.startsWith('.claude/skills/ba/'));
-  assert.ok(grouped.length >= 6, 'the BA retirement entries are missing — the test would pass vacuously');
-  for (const r of grouped) rewind(p, r.path, r.sha[0]);
-  for (const s of STALE.filter((e) => e.path.includes('/ba/') || e.path.endsWith('business-analysis-rules.md'))) {
-    rewind(p, s.path, s.sha[s.sha.length - 1]);
+  fs.rmSync(path.join(p, '.claude/skills/ba/context'), { recursive: true });
+  const renamed = RETIRED.filter((r) => r.path.startsWith('.claude/skills/ba/ba-context/'));
+  const grouped = STALE.filter((e) => /^\.claude\/skills\/ba\/[^/]+\/.+/.test(e.path));
+  assert.ok(renamed.length >= 2 && grouped.length >= 10, 'the v1.7.0 BA entries are missing — the test would pass vacuously');
+  for (const r of renamed) rewind(p, r.path, r.sha[0]);
+  for (const g of grouped) rewind(p, g.path, g.sha[0]);
+  for (const d of BA_DOCS) rewind(p, d.path, d.sha[0]);
+
+  const res = spawnSync('node', [CK, 'init', '--kit', 'ba'], { cwd: p, encoding: 'utf-8' });
+  assert.strictEqual(res.status, 0, res.stderr);
+  assertCurrentBa(p);
+});
+
+test('upgrade: a v1.8.x ba install loses its flat ba-* skills and gains the grouped ones', () => {
+  // v1.8.0–1.8.1 installed the six skills flat at `.claude/skills/ba-<name>/`.
+  const p = project();
+  const flat = RETIRED.filter((r) => /^\.claude\/skills\/ba-/.test(r.path));
+  assert.ok(flat.length >= 17, 'the v1.8.x BA entries are missing — the test would pass vacuously');
+  for (const r of flat) rewind(p, r.path, r.sha[0]);
+  for (const d of BA_DOCS) rewind(p, d.path, d.sha[d.sha.length - 1]);
+  for (const f of ['README.md', 'capability-map.md']) {
+    fs.copyFileSync(path.join(REPO, 'skills/ba', f), path.join(p, '.claude/skills/ba', f));
   }
 
   const res = spawnSync('node', [CK, 'init', '--kit', 'ba'], { cwd: p, encoding: 'utf-8' });
   assert.strictEqual(res.status, 0, res.stderr);
-
-  const left = fs.readdirSync(path.join(p, '.claude/skills/ba')).sort();
-  assert.deepStrictEqual(left, ['README.md', 'capability-map.md'],
-    'only the kit docs stay under skills/ba/ — no emptied skill directories');
-  for (const n of ['ba-context', 'ba-prd', 'ba-spec', 'ba-traceability', 'ba-diagramming', 'ba-deliver']) {
-    assert.ok(fs.existsSync(path.join(p, '.claude/skills', n, 'SKILL.md')), `${n} must be installed`);
-  }
-  const prd = fs.readFileSync(path.join(p, '.claude/commands/ba/prd.md'), 'utf-8');
-  assert.doesNotMatch(prd, /skills\/ba\/prd\//, 'the command must be refreshed to the flat path');
+  assertCurrentBa(p);
 });

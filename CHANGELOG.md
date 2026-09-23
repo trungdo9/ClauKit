@@ -1,5 +1,16 @@
 # Changelog
 
+## 1.9.0 (2026-09-23)
+
+### ⚠️ Behaviour change
+* **ba kit — skills grouped under `skills/ba/`, no longer registered.** The six BA skills install at `.claude/skills/ba/<name>/` (`context`, `prd`, `spec`, `traceability`, `diagramming`, `deliver`) instead of flat `.claude/skills/ba-<name>/`. Every kit now keeps its skills in one folder; the `/ba:*` commands are the entry points and read the skills by path, like `/ck:*` and `/mk:*`. `Skill(skill: "ba-spec")` returns `Unknown skill` again — use the commands. Frontmatter names stay `ba-<name>`. Kit `ba` → 0.4.0.
+
+### 🐛 Bug Fixes / upgrade
+* **upgrade from 1.8.x:** the 17 flat `ba-*` files are in `RETIRED` (removed on digest proof) and the 8 BA docs that named them get their 1.8.x digests in `STALE`, so a plain `ck init --kit ba` leaves only `skills/ba/`.
+* **upgrade from 1.7.0:** the five v1.7.0 `ba/<name>/` paths are live again, so they moved from `RETIRED` to `STALE` — left in `RETIRED`, their unchanged reference files matched the digest and would have been deleted right after the copy wrote them. `ba/ba-context/` stays retired (now `ba/context/`).
+* **installer:** the `sourceMap` manifest field added in 1.8.1 is removed with its only user.
+* **tests:** no kit may install a depth-1 skill; ba installs exactly six skills under `skills/ba/`; upgrade tests from 1.7.0 and 1.8.x assert byte-equal current files and no flat `ba-*` left.
+
 ## 1.8.1 (2026-09-23)
 
 ### ♻️ Refactor

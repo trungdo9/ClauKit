@@ -22,11 +22,11 @@ Render gate. No renderer available ⇒ ship the source, label it `[UNRENDERED]`,
 
 ## 5. Say "Read the skill file", never "Activate the skill"
 
-Skills under `.claude/skills/ba/` sit at group depth and are **not registered**; `Skill(skill: "traceability")` returns `Unknown skill`. Measured; see the root `CLAUDE.md`. Quote the canonical form verbatim so it can be copied, with the target counted from `.claude/workflows/`:
+Skills under `.claude/skills/ba/` sit at group depth and are **not registered**; `Skill(skill: "ba-traceability")` returns `Unknown skill` — the `/ba:*` commands are the entry points. Measured; see the root `CLAUDE.md`. Quote the canonical form verbatim so it can be copied, with the target counted from `.claude/workflows/`:
 
-**Read the `ba-traceability` skill file** ([.claude/skills/ba-traceability/SKILL.md](../skills/ba-traceability/SKILL.md))
+**Read the `ba-traceability` skill file** ([.claude/skills/ba/traceability/SKILL.md](../skills/ba/traceability/SKILL.md))
 
-**Read the `ba-context` skill file** ([.claude/skills/ba-context/SKILL.md](../skills/ba-context/SKILL.md))
+**Read the `ba-context` skill file** ([.claude/skills/ba/context/SKILL.md](../skills/ba/context/SKILL.md))
 
 ## 6. Hard-fail pre-flight
 
@@ -84,8 +84,8 @@ What the software kit already owns, in one place — ask for these there, not he
 
 ## 11. Cross-references
 
-- `.claude/skills/ba-traceability/SKILL.md` — traceability spine contract (entity kinds, derived-index rebuild, gap report)
-- `.claude/skills/ba-context/SKILL.md` — context hub bootstrap (`plans/ba-context.md`)
+- `.claude/skills/ba/traceability/SKILL.md` — traceability spine contract (entity kinds, derived-index rebuild, gap report)
+- `.claude/skills/ba/context/SKILL.md` — context hub bootstrap (`plans/ba-context.md`)
 - `.claude/skills/ba/README.md` — BA kit landing page
 - `.claude/skills/ba/capability-map.md` — 55-capability map, single source (rule 5 example)
 - `.claude/scripts/ba/traceability.cjs` — spine CLI (`index` / `gap` / `validate` / `compose` / `changelog` / `deliver`)

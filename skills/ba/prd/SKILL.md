@@ -63,6 +63,6 @@ roadmap table shape.
 
 ## Cross-references
 
-- **Read the `ba-traceability` skill file** ([.claude/skills/ba-traceability/SKILL.md](../ba-traceability/SKILL.md)) — the id scheme and entity contract every `PRD-001.md`/`EPIC-*.md` must satisfy.
-- **Read the `ba-context` skill file** ([.claude/skills/ba-context/SKILL.md](../ba-context/SKILL.md)) — the hub this skill reads before writing anything.
-- **Read the `business-analysis-rules` workflow** ([.claude/workflows/business-analysis-rules.md](../../workflows/business-analysis-rules.md)) — rule 1 (sourcing), rule 6 (hard-fail pre-flight), rule 7 (output language).
+- **Read the `ba-traceability` skill file** ([.claude/skills/ba/traceability/SKILL.md](../traceability/SKILL.md)) — the id scheme and entity contract every `PRD-001.md`/`EPIC-*.md` must satisfy.
+- **Read the `ba-context` skill file** ([.claude/skills/ba/context/SKILL.md](../context/SKILL.md)) — the hub this skill reads before writing anything.
+- **Read the `business-analysis-rules` workflow** ([.claude/workflows/business-analysis-rules.md](../../../workflows/business-analysis-rules.md)) — rule 1 (sourcing), rule 6 (hard-fail pre-flight), rule 7 (output language).

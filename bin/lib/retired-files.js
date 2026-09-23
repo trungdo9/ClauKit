@@ -173,29 +173,35 @@ const RETIRED = [
   // `preview` keeps a three-line pointer instead, which is not a re-duplication
   // because `preview` is still presentations-only.
   { path: ".claude/skills/software/markdown-novel-viewer/SKILL.md", token: "software/markdown-novel-viewer", sha: ["28b9d68bfd4c12e9641e3e1bf7af6ae0338d89f8"] },
-  // BA skills flattened 2026-09-23 (v1.8.0): `.claude/skills/ba/<name>/` sat one
-  // level below the depth Claude Code registers, so none of the six were ever
-  // invocable as skills. They now ship as `.claude/skills/ba-<name>/`; these are
-  // the grouped copies a v1.7.0 install left behind. The commands and workflow
-  // that pointed at them are refreshed through STALE first.
+  // v1.7.0 shipped the BA context skill at `.claude/skills/ba/ba-context/`; it
+  // installs at `.claude/skills/ba/context/` now. The other five v1.7.0 paths
+  // (`ba/<name>/`) are live again since v1.9.0 and moved to STALE below — left
+  // here, their unchanged reference files would match these digests and be
+  // deleted right after the copy loop wrote them.
   { path: ".claude/skills/ba/ba-context/SKILL.md", token: "skills/ba/ba-context/", sha: ["48938dbfd87ff30d5a7f65086a7741307c2070d0", "ebf05db94a2d7b1e34cde1bdddb9f56ac070102d"] },
   { path: ".claude/skills/ba/ba-context/references/context-template.md", token: "skills/ba/ba-context/", sha: ["01fe695319d7bc29ffe77891bb2f096ebdceb935"] },
-  { path: ".claude/skills/ba/deliver/SKILL.md", token: "skills/ba/deliver/", sha: ["7b7cfbf6af5a6d1001a760e86b30bf62816f95d1"] },
-  { path: ".claude/skills/ba/deliver/references/deliverable-classes.md", token: "skills/ba/deliver/", sha: ["1ebc10b02c716f6923766967d8efa0acd82ec190"] },
-  { path: ".claude/skills/ba/deliver/references/sign-block.md", token: "skills/ba/deliver/", sha: ["77ae75bb118cce260735e08930b67f04e141a94a"] },
-  { path: ".claude/skills/ba/diagramming/SKILL.md", token: "skills/ba/diagramming/", sha: ["ea64542baff27058f1027a669b31358654fae094"] },
-  { path: ".claude/skills/ba/diagramming/references/mermaid-patterns.md", token: "skills/ba/diagramming/", sha: ["dfc4b16ceeda7ab2234d64f6941dcbee0c3bf9f9"] },
-  { path: ".claude/skills/ba/prd/SKILL.md", token: "skills/ba/prd/", sha: ["fca2b42283464eaffb3535cda34a9b98a5e7515b"] },
-  { path: ".claude/skills/ba/prd/references/prd-structure.md", token: "skills/ba/prd/", sha: ["b64840c80ed8923388b64c1af12c3b08086cb828"] },
-  { path: ".claude/skills/ba/spec/SKILL.md", token: "skills/ba/spec/", sha: ["29a94ae779cb98022e0768fa16eb25e6661b3977", "6c38424a536b5c97933ba681d8d7e438446f80d6", "ece7a083e6a9c0d8dea7c4a77aeecd06f5e85ad7"] },
-  { path: ".claude/skills/ba/spec/references/bp-structure.md", token: "skills/ba/spec/", sha: ["3661bfb9f7f8d966ea521a35c1e6a486f560b334"] },
-  { path: ".claude/skills/ba/spec/references/compose-format.md", token: "skills/ba/spec/", sha: ["6a35dee1bd386946738e934c1720ace4e7595996"] },
-  { path: ".claude/skills/ba/spec/references/cr-body.md", token: "skills/ba/spec/", sha: ["6e4fbe4e3dd398dc793a4ad34e41b7eca79145eb"] },
-  { path: ".claude/skills/ba/spec/references/entity-bodies.md", token: "skills/ba/spec/", sha: ["674a38ad9e9f00adcd9a77f12ef01a436dcacedf"] },
-  { path: ".claude/skills/ba/traceability/SKILL.md", token: "skills/ba/traceability/", sha: ["30236c8318186df669fa1ee6d225cef5c03a4d6a", "4770798ac5c8bb3b8c5d399e5c4302a4a62a2e87"] },
-  { path: ".claude/skills/ba/traceability/references/entity-template.md", token: "skills/ba/traceability/", sha: ["4dc1fb92ec260129b290b6a5e415667d8d19f120"] },
-  { path: ".claude/skills/ba/traceability/references/id-scheme.md", token: "skills/ba/traceability/", sha: ["4d14d1f930f1a792fbc4577fbe587d0096b9d496", "dfcf0a0b5b3e52ce0fb3c1f697922f0b207d379d"] },
 
+  // v1.8.0–1.8.1 installed the six BA skills flat at `.claude/skills/ba-<name>/`
+  // so Claude Code would register them. v1.9.0 groups every kit's skills,
+  // BA included, under its own folder (maintainer decision: many kits, one tree
+  // per kit); the `/ba:*` commands read them by path like `/ck:*` and `/mk:*`.
+  { path: ".claude/skills/ba-context/SKILL.md", token: "skills/ba-context/", sha: ["b9f4242b6715850661cf24aefb15b24397d8b94a"] },
+  { path: ".claude/skills/ba-context/references/context-template.md", token: "skills/ba-context/", sha: ["01fe695319d7bc29ffe77891bb2f096ebdceb935"] },
+  { path: ".claude/skills/ba-deliver/SKILL.md", token: "skills/ba-deliver/", sha: ["671e8553c6d2579737e9c4dcc2ee5e2d4fa58288"] },
+  { path: ".claude/skills/ba-deliver/references/deliverable-classes.md", token: "skills/ba-deliver/", sha: ["1ebc10b02c716f6923766967d8efa0acd82ec190"] },
+  { path: ".claude/skills/ba-deliver/references/sign-block.md", token: "skills/ba-deliver/", sha: ["77ae75bb118cce260735e08930b67f04e141a94a"] },
+  { path: ".claude/skills/ba-diagramming/SKILL.md", token: "skills/ba-diagramming/", sha: ["3dbac8e1944a7adfc93630ea34b4c2ac38d38aa0"] },
+  { path: ".claude/skills/ba-diagramming/references/mermaid-patterns.md", token: "skills/ba-diagramming/", sha: ["dfc4b16ceeda7ab2234d64f6941dcbee0c3bf9f9"] },
+  { path: ".claude/skills/ba-prd/SKILL.md", token: "skills/ba-prd/", sha: ["d0ae90992503c0e624f3682dd33a5d139d9197ea"] },
+  { path: ".claude/skills/ba-prd/references/prd-structure.md", token: "skills/ba-prd/", sha: ["b64840c80ed8923388b64c1af12c3b08086cb828"] },
+  { path: ".claude/skills/ba-spec/SKILL.md", token: "skills/ba-spec/", sha: ["cbf6883718c106df4aa742924835da999c4dde49"] },
+  { path: ".claude/skills/ba-spec/references/bp-structure.md", token: "skills/ba-spec/", sha: ["3661bfb9f7f8d966ea521a35c1e6a486f560b334"] },
+  { path: ".claude/skills/ba-spec/references/compose-format.md", token: "skills/ba-spec/", sha: ["6a35dee1bd386946738e934c1720ace4e7595996"] },
+  { path: ".claude/skills/ba-spec/references/cr-body.md", token: "skills/ba-spec/", sha: ["6e4fbe4e3dd398dc793a4ad34e41b7eca79145eb"] },
+  { path: ".claude/skills/ba-spec/references/entity-bodies.md", token: "skills/ba-spec/", sha: ["5e98bde15310285f8fbf245463325904b5fe508c"] },
+  { path: ".claude/skills/ba-traceability/SKILL.md", token: "skills/ba-traceability/", sha: ["068a5f4b148484844e95793239b166a9ddd804d8"] },
+  { path: ".claude/skills/ba-traceability/references/entity-template.md", token: "skills/ba-traceability/", sha: ["4dc1fb92ec260129b290b6a5e415667d8d19f120"] },
+  { path: ".claude/skills/ba-traceability/references/id-scheme.md", token: "skills/ba-traceability/", sha: ["dfcf0a0b5b3e52ce0fb3c1f697922f0b207d379d"] },
 ];
 
 /**
@@ -258,15 +264,32 @@ const STALE = [
   { path: ".claude/skills/software/preview/SKILL.md", sha: ["4ba137add7b38af495632df47475c225576769f7", "7a0ebbf5b62144c7c7320d2f3fd46d46132bb10d"] },
   { path: ".claude/agents/engineering/docs-manager.md", sha: ["161c049166e49a7b9ccabae45fe1a44bb9e53500", "507f2f963c2af472bda2f64764be28d7a0ce73f0", "879260f5fbeb4a6966147ac0256c6d3ca03e26a8", "dd7625555c72282d8f09a1bbb2fa9c3286101b74", "e1431897b1d9f4c34ceee6133886ba24d59b8f3e"] },
   // BA prose that named the grouped `skills/ba/<name>/` paths (retired above).
-  { path: ".claude/commands/ba/deliver.md", sha: ["5eebd3d67cac5b6ad708c25c485604053f5762cd", "f11aac94a31c10e3ccb072b1a4a0f2f6e90df368"] },
-  { path: ".claude/commands/ba/diagram.md", sha: ["1da90435f690cc4fb3355d6e52fcacbc7c9691df", "647dbd20cb20bf3948131b77efa58a43d916319b"] },
-  { path: ".claude/commands/ba/plan.md", sha: ["a18cbd22795cc03117653065a76cf83c23c4d527", "bfeef672bdfcb89994b680293534eecc08495275"] },
-  { path: ".claude/commands/ba/prd.md", sha: ["402ff27c51091affe3fe8e61ebb500b52aa5a13c", "d1c0e5418db97a4fe9a506d345fbe410e180f471"] },
-  { path: ".claude/commands/ba/qc.md", sha: ["0efbdc1bb467925a88d3ab73adb85aae901c92c6", "e915d9c51ce46bd1b6001b33fd3b7b09f0ec8669"] },
-  { path: ".claude/commands/ba/spec.md", sha: ["1b498f621421484a540b24aace4601d76c689433", "3f458ced6ff38715450154c1e0eaa114e5eccf0c", "590c61eaac173a2e30cc2498c658e21764b4656a", "9e2761a100af6dea84dc2f6ef31c4695ceffc474"] },
-  { path: ".claude/skills/ba/README.md", sha: ["4260c0221ff6490e689c1728fa051ce127d028d7", "8f807603b7114468118783ed1362897bfc0eefa6", "b45c5806e768a2cb49b68954fcd354df64697ae3"] },
-  { path: ".claude/workflows/business-analysis-rules.md", sha: ["16e14287f82811c83338370f29081d937b9f7372", "4b69c7ff5d7aada5ff24695c9ba0de52995fb303", "70923a35904ddfb51d853283349492083839bd9f", "735d746580ec1f462610d3c41df1644ef3755eb3", "a1f50cd0a6c1e3a1c7fe8af8f80e73e9555296ac"] },
+  { path: ".claude/commands/ba/deliver.md", sha: ["5eebd3d67cac5b6ad708c25c485604053f5762cd", "f11aac94a31c10e3ccb072b1a4a0f2f6e90df368", "6fd349f03d7c4a6e97c16102faedb6f57e51e64e"] },
+  { path: ".claude/commands/ba/diagram.md", sha: ["1da90435f690cc4fb3355d6e52fcacbc7c9691df", "647dbd20cb20bf3948131b77efa58a43d916319b", "5eb1582da14f3f01dd3bedde4dd7d72640e29350"] },
+  { path: ".claude/commands/ba/plan.md", sha: ["a18cbd22795cc03117653065a76cf83c23c4d527", "bfeef672bdfcb89994b680293534eecc08495275", "afb5dd0d59f1ee3ccb5c154076cf05a7934cd4a1"] },
+  { path: ".claude/commands/ba/prd.md", sha: ["402ff27c51091affe3fe8e61ebb500b52aa5a13c", "d1c0e5418db97a4fe9a506d345fbe410e180f471", "c855511a4be4f8e335ba861f7bc7407424239b30"] },
+  { path: ".claude/commands/ba/qc.md", sha: ["0efbdc1bb467925a88d3ab73adb85aae901c92c6", "e915d9c51ce46bd1b6001b33fd3b7b09f0ec8669", "7574bc60be2823bb8512c50dda4e49218bdd052d"] },
+  { path: ".claude/commands/ba/spec.md", sha: ["1b498f621421484a540b24aace4601d76c689433", "3f458ced6ff38715450154c1e0eaa114e5eccf0c", "590c61eaac173a2e30cc2498c658e21764b4656a", "9e2761a100af6dea84dc2f6ef31c4695ceffc474", "d5d1e7d3c5fc6ab0871a2677c52d4eb4e5383adf"] },
+  { path: ".claude/skills/ba/README.md", sha: ["4260c0221ff6490e689c1728fa051ce127d028d7", "8f807603b7114468118783ed1362897bfc0eefa6", "b45c5806e768a2cb49b68954fcd354df64697ae3", "5b145f42eba4f8b0c4bda637d60a4324a67b84c6"] },
+  { path: ".claude/workflows/business-analysis-rules.md", sha: ["16e14287f82811c83338370f29081d937b9f7372", "4b69c7ff5d7aada5ff24695c9ba0de52995fb303", "70923a35904ddfb51d853283349492083839bd9f", "735d746580ec1f462610d3c41df1644ef3755eb3", "a1f50cd0a6c1e3a1c7fe8af8f80e73e9555296ac", "2c01bc2cd432e32db29059ca2b2aa4879f1b7383"] },
 
+  // v1.7.0 grouped BA skill files, live again at the same path since v1.9.0:
+  // refreshed on digest proof, since the copy loop never rewrites a file.
+  { path: ".claude/skills/ba/deliver/SKILL.md", sha: ["7b7cfbf6af5a6d1001a760e86b30bf62816f95d1"] },
+  { path: ".claude/skills/ba/deliver/references/deliverable-classes.md", sha: ["1ebc10b02c716f6923766967d8efa0acd82ec190"] },
+  { path: ".claude/skills/ba/deliver/references/sign-block.md", sha: ["77ae75bb118cce260735e08930b67f04e141a94a"] },
+  { path: ".claude/skills/ba/diagramming/SKILL.md", sha: ["ea64542baff27058f1027a669b31358654fae094"] },
+  { path: ".claude/skills/ba/diagramming/references/mermaid-patterns.md", sha: ["dfc4b16ceeda7ab2234d64f6941dcbee0c3bf9f9"] },
+  { path: ".claude/skills/ba/prd/SKILL.md", sha: ["fca2b42283464eaffb3535cda34a9b98a5e7515b"] },
+  { path: ".claude/skills/ba/prd/references/prd-structure.md", sha: ["b64840c80ed8923388b64c1af12c3b08086cb828"] },
+  { path: ".claude/skills/ba/spec/SKILL.md", sha: ["29a94ae779cb98022e0768fa16eb25e6661b3977", "6c38424a536b5c97933ba681d8d7e438446f80d6", "ece7a083e6a9c0d8dea7c4a77aeecd06f5e85ad7"] },
+  { path: ".claude/skills/ba/spec/references/bp-structure.md", sha: ["3661bfb9f7f8d966ea521a35c1e6a486f560b334"] },
+  { path: ".claude/skills/ba/spec/references/compose-format.md", sha: ["6a35dee1bd386946738e934c1720ace4e7595996"] },
+  { path: ".claude/skills/ba/spec/references/cr-body.md", sha: ["6e4fbe4e3dd398dc793a4ad34e41b7eca79145eb"] },
+  { path: ".claude/skills/ba/spec/references/entity-bodies.md", sha: ["674a38ad9e9f00adcd9a77f12ef01a436dcacedf"] },
+  { path: ".claude/skills/ba/traceability/SKILL.md", sha: ["30236c8318186df669fa1ee6d225cef5c03a4d6a", "4770798ac5c8bb3b8c5d399e5c4302a4a62a2e87"] },
+  { path: ".claude/skills/ba/traceability/references/entity-template.md", sha: ["4dc1fb92ec260129b290b6a5e415667d8d19f120"] },
+  { path: ".claude/skills/ba/traceability/references/id-scheme.md", sha: ["4d14d1f930f1a792fbc4577fbe587d0096b9d496", "dfcf0a0b5b3e52ce0fb3c1f697922f0b207d379d"] },
 ];
 
 /** Where shipped prose lives, and which extensions carry instructions. */

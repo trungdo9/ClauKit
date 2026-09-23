@@ -74,5 +74,5 @@ missing, never touch what the user wrote, and say what changed.
 
 ## Cross-references
 
-- **Read the `business-analysis-rules` workflow** ([.claude/workflows/business-analysis-rules.md](../../workflows/business-analysis-rules.md)) — rule 6 (hard-fail pre-flight, `/ba:plan` exception), rule 1 (sourcing), rule 7 (output language).
-- **Read the `ba-traceability` skill file** ([.claude/skills/ba-traceability/SKILL.md](../ba-traceability/SKILL.md)) — the spine this hub's `project id` names (`plans/ba/<slug>/`).
+- **Read the `business-analysis-rules` workflow** ([.claude/workflows/business-analysis-rules.md](../../../workflows/business-analysis-rules.md)) — rule 6 (hard-fail pre-flight, `/ba:plan` exception), rule 1 (sourcing), rule 7 (output language).
+- **Read the `ba-traceability` skill file** ([.claude/skills/ba/traceability/SKILL.md](../traceability/SKILL.md)) — the spine this hub's `project id` names (`plans/ba/<slug>/`).

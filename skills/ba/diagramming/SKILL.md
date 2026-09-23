@@ -69,6 +69,6 @@ state is exactly what rule 4 exists to forbid.
 
 ## Cross-references
 
-- **Read the `ba-traceability` skill file** ([.claude/skills/ba-traceability/SKILL.md](../ba-traceability/SKILL.md)) — the entity contract this skill reads before drawing anything.
-- **Read the `business-analysis-rules` workflow** ([.claude/workflows/business-analysis-rules.md](../../workflows/business-analysis-rules.md)) — rule 2 (confidence, for free-text input), rule 4 (the render gate this skill implements), rule 6 (hard-fail pre-flight), rule 7 (output language).
-- `.claude/commands/ba/diagram.md` ([../../commands/ba/diagram.md](../../commands/ba/diagram.md)) — the four actions this skill backs.
+- **Read the `ba-traceability` skill file** ([.claude/skills/ba/traceability/SKILL.md](../traceability/SKILL.md)) — the entity contract this skill reads before drawing anything.
+- **Read the `business-analysis-rules` workflow** ([.claude/workflows/business-analysis-rules.md](../../../workflows/business-analysis-rules.md)) — rule 2 (confidence, for free-text input), rule 4 (the render gate this skill implements), rule 6 (hard-fail pre-flight), rule 7 (output language).
+- `.claude/commands/ba/diagram.md` ([../../commands/ba/diagram.md](../../../commands/ba/diagram.md)) — the four actions this skill backs.

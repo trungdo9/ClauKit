@@ -20,11 +20,11 @@ PROJECT: $2 (default: derived from the repo directory name, kebab-cased) — mus
 
 ## Workflow
 
-Read the `ba-spec` skill file ([.claude/skills/ba-spec/SKILL.md](../../skills/ba-spec/SKILL.md)) —
+Read the `ba-spec` skill file ([.claude/skills/ba/spec/SKILL.md](../../skills/ba/spec/SKILL.md)) —
 the derivation chain and the methodology behind every action below.
 
 Before writing any id, read the `ba-traceability` skill file
-([.claude/skills/ba-traceability/SKILL.md](../../skills/ba-traceability/SKILL.md)).
+([.claude/skills/ba/traceability/SKILL.md](../../skills/ba/traceability/SKILL.md)).
 
 Every writing action follows the same four steps: **read the `ba-spec` skill file → read the
 `ba-traceability` skill file → write the entity file(s) → run `validate`, and refuse to report
@@ -86,8 +86,8 @@ additionally writes `plans/ba/<project-slug>/deliverables/PRD-001.md` and `SRS-0
 - `compose` is byte-stable over an unchanged entity tree; re-running it with no entity edits
   produces no diff.
 - Concise grammar. List unresolved questions at end.
-- Cross-references: `.claude/workflows/business-analysis-rules.md`, `.claude/skills/ba-spec/SKILL.md`,
-  `.claude/skills/ba-traceability/SKILL.md`.
+- Cross-references: `.claude/workflows/business-analysis-rules.md`, `.claude/skills/ba/spec/SKILL.md`,
+  `.claude/skills/ba/traceability/SKILL.md`.
 
 ## Examples
 

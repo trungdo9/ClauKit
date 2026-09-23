@@ -246,7 +246,7 @@ All are active (`dynamic-workflow` added 2026-06-03, paired with `/ck:flow`; bas
 |---|:---:|---|---|
 | `docker-expert` | ✅ | `infrastructure/docker-expert/` | Production Docker: multi-stage builds, image optimization, security hardening, supply chain security — sourced from VoltAgent/awesome-claude-code-subagents |
 
-### BA (6) — source `skills/ba/<name>/` → installs as `.claude/skills/ba-<name>/` (registered, depth 1, via `ba.json` `sourceMap`)
+### BA (6) — `.claude/skills/ba/<name>/` (grouped, read by path from `/ba:*`; frontmatter `name: ba-<name>`)
 
 Business analysis skills — entity traceability, PRD/SRS generation, specification composition, diagramming, QC, and deliverable publishing. All KitForge-authored. Workflows: PRD → SRS → tickets (via `/ck:tickets` + `ticket-slicer`).
 

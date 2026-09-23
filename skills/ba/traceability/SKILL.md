@@ -61,5 +61,5 @@ node .claude/scripts/ba/traceability.cjs deliver  <project-dir> <what> [--force]
 
 - `references/id-scheme.md` — the 9 kinds, the two id regexes, the ten-key frontmatter table (single source; `spine-parse.cjs` implements it, never restates it in prose).
 - `references/entity-template.md` — the binding entity shape, one worked example per kind, and the storage → deliverable rendering.
-- **Read the `business-analysis-rules` workflow** ([.claude/workflows/business-analysis-rules.md](../../workflows/business-analysis-rules.md)) for the kit-wide rules this skill's checks enforce.
-- `/ba:plan` bootstraps the context hub every `/ba:` command reads first ([.claude/commands/ba/plan.md](../../commands/ba/plan.md)).
+- **Read the `business-analysis-rules` workflow** ([.claude/workflows/business-analysis-rules.md](../../../workflows/business-analysis-rules.md)) for the kit-wide rules this skill's checks enforce.
+- `/ba:plan` bootstraps the context hub every `/ba:` command reads first ([.claude/commands/ba/plan.md](../../../commands/ba/plan.md)).
