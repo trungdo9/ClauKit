@@ -1,5 +1,15 @@
 # Changelog
 
+## 1.8.1 (2026-09-23)
+
+### ♻️ Refactor
+* **ba kit — source layout:** the six BA skills live grouped again at `skills/ba/<name>/` (beside `README.md` + `capability-map.md`) and still **install** flat as `.claude/skills/ba-<name>/`, so they stay registered. New manifest field `sourceMap` (install path → package path) in `.claude/kits/ba.json`; `kit-resolver` applies it inside `resolveSourcePath` (`mapToSource`), so the copy loop and STALE refreshes both see it. Install paths are unchanged — no upgrade cleanup needed. In the ClauKit repo itself the BA skills are no longer registered (depth 2); test through an install. Kit `ba` → 0.3.0.
+* **tests:** no skill may sit at package depth 1; every `skills/ba/<name>/` has exactly one `sourceMap` entry installing as `ba-<name>` with matching `name:`; the npm-pack check resolves mapped paths.
+
+### 🐛 Bug Fixes
+* **hooks — `root-commit-guard`:** the `ALLOW_ROOT_PUSH=1` override is removed. A push from a workspace-root session into a nested repo is always refused; push from a session opened inside that repo. Commits still only warn.
+* **docs:** `tester`, `database-admin` and `/ck:review` said "activate" for grouped skills (a `Skill()` call that returns `Unknown skill`) — now "read", matching the linked paths. Skill counts corrected: 136 grouped + 6 BA = 142 (CLAUDE.md said 132; `package.json`, README and `ck --help` said 127).
+
 ## 1.8.0 (2026-09-23)
 
 ### 🐛 Bug Fixes
