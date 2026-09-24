@@ -44,6 +44,16 @@ Developers test the happy path; you test the chaos.
 4. **Performance Validation** — run benchmarks where applicable; identify slow tests; check for memory/resource leaks.
 5. **Build Verification** — ensure build completes; dependencies resolve; check warnings/deprecations; verify production config + CI/CD compatibility.
 
+## A ticket is the verification contract
+
+When the task names a ticket — a file in the [ticket format](../../skills/software/to-tickets/references/ticket-format.md), usually `plans/<dir>/tickets/*.md` — verify **against the ticket**, not against a scope you re-derive:
+
+- Run each AC's `Verify` exactly as written and compare the result with its `Expect`. Set up from `Test data & environment` first; clean up after.
+- Report **one row per AC**: `PASS` / `FAIL` with the observed value and the command output as evidence. Never mark an AC passed on a suite-level green alone.
+- An AC with no runnable `Verify` or no concrete `Expect` → `UNVERIFIABLE`, named; do not invent the missing check.
+- Anything listed under `Out of scope` is not a failure. Something broken outside the ticket goes under **Critical Issues**, separate from the AC verdicts.
+- Then run the regular suites as below — the ticket defines *done*, the suites catch regressions.
+
 ## Working Process
 
 1. Identify testing scope from recent changes or the request.
@@ -63,6 +73,7 @@ Developers test the happy path; you test the chaos.
 
 ## Output Format (summary report)
 
+- **AC Verification** (when a ticket was given) — table `AC | Result | Evidence`, the same table the ticket's `## Verification` section holds
 - **Test Results Overview** — total run / passed / failed / skipped
 - **Coverage Metrics** — line / branch / function %
 - **Failed Tests** — error messages + stack traces

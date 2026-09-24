@@ -130,7 +130,7 @@ Stages are named; numbering lives in the cook skill (source of truth).
 **Skip if `--no-test` (waiver logged in plan file).**
 
 * Real tests: happy path + negative + recovery. **No mocks-to-pass, no fake data.**
-* `tester` (`model: sonnet`) runs the suite. On failure: `debugger` (`sonnet`) finds root cause → implementer fixes → re-run. 100% pass required; loop cap applies (3 per gate, 5 per feature). A failure that survives one sonnet pass escalates one tier — a second identical dispatch does not.
+* `tester` (`model: sonnet`) runs the suite — and, when the source is a ticket, verifies it AC by AC (pass the ticket path). On failure: `debugger` (`sonnet`) finds root cause → implementer fixes → re-run. 100% pass required; loop cap applies (3 per gate, 5 per feature). A failure that survives one sonnet pass escalates one tier — a second identical dispatch does not.
 
 ### Review
 

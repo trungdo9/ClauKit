@@ -90,42 +90,11 @@ Iterate until the user approves. Nothing is written to disk, and nothing at all 
 
 Write in dependency order, blockers first, so every ticket can reference identifiers that already exist.
 
-**Local** — one file per ticket, never one combined file:
+Every ticket uses **[the ticket format](references/ticket-format.md)** — the verification contract that lets `tester` verify a ticket from its text alone and lets `/ck:cook` read its Stage-0 items straight from it. A slice is `type: feature` or `change`: Problem (Actual / Expected), Solution, Acceptance criteria where **every AC carries `Verify` and `Expect`**, Test data & environment. Write it `status: ready` only when the format's readiness rules hold; otherwise `draft`, with the gap named.
 
-```markdown
-# NN: <ticket title>
+**Local** — one file per ticket, never one combined file: `plans/<dir>/tickets/NN-<slug>.md`, `ticket: NN-<slug>`, `blocked_by:` listing the blocking ticket ids, `covers:` the phase file when the plan has one.
 
-**What to build:** the end-to-end behaviour this ticket makes work, from the user's
-perspective — not a layer-by-layer implementation list.
-
-**Blocked by:** `NN-<slug>`, `NN-<slug>` — or "None (can start immediately)".
-
-**Status:** ready
-
-**Covers:** `phase-XX-<name>.md` (when the parent plan has phase files), else omit.
-
-## Acceptance criteria
-
-- [ ] criterion 1
-- [ ] criterion 2
-```
-
-**Tracker** — one sub-task per ticket under the named parent. Before the first create: confirm the issue type with `getJiraProjectIssueTypesMetadata` and confirm a blocking link type exists with `getIssueLinkTypes`; wire edges with `createIssueLink`, and only fall back to a `Blocked by` line in the description when the project has no such link type. Body:
-
-```markdown
-## What to build
-
-The end-to-end behaviour this ticket makes work, from the user's perspective.
-
-## Acceptance criteria
-
-- [ ] criterion 1
-- [ ] criterion 2
-
-## Blocked by
-
-- <parent-relative reference to each blocking ticket>, or "None (can start immediately)".
-```
+**Tracker** — one sub-task per ticket under the named parent, body in the format's **tracker variant** (behaviour-level `Verify`, no repo paths). Before the first create: confirm the issue type with `getJiraProjectIssueTypesMetadata` and confirm a blocking link type exists with `getIssueLinkTypes`; wire edges with `createIssueLink`, and only fall back to a `Blocked by` line in the description when the project has no such link type.
 
 Tracker content is **English only** and business-readable — a PM, a client or a tester is the reader, not the implementer. Never transition, close, edit or comment on the **parent** issue while publishing its children.
 

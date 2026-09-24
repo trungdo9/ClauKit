@@ -60,7 +60,7 @@ A slice whose acceptance criteria read "the repository method exists" or "the DT
 - Delivers: <the end-to-end behaviour, one line, demo-sentence shaped>
 - Blocked by: none
 - Covers: `phase-XX-<name>.md` (omit when the source has no phase files)
-- Acceptance: <2–4 criteria, observable behaviour>
+- Acceptance: <2–4 criteria, observable behaviour — each with its Verify / Expect, per the [ticket format](../../skills/software/to-tickets/references/ticket-format.md)>
 
 ### Frontier
 - Startable now: `01`

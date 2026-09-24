@@ -80,6 +80,8 @@ Over-scoping is a distinct failure from a wrong root cause: the diagnosis can be
 
 Gate passes only when all 5 are filled & user-confirmed (default / `--fast`) or all 5 are filled & `[ASSUMED]`-logged (`--auto` / `--from-plan`).
 
+**A ticket as the source.** When the plan path is a ticket in the [ticket format](../to-tickets/references/ticket-format.md), read the five items from its sections per the format's Stage-0 mapping table — no questions, no `[ASSUMED]` for a `status: ready` ticket. A `draft` ticket is missing something by its own admission: ask about the named gap before planning. Hand the same ticket path to `tester` at the Test stage, so it verifies AC by AC.
+
 **Closing the loop:** the 5 items are not write-once — the final report re-verifies each acceptance criterion against fresh evidence (criterion → test output / command result), per `[[code-review]]` verification gates.
 
 ## Stage 0.5 — Verify-Plan Gate
