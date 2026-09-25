@@ -1,5 +1,27 @@
 # Changelog
 
+## 1.10.0 (2026-09-25)
+
+### ✨ Features
+* **Token budget, measured over 35 days of real usage (one workspace, 2026-08-20 → 09-24).** Cache re-reads were 97.5 % of all tokens, the main session carried ~65 % of the cost, and every subagent re-loaded `CLAUDE.md` + the memory index on each request.
+  * `workflows/development-rules.md`: **Context Budget** sections for tool output and session length.
+  * `workflows/orchestration-protocol.md`: a dispatch has a fixed price before it does any work (~18.6k tokens per request; `Explore` skips it), plus § *Subagents load CLAUDE.md*, covering `omitClaudeMd` and the rules card.
+* **Statusline context meter:** `🧠 ctx <k> · <age>`, yellow at ≥ 250k and red at ≥ 400k or ≥ 1 day (`scripts/ck/statusline-context-meter.cjs`, wired into `statusline.cjs`).
+* **Rules card for `omitClaudeMd` agents (opt-in):** `scripts/ck/subagent-card.cjs` generates `.claude/cards/subagent-card.md` from `<!-- card:t0 -->` blocks in the project `CLAUDE.md`. Without markers it does nothing. `/ck:health` fails on a stale card. No kit agent enables it.
+
+### 🐛 Bug Fixes
+* **protected-branch-guard judged the session directory, not the one the command runs in.** `cd <repo> && git push …` was checked against the session cwd, so it blocked a push the target repo allows and would have allowed one it forbids. It now follows `cd` / `pushd` / `( … )` across segments and expands `~` / `$HOME` for `cd` and `git -C`. An unresolvable `cd` fails ARMED.
+* **tests:** the spawned end-to-end guard test had been red since 964ebf3 (2026-09-08). Its repo had no `origin/staging`, which the guard deliberately leaves unguarded, and it still expected the removed `CK_PROTECTED_BRANCHES=''` off switch to disarm. Both corrected, plus a new test that pins the no-ladder design.
+* **/ck:health read `.claude/` as the project root** whenever `CLAUDE_PROJECT_DIR` was unset. The script moved to `scripts/ck/` but kept a fixed `'..','..'`. It now walks up to the `.claude/` directory.
+* **/ck:health doc-links** counted example links inside code spans as dead. Code is now stripped before matching. This exposed 2 real dead links in `docs/clauKit-registry.md`, now fixed.
+* The guard header no longer names the other kit it ships in.
+
+## 1.9.2 (2026-09-24)
+* Release of the tickets change (one ticket format as the verification contract for tester).
+
+## 1.9.1 (2026-09-24)
+* **orchestration-protocol:** brief discipline — narrow brief, return early, no fan-out for a single lookup, result ≤ ~60 lines.
+
 ## 1.9.0 (2026-09-23)
 
 ### ⚠️ Behaviour change
