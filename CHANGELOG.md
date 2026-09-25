@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.10.1 (2026-09-25)
+
+### 🐛 Bug Fixes
+* **Context Budget — session length pushed work onto the user.** On a red statusline the model stopped mid-task and asked the user to run a script or paste a prompt into another session. The rule now delegates to subagents first, never hands work back for token reasons, and keeps a fresh session as a one-line suggestion at a phase or ticket boundary. The meter's red hint reads `→ at phase end: new session from STATE.md`, and the rule states the statusline is visible to the user only.
+* **/ck:test** takes an optional ticket path and hands it to tester; `/ck:tickets` and ticket-slicer link the ticket format.
+
 ## 1.10.0 (2026-09-25)
 
 ### ✨ Features
