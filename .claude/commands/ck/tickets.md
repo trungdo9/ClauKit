@@ -3,7 +3,7 @@ description: ⚡⚡ Slice a plan or spec into vertical tracer-bullet tickets wit
 argument-hint: [plan-path | PROJ-NNN | spec-path | (empty)] [--jira PROJ-NNN] [--dry-run]
 ---
 
-Delegate the slicing to the [`ticket-slicer`](../../agents/engineering/ticket-slicer.md) agent, which runs the [`to-tickets`](../../skills/software/to-tickets/SKILL.md) skill — the single source of truth for slicing rules, the expand–contract sequence, the ticket templates, and the guardrails. Don't restate methodology here.
+Delegate the slicing to the [`ticket-slicer`](../../agents/engineering/ticket-slicer.md) agent, which runs the [`to-tickets`](../../skills/software/to-tickets/SKILL.md) skill — the single source of truth for slicing rules, the expand–contract sequence, the ticket format, and the guardrails. Don't restate methodology here.
 
 **Split of duties.** The agent reads the source and returns the breakdown; **this session runs the approval gate and does every write** (files, tracker). The agent never publishes — approval lives here, and so do its side effects.
 
@@ -37,7 +37,7 @@ An unrecognized first arg → treat as a path when it resolves, otherwise **ask*
 2. **Scout first when the area is cold** — [`/ck:scout`](scout.md), or `./docs/codebase-summary.md` + `./docs/code-standards.md` when the project has them. The agent cannot spawn subagents, so scouting is this session's job; hand it the report path. Skip when context already covers the touched code.
 3. **Spawn `ticket-slicer`** with: the resolved SOURCE path or key, any scout report path, and the plan dir to use. It reads the source in full, cuts the slices, runs its five cutting tests, and returns the breakdown — graph, tickets, frontier, blockers to slicing.
 4. **Gate — present and quiz.** Relay the breakdown as a numbered list: title · blocked by · what it delivers. Ask about granularity and whether each blocking edge is real. Re-invoke the agent with the objections when the user wants a re-cut. **Nothing is written before approval.** Stop here on `--dry-run`.
-5. **Publish** in dependency order, blockers first, using the skill's templates — local files by default, tracker sub-tasks under `--jira`'s parent (issue type via `getJiraProjectIssueTypesMetadata`, edges via `createIssueLink` after checking `getIssueLinkTypes`). Report the paths or issue keys created.
+5. **Publish** in dependency order, blockers first, in the skill's [ticket format](../../skills/software/to-tickets/references/ticket-format.md) — local files by default, tracker sub-tasks under `--jira`'s parent (issue type via `getJiraProjectIssueTypesMetadata`, edges via `createIssueLink` after checking `getIssueLinkTypes`). Report the paths or issue keys created.
 
 ## Guardrails
 
