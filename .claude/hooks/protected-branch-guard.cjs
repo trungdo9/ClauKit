@@ -50,12 +50,20 @@
  *
  * FAILS OPEN on: an unreadable payload, a segment it cannot tokenize, and a
  * current branch it cannot resolve (not a repo => the push would fail anyway).
+ *
+ * WHICH REPO: a command is judged in the directory it will RUN in, not the
+ * session's. `cd <dir> && git push` and `pushd <dir>; git push` move the
+ * directory for every later segment, and `git -C <dir>` moves it for one; `~`
+ * and `$HOME` are expanded. Measured before this: `cd ~/other-repo && git push
+ * origin main` was judged against the session directory, which blocked a push the
+ * target repo would have allowed and would allow one it should have refused. A
+ * `cd` argument the hook cannot resolve (another variable, `cd -`) fails ARMED:
+ * the ladder probe cannot read it, so the guard stays on.
  * This hook adds a refusal to a previously-allowed action, so a bug in it must
  * not become a new way for work to fail.
  *
- * MAINTENANCE: this file is shipped by BOTH kits — norskmat-claude-skills
- * (`.claude/hooks/protected-branch-guard.js`) and ClauKit
- * (`.claude/hooks/protected-branch-guard.cjs`) — and the two copies are
+ * MAINTENANCE: this file ships in two kits, as `.claude/hooks/protected-branch-guard.js`
+ * and as `.claude/hooks/protected-branch-guard.cjs`, and the two copies are
  * **byte-identical**; only the extension differs, which is each kit's own module
  * convention. A repo receives exactly one of them, never both.
  *
@@ -158,6 +166,36 @@ function tokenize(segment) {
 }
 
 const ASSIGNMENT = /^[A-Za-z_][A-Za-z0-9_]*=/;
+
+/** A directory no filesystem has: the ladder probe fails ARMED on it. */
+const UNRESOLVED_DIR = path.join(path.sep, '__protected-branch-guard__', 'unresolved-cd');
+
+function homeDir() {
+  return process.env.HOME || require('os').homedir();
+}
+
+/** `~`, `~/x`, `$HOME/x`, `${HOME}/x` → absolute. Anything else is returned as-is. */
+function expandHome(p) {
+  return p.replace(/^~(?=$|\/)/, homeDir()).replace(/^\$\{HOME\}(?=$|\/)|^\$HOME(?=$|\/)/, homeDir());
+}
+
+/**
+ * The directory a `cd` / `pushd` segment moves to, resolved against `cwd`, or null
+ * when the segment is not a directory change. An argument that cannot be resolved
+ * statically (`cd -`, another variable, a command substitution) returns
+ * UNRESOLVED_DIR so the verdict fails armed rather than falling back to `cwd`.
+ */
+function cdTarget(segment, cwd) {
+  const t = tokenize(segment);
+  if (!t.length) return null;
+  const cmd = t[0].replace(/^\(+/, '');   // `(cd x && git push)` — a subshell still runs there
+  if (cmd !== 'cd' && cmd !== 'pushd') return null;
+  const args = t.slice(1).filter((a) => a !== '--' && !/^-[LPe@]+$/.test(a));
+  if (!args.length) return homeDir();
+  const a = expandHome(args[0].replace(/\)+$/, ''));
+  if (a === '-' || a.includes('$') || a.includes('`')) return UNRESOLVED_DIR;
+  return path.resolve(cwd, a);
+}
 
 /** Git global options that consume the NEXT token. */
 const GIT_GLOBAL_WITH_VALUE = new Set(['-C', '-c', '--git-dir', '--work-tree', '--namespace', '--exec-path', '--config-env']);
@@ -276,7 +314,7 @@ function assess(g, cwd, prot, resolveBranch = currentBranch) {
   if (prot.size === 0) return null;
   if (g.env.some((e) => e === 'CK_ALLOW_PROTECTED_PUSH=1')) return null;
 
-  const base = g.dir ? path.resolve(cwd, g.dir) : cwd;
+  const base = g.dir ? path.resolve(cwd, expandHome(g.dir)) : cwd;
 
   // Resolved per invocation, not once per command: a single line can carry `-C` into
   // two different repos, and only one of them may run a ladder.
@@ -411,17 +449,22 @@ function main() {
   const segs = segments(command);
   if (!segs) process.exit(0);                     // unbalanced quoting — cannot see it
 
-  for (const seg of segs) {
+  let here = cwd;                                 // follows `cd` / `pushd` across segments
+  for (const raw of segs) {
+    const seg = raw.replace(/^\s*\(+/, '').replace(/\)+\s*$/, '');   // `( … )` subshell grouping
+    let to = null;
+    try { to = cdTarget(seg, here); } catch { to = UNRESOLVED_DIR; }
+    if (to !== null) { here = to; continue; }
     let g;
     try { g = parseGit(seg); } catch { continue; }
     if (!g) continue;
     let res;
-    try { res = assess(g, cwd, prot); } catch { continue; }
-    if (res) { deny(res, cwd); process.exit(2); }
+    try { res = assess(g, here, prot); } catch { continue; }
+    if (res) { deny(res, here); process.exit(2); }
   }
   process.exit(0);
 }
 
 if (require.main === module) main();
 
-module.exports = { segments, tokenize, parseGit, destinationBranch, assess, protectedBranches, currentBranch, ladderDoc };
+module.exports = { segments, tokenize, parseGit, destinationBranch, assess, protectedBranches, currentBranch, ladderDoc, cdTarget, expandHome, UNRESOLVED_DIR };

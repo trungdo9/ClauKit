@@ -31,7 +31,7 @@ const os = require('node:os');
 const path = require('node:path');
 
 const HOOK = path.join(__dirname, '..', '.claude', 'hooks', 'protected-branch-guard.cjs');
-const { parseGit, assess, segments, destinationBranch, ladderDoc } = require(HOOK);
+const { parseGit, assess, segments, destinationBranch, ladderDoc, cdTarget, UNRESOLVED_DIR } = require(HOOK);
 
 const PROT = new Set(['main', 'master', 'staging', 'uat', 'production', 'prod']);
 
@@ -204,6 +204,10 @@ test('spawned in a real repository, the exit codes are the gate', () => {
   fs.writeFileSync(path.join(repo, 'a.txt'), 'a\n');
   git('add', 'a.txt');
   git('commit', '-q', '-m', 'seed');
+  // The guard only arms in a repo that runs the promotion ladder, i.e. one that
+  // carries origin/staging (964ebf3). Without this ref every assertion below
+  // tested a repo the guard deliberately leaves alone.
+  git('update-ref', 'refs/remotes/origin/staging', 'HEAD');
 
   const run = (command, env = {}) => {
     const r = spawnSync(process.execPath, [HOOK], {
@@ -229,7 +233,8 @@ test('spawned in a real repository, the exit codes are the gate', () => {
   // Consent is its own variable; auto mode is deliberately not enough.
   assert.strictEqual(run('git push', { CK_ALLOW_PROTECTED_PUSH: '1' }).code, 0);
   assert.strictEqual(run('git push', { CK_AUTO_MODE: '1' }).code, 2);
-  assert.strictEqual(run('git push', { CK_PROTECTED_BRANCHES: '' }).code, 0);
+  // The CK_PROTECTED_BRANCHES off switch was removed in 964ebf3: emptying it must NOT disarm.
+  assert.strictEqual(run('git push', { CK_PROTECTED_BRANCHES: '' }).code, 2);
 
   // Fails open — this hook adds a refusal to a previously-allowed action.
   assert.strictEqual(spawnSync(process.execPath, [HOOK], { input: 'not json', encoding: 'utf-8' }).status, 0);
@@ -249,5 +254,70 @@ test('spawned in a real repository, the exit codes are the gate', () => {
   });
   assert.strictEqual(viaC.status, 2);
 
+  fs.rmSync(root, { recursive: true, force: true });
+});
+
+// ---------- the repo a command is judged in follows `cd` ----------
+
+function laddered(root, name, branch) {
+  const repo = path.join(root, name);
+  fs.mkdirSync(repo);
+  const git = (...a) => execFileSync('git', ['-C', repo, ...a], { encoding: 'utf-8', stdio: ['ignore', 'pipe', 'pipe'] });
+  git('init', '-q', '-b', branch);
+  git('-c', 'user.email=t@example.invalid', '-c', 'user.name=t', 'commit', '-q', '--allow-empty', '-m', 'seed');
+  return { repo, git };
+}
+
+test('a repo without origin/staging runs no ladder and is not guarded — by design', () => {
+  const root = fs.mkdtempSync(path.join(os.tmpdir(), 'pbg-noladder-'));
+  const { repo } = laddered(root, 'repo', 'main');
+  const r = spawnSync(process.execPath, [HOOK], {
+    input: JSON.stringify({ tool_input: { command: 'git push origin main' }, cwd: repo }), encoding: 'utf-8',
+  });
+  assert.strictEqual(r.status, 0);
+  fs.rmSync(root, { recursive: true, force: true });
+});
+
+test('cdTarget resolves cd / pushd, expands ~ and $HOME, and fails armed on the rest', () => {
+  const home = process.env.HOME;
+  process.env.HOME = '/h';
+  try {
+    assert.strictEqual(cdTarget('cd repo', '/base'), '/base/repo');
+    assert.strictEqual(cdTarget('cd ~/r', '/base'), '/h/r');
+    assert.strictEqual(cdTarget('cd $HOME/r', '/base'), '/h/r');
+    assert.strictEqual(cdTarget('cd', '/base'), '/h');
+    assert.strictEqual(cdTarget('(cd sub', '/base'), '/base/sub');
+    assert.strictEqual(cdTarget('pushd /abs', '/base'), '/abs');
+    assert.strictEqual(cdTarget('cd -- d', '/base'), '/base/d');
+    assert.strictEqual(cdTarget('cd -', '/base'), UNRESOLVED_DIR);
+    assert.strictEqual(cdTarget('cd $X/y', '/base'), UNRESOLVED_DIR);
+    assert.strictEqual(cdTarget('git push', '/base'), null);
+  } finally { process.env.HOME = home; }
+});
+
+test('spawned: `cd <repo> &&` moves the verdict to that repo, in both directions', () => {
+  const root = fs.mkdtempSync(path.join(os.tmpdir(), 'pbg-cd-'));
+  const guarded = laddered(root, 'guarded', 'staging');
+  guarded.git('update-ref', 'refs/remotes/origin/staging', 'HEAD');
+  const free = laddered(root, 'free', 'main');          // no origin/staging: no ladder
+  const run = (command, cwd, env = {}) => spawnSync(process.execPath, [HOOK], {
+    input: JSON.stringify({ tool_input: { command }, cwd }), encoding: 'utf-8',
+    env: { ...process.env, ...env },
+  }).status;
+
+  // Session in a plain directory, target is the guarded repo: must refuse.
+  assert.strictEqual(run('cd guarded && git push', root), 2, 'bare push after cd onto a protected HEAD');
+  assert.strictEqual(run(`cd ${guarded.repo}; git push origin staging`, root), 2);
+  assert.strictEqual(run('cd ~/guarded && git push', '/', { HOME: root }), 2, '~ expanded');
+  assert.strictEqual(run('git -C ~/guarded push origin staging', '/', { HOME: root }), 2, '-C ~ expanded');
+  assert.strictEqual(run('(cd guarded && git push)', root), 2, 'subshell');
+
+  // Session in the guarded repo, target is a repo without a ladder: must allow.
+  assert.strictEqual(run(`cd ${free.repo} && git push origin main`, guarded.repo), 0, 'judged in the target, not the session');
+  // ...and the session repo is still judged when there is no cd.
+  assert.strictEqual(run('git push origin staging', guarded.repo), 2);
+
+  // Unresolvable cd target fails ARMED for an explicit protected destination.
+  assert.strictEqual(run('cd $SOMEWHERE && git push origin staging', guarded.repo), 2);
   fs.rmSync(root, { recursive: true, force: true });
 });
