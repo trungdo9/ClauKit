@@ -25,7 +25,15 @@ const fs = require('fs');
 const path = require('path');
 const os = require('os');
 
-const ROOT = process.env.CLAUDE_PROJECT_DIR || path.resolve(__dirname, '..', '..');
+// The kit ships this at .claude/scripts/ck/, so a fixed '..','..' lands on .claude/ itself, not the
+// project; walk up to the .claude/ directory instead and take its parent.
+function projectRoot() {
+  if (process.env.CLAUDE_PROJECT_DIR) return process.env.CLAUDE_PROJECT_DIR;
+  let d = __dirname;
+  while (path.basename(d) !== '.claude' && path.dirname(d) !== d) d = path.dirname(d);
+  return path.basename(d) === '.claude' ? path.dirname(d) : process.cwd();
+}
+const ROOT = projectRoot();
 const NAME = path.basename(ROOT);
 const BACKUP_DIR = process.env.BACKUP_DIR || path.join(os.homedir(), 'backups', `${NAME}-workspace-config`);
 const PROJECTS = path.join(os.homedir(), 'workspace', 'project');
@@ -122,6 +130,14 @@ function checkRouterSize() {
     `${lines} lines ≈ ${Math.round(s.length / 4)} tok/turn (soft 150, defensible ≤250)`);
 }
 
+/** 4b — agents with omitClaudeMd read a card generated from CLAUDE.md; a stale card is a silently outdated rule set. */
+function checkSubagentCard() {
+  const gen = path.join(__dirname, 'subagent-card' + path.extname(__filename));
+  if (!fs.existsSync(gen)) return add('subagent card', 'PASS', 'no card generator — nothing to check');
+  const r = require('child_process').spawnSync(process.execPath, [gen, '--check'], { encoding: 'utf8', env: { ...process.env, CLAUDE_PROJECT_DIR: ROOT } });
+  add('subagent card', r.status === 0 ? 'PASS' : 'FAIL', (r.stdout || r.stderr || '').trim().split('\n').pop());
+}
+
 /** 5 — a dead pointer reads as a missing rule. */
 function checkLinks() {
   const targets = [path.join(ROOT, 'CLAUDE.md'), path.join(ROOT, 'AGENTS.md')].filter(fs.existsSync);
@@ -132,7 +148,9 @@ function checkLinks() {
   } catch { /* no docs dir */ }
   const dead = [];
   for (const t of targets) {
-    const s = read(t); if (!s) continue;
+    const raw = read(t); if (!raw) continue;
+    // A link shown as an example inside a code span or fence is text, not a pointer.
+    const s = raw.replace(/```[\s\S]*?```/g, '').replace(/`[^`\n]*`/g, '');
     const base = path.dirname(t);
     for (const m of s.matchAll(/\]\((?!https?:|#|mailto:)([^)]+)\)/g)) {
       const rel = m[1].split('#')[0].trim();
@@ -174,7 +192,7 @@ function checkOrchestratorCoverage(repos) {
 
 function main() {
   const repos = discoverRepos();
-  checkKitDrift(repos); checkBackup(); checkMemory(); checkRouterSize();
+  checkKitDrift(repos); checkBackup(); checkMemory(); checkRouterSize(); checkSubagentCard();
   checkLinks(); checkInlineSecrets(); checkOrchestratorCoverage(repos);
 
   if (process.argv.includes('--json')) {

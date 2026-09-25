@@ -445,12 +445,12 @@ These are the *intended* trios where Skill = knowledge, Agent = persona, Command
 **Batch 3** (5 trios): `git`, `xia`, `journal`, `fix`, `ask`
 **Batch 4** (1 trio): `seo` (dispatcher with 3 flags: `/ck:seo audit`, `/ck:seo keywords`, `/ck:seo schema`) — extracted detailed pipelines/templates from commands into `seo/references/{audit-checklist,keyword-research,schema-templates}.md`. Commands dropped 840→109 lines (−87%); single source of truth = skill + references. Collapsed from `seo:*` namespace to flag-style dispatcher 2026-05-18.
 **Batch 5** (4 cleanups): `content/cro` + `plan/cro` (cross-command CRO duplicate), `design/3d` (plan-structure duplicate), `design/*` (skill-activation boilerplate), `skill/*` (input-handling boilerplate).
-- **CRO framework** — 25-point Conversion Optimization Framework extracted to [.claude/workflows/cro-framework.md](../../.claude/workflows/cro-framework.md). `/ck:plan cro` references it instead of duplicating.
+- **CRO framework** — 25-point Conversion Optimization Framework extracted to [.claude/workflows/cro-framework.md](../.claude/workflows/cro-framework.md). `/ck:plan cro` references it instead of duplicating.
 - **`design/*`** — removed repeated `aesthetic`+`frontend-design` skill-activation block from 5 commands (`ui-ux-designer` agent already auto-activates these). `design/3d`, `design/screenshot`, `design/describe` now reference `planning` skill for plan structure.
 
 Notable extensions:
 - `bootstrap` skill extended with **"Canonical Bootstrap Workflow"** (10-phase pipeline) — `/ck:bootstrap`, `/ck:bootstrap auto`, `/ck:bootstrap fast` only document variant differences.
-- `fix` family — no skill/agent existed → created [.claude/workflows/fix-pipeline.md](../../.claude/workflows/fix-pipeline.md) as canonical 7-stage pipeline; 8 commands (`/ck:fix`, `/ck:fix --quick`, `/ck:fix --review`, `/ck:fix logs`, `/ck:fix ci`, `/ck:fix test`, `/ck:fix types`, `/ck:fix ui`) reference it + document variant deltas.
+- `fix` family — no skill/agent existed → created [.claude/workflows/fix-pipeline.md](../.claude/workflows/fix-pipeline.md) as canonical 7-stage pipeline; 8 commands (`/ck:fix`, `/ck:fix --quick`, `/ck:fix --review`, `/ck:fix logs`, `/ck:fix ci`, `/ck:fix test`, `/ck:fix types`, `/ck:fix ui`) reference it + document variant deltas.
 - `docs-manager` agent + `journal-writer` agent serve as canonical sources (no dedicated knowledge skill exists for those concepts).
 - `git-manager` agent retains haiku-optimized 2-3 tool execution workflow as agent-specific knowledge (skill = conventional-commits methodology).
 
