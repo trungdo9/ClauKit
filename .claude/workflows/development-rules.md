@@ -19,6 +19,23 @@
 - **[IMPORTANT]** Follow the codebase structure and code standards in `./docs` during implementation.
 - **[IMPORTANT]** Do not just simulate the implementation or mocking them, always implement the real code.
 
+## Context Budget — tool output
+
+Every tool result is re-read on **every later turn** of the session. On one measured workspace, cache re-reads were 97.5 % of all tokens (2026-08-20..09-24), so output you did not need is paid for again on every later turn. Of the tool-result volume, Bash was 69 % and Read 25 %, and the few large results dominated: Bash results over 10k chars were 6 % of calls but 33 % of Bash volume, and Reads over 10k were 72 % of Read volume.
+
+- **Read:** `Grep -n` first, then `Read` with `offset`/`limit` around the hit. Read a whole file only when the task needs the whole file (editing it top to bottom, or it is under ~300 lines).
+- **Bash:** ask for the answer, not the dump — `wc -l`, `--stat`, `--name-only`, `| tail -20` of a build log, `jq` on one field. Show errors in full; show success as a summary.
+- **Cap the display, never the count.** `grep … | head` followed by reporting the number is how capped lists get published as the population. Count on the full stream (`| wc -l`, `grep -c`) and truncate only what you print.
+- Wide sweeps go to `Explore` / `scout`, which return conclusions — the file dumps stay in their context, not yours.
+
+## Context Budget — session length
+
+Context size × turns is the cost driver. On the same workspace one session ran 11 days at ~412k average context and was **41 % of all tokens**; the median context was 175k.
+
+- **One session per plan phase or per ticket.** When a phase ends, write its `STATE.md` line and start a new session that resumes from the ledger (`run-state` skill), not from `/compact` — a compacted summary keeps the size problem and loses detail; the ledger keeps the facts at a fraction of the size.
+- **Watch the size.** The shipped statusline shows `🧠 ctx <k> · <age>` — yellow at ≥ 250k, red at ≥ 400k or ≥ 1 day (`scripts/ck/statusline-context-meter.cjs`). On red, finish the current step, log it, and hand over to a new session.
+- Long-running coordination belongs in a ledger plus short sessions, not in one ever-growing main thread that dispatches hundreds of subagents.
+
 ## Code Quality Guidelines
 - Read and follow codebase structure and code standards in `./docs`
 - Don't be too harsh on code linting, but make sure there are no syntax errors and code are compilable

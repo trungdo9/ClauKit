@@ -26,6 +26,8 @@ const ModelColor = color('1;35');    // magenta
 const VersionColor = color('1;33');  // yellow
 const UsageColor = color('1;35');    // magenta
 const CostColor = color('1;36');     // cyan
+const CtxColors = { ok: color('1;32'), warn: color('1;33'), alert: color('1;31') }; // green/yellow/red
+const { contextMeter } = require('./scripts/ck/statusline-context-meter.cjs');
 const Reset = reset();
 
 /**
@@ -248,6 +250,14 @@ async function main() {
         // Tokens
         if (totalTokens && /^\d+$/.test(totalTokens.toString())) {
             output += `  📊 ${UsageColor}${totalTokens} tok${Reset}`;
+        }
+
+        // Context size + session age — the real token driver (every turn re-reads it from cache)
+        try {
+            const meter = contextMeter(data.transcript_path);
+            if (meter) output += `  🧠 ${CtxColors[meter.level]}${meter.text}${Reset}`;
+        } catch (err) {
+            // Silent fail - meter must never break the statusline
         }
 
         console.log(output);

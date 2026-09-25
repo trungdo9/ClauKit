@@ -325,6 +325,7 @@ test('no shipped doc names a .claude/ path the install does not have', () => {
   const EXEMPT_TARGET = new Set([
     '.claude/settings.local.json',  // created by Claude Code / the user, never shipped
     '.claude/config.json',          // ditto — the hook docs tell the reader to create it
+    '.claude/cards/subagent-card.md', // GENERATED in the project from CLAUDE.md by scripts/ck/subagent-card.cjs, never shipped
   ]);
   const EXEMPT_CK_SCRIPTS_WHEN_UNSHIPPED = /^\.claude\/scripts\/ck\//;  // see above — deliberate omission
   // When kits stopped being enumerable, the check above became generic: any kit that
