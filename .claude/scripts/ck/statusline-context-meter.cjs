@@ -62,7 +62,7 @@ function contextMeter(transcriptPath) {
   if (ctx !== null) parts.push(`ctx ${Math.round(ctx / 1000)}k`);
   if (age !== null) parts.push(age >= 24 ? `${(age / 24).toFixed(1)}d` : `${Math.round(age)}h`);
   let text = parts.join(' · ');
-  if (level === 'alert') text += ' → new session? (resume from STATE.md)';
+  if (level === 'alert') text += ' → at phase end: new session from STATE.md';
   return { text, level };
 }
 

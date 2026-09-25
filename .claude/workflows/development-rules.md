@@ -32,9 +32,11 @@ Every tool result is re-read on **every later turn** of the session. On one meas
 
 Context size × turns is the cost driver. On the same workspace one session ran 11 days at ~412k average context and was **41 % of all tokens**; the median context was 175k.
 
-- **One session per plan phase or per ticket.** When a phase ends, write its `STATE.md` line and start a new session that resumes from the ledger (`run-state` skill), not from `/compact` — a compacted summary keeps the size problem and loses detail; the ledger keeps the facts at a fraction of the size.
-- **Watch the size.** The shipped statusline shows `🧠 ctx <k> · <age>` — yellow at ≥ 250k, red at ≥ 400k or ≥ 1 day (`scripts/ck/statusline-context-meter.cjs`). On red, finish the current step, log it, and hand over to a new session.
-- Long-running coordination belongs in a ledger plus short sessions, not in one ever-growing main thread that dispatches hundreds of subagents.
+- **Delegate to keep the main thread lean — that is the lever, not handing work back.** Wide sweeps, multi-file reads, long build/test output and independent work go to subagents; their dumps stay in their context and only the conclusion comes back.
+- **Never push work onto the user for token reasons.** Do not stop mid-task to ask the user to run a script, paste a prompt into another session, or restart — finish the task in this session. A hand-off with a non-token cause (a hook that refuses the action here, data only a human can reach) is unaffected.
+- **A fresh session is a suggestion, made once, at a natural break.** When a plan phase or ticket ends and the session is large, write its `STATE.md` line and say in one line that a new session resuming from the ledger (`run-state` skill) would be cheaper than `/compact` — a compacted summary keeps the size problem and loses detail; the ledger keeps the facts at a fraction of the size. The user decides; never mid-step, never repeated.
+- **Watch the size.** The shipped statusline shows `🧠 ctx <k> · <age>` — yellow at ≥ 250k, red at ≥ 400k or ≥ 1 day (`scripts/ck/statusline-context-meter.cjs`). It is shown to the **user only**: the model cannot see it, so it must not guess its own context size and stop on that.
+- For long-running coordination, keep the facts in `STATE.md` so any session can resume; the main thread dispatches and reconciles, subagents carry the bulk reading.
 
 ## Code Quality Guidelines
 - Read and follow codebase structure and code standards in `./docs`
