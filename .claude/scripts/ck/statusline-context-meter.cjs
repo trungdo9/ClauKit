@@ -1,6 +1,7 @@
 'use strict';
 /**
- * statusline-context-meter — current context size + session age for the statusline.
+ * statusline-context-meter — current context size + session age for the statusline, plus the
+ * subscription plan usage (% of the 5-hour and 7-day rate-limit windows).
  *
  * Every turn re-reads the whole context from cache, and cache re-reads were 97.5 % of all tokens
  * (measured on one Norskmat workspace, 2026-08-20..09-24). One 11-day session at ~412k average context was 41 % of the total.
@@ -12,6 +13,8 @@ const fs = require('fs');
 const WARN_CTX = 250000;
 const ALERT_CTX = 400000;
 const ALERT_AGE_H = 24;
+const WARN_PLAN_PCT = 75;
+const ALERT_PLAN_PCT = 90;
 const TAIL_BYTES = 512 * 1024;
 
 function readSlice(file, start, len) {
@@ -66,10 +69,25 @@ function contextMeter(transcriptPath) {
   return { text, level };
 }
 
-module.exports = { contextMeter, WARN_CTX, ALERT_CTX, ALERT_AGE_H };
+// A raw token count says nothing about how close the plan is to its cap; the rate-limit windows do.
+// Claude Code sends `rate_limits` only for Pro/Max subscribers and only after the first response,
+// and each window may be absent on its own — so null means "unknown", never "0 %".
+/** @returns {{text: string, level: 'ok'|'warn'|'alert'} | null} */
+function planUsage(data) {
+  const windows = [['5h', data?.rate_limits?.five_hour?.used_percentage],
+                   ['7d', data?.rate_limits?.seven_day?.used_percentage]]
+    .filter(([, pct]) => typeof pct === 'number');
+  if (!windows.length) return null;
+  const worst = Math.max(...windows.map(([, pct]) => pct));
+  const level = worst >= ALERT_PLAN_PCT ? 'alert' : worst >= WARN_PLAN_PCT ? 'warn' : 'ok';
+  const text = windows.map(([label, pct]) => `${label} ${Math.round(pct)}%`).join(' · ');
+  return { text, level };
+}
 
-// Two uses: require it and call contextMeter() from an existing statusline, or run this file as the
-// statusline itself — `"statusLine": {"type": "command", "command": "node <path to this file>"}`.
+module.exports = { contextMeter, planUsage, WARN_CTX, ALERT_CTX, ALERT_AGE_H, WARN_PLAN_PCT, ALERT_PLAN_PCT };
+
+// Two uses: require it and call contextMeter() / planUsage() from an existing statusline, or run this
+// file as the statusline itself — `"statusLine": {"type": "command", "command": "node <path to this file>"}`.
 // Claude Code pipes the session JSON on stdin; we print one line. Any failure prints nothing — a
 // statusline must never break the session.
 if (require.main === module) {
@@ -77,10 +95,16 @@ if (require.main === module) {
   process.stdin.on('data', (c) => { raw += c; });
   process.stdin.on('end', () => {
     try {
-      const m = contextMeter(JSON.parse(raw || '{}').transcript_path);
-      if (!m) return;
-      const color = { ok: '\x1b[32m', warn: '\x1b[33m', alert: '\x1b[31m' }[m.level];
-      process.stdout.write(`${color}🧠 ${m.text}\x1b[0m`);
+      const data = JSON.parse(raw || '{}');
+      const color = { ok: '\x1b[32m', warn: '\x1b[33m', alert: '\x1b[31m' };
+      const out = [];
+      const p = planUsage(data);
+      if (p) out.push(`${color[p.level]}📊 ${p.text}\x1b[0m`);
+      try {
+        const m = contextMeter(data.transcript_path);
+        if (m) out.push(`${color[m.level]}🧠 ${m.text}\x1b[0m`);
+      } catch { /* a bad transcript must not hide the plan usage */ }
+      if (out.length) process.stdout.write(out.join('  '));
     } catch { /* silent by design */ }
   });
 }

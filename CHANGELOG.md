@@ -1,5 +1,13 @@
 # Changelog
 
+## 1.11.0 (2026-09-29)
+
+### ✨ Features
+* **Statusline — plan usage in % instead of a raw token count.** `📊 38900697 tok` said nothing about how close the plan is to its cap. On a Pro/Max plan Claude Code sends `rate_limits` to the statusline, and the segment now reads `📊 5h 24% · 7d 91%` — yellow at ≥ 75 %, red at ≥ 90 % on the worse window. The raw ccusage count stays as the fallback when `rate_limits` is absent (API key, or before the first response). One shared `planUsage()` in `scripts/ck/statusline-context-meter.cjs` backs `statusline.cjs` and the meter's standalone mode; `statusline.sh` and `statusline.ps1` carry the same segment. New `tests/statusline-plan-usage.test.js`.
+
+### 🐛 Bug Fixes
+* **statusline.ps1 never parsed.** The outer `try {` around the ccusage block had no closing brace and no `catch`, so PowerShell rejected the whole script (`Missing closing '}'`, `The Try statement is missing its Catch or Finally block`) and the Windows statusline printed nothing. It now closes with the same silent `catch` as `statusline.cjs`.
+
 ## 1.10.1 (2026-09-25)
 
 ### 🐛 Bug Fixes
