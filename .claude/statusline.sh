@@ -131,8 +131,22 @@ if [ -n "$cost_usd" ] && [[ "$cost_usd" =~ ^[0-9.]+$ ]]; then
     printf '  💵 %s$%.2f%s' "$(cost_color)" "$cost_usd" "$(rst)"
   fi
 fi
+# plan usage — % of the subscription rate-limit windows (Pro/Max, after the first response);
+# the raw token count below only when Claude Code sent none
+plan_txt=$(echo "$input" | jq -r '[["5h", .rate_limits.five_hour.used_percentage], ["7d", .rate_limits.seven_day.used_percentage]]
+  | map(select(.[1] | type == "number")) | map("\(.[0]) \(.[1] | round)%") | join(" · ")' 2>/dev/null)
+plan_max=$(echo "$input" | jq -r '[.rate_limits.five_hour.used_percentage, .rate_limits.seven_day.used_percentage]
+  | map(select(type == "number")) | max // empty | round' 2>/dev/null)
+plan_color() {
+  if [ "$use_color" -ne 1 ]; then return; fi
+  if [ "${plan_max:-0}" -ge 90 ]; then printf '\033[1;31m'
+  elif [ "${plan_max:-0}" -ge 75 ]; then printf '\033[1;33m'
+  else printf '\033[1;32m'; fi
+}
+if [ -n "$plan_txt" ]; then
+  printf '  📊 %s%s%s' "$(plan_color)" "$plan_txt" "$(rst)"
 # tokens
-if [ -n "$tot_tokens" ] && [[ "$tot_tokens" =~ ^[0-9]+$ ]]; then
+elif [ -n "$tot_tokens" ] && [[ "$tot_tokens" =~ ^[0-9]+$ ]]; then
   if [ -n "$tpm" ] && [[ "$tpm" =~ ^[0-9.]+$ ]] && false; then
     printf '  📊 %s%s tok (%.0f tpm)%s' "$(usage_color)" "$tot_tokens" "$tpm" "$(rst)"
   else

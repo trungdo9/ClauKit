@@ -309,8 +309,23 @@ if ($costUSD -and $costUSD -match '^\d+(\.\d+)?$') {
     }
 }
 
-# Tokens
-if ($totalTokens -and $totalTokens -match '^\d+$') {
+# Plan usage — % of the subscription rate-limit windows (Pro/Max, after the first response);
+# the raw token count below only when Claude Code sent none
+$planParts = @()
+$planMax = -1
+foreach ($window in @(@('5h', $data.rate_limits.five_hour.used_percentage), @('7d', $data.rate_limits.seven_day.used_percentage))) {
+    $pct = $window[1]
+    if ($pct -is [int] -or $pct -is [long] -or $pct -is [double] -or $pct -is [decimal]) {
+        $planParts += "$($window[0]) $([math]::Round([double]$pct, [MidpointRounding]::AwayFromZero))%"
+        if ($pct -gt $planMax) { $planMax = $pct }
+    }
+}
+if ($planParts.Count -gt 0) {
+    $planColor = Get-SessionColor ([int][math]::Floor($planMax))
+    $output += "  📊 ${planColor}$($planParts -join ' · ')${Reset}"
+}
+elseif ($totalTokens -and $totalTokens -match '^\d+$') {
+    # Tokens
     $output += "  📊 ${UsageColor}${totalTokens} tok${Reset}"
 }
 

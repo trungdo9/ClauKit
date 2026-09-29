@@ -27,7 +27,7 @@ const VersionColor = color('1;33');  // yellow
 const UsageColor = color('1;35');    // magenta
 const CostColor = color('1;36');     // cyan
 const CtxColors = { ok: color('1;32'), warn: color('1;33'), alert: color('1;31') }; // green/yellow/red
-const { contextMeter } = require('./scripts/ck/statusline-context-meter.cjs');
+const { contextMeter, planUsage } = require('./scripts/ck/statusline-context-meter.cjs');
 const Reset = reset();
 
 /**
@@ -247,8 +247,12 @@ async function main() {
             }
         }
 
-        // Tokens
-        if (totalTokens && /^\d+$/.test(totalTokens.toString())) {
+        // Plan usage — % of the subscription rate-limit windows; the raw ccusage token count only
+        // when Claude Code sent none (not a Pro/Max plan, or before the first response).
+        const plan = planUsage(data);
+        if (plan) {
+            output += `  📊 ${CtxColors[plan.level]}${plan.text}${Reset}`;
+        } else if (totalTokens && /^\d+$/.test(totalTokens.toString())) {
             output += `  📊 ${UsageColor}${totalTokens} tok${Reset}`;
         }
 
