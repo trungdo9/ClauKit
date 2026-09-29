@@ -269,6 +269,11 @@ try {
             }
         }
     }
+}
+catch {
+    # Silent fail - ccusage not available or error
+}
+
 # Directory
 $output += "📁 ${DirColor}${currentDir}${Reset}"
 
