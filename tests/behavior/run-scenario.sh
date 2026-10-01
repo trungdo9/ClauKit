@@ -330,6 +330,12 @@ for a in "$@"; do
   esac
 done
 
+# N=0 runs nothing, and "absent in all 0 ablated runs" would read as a verified
+# negative control; a non-integer breaks `seq`. Reject both (also via env).
+case "$NEGATIVE_RUNS" in
+  ''|*[!0-9]*|0) echo "✗ --negative=N needs integer N>=1 (got '$NEGATIVE_RUNS')" >&2; exit 1 ;;
+esac
+
 case "${ARGS[0]:-}" in
   --fast) SET="$FAST_SET" ;;
   --all)  SET="$ALL_SET" ;;

@@ -8,11 +8,15 @@
  * that a shared run is a copy, not a coincidence of vocabulary.
  * `bytes`: the size rule — the surface may not grow past its baseline.
  *
- *   node routing-guard.cjs leak <cases.jsonl> <surface.md>   exit 0 clean, 1 leak
+ *   node routing-guard.cjs leak <cases.jsonl> <surface.md>   exit 0 clean, 1 leak, 2 error
  *   node routing-guard.cjs bytes <file>...                   prints total bytes
  *
  * The leak CLI prints a count only: the offending text is prompt text, and the
- * output lands in committed reports.
+ * output lands in committed reports. That holds for failures too -- an error prints
+ * its code/name, never a message or stack, because a JSON.parse message quotes the
+ * row. It also fails CLOSED: 0 prompts read, or any row without a string `prompt`
+ * (key drift), is exit 2 rather than "clean" -- an empty guard guards nothing.
+ * Exit 2 is distinct from 1 so phase 04 can tell a crash from a leak.
  */
 
 const fs = require('node:fs');
@@ -40,9 +44,19 @@ function surfaceBytes(files) {
 function main() {
   const [cmd, ...args] = process.argv.slice(2);
   if (cmd === 'leak' && args.length === 2) {
-    const prompts = fs.readFileSync(args[0], 'utf-8').split('\n').filter(Boolean)
-      .map((l) => JSON.parse(l).prompt).filter((p) => typeof p === 'string');
-    const hits = leak(fs.readFileSync(args[1], 'utf-8'), prompts);
+    let hits;
+    try {
+      const rows = fs.readFileSync(args[0], 'utf-8').split('\n').filter(Boolean).map((l) => JSON.parse(l));
+      const prompts = rows.map((r) => r && r.prompt);
+      if (!prompts.length || !prompts.every((p) => typeof p === 'string')) {
+        console.error(`error: ${prompts.length} row(s) read, not all with a string prompt`);
+        process.exit(2);
+      }
+      hits = leak(fs.readFileSync(args[1], 'utf-8'), prompts);
+    } catch (e) {
+      console.error(`error: ${e.code || e.name}`);
+      process.exit(2);
+    }
     console.log(hits.length ? `LEAK: ${hits.length} shingle(s)` : 'clean');
     process.exit(hits.length ? 1 : 0);
   }

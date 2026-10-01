@@ -12,7 +12,9 @@
  * `fix.md` delegates to; `commandAliases` maps command -> skills it links.
  *
  *   node route-grade.cjs <events.jsonl> --expected cook,tdd [--commands <dir>]
- *     prints the verdict JSON; exit 0 PASS, 1 FAIL
+ *     prints the verdict JSON.
+ *     Exit codes (phase 04 keys on them): 0 PASS, 1 FAIL, 2 error (bad usage,
+ *     unreadable events/commands dir, crash) -- an error is not a verdict.
  */
 
 const fs = require('node:fs');
@@ -24,6 +26,8 @@ const SKILL_MD = /skills\/(?:[^/]+\/)*([^/]+)\/SKILL\.md$/;
 const COMMAND_MD = /(?:^|\/)\.claude\/commands\/([^/]+)\/([^/]+)\.md$/;
 /** Shell readers that count as "opening" a file, as opposed to writing or listing it. */
 const BASH_READER = /^\s*(cat|head|tail|sed -n|less|bat)\b/;
+/** Command separators; each segment is judged on its own so `cd x && cat <path>` reads. */
+const BASH_SEGMENTS = /&&|\|\||[;|\n]/;
 
 /** The skill name a path points at, or null. A `#anchor` does not change the file. */
 function skillOfPath(p) {
@@ -31,10 +35,22 @@ function skillOfPath(p) {
   return m ? m[1] : null;
 }
 
-/** Route token for one step: "cook" | "ck:fix" | null (neutral). */
+/**
+ * Route token for one step: "cook" | "ck:fix" | null (neutral).
+ * A step whose result is_error routed nowhere (failed Skill, Read of a missing
+ * file): the attempt is neutral, so a wrong-name stumble is not scored and an
+ * unregistered `Skill("tdd")` cannot pass without the methodology being read.
+ * A bare Skill name is only a route if aliased: grouped skills never register in
+ * an install, and the bare names that do register are harness built-ins
+ * (code-review) that share a name with a kit skill but are not its file.
+ */
 function routeOf(step, aliases) {
+  if (step.result && step.result.is_error) return null;
   const input = step.input || {};
-  if (step.tool === 'Skill') return input.skill ? String(input.skill) : null;
+  if (step.tool === 'Skill') {
+    const name = input.skill ? String(input.skill) : '';
+    return name.includes(':') || (aliases && aliases.has(name)) ? name : null;
+  }
   if (step.tool === 'Read') {
     const file = String(input.file_path || '');
     const skill = skillOfPath(file);
@@ -42,10 +58,13 @@ function routeOf(step, aliases) {
     const cmd = COMMAND_MD.exec(file);
     return cmd ? `${cmd[1]}:${cmd[2]}` : null;
   }
-  if (step.tool === 'Bash' && BASH_READER.test(input.command || '')) {
-    for (const tok of String(input.command).split(/\s+/)) {
-      const skill = skillOfPath(tok.replace(/^["']|["']$/g, ''));
-      if (skill) return skill;
+  if (step.tool === 'Bash') {
+    for (const seg of String(input.command || '').split(BASH_SEGMENTS)) {
+      if (!BASH_READER.test(seg)) continue;
+      for (const tok of seg.split(/\s+/)) {
+        const skill = skillOfPath(tok.replace(/^["']|["']$/g, ''));
+        if (skill) return skill;
+      }
     }
   }
   return null;
@@ -110,9 +129,15 @@ function main() {
     console.error('usage: route-grade.cjs <events.jsonl> --expected a,b [--commands <dir>]');
     process.exit(2);
   }
-  const dir = flag('--commands') || path.join(__dirname, '..', '..', '..', '.claude', 'commands');
-  const { steps } = parse(fs.readFileSync(file, 'utf-8').split('\n'));
-  const g = gradeRoute(steps, expected, commandAliases(dir));
+  let g;
+  try {
+    const dir = flag('--commands') || path.join(__dirname, '..', '..', '..', '.claude', 'commands');
+    const { steps } = parse(fs.readFileSync(file, 'utf-8').split('\n'));
+    g = gradeRoute(steps, expected, commandAliases(dir));
+  } catch (e) {
+    console.error(`error: ${e.code || e.name}`);
+    process.exit(2);
+  }
   console.log(JSON.stringify(g));
   process.exit(g.verdict === 'PASS' ? 0 : 1);
 }

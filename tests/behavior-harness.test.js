@@ -610,3 +610,32 @@ test('a run with no tool calls is an ERROR, not a verdict about the gate', () =>
   ]);
   assert.strictEqual(engaged.length, 1, 'a run that acted must still receive a verdict');
 });
+
+// --- NEGATIVE_RUNS validation ------------------------------------------------
+// N=0 ran no ablated run, so "behaviour absent in all 0 runs" read as a verified
+// negative control: a false success.
+function negativeArg(arg, env = {}) {
+  const script = `
+    source tests/behavior/run-scenario.sh
+    run_one() { return 0; }
+    ALL_SET="stub"; FAST_SET="stub"
+    main stub ${arg} 2>&1
+  `;
+  const r = spawnSync('bash', ['-c', script], { encoding: 'utf-8', env: { ...process.env, ...env } });
+  return { status: r.status, out: r.stdout + r.stderr };
+}
+
+for (const bad of ['--negative=0', '--negative=abc', '--negative=', '--negative=-1', '--negative=2.5']) {
+  test(`${bad} is a usage error, not a vacuous negative control`, () => {
+    const r = negativeArg(bad);
+    assert.strictEqual(r.status, 1);
+    assert.match(r.out, /--negative=N needs integer N>=1/);
+    assert.doesNotMatch(r.out, /negative control OK|genuinely verified/);
+  });
+}
+
+test('NEGATIVE_RUNS=0 from the environment is rejected too', () => {
+  const r = negativeArg('--negative', { NEGATIVE_RUNS: '0' });
+  assert.strictEqual(r.status, 1);
+  assert.match(r.out, /needs integer N>=1/);
+});

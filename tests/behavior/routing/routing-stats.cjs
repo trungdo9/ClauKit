@@ -10,6 +10,12 @@
 
 const { wilson } = require('../stats.cjs');
 
+/**
+ * Deltas are differences of k/n floats, so an exact tie (15/84 vs 5/28) can land
+ * a ulp above the noise floor and ACCEPT on nothing. Anything inside EPS is a tie.
+ */
+const EPS = 1e-9;
+
 /** Gate of a case = its first expected route; `cases` is an object or Map keyed by case id. */
 function gateOf(cases, id) {
   const c = cases instanceof Map ? cases.get(id) : cases && cases[id];
@@ -70,8 +76,8 @@ function decide(base, cand, { sizeOk, leakOk } = {}) {
   const testDelta = cand.test.acc - base.test.acc;
   const floor = Math.max(base.train.noise || 0, cand.train.noise || 0);
   const out = (verdict, why) => ({ verdict, why, trainDelta, testDelta });
-  if (!(trainDelta > floor)) return out('REVERT', `train delta ${trainDelta.toFixed(3)} <= noise ${floor.toFixed(3)}`);
-  if (!(testDelta > 0)) return out('REVERT', `test delta ${testDelta.toFixed(3)} <= 0`);
+  if (!(trainDelta > floor + EPS)) return out('REVERT', `train delta ${trainDelta.toFixed(3)} <= noise ${floor.toFixed(3)}`);
+  if (!(testDelta > EPS)) return out('REVERT', `test delta ${testDelta.toFixed(3)} <= 0`);
   if (sizeOk !== true) return out('REVERT', 'size rule');
   if (leakOk !== true) return out('REVERT', 'leak guard');
   return out('ACCEPT', 'train > noise, test > 0, size and leak ok');
