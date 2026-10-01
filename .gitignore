@@ -103,3 +103,6 @@ prompt.md
 # `/ck:security` writes the report, `.security-tmp/` is its LARGE-mode scratch.
 security-reports/
 .security-tmp/
+
+# Routing-eval dataset: mined client prompts (PII) - never commit.
+/tests/behavior/routing/data/
