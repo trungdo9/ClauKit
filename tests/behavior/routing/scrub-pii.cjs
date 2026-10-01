@@ -3,9 +3,12 @@
  * holds client work, so everything identifying is replaced by a placeholder
  * before a prompt can reach cases.jsonl.
  *
- * Order matters: client terms first (single alternation, so a later term can't
- * eat an earlier placeholder), then URLs (they contain emails/IPs/paths), then
- * secrets (before ticket keys, `AKIA...` would otherwise look like one).
+ * Order matters: URLs, emails, tmp paths, secrets, home paths, then client terms
+ * (single alternation, so a later term can't eat an earlier placeholder), then
+ * IPs, ticket keys, long numbers. Client terms must not run before URL/email:
+ * `https://acme.no/x` -> `https://<CLIENT>.no/x` no longer matches URL_RE (it
+ * excludes `<`) and the path leaks. Secrets precede ticket keys (`AKIA...`
+ * would otherwise look like one); IPs precede long numbers.
  *
  * CLI: node scrub-pii.cjs [--in candidates.jsonl] [--out scrubbed.jsonl] [--terms file]
  *   defaults live in ./data/ (git-ignored). Prints counts only.
@@ -41,23 +44,29 @@ const URL_RE = /\b(?:https?|ftp|ssh|git):\/\/[^\s<>"'`)\]]+/gi;
 const EMAIL_RE = /[A-Za-z0-9._%+-]+@[A-Za-z0-9-]+(?:\.[A-Za-z0-9-]+)+/g;
 const IPV4_RE = /\b(?:(?:25[0-5]|2[0-4]\d|1?\d?\d)\.){3}(?:25[0-5]|2[0-4]\d|1?\d?\d)\b/g;
 const TICKET_RE = /\b[A-Z]{2,6}-\d+\b/g;
+const NUM_RE = /\b\d{6,}\b/g;
+// Acronym-digit tokens that look like ticket keys but are not.
+const NOT_TICKET = new Set(['UTF', 'ISO', 'SHA', 'RFC', 'TLS', 'HTTP', 'X']);
+// Claude temp dirs embed the project dir name (client names): /tmp/claude-<uid>/-home-x-proj/...
+const TMP_RE = /\/tmp\/claude-\d+\/[^\s'"`<>)\]]*/g;
 const HOME_RE = /(?:\/(?:home|Users)\/|[A-Za-z]:\\Users\\)[^\s'"`<>)\]]*/g;
 
 /** Trailing sentence punctuation is not part of the path. */
-function homePath(m) {
-  const tail = m.match(/[.,;:!?]+$/);
-  return '~/project/…' + (tail ? tail[0] : '');
-}
+const tailOf = m => (m.match(/[.,;:!?]+$/) || [''])[0];
+const homePath = m => '~/project/…' + tailOf(m);
+const tmpPath = m => '<TMP>' + tailOf(m);
+const ticket = m => (NOT_TICKET.has(m.slice(0, m.indexOf('-'))) ? m : 'PROJ-123');
 
 /** @param {string} text @param {string[]} terms @returns {string} */
 function scrub(text, terms = []) {
-  let out = String(text);
-  const ts = [...new Set(terms.map(t => t.trim()).filter(Boolean))].sort((a, b) => b.length - a.length);
-  if (ts.length) out = out.replace(new RegExp(ts.map(esc).join('|'), 'gi'), '<CLIENT>');
-  out = out.replace(URL_RE, '<URL>').replace(EMAIL_RE, '<EMAIL>');
+  let out = String(text).replace(URL_RE, '<URL>').replace(EMAIL_RE, '<EMAIL>')
+    .replace(TMP_RE, tmpPath); // before B64: the dir-name run can look like a secret
   for (const re of SECRET_RES) out = out.replace(re, '<SECRET>');
   out = out.replace(B64, m => (mixed(m) ? '<SECRET>' : m));
-  out = out.replace(HOME_RE, homePath).replace(IPV4_RE, '<IP>').replace(TICKET_RE, 'PROJ-123');
+  out = out.replace(HOME_RE, homePath);
+  const ts = [...new Set(terms.map(t => t.trim()).filter(Boolean))].sort((a, b) => b.length - a.length);
+  if (ts.length) out = out.replace(new RegExp(ts.map(esc).join('|'), 'gi'), '<CLIENT>');
+  out = out.replace(IPV4_RE, '<IP>').replace(TICKET_RE, ticket).replace(NUM_RE, '<NUM>');
   return out;
 }
 
