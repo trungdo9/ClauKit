@@ -426,7 +426,7 @@ test('a bash-written mutation counts as a mutation, not just Edit/Write', () => 
 // into the same bucket as the ones with none: a rule that shifts behaviour
 // without deciding it is not a rule that does nothing.
 
-function sweep({ negative = false, positive = false, gateRc = 0, nolineRc = 0, nogateRcs = [] } = {}) {
+function sweep({ negative = false, positive = false, gateRc = 0, nolineRc = 0, nogateRcs = [], env = {} } = {}) {
   const script = `
     source tests/behavior/run-scenario.sh
     _i=0
@@ -440,7 +440,7 @@ function sweep({ negative = false, positive = false, gateRc = 0, nolineRc = 0, n
     ALL_SET="stub"; FAST_SET="stub"
     main stub ${positive ? '--positive' : ''} ${negative ? '--negative=' + nogateRcs.length : ''} 2>&1 | tail -20
   `;
-  return execFileSync('bash', ['-c', script], { encoding: 'utf8' });
+  return execFileSync('bash', ['-c', script], { encoding: 'utf8', env: { ...process.env, ...env } });
 }
 
 test('a partial ablation separation reads as SUPPORTED, not as nothing', () => {
@@ -455,6 +455,33 @@ test('behaviour surviving every ablated run reads as NOT DISCRIMINATING', () => 
   const out = sweep({ negative: true, nogateRcs: [1, 1, 1] });
   assert.match(out, /NOT DISCRIMINATING/);
   assert.match(out, /measures the model, not the gate/);
+});
+
+test('a majority-leaking ablation (2 of 3) is NOT DISCRIMINATING, not merely supported', () => {
+  const out = sweep({ negative: true, nogateRcs: [1, 1, 0] });
+  assert.match(out, /NOT DISCRIMINATING/);
+  assert.match(out, /ablated pass rate 2\/3, Wilson 95% CI \[/);
+  assert.doesNotMatch(out, /SUPPORTED/);
+});
+
+test('0 of 3 leaked prints the Wilson interval and warns N=3 cannot exclude 50%', () => {
+  const out = sweep({ negative: true, nogateRcs: [0, 0, 0] });
+  assert.match(out, /Wilson 95% CI \[0\.00, 0\.56\]/);
+  assert.match(out, /N=3 cannot exclude an ablated pass rate ≥ 0\.5 \(upper bound 0\.56\); use --negative=5 or more/);
+  assert.match(out, /── 1 scenario\(s\) genuinely verified/, 'still credited');
+});
+
+test('NONDISC_RATE=0.3 turns a 1-of-3 leak into NOT DISCRIMINATING', () => {
+  const out = sweep({ negative: true, nogateRcs: [0, 1, 0], env: { NONDISC_RATE: '0.3' } });
+  assert.match(out, /NOT DISCRIMINATING/);
+  assert.match(out, /ablated pass rate ≥ 0\.3/);
+  assert.doesNotMatch(out, /SUPPORTED/);
+});
+
+test('--negative=5 with 0 leaks excludes 50% and carries no warning', () => {
+  const out = sweep({ negative: true, nogateRcs: [0, 0, 0, 0, 0] });
+  assert.match(out, /Wilson 95% CI \[0\.00, 0\.43\]/);
+  assert.doesNotMatch(out, /cannot exclude/);
 });
 
 test('a positive control credits a rule that fails without it and passes with it', () => {

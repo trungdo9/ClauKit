@@ -318,6 +318,8 @@ POSITIVE=0
 # claim about reliability, so one sample cannot support it — the gate is credited
 # only when EVERY ablated run fails.
 NEGATIVE_RUNS=${NEGATIVE_RUNS:-3}
+# Ablated pass rate at or above this = the behaviour does not depend on the gate.
+NONDISC_RATE=${NONDISC_RATE:-0.5}
 ARGS=()
 for a in "$@"; do
   case "$a" in
@@ -332,7 +334,8 @@ case "${ARGS[0]:-}" in
   --fast) SET="$FAST_SET" ;;
   --all)  SET="$ALL_SET" ;;
   "")     echo "usage: run-scenario.sh <scenario>|--fast|--all [--negative[=N]]"
-          echo "  --negative[=N]  ablate the whole gate; require the behaviour to disappear in all N runs (default 3)"
+          echo "  --negative[=N]  ablate the whole gate; require the behaviour to disappear in all N runs (default 3); prints a Wilson 95% CI"
+          echo "                  env NONDISC_RATE (default 0.5): ablated pass rate >= this = NOT DISCRIMINATING"
           echo "  --positive      remove only POSITIVE_PATTERN (one rule); require FAIL without it and PASS with it"
           echo "scenarios: $ALL_SET"; exit 1 ;;
   *)      SET="${ARGS[0]}" ;;
@@ -368,11 +371,13 @@ for s in $SET; do
       [ $nrc -eq 1 ] && leaked=$((leaked + 1))
       [ $nrc -eq 2 ] && { nerr=1; break; }
     done
-    if [ $nerr -eq 1 ]; then
-      errored=1; echo "   stopping: infrastructure failure"; break
-    elif [ $leaked -eq $NEGATIVE_RUNS ]; then
+    if [ $nerr -eq 1 ]; then errored=1; echo "   stopping: infrastructure failure"; break; fi
+    ci=$(node "$HARNESS_DIR/stats.cjs" wilson "$leaked" "$NEGATIVE_RUNS")
+    lo=${ci#*lo=}; lo=${lo%% *}; hi=${ci##*hi=}
+    echo "   ablated pass rate $leaked/$NEGATIVE_RUNS, Wilson 95% CI [$lo, $hi]"
+    if node -e 'process.exit(+process.argv[1]/+process.argv[2] >= +process.argv[3] ? 0 : 1)' "$leaked" "$NEGATIVE_RUNS" "$NONDISC_RATE"; then
       fail=1
-      echo "✗ $s NOT DISCRIMINATING — the behaviour survived every one of $NEGATIVE_RUNS ablated runs."
+      echo "✗ $s NOT DISCRIMINATING — the behaviour survived $leaked of $NEGATIVE_RUNS ablated runs (ablated pass rate ≥ $NONDISC_RATE)."
       echo "   The model produces it unaided; this scenario measures the model, not the gate."
     elif [ $leaked -gt 0 ]; then
       fail=1
@@ -383,6 +388,9 @@ for s in $SET; do
     else
       ran=$((ran + 1))
       echo "✓ $s negative control OK — behaviour absent in all $NEGATIVE_RUNS ablated runs"
+      if node -e 'process.exit(+process.argv[1] >= +process.argv[2] ? 0 : 1)' "$hi" "$NONDISC_RATE"; then
+        echo "   ⚠ N=$NEGATIVE_RUNS cannot exclude an ablated pass rate ≥ $NONDISC_RATE (upper bound $hi); use --negative=5 or more"
+      fi
     fi
   fi
 done
