@@ -12,10 +12,9 @@ status: active
 Convert a codebase into a **queryable graph**: nodes are symbols (files, modules, functions, classes), edges are imports, calls, and inheritance. Used for impact analysis, cycle detection, and large-repo navigation.
 
 Distinct from:
-- `[[tech-graph]]` — produces publication SVG diagrams (GraphViz / mingrammer). Static.
 - `[[gkg]]` — semantic knowledge graph from prose/docs (entities + relations from NLP). Different input domain.
 
-**When NOT to use this skill** → use `[[tech-graph]]` for diagrams to share in docs; use `[[gkg]]` for extracting knowledge from specs.
+**When NOT to use this skill** → write a static diagram (Mermaid / GraphViz) directly for docs; use `[[gkg]]` for extracting knowledge from specs.
 
 ## When to Use
 
@@ -45,7 +44,7 @@ Activation phrases: *"analyze codebase as a graph"*, *"find all call chains from
    - Coupling: `nodes with in-degree > threshold`
    - Cycles: strongly connected components in the imports edge set
    - Surface: `nodes with no incoming edges` (dead code candidates)
-5. **Render** (optional) — pass query results to `[[tech-graph]]` for a diagram.
+5. **Render** (optional) — emit query results as Mermaid or GraphViz `dot` for a diagram.
 
 ## Tool Choices
 
@@ -84,4 +83,4 @@ See `references/`:
 
 ## Cross-links
 
-`[[tech-graph]]` (diagrams), `[[gkg]]` (semantic graphs), `[[code-review]]`, `[[debugging]]`
+`[[gkg]]` (semantic graphs), `[[code-review]]`, `[[debugging]]`

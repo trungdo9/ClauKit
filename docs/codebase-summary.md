@@ -16,8 +16,8 @@ KitForge is an opinionated multi-agent orchestration framework that runs inside 
 ClauKit/
 ├── .claude/                    # Claude Code configuration (what `ck init` copies)
 │   ├── agents/
-│   │   ├── engineering/        # 17 engineer-kit agent definitions
-│   │   └── marketing/          # 11 marketing-kit agent definitions
+│   │   ├── engineering/        # 16 engineer-kit agent definitions
+│   │   └── marketing/          # 12 marketing-kit agent definitions
 │   ├── commands/
 │   │   ├── ck/                 # 27 engineer-kit command files (/ck:<name>)
 │   │   ├── mk/                 # 12 marketing-kit command files (/mk:<name>)
@@ -25,7 +25,7 @@ ClauKit/
 │   ├── hooks/                  # Git hooks and scripts (scout-block.cjs dispatcher)
 │   ├── kits/                   # Kit manifests (*.json) — engineer/marketing/both/ba
 │   ├── scripts/ck/             # 7 shipped helpers + lib/ — see § Scripts below
-│   ├── skills/                 # 142 SKILL.md files — see § Skills Library below
+│   ├── skills/                 # 124 SKILL.md files — see § Skills Library below
 │   ├── workflows/              # Development workflow definitions (*.md)
 │   ├── settings.json           # Claude Code settings
 │   ├── metadata.json           # Installed-project metadata (kit, version)
@@ -82,7 +82,7 @@ ClauKit/
 
 | Folder | Count | Agents |
 |--------|------:|--------|
-| `engineering/` (engineer kit) | 17 | `backend-developer`, `brainstormer`, `code-reviewer`, `database-admin`, `debugger`, `docs-manager`, `frontend-developer`, `git-manager`, `integration-agent`, `journal-writer`, `performance-agent`, `planner`, `project-manager`, `researcher`, `scout`, `security-auditor`, `tester` |
+| `engineering/` (engineer kit) | 16 | `backend-developer`, `brainstormer`, `code-reviewer`, `database-admin`, `debugger`, `docs-manager`, `frontend-developer`, `git-manager`, `journal-writer`, `planner`, `project-manager`, `researcher`, `scout`, `security-auditor`, `tester`, `ticket-slicer` |
 | `marketing/` (marketing kit) | 11 | `campaign-manager`, `content-strategist`, `copywriter`, `crm-specialist`, `email-specialist`, `market-researcher`, `seo-content`, `seo-geo`, `seo-schema`, `seo-technical`, `video-producer` |
 
 Notes:
@@ -94,7 +94,7 @@ Notes:
 
 ### 2. Slash Commands System
 
-**Command files**: 26 under `.claude/commands/ck/` (`/ck:<name>`) + 12 under `.claude/commands/mk/` (`/mk:<name>`) = 38 files. `docs/clauKit-registry.md` counts "commands" differently (dispatcher sub-actions like `/ck:fix ci` counted separately) — its header/§1/§3/§6 figures are now reconciled to **57** logical commands (= 213 total entries with 126 skills + 30 agents). The registry's § 3 tables remain the itemized source of truth.
+**Command files**: 27 under `.claude/commands/ck/` (`/ck:<name>`) + 12 under `.claude/commands/mk/` (`/mk:<name>`) + 6 under `.claude/commands/ba/` (`/ba:<name>`) = 45 files. `docs/clauKit-registry.md` counts "commands" differently (dispatcher sub-actions like `/ck:fix ci` counted separately) — its header/§1/§3/§6 figures are now reconciled to **63** logical commands (= 215 total entries with 124 skills + 28 agents). The registry's § 3 tables remain the itemized source of truth.
 
 | Namespace | Commands |
 |-----------|----------|
@@ -112,7 +112,7 @@ Several `/ck:` commands are dispatchers with positional-arg variants (no dash), 
 | `marketing/` | 50 | 25 claude-seo engine skills + 23 coreyhaines31-sourced + 2 KitForge-authored (`product-marketing`, `kit-builder`) |
 | `automation/` | 6 | MCP wrappers: `marketing-orchestrator`, `mcp-ga4`, `mcp-gsc`, `mcp-sendgrid`, `mcp-resend`, `mcp-reviewweb` |
 | `integrations/` | 2 | `wordpress-rest`, `mcp-wordpress` |
-| `software/` | 68 | Top-level standalone (38, incl. `git`) + subcategorized (30): `ai/` (3), `database/` (2), `design/` (9), `development/` (11), `document-skills/` (4), `infrastructure/` (1) |
+| `software/` | 50 | Top-level standalone (31, incl. `git`) + subcategorized (19): `ai/` (3), `database/` (2), `design/` (5), `development/` (5), `document-skills/` (4). 18 unrouted skills retired 2026-09-28 — see registry § 5 |
 
 No `ffmpeg`, `shopify`, `csharp-expert`, `docs-seeker`, `cti-expert`, or `web-testing` skills exist. Testing at every layer is one skill — `software/development/test-automation` (v2.0.0, absorbed `web-testing` 2026-08-21); external docs come from `WebFetch` / `WebSearch`, not a skill. Image/video generation and editing route through the `ai-multimodal` skill (stale `imagemagick` references were purged 2026-07-16 along with the earlier-deleted `media-processing` skill). C#/.NET work is covered by the `csharp-developer` skill (`software/development/csharp-developer/`), not `csharp-expert`.
 
@@ -250,9 +250,9 @@ type(scope): description
 Not regenerated this pass — no `repomix-output.xml` is committed to the repo (generated on demand by `/ck:docs update`, gitignored). Run `repomix` locally for current token/file counts rather than trusting stale numbers here.
 
 **Verified counts** (via `ls`/`find` against the filesystem, 2026-09-11):
-- Agent definitions: 30 (18 engineering + 12 marketing; ba kit ships no agents)
+- Agent definitions: 28 (16 engineering + 12 marketing; ba kit ships no agents)
 - Command files: 45 (27 `ck/` + 12 `mk/` + 6 `ba/`)
-- Skill files: 142 `SKILL.md` (68 software · 50 marketing · 6 automation · 2 integrations · 6 ba · 10 legacy compat)
+- Skill files: 124 `SKILL.md` (50 software · 50 marketing · 6 automation · 2 integrations · 6 ba · 10 legacy compat)
 - Workflow files: 19 in `.claude/workflows/` (7 shipped by the engineer kit + 11 by the marketing kit + 1 by the ba kit; `cro-framework.md` shared — see `.claude/kits/*.json`)
 - Test files: `tests/ba-spine.test.js` (13 tests) · `tests/ba-deliver.test.js` (4 tests) · `tests/lib/kits.js` (shared kit-loading helpers) · plus 15 engineer-kit test files
 

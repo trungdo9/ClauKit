@@ -139,7 +139,7 @@ Multiple `researcher` subagents in parallel → explore request, validate ideas,
 `planner` subagent → detailed implementation plan following the `planning` skill's progressive disclosure structure (`plans/<YYMMDD-HHmm>-<slug>/plan.md` + per-phase files).
 
 **Phase 4 — Wireframe & Design**
-`ui-ux-designer` + `researcher` subagents in parallel → design plan + wireframes. Outputs:
+`frontend-developer` + `researcher` subagents in parallel → design plan + wireframes. Outputs:
 - `./docs/design-guidelines.md`
 - `./docs/wireframe/*.html`
 - Logo via `ai-multimodal` skill if not provided
@@ -147,7 +147,7 @@ Multiple `researcher` subagents in parallel → explore request, validate ideas,
 - Predict Google Fonts + sizes (avoid defaulting to Inter/Poppins)
 
 **Phase 5 — Implementation**
-Main agent implements plan step by step. `ui-ux-designer` for frontend. `ai-multimodal` for asset generation/analysis. ImageMagick for image edits. Type-check + compile.
+Main agent implements plan step by step. `frontend-developer` for frontend. `ai-multimodal` for asset generation/analysis. ImageMagick for image edits. Type-check + compile.
 
 **Phase 6 — Testing**
 Real tests, no fake data to pass. `tester` subagent runs tests. Failures → `debugger` subagent for root cause → main agent fixes → repeat until pass.
@@ -176,4 +176,4 @@ Summary + getting-started guide + next steps. Ask user about commit/push → `gi
 - **Brutal honesty** — if unrealistic / over-engineered / problematic, say so directly.
 - **Consider all stakeholders** — end users, devs, ops, business.
 - **Sacrifice grammar for concision** in reports. List unresolved questions at end.
-- **Auto-activate companion skills** as needed: `tanstack`, `react-specialist`, `deploy`, `project-organization`, etc.
+- **Auto-activate companion skills** as needed: `tanstack`, `deploy`, etc.

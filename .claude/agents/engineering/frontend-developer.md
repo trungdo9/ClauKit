@@ -68,3 +68,7 @@ Follow `./docs/design-guidelines.md` for:
 3. **Accessible** - Follow WCAG guidelines
 4. **Performant** - Optimize rendering and bundle size
 5. **Reusable** - Create composable components
+
+## Reference
+
+- Frontend patterns (React/TypeScript): `.claude/skills/software/development/frontend-development/`

@@ -202,6 +202,89 @@ const RETIRED = [
   { path: ".claude/skills/ba-traceability/SKILL.md", token: "skills/ba-traceability/", sha: ["068a5f4b148484844e95793239b166a9ddd804d8"] },
   { path: ".claude/skills/ba-traceability/references/entity-template.md", token: "skills/ba-traceability/", sha: ["4dc1fb92ec260129b290b6a5e415667d8d19f120"] },
   { path: ".claude/skills/ba-traceability/references/id-scheme.md", token: "skills/ba-traceability/", sha: ["dfcf0a0b5b3e52ce0fb3c1f697922f0b207d379d"] },
+  // 2026-09-28 prune, maintainer decision: 18 skills that no command, agent or
+  // workflow routed to. Two kinds. (1) Orphans — `template-skill` (a 6-line
+  // placeholder whose description still read "Replace with description…"),
+  // `coding-level` (claimed other skills adapt to it; none read it), `agentize`,
+  // `project-organization`, `infrastructure/docker-expert` (its only skill, so the
+  // group goes too), `agent-browser` (the marketing browser skills drive the CLI
+  // on their own and never linked here), four design references (`excalidraw`,
+  // `stitch`, `web-design-guidelines`, `mermaidjs-v11`) and the two docs-manager
+  // "auto-activate" entries `mintlify` + `tech-graph` — the same shape
+  // `markdown-novel-viewer` was retired for. (2) Language personas — `python-pro`,
+  // `python-development`, `typescript-pro`, `nextjs-developer`, `node-specialist`,
+  // `react-specialist`: generic framework knowledge the model already has, two of
+  // them duplicating each other, none of them linked from an agent. Consolidating
+  // ported 0 lines; the live homes are `backend-development` /
+  // `frontend-development` (now wired to their agents) and `csharp-developer`,
+  // kept on purpose and wired to `backend-developer`.
+  // software/template-skill
+  { path: ".claude/skills/software/template-skill/SKILL.md", token: "software/template-skill", sha: ["50a4f9b104357d96361e257adb70454604cd15c0"] },
+  // software/coding-level
+  { path: ".claude/skills/software/coding-level/references/bloom-taxonomy-for-coding.md", token: "software/coding-level", sha: ["8e979deb94f1768e97f4865fb2ca3307e98e1f04"] },
+  { path: ".claude/skills/software/coding-level/references/cefr-language-model-applied.md", token: "software/coding-level", sha: ["93fb44d76c72feb7287e1490e46942acb232f789"] },
+  { path: ".claude/skills/software/coding-level/references/stackoverflow-developer-skill-levels.md", token: "software/coding-level", sha: ["a89b955746f54a110fc3f677de7d3002e7e5e270"] },
+  { path: ".claude/skills/software/coding-level/SKILL.md", token: "software/coding-level", sha: ["c23c7c22cbd5f2f3951aca413f232e6a046f460b"] },
+  // software/agentize
+  { path: ".claude/skills/software/agentize/references/anthropic-agents-tool-use.md", token: "software/agentize", sha: ["7305227ec83cb3a29dfbe6d0dc2eca6884f1cdef"] },
+  { path: ".claude/skills/software/agentize/references/cli-design-guidelines.md", token: "software/agentize", sha: ["5ab340339ecdf5e03e91ac4219ebfd3d5bde18a3"] },
+  { path: ".claude/skills/software/agentize/references/mcp-spec.md", token: "software/agentize", sha: ["e372c3fcddd28bc36dce014f8ccd12e61270778f"] },
+  { path: ".claude/skills/software/agentize/SKILL.md", token: "software/agentize", sha: ["1e618ddfbf6a14a035d0ed3cb4274a80f15517c9", "56668cdc17b8d835d5baed1d45b37384e388ac56"] },
+  // software/project-organization
+  { path: ".claude/skills/software/project-organization/references/github-repository-best-practices.md", token: "software/project-organization", sha: ["b2ac4f7236e08f11b451f5958fbfbcf1d1190209"] },
+  { path: ".claude/skills/software/project-organization/references/monorepo-vs-polyrepo.md", token: "software/project-organization", sha: ["afd3b88fc1dbc80361f0b9b3a7bad42766c42532"] },
+  { path: ".claude/skills/software/project-organization/references/python-project-layout.md", token: "software/project-organization", sha: ["a9c4cc91e60511f6aec59416842f7717ceeaa110"] },
+  { path: ".claude/skills/software/project-organization/SKILL.md", token: "software/project-organization", sha: ["884f2ff9c13a7adaec6014a9d6dda53f7c8a0e69", "f99f65021f9ab834d19769f758de86f196a6c5af"] },
+  // software/infrastructure
+  { path: ".claude/skills/software/infrastructure/docker-expert/SKILL.md", token: "software/infrastructure", sha: ["7137a2a47ca4a1b61bec5ba0825ae1de59573447"] },
+  // software/agent-browser
+  { path: ".claude/skills/software/agent-browser/SKILL.md", token: "software/agent-browser", sha: ["4f2a2f75fdd2f2ad175dac63b07a1571f8810cd2", "aeed38b8470e694b7d9a9f83f49992d29b3eaba5"] },
+  // software/design/excalidraw
+  { path: ".claude/skills/software/design/excalidraw/SKILL.md", token: "software/design/excalidraw", sha: ["b6b91c4c41a435ec2d989ebc4c87364ae720d563"] },
+  // software/design/stitch
+  { path: ".claude/skills/software/design/stitch/SKILL.md", token: "software/design/stitch", sha: ["931d14fd824cabc6195ff42d171b0ae02cbf6641"] },
+  // software/design/web-design-guidelines
+  { path: ".claude/skills/software/design/web-design-guidelines/SKILL.md", token: "software/design/web-design-guidelines", sha: ["ad4b62051b1b754abe16a2b5cf02f1e018b623ac"] },
+  // software/design/mermaidjs-v11
+  { path: ".claude/skills/software/design/mermaidjs-v11/SKILL.md", token: "software/design/mermaidjs-v11", sha: ["bf7fa8e858291c344b21acca314f5b6996c076e7"] },
+  // software/development/python-pro
+  { path: ".claude/skills/software/development/python-pro/SKILL.md", token: "software/development/python-pro", sha: ["de4a335b31d953fe958c783df2139eab08167705"] },
+  // software/development/python-development
+  { path: ".claude/skills/software/development/python-development/SKILL.md", token: "software/development/python-development", sha: ["0bebeade2e2a071962cb15dbb470efe5da8c7ae2", "98ef8930c51b9cf354fbfb0931458875c00edc8d", "e21741bc324d68189c2bfc3e98885404a6e614ab"] },
+  // software/development/typescript-pro
+  { path: ".claude/skills/software/development/typescript-pro/SKILL.md", token: "software/development/typescript-pro", sha: ["31615395b640cb4f0e4819d3aa5e008bc09a16bc"] },
+  // software/development/nextjs-developer
+  { path: ".claude/skills/software/development/nextjs-developer/references/nextjs-app-router.md", token: "software/development/nextjs-developer", sha: ["68d17dc26ea3d2553a083c7d49d6916f207d2cf1"] },
+  { path: ".claude/skills/software/development/nextjs-developer/references/nextjs-data-fetching.md", token: "software/development/nextjs-developer", sha: ["7019e1ecaf575de24d3929aa7dd19e8f47870bf0"] },
+  { path: ".claude/skills/software/development/nextjs-developer/references/nextjs-optimization.md", token: "software/development/nextjs-developer", sha: ["18e6a4468c743af6274e951a47a84c02f3f9cb33"] },
+  { path: ".claude/skills/software/development/nextjs-developer/references/nextjs-server-components.md", token: "software/development/nextjs-developer", sha: ["8feaeef40e5eaee9236fc81e301e33d63d8c24c2"] },
+  { path: ".claude/skills/software/development/nextjs-developer/SKILL.md", token: "software/development/nextjs-developer", sha: ["5f97f979e9951d02a5eafeb9a0d101e922de6a8d"] },
+  // software/development/node-specialist
+  { path: ".claude/skills/software/development/node-specialist/references/best-practices.md", token: "software/development/node-specialist", sha: ["6eb80f2574428f6620c0448ec770c96eff3eea9c"] },
+  { path: ".claude/skills/software/development/node-specialist/references/common-snippets.md", token: "software/development/node-specialist", sha: ["ce361aac6aacd21fe1f007901eca7fedd0ff9922"] },
+  { path: ".claude/skills/software/development/node-specialist/references/framework-patterns.md", token: "software/development/node-specialist", sha: ["4e21bb2524b52730c6974ec7e00efc1b0efa8655"] },
+  { path: ".claude/skills/software/development/node-specialist/SKILL.md", token: "software/development/node-specialist", sha: ["1c6663a2b7078ace96b7489e08d81cb5145efa96"] },
+  // software/development/react-specialist
+  { path: ".claude/skills/software/development/react-specialist/SKILL.md", token: "software/development/react-specialist", sha: ["70eea9969db8b0812ef78ecba3cc34c3906de813"] },
+  // software/mintlify
+  { path: ".claude/skills/software/mintlify/SKILL.md", token: "software/mintlify", sha: ["d8bd890929df4d93a0d1f4eaf16db869215feeee"] },
+  // software/tech-graph
+  { path: ".claude/skills/software/tech-graph/SKILL.md", token: "software/tech-graph", sha: ["178eaf5173769ca1b0e86fc3db87c997f3f5f915"] },
+  // `performance-agent` + `integration-agent`, retired 2026-09-28 (maintainer
+  // decision, after verification). No command or workflow dispatched either;
+  // the only router was the dynamic-workflow persona table. Every capability
+  // already had a home: profiling/perf degradation → `debugger` (its own
+  // description), slow queries → `database-admin`, k6 → `test-automation`,
+  // caching/bundles → `backend-development` / `frontend-development`; OAuth,
+  // webhooks, retry, rate limits → `backend-development`, payments →
+  // `payment-integration`. Agents, unlike grouped skills, are registered: each
+  // one's description is sent in every session, so a dead one costs every run.
+  // Legacy group dirs are listed too — an old install may still carry them.
+  { path: ".claude/agents/engineering/performance-agent.md", token: "performance-agent", sha: ["079bd439558963699580eb563c4a87936e4240f5", "244438636d9dca83d1d829a83766b53e1943003f"] },
+  { path: ".claude/agents/development/performance-agent.md", token: "performance-agent", sha: ["079bd439558963699580eb563c4a87936e4240f5"] },
+  { path: ".claude/agents/software-engineering/performance-agent.md", token: "performance-agent", sha: ["079bd439558963699580eb563c4a87936e4240f5"] },
+  { path: ".claude/agents/engineering/integration-agent.md", token: "integration-agent", sha: ["90cd79ed36d2c688a9a6b37a77a5ce933c7c0000", "9873d4d8c2ff0bf94933980a773a81d6cccac166", "ba5e11d8c7cd3516111314b21d645dd2a2d5d180"] },
+  { path: ".claude/agents/operations/integration-agent.md", token: "integration-agent", sha: ["3b12b9dcb18d6bf4f5f61aa25845c4abcf721ba0", "98bf18a70bab122cb6f6dbc114f37ec9b76be289", "ba5e11d8c7cd3516111314b21d645dd2a2d5d180"] },
 ];
 
 /**
@@ -249,20 +332,19 @@ const STALE = [
   { path: ".claude/agents/engineering/security-auditor.md", sha: ["3ae8387872e8e6a332cf3f24f6990ff04ea6eec9", "efb43cc949f49fcb65af29241d6f0d2144096a76"] },
   { path: ".claude/agents/engineering/tester.md", sha: ["3d9e7b610e12efa02b7958f557d4988d25bf7b02", "46003d9b0e9830a525af8ac327e1b46912b2909d", "d635b8ce966f7b44a3dd1248c8cf8c5c24ce7b62", "dcca71e7eaa898b55f90fa11ddb7d6b56bde252a"] },
   { path: ".claude/commands/ck/research.md", sha: ["5aabb671cc886ac7796f903d1db2144452abec63", "5db191fa71cc7c3a39996de7c6bef2b8ec8fbdcb", "b03e02296271e4953a1bea596c5eae7788ee18dd"] },
-  { path: ".claude/skills/software/brainstorm/SKILL.md", sha: ["909ae4cf1b1aa0ee8c5cc590804e907f8146b8be"] },
+  { path: ".claude/skills/software/brainstorm/SKILL.md", sha: ["0ae3a50f64391ad4df3924431254ca07c8875743", "909ae4cf1b1aa0ee8c5cc590804e907f8146b8be", "a065b29fb280f2aabd754653a944762b9661ac65", "d6d928a0eafbb3276045c7dcff685e4f14c05d4f"] },
   { path: ".claude/skills/software/ask/SKILL.md", sha: ["29b5618a23b1c10c618cc3867f9f4943395f23f7"] },
   { path: ".claude/skills/software/research/SKILL.md", sha: ["aa6edd6eef34c9fe2c6e965ad365c0bffa145333", "e64178094909b3f6b58faebd49325e266a0385c0"] },
   { path: ".claude/skills/software/scenario/SKILL.md", sha: ["190d359845fd2dc2a7b445250d1d729ee66da9c2"] },
-  { path: ".claude/skills/software/chrome-devtools/SKILL.md", sha: ["7ba73b026448e8ec6cd85f0d92fc3dae2b7ee27f"] },
-  { path: ".claude/skills/software/agent-browser/SKILL.md", sha: ["4f2a2f75fdd2f2ad175dac63b07a1571f8810cd2"] },
+  { path: ".claude/skills/software/chrome-devtools/SKILL.md", sha: ["439e290a4d82e94d17c28090d61c6e354fd7134f", "7ba73b026448e8ec6cd85f0d92fc3dae2b7ee27f"] },
   { path: ".claude/skills/software/planning/references/research-phase.md", sha: ["a7dd9e15bc5df162217a85a926ffbbc43f52d56e"] },
   // Also the merge destination: an older install has the "Scope vs `web-testing`"
   // split still in it, pointing at the file being removed.
-  { path: ".claude/skills/software/development/test-automation/SKILL.md", sha: ["5b7f8c3a458ffde57c7b5dc5b17cb53e9522bd87"] },
+  { path: ".claude/skills/software/development/test-automation/SKILL.md", sha: ["5b7f8c3a458ffde57c7b5dc5b17cb53e9522bd87", "6e1a3c5122693f2efb226168f85ddad0dccd459e"] },
   // Both named `markdown-novel-viewer` as a skill to activate; refreshed to the
   // versions that point at `mdbook serve` / `markserv` / `grip` directly.
-  { path: ".claude/skills/software/preview/SKILL.md", sha: ["4ba137add7b38af495632df47475c225576769f7", "7a0ebbf5b62144c7c7320d2f3fd46d46132bb10d"] },
-  { path: ".claude/agents/engineering/docs-manager.md", sha: ["161c049166e49a7b9ccabae45fe1a44bb9e53500", "507f2f963c2af472bda2f64764be28d7a0ce73f0", "879260f5fbeb4a6966147ac0256c6d3ca03e26a8", "dd7625555c72282d8f09a1bbb2fa9c3286101b74", "e1431897b1d9f4c34ceee6133886ba24d59b8f3e"] },
+  { path: ".claude/skills/software/preview/SKILL.md", sha: ["4ba137add7b38af495632df47475c225576769f7", "7a0ebbf5b62144c7c7320d2f3fd46d46132bb10d", "8a2c070ed75620544f0b498be156d260a1c09f88"] },
+  { path: ".claude/agents/engineering/docs-manager.md", sha: ["161c049166e49a7b9ccabae45fe1a44bb9e53500", "507f2f963c2af472bda2f64764be28d7a0ce73f0", "58700713d5657ce796fe5ee1cf34761ed200d7b2", "879260f5fbeb4a6966147ac0256c6d3ca03e26a8", "dd7625555c72282d8f09a1bbb2fa9c3286101b74", "e1431897b1d9f4c34ceee6133886ba24d59b8f3e"] },
   // BA prose that named the grouped `skills/ba/<name>/` paths (retired above).
   { path: ".claude/commands/ba/deliver.md", sha: ["5eebd3d67cac5b6ad708c25c485604053f5762cd", "f11aac94a31c10e3ccb072b1a4a0f2f6e90df368", "6fd349f03d7c4a6e97c16102faedb6f57e51e64e"] },
   { path: ".claude/commands/ba/diagram.md", sha: ["1da90435f690cc4fb3355d6e52fcacbc7c9691df", "647dbd20cb20bf3948131b77efa58a43d916319b", "5eb1582da14f3f01dd3bedde4dd7d72640e29350"] },
@@ -290,6 +372,18 @@ const STALE = [
   { path: ".claude/skills/ba/traceability/SKILL.md", sha: ["30236c8318186df669fa1ee6d225cef5c03a4d6a", "4770798ac5c8bb3b8c5d399e5c4302a4a62a2e87"] },
   { path: ".claude/skills/ba/traceability/references/entity-template.md", sha: ["4dc1fb92ec260129b290b6a5e415667d8d19f120"] },
   { path: ".claude/skills/ba/traceability/references/id-scheme.md", sha: ["4d14d1f930f1a792fbc4577fbe587d0096b9d496", "dfcf0a0b5b3e52ce0fb3c1f697922f0b207d379d"] },
+  // The 2026-09-28 prune: shipped docs that named a now-retired skill (bare name
+  // or link). Refreshed to the versions that point at what is left instead.
+  // (`preview/SKILL.md` above also gained the digest that named `[[mintlify]]`.)
+  { path: ".claude/skills/software/development/bootstrap/SKILL.md", sha: ["0cdc61dbbaa9d283b89b4f881a61ae38558d5cfc", "5985d5cfcc68cd60d6d07edbed46fe0937eea3ad", "8dd936181b5bbd0ef422b5bd66d9f8974fd54951", "8f62e14293f755ab8387a60b73e3796bbe125eae", "f239b59a3ba1300763f9d9f00b88d6c727a3252c"] },
+  { path: ".claude/skills/software/ck-graphify/SKILL.md", sha: ["910d38a6c774f259257f4525012417ab0aaa5ca9"] },
+  { path: ".claude/skills/software/gkg/SKILL.md", sha: ["4dd4ab745a0a94a94b0ac330f3e58b255d4ae018"] },
+  // Docs that routed to a retired or never-existing agent (`performance-agent`,
+  // `integration-agent`, and the long-gone `scout-external` / `ui-ux-designer` /
+  // `mcp-manager` — a `subagent_type` naming no file fails the Agent call).
+  { path: ".claude/skills/software/dynamic-workflow/references/inheritance-contract.md", sha: ["4e63d4b2d01a5cef60f48112f90a7e09dbc25b62", "748f897eb5b5235e10d77e836123ec119db606ee", "a16f40dc80abbb8bd2058f0bb82c140b0bb6f5dc"] },
+  { path: ".claude/skills/software/port/SKILL.md", sha: ["35fb0bec0c8fb2834f9d5deccbe54f0d79ab34fe", "98ffca7116d3632b00939d1d851fce56b93ddd8f", "ac4c5342cd3af909d26e27c12e124026ff681643"] },
+  { path: ".claude/skills/integrations/mcp-wordpress/SKILL.md", sha: ["54b962b760e31ea50ff9167805e0fe3e384debdb"] },
 ];
 
 /** Where shipped prose lives, and which extensions carry instructions. */

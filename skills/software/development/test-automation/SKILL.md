@@ -30,7 +30,7 @@ services → API; behaviour under concurrency → load.
 - Debugging test failures with traces, snapshots, codegen
 - Establishing performance baselines and catching regressions under load
 
-**Do NOT use when**: driving a browser for a long autonomous session (use `[[agent-browser]]`) · profiling a live page's runtime, network or Core Web Vitals (use `[[chrome-devtools]]`) · deriving *which* cases to test (use `[[scenario]]`) · practising red-green discipline on a bug fix (use `[[tdd]]`) · testing third-party SaaS behaviour you do not control.
+**Do NOT use when**: driving a browser for a long autonomous session (use a browser MCP server) · profiling a live page's runtime, network or Core Web Vitals (use `[[chrome-devtools]]`) · deriving *which* cases to test (use `[[scenario]]`) · practising red-green discipline on a bug fix (use `[[tdd]]`) · testing third-party SaaS behaviour you do not control.
 
 ## Supported Frameworks
 

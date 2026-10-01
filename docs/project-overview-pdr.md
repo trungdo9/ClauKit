@@ -64,13 +64,13 @@ Provide a production-ready template that:
 
 ### 1. Multi-Agent Orchestration System
 
-**Agent Types** (28 total — 17 engineering + 11 marketing, `.claude/agents/{engineering,marketing}/`):
+**Agent Types** (28 total — 16 engineering + 12 marketing, `.claude/agents/{engineering,marketing}/`):
 - **Planning Agents**: `planner`, `researcher`, `brainstormer`
 - **Implementation Agents**: `scout`, `frontend-developer`, `backend-developer`
-- **Quality Agents**: `tester`, `code-reviewer`, `debugger`, `performance-agent`, `security-auditor`
+- **Quality Agents**: `tester`, `code-reviewer`, `debugger`, `security-auditor`
 - **Documentation Agents**: `docs-manager`, `journal-writer`
-- **Management Agents**: `project-manager`, `git-manager`, `database-admin`, `integration-agent`
-- **Marketing Agents** (marketing kit only, 11): `campaign-manager`, `content-strategist`, `copywriter`, `crm-specialist`, `email-specialist`, `market-researcher`, `seo-content`, `seo-geo`, `seo-schema`, `seo-technical`, `video-producer`
+- **Management Agents**: `project-manager`, `git-manager`, `database-admin`, `ticket-slicer`
+- **Marketing Agents** (marketing kit only, 12): `campaign-manager`, `content-strategist`, `copywriter`, `crm-specialist`, `email-specialist`, `market-researcher`, `seo-content`, `seo-geo`, `seo-schema`, `seo-technical`, `seo-writer`, `video-producer`
 
 No `csharp-expert` agent exists — C#/.NET is covered by the `csharp-developer` skill, not a dedicated agent.
 

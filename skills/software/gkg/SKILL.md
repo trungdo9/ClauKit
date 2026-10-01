@@ -13,9 +13,8 @@ Convert prose into a **semantic knowledge graph**: nodes are concepts (services,
 
 Distinct from:
 - `[[ck-graphify]]` — syntactic code graph (AST, calls, imports). Different input (source code), different node types.
-- `[[tech-graph]]` — publication SVG diagrams. Static output, no query.
 
-**When NOT to use this skill** → use `[[ck-graphify]]` for code structure; use `[[tech-graph]]` for diagrams to ship in docs.
+**When NOT to use this skill** → use `[[ck-graphify]]` for code structure; write a static diagram (Mermaid / GraphViz) directly for docs.
 
 ## When to Use
 
@@ -86,4 +85,4 @@ See `references/`:
 
 ## Cross-links
 
-`[[ck-graphify]]`, `[[tech-graph]]`, `[[research]]`, `[[context-engineering]]`, `[[planning]]`
+`[[ck-graphify]]`, `[[research]]`, `[[context-engineering]]`, `[[planning]]`

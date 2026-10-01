@@ -48,7 +48,7 @@ The Markdown body has no restrictions on it.
 
 # Additional Information
 
-For a minimal example, see the `template-skill` example.
+For a minimal example, see "Creating a Basic Skill" in `skills/README.md`.
 
 # Version History
 

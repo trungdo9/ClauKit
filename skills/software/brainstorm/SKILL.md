@@ -119,7 +119,7 @@ This guarantees brainstorming output flows directly into a concrete implementati
 - `brainstormer` agent — persona variant (same methodology, agent-form delivery)
 - `planning` skill + `planner` agent + `/ck:plan` — natural next step after consensus
 - `ask` skill + `/ck:ask` — when the question is "how is X currently implemented?" not "what should we build?"
-- `scout` / `scout-external` agents — for parallel codebase discovery in Scout Phase
+- `scout` agents — for parallel codebase discovery in Scout Phase
 - `[[research]]` skill — external doc research in Research Phase
 - `sequential-thinking` skill — when the problem demands structured stepwise reasoning
 

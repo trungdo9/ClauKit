@@ -14,31 +14,28 @@ All stages read and write a **shared report directory**: `plans/<plan>/reports/`
 
 ## Axis 2 — persona (the agent bridge)
 
-Each stage routes to one of the **30 existing agents** via the Agent tool's `subagent_type`. **Zero new agent code** — the 30 agents ARE the persona library. The model is implemented purely by pointing `subagent_type` at the right persona.
+Each stage routes to one of the kit's existing agents via the Agent tool's `subagent_type`. **Zero new agent code** — the installed agents ARE the persona library. The model is implemented purely by pointing `subagent_type` at the right persona.
 
 | Stage intent | `subagent_type` | Example use |
 |---|---|---|
-| locate files / discover | `scout` (or `scout-external`) | find blast radius before diagnose |
+| locate files / discover | `scout` | find blast radius before diagnose |
 | diagnose / root-cause | `debugger` | log/CI/runtime failure analysis |
 | review code | `code-reviewer` | per-dimension review fan-out |
 | security depth | `security-auditor` | OWASP / deep vuln pass |
 | plan | `planner` | turn findings into an impl plan |
 | test | `tester` | run suite, verify regressions |
 | research | `researcher` | external best-practice gather |
-| UI diagnose/fix | `ui-ux-designer` | visual regression |
-| backend / frontend impl | `backend-developer` / `frontend-developer` | apply the fix |
-| DB | `database-admin` | schema/query work |
+| UI diagnose/fix | `frontend-developer` | visual regression |
+| backend / frontend impl | `backend-developer` / `frontend-developer` | apply the fix · 3rd-party APIs · profiling |
+| DB | `database-admin` | schema/query work · slow queries |
 | docs | `docs-manager` | update `./docs/*` |
 | project tracking | `project-manager` | plan progress |
 | git | `git-manager` | commit/push |
-| integrations | `integration-agent` | 3rd-party APIs |
-| perf | `performance-agent` | profiling/optimization |
-| MCP | `mcp-manager` | MCP tool discovery |
 | brainstorm | `brainstormer` | architecture options |
 | copy | `copywriter` | marketing/content |
 | journal | `journal-writer` | incident log |
 
-The full 21: `backend-developer`, `code-reviewer`, `debugger`, `docs-manager`, `frontend-developer`, `journal-writer`, `performance-agent`, `planner`, `project-manager`, `tester`, `copywriter`, `database-admin`, `security-auditor`, `ui-ux-designer`, `git-manager`, `integration-agent`, `mcp-manager`, `researcher`, `scout`, `scout-external`, `brainstormer`.
+The roster is whatever `.claude/agents/*/*.md` holds — `ls` it rather than trusting a list here. A `subagent_type` that names no file fails the Agent call; this table once routed to three agents retired months earlier (`scout-external`, `ui-ux-designer`, `mcp-manager`).
 
 **Skeptics for adversarial verify** are independent instances of the *same* persona prompted to refute (e.g. review skeptics = independent `code-reviewer` instances).
 

@@ -64,4 +64,5 @@ You are a **Backend Developer** specialist. You implement server-side logic, API
 ## Reference
 
 - Backend patterns: `.claude/skills/software/development/backend-development/`
+- C# / .NET (ASP.NET Core, EF Core): `.claude/skills/software/development/csharp-developer/`
 - Database skills: `.claude/skills/software/database/`

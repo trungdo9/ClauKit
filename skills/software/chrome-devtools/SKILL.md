@@ -24,18 +24,7 @@ The skill emphasizes **persistent browser sessions**: the browser keeps running 
 - Console/network/performance debugging
 - Web scraping with full JS execution
 
-**Do NOT use when**: running long autonomous AI sessions (use [`agent-browser`](../agent-browser/SKILL.md)), or for unit/E2E framework testing (use [`test-automation`](../development/test-automation/SKILL.md)).
-
-## When to Use vs `agent-browser`
-
-| Use `chrome-devtools` for | Use [`agent-browser`](../agent-browser/SKILL.md) for |
-|---|---|
-| Quick screenshots | Long autonomous AI sessions |
-| Custom Puppeteer scripts | Context-constrained workflows |
-| WebSocket debugging | Video recording |
-| Existing workflow integration | Cloud browsers (Browserbase) |
-| Auth injection | Multi-tab handling |
-| Low-level CDP access | Self-verifying build loops |
+**Do NOT use when**: running long autonomous AI sessions (drive a browser MCP server — Playwright MCP, Chrome DevTools MCP — which keeps page state as compact snapshots instead of script output), or for unit/E2E framework testing (use [`test-automation`](../development/test-automation/SKILL.md)).
 
 ## Prerequisites
 
@@ -161,7 +150,6 @@ Quick reference:
 
 ## Related Skills
 
-- [`agent-browser`](../agent-browser/SKILL.md) — Token-efficient alternative for long AI sessions
 - [`test-automation`](../development/test-automation/SKILL.md) — Playwright/Vitest/k6, the single testing toolkit
 - [`frontend-design`](../design/frontend-design/SKILL.md) — Screenshot implementations for design comparison
 

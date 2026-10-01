@@ -27,7 +27,7 @@ allowed-tools: Read, Bash, Write
 | `mcp__wordpress__getTaxonomies` | List/create categories & tags |
 | `mcp__wordpress__getSiteInfo` | Discovery / connectivity |
 
-(Exact tool names depend on the chosen server — adapt to its manifest. Use the `mcp-manager` agent to discover real tool names.)
+(Exact tool names depend on the chosen server — adapt to its manifest. List the server's tools with `/ck:use-mcp` to discover real tool names.)
 
 ## Common patterns
 

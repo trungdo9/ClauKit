@@ -37,7 +37,7 @@ Safely extract a feature from an external GitHub repository and integrate it int
 1. Validate `repo_url` is a public GitHub URL. If not, stop and ask user.
 2. Read `LICENSE` via `gh api repos/<owner>/<name>/contents/LICENSE` or `gh repo view`. Flag GPL / AGPL / non-permissive licenses to user **before** copying anything.
 3. List repo tree: `gh api repos/<owner>/<name>/ck:git/trees/HEAD?recursive=1` (or shallow-clone to `/tmp/port-<repo>-<sha>/` if tree is large).
-4. Delegate to `scout-external` (or `Explore`) agent: locate the file(s) implementing `feature`. Return paths + a 1-line "what each file does" map.
+4. Delegate to a `scout` (or `Explore`) agent: locate the file(s) implementing `feature`. Return paths + a 1-line "what each file does" map.
 5. Save inspection report to `plans/<plan-name>/reports/port-<repo>-inspect.md`.
 
 ### Phase 2 — Compare with local codebase (always)
@@ -94,7 +94,7 @@ If no active plan, drop reports into `plans/port-adhoc-<YYMMDD-HHmm>/reports/` (
 
 ## Related
 
-- `/ck:scout` + `scout-external` agent — for locating files in the source repo.
+- `/ck:scout` + `scout` agent — for locating files in the source repo.
 - `code-review` skill + `code-reviewer` agent — Phase 4 validation.
 - `/ck:test` — Phase 5 verification.
 - `git-manager` agent — commit the port as a discrete commit with `feat: port <feature> from <repo>` message.
