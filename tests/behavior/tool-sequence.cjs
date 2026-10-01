@@ -403,4 +403,4 @@ function main() {
 
 if (require.main === module) main();
 module.exports = { parse, outcomeOf, targetOf, rawTargetOf, tddOrder, evidenceBefore, sameTurn,
-                   concurrentDispatch };
+                   concurrentDispatch, MUTATORS, BASH_WRITE };
