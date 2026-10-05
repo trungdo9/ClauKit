@@ -133,7 +133,8 @@ Single source of truth: **`docs/clauKit-registry.md`** (skills + agents + comman
 All hooks are single-implementation Node.js (`.sh`/`.ps1` are thin delegates so platforms can't drift). Installed by every kit via the manifests' `hooks` key.
 
 **Scout Block** (`.claude/hooks/scout-block.cjs`, PreToolUse·Bash):
-- Blocks heavy-directory *traversal* (`node_modules`, `__pycache__`, `.git/`, `dist/`, `build/`) as **path segments**, not substrings
+- Blocks heavy-directory *traversal* (`node_modules`, `__pycache__`, `.venv`, `.next`, `.git/`, `dist/`, `build/`, `vendor/`) as **path segments**, not substrings
+- Same dirs are `permissions.deny` `Read(**/<dir>/**)` rules in `settings.json` (covers Read/Grep/Glob); `ck init` merges missing deny rules into an existing settings.json
 - Whitelists exclusion contexts (`grep -v`, `--exclude-dir`, `find -prune`, `!glob`) — the substring false-positive bug is fixed and regression-tested
 
 **Guard Destructive** (`.claude/hooks/guard-destructive.cjs`, PreToolUse·Bash):

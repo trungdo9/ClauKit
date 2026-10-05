@@ -27,6 +27,7 @@ Every tool result is re-read on **every later turn** of the session. On one meas
 - **Bash:** ask for the answer, not the dump — `wc -l`, `--stat`, `--name-only`, `| tail -20` of a build log, `jq` on one field. Show errors in full; show success as a summary.
 - **Cap the display, never the count.** `grep … | head` followed by reporting the number is how capped lists get published as the population. Count on the full stream (`| wc -l`, `grep -c`) and truncate only what you print.
 - Wide sweeps go to `Explore` / `scout`, which return conclusions — the file dumps stay in their context, not yours.
+- **Never point a command at a heavy dir** — `node_modules`, `__pycache__`, `.venv`, `.next`, `.git/`, `dist/`, `build/`, `vendor/`. Read/Grep/Glob are denied there (`permissions.deny`) and `scout-block` rejects Bash that traverses them, so the attempt is a wasted failed call. Exclude them up front in any recursive sweep: `grep -r --exclude-dir=node_modules --exclude-dir=dist …`, `find . -path ./node_modules -prune -o …`, `rg` (honours `.gitignore`). Need a dependency's API? Read its docs or the `package.json`/lockfile entry, not its source tree.
 
 ## Context Budget — session length
 

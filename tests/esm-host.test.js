@@ -187,7 +187,8 @@ test('upgrade: a pre-rename install is repaired without --force', () => {
     'no shipped hook may still be invoked by its .js name');
   assert.match(after.statusLine.command, /statusline\.cjs/);
 
-  assert.deepStrictEqual(after.permissions, theirs.permissions, 'their permissions must be untouched');
+  assert.deepStrictEqual(after.permissions.allow, theirs.permissions.allow, 'their allow list must be untouched');
+  assert.ok(after.permissions.deny.includes('Read(**/node_modules/**)'), 'shipped deny rules are merged in');
   assert.deepStrictEqual(after.env, theirs.env, 'their env must be untouched');
 
   // The rewrite must not leave a duplicate next to an entry a previous merge added.

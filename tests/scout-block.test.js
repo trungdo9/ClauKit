@@ -34,6 +34,8 @@ const ALLOWED = [
   'cat .env',
   'git status',
   'echo "checking node_modules_backup"',              // prefix, not a path segment — must not match
+  'composer install --no-vendor-check',               // bare word, not a path
+  'grep -rn foo --exclude-dir=vendor .',
 ];
 
 const BLOCKED = [
@@ -46,6 +48,9 @@ const BLOCKED = [
   'rm -rf build/',
   'du -sh ./node_modules',
   'grep -rn foo node_modules/',                       // traversal even in a grep command
+  'cat vendor/autoload.php',
+  'ls .venv',
+  'find .next -name "*.js"',
 ];
 
 for (const cmd of ALLOWED) {
@@ -78,6 +83,28 @@ const HEAVY = ['node', 'modules'].join('_');
 test('rg -g <dir> is an include glob and must still be blocked', () => {
   assert.strictEqual(runHook(`rg -g ${HEAVY} foo`), 2);
   assert.strictEqual(runHook(`rg --glob '${HEAVY}/**' foo`), 2);
+});
+
+// A heredoc body is data (file content, script source), not arguments — the
+// reproduced false positive was a python edit script quoting ".git/,".
+test('heredoc body fed to a non-shell is data and passes', () => {
+  assert.strictEqual(runHook(`python3 - <<'EOF'\ns = s.replace(".git/,", "dist/")\nEOF\necho done`), 0);
+  assert.strictEqual(runHook(`cat > notes.md <<EOF\nsee ${HEAVY}/foo and build/\nEOF`), 0);
+  assert.strictEqual(runHook(`cat > a <<-EOF\n\tdist/x\n\tEOF\nls`), 0);
+});
+
+test('heredoc body fed to a shell is commands and is still scanned', () => {
+  assert.strictEqual(runHook(`bash <<'EOF'\ncat ${HEAVY}/x.js\nEOF`), 2);
+  assert.strictEqual(runHook(`cat <<EOF | sh\nls ${HEAVY}\nEOF`), 2);
+});
+
+test('commands after the heredoc terminator are still scanned', () => {
+  assert.strictEqual(runHook(`cat > f <<EOF\nok\nEOF\nls ${HEAVY}`), 2);
+});
+
+test('a newline starts a new command; a backslash continuation does not', () => {
+  assert.strictEqual(runHook(`echo hi\nls ${HEAVY}`), 2);
+  assert.strictEqual(runHook(`find . -path ./${HEAVY} -prune \\\n  -o -name '*.js' -print`), 0);
 });
 
 test("rg -g '!<dir>' is a genuine exclusion and still passes", () => {

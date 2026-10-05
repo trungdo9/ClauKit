@@ -46,6 +46,15 @@
     "padding": 0
   },
   "permissions": {
-    "allow": []
+    "allow": [],
+    "deny": [
+      "Read(**/node_modules/**)",
+      "Read(**/__pycache__/**)",
+      "Read(**/.venv/**)",
+      "Read(**/.next/**)",
+      "Read(**/dist/**)",
+      "Read(**/build/**)",
+      "Read(**/vendor/**)"
+    ]
   }
 }
