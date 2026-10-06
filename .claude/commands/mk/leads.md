@@ -22,6 +22,7 @@ Activate email-specialist + crm-specialist agents. Execute .claude/workflows/sal
 
 - **`default`** — Full 5-phase lead pipeline
   - skills: `cold-email`, `email-specialist`, `crm-specialist`, `customer-research`
+  - sales skills per phase (read by path, see `.claude/workflows/sales-workflow.md`): `outbound` (Ph1), `discovery` + `deal-strategy` (Ph2), `sales-engineering` + `proposal` (Ph4), `account-expansion` + `pipeline-forecast` (Ph5) — or one at a time via `/mk:sales <action>`
 
 ## Output
 

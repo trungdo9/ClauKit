@@ -169,7 +169,7 @@ Issues, blockers, or questions
 | Integration | `/ck:sepay`, `/ck:use-mcp` |
 | Code Review | `/ck:review [--flow]` |
 | Research | `/ck:research` |
-| Marketing kit (12, `/mk:` namespace) | `/mk:plan`, `/mk:seo`, `/mk:content`, `/mk:email`, `/mk:ads`, `/mk:cro`, `/mk:research`, `/mk:growth`, `/mk:campaign`, `/mk:leads`, `/mk:nurture`, `/mk:video` |
+| Marketing kit (14, `/mk:` namespace) | `/mk:plan`, `/mk:seo`, `/mk:content`, `/mk:email`, `/mk:ads`, `/mk:cro`, `/mk:research`, `/mk:growth`, `/mk:campaign`, `/mk:leads`, `/mk:nurture`, `/mk:video`, `/mk:sales`, `/mk:finance` |
 | BA kit (6, `/ba:` namespace) | `/ba:plan`, `/ba:prd`, `/ba:spec`, `/ba:diagram`, `/ba:qc`, `/ba:deliver` |
 
 #### 3.2 Command Workflow Pattern
@@ -280,9 +280,10 @@ Re-creates Claude Code's dynamic-workflow model on KitForge primitives — 4-axi
         └── examples.md
 ```
 
-**116 skills across 5 groups** (see `docs/clauKit-registry.md` § 1 for the full itemized list). The `global/` group was removed 2026-08-21 — `docs-seeker` retired and `global/common/` with it, and the path is dropped from the kit manifests
+**129 skills across 7 groups** (see `docs/clauKit-registry.md` § 1 for the full itemized list). The `global/` group was removed 2026-08-21 — `docs-seeker` retired and `global/common/` with it, and the path is dropped from the kit manifests
 - **`ba/`** (6): KitForge-authored traceability spine (`traceability`, `ba-context`, `prd`, `spec`, `diagramming`, `deliver`) — entity-driven requirements discovery, PRD→SRS→tickets chain
-- **`marketing/`** (50): claude-seo engine (`seo`, `seo-audit`, `seo-technical`, `seo-content`, `seo-schema`, `seo-geo`, +19 more `seo-*`), coreyhaines31-sourced (`copywriting`, `cro`, `ads`, `emails`, `analytics`, +18 more), KitForge-authored (`product-marketing`, `kit-builder`)
+- **`marketing/`** (59): claude-seo engine (`seo`, `seo-audit`, `seo-technical`, `seo-content`, `seo-schema`, `seo-geo`, +19 more `seo-*`), coreyhaines31-sourced (`copywriting`, `cro`, `ads`, `emails`, `analytics`, +18 more), KitForge-authored (`product-marketing`, `kit-builder`)
+- **`sales/`** (8) + **`finance/`** (5): adapted from `msitarzewski/agency-agents` (MIT) — `deal-strategy`, `discovery`, `sales-engineering`, `proposal`, `account-expansion`, `pipeline-forecast`, `outbound`, `offer-design`; `financial-model`, `fpa`, `close-controls`, `tax-strategy`, `investment-research`. Marketing + both kits; read by path from `/mk:sales` / `/mk:finance`
 - **`automation/`** (6): `marketing-orchestrator`, `mcp-ga4`, `mcp-gsc`, `mcp-sendgrid`, `mcp-resend`, `mcp-reviewweb`
 - **`integrations/`** (2): `wordpress-rest`, `mcp-wordpress`
 - **`software/`** (42 = 25 top-level + 17 subcategorized): top-level standalone (`git`, `research`, `planning`, `cook`, `refactor`, `debugging`, `code-review`, `dynamic-workflow`, `claude-md`, `team`, `port`, `to-tickets`, `chrome-devtools`, `security`, `problem-solving`, …) + subcategorized: `ai/` (`ai-artist`, `ai-multimodal`, `remotion`), `database/` (`postgresql`, `supabase`), `design/` (`frontend-design`, `ui-styling`, `threejs`), `development/` (`backend-development`, `frontend-development`, `csharp-developer`, `bootstrap`, `test-automation`), `document-skills/` (`docx`, `pdf`, `pptx`, `xlsx`), `git/`

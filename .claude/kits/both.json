@@ -19,6 +19,8 @@
     "skills": [
       ".claude/skills/software/",
       ".claude/skills/marketing/",
+      ".claude/skills/sales/",
+      ".claude/skills/finance/",
       ".claude/skills/automation/",
       ".claude/skills/integrations/"
     ],

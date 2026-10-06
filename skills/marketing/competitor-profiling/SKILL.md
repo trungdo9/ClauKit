@@ -24,7 +24,7 @@ Covers:
 - Review mining (G2 / Capterra / Product Hunt / TrustRadius) for praise and complaint themes.
 - Honest strengths-and-weaknesses with an evidence source per line; SWOT relative to your product.
 - Competitive landscape summary + positioning map across all profiled competitors.
-- Sales battle cards (absorbed here — upstream routed these to a `sales-enablement` skill that ClauKit does not ship).
+- Market-level battle cards, derived from the profile (one per competitor, any deal). Deal-specific competitive plans → [[deal-strategy]]; technical feature-by-feature battlecards for an evaluation → [[sales-engineering]].
 - Re-profiling: snapshot diffing, change logs, staleness flags.
 
 Does NOT cover:

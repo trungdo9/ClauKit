@@ -13,7 +13,7 @@ If absent:
 
 **Rationale:** Marketing outputs (copy, campaigns, content) need consistent ICP, positioning, brand voice, and goals. Without the context hub, outputs will be inconsistent and low-quality.
 
-**Exception:** `/mk:plan` itself, which creates the context hub.
+**Exceptions:** `/mk:plan` itself, which creates the context hub; `/mk:finance`, which reads the hub when present but does not require it (budgets, close, tax and investment research are not brand-voice outputs).
 
 ## 2. YAGNI / KISS / DRY for content
 
@@ -45,6 +45,8 @@ Marketing tasks should NEVER include code-implementation steps. If a marketing t
 
 - **Content files:** `plans/marketing/<campaign-name>/<asset>.<ext>` (e.g., `plans/marketing/launch-2026q3/blog-post.md`).
 - **Audit reports:** `plans/marketing/<audit-name>/<report>.md` with falsifiable findings.
+- **Sales artifacts** (`/mk:sales`, sales skills): `plans/sales/<deal-account-or-motion-slug>/<artifact>.md` — also when reached from `/mk:leads`; the campaign dir links to them.
+- **Finance artifacts** (`/mk:finance`): `plans/finance/<slug>/<artifact>.md`.
 - **Templates:** `.claude/skills/marketing/<skill>/templates/` (referenced, not duplicated).
 
 ## 7. Anti-patterns (auto-reject)
@@ -55,7 +57,7 @@ Marketing tasks should NEVER include code-implementation steps. If a marketing t
 - ❌ "Trust us" without proof points
 - ❌ Marketing copy that buries the value prop below the fold
 - ❌ Pasting external blog verbatim into our content (plagiarism)
-- ❌ Writing raw customer/lead PII into `plans/marketing/` content or audit files (redact per automation-rules R4)
+- ❌ Writing raw customer/lead PII into `plans/marketing/` or `plans/sales/` files (redact per automation-rules R4), or account numbers / tax IDs / personal financial data into `plans/finance/`
 - ❌ Publishing to CMS without `--dry-run` or without author sign-off
 - ❌ Citing numbers from unverified or `status: RAW` machine files
 

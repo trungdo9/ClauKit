@@ -62,6 +62,14 @@ The icon glyphs in `skills/software/diagram-design/assets/icons.html` and `refer
 
 Brand logos remain the trademarks of their respective owners; they are included for documentation and illustrative use only, and their presence implies no endorsement, sponsorship, or affiliation.
 
+The 8 sales skills under `skills/sales/` and the 5 finance skills under `skills/finance/`, reached through `/mk:sales` and `/mk:finance`, are ADAPTED from the agent personas in the source's `sales/` and `finance/` divisions. Domain content (MEDDPICC and discovery frameworks, demo/POC/proposal structures, pipeline and forecast methods, offer construction, model/budget/close/tax-memo/research-report templates) is carried over and re-authored as skills; persona framing, the remaining divisions, and unsourced statistics are not included. `sales-coach` was folded into `deal-strategy`, `discovery` and `pipeline-forecast`. Tax and investment skills gained not-professional-advice and cite-or-`[NEEDS DATA]` guardrails.
+
+**agency-agents**, Copyright (c) 2025 AgentLand Contributors
+
+Source: [https://github.com/msitarzewski/agency-agents](https://github.com/msitarzewski/agency-agents)
+
+License: MIT
+
 Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
 
 The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.

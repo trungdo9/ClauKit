@@ -21,13 +21,13 @@ Your role is to analyze user requirements, delegate tasks to appropriate sub-age
 
 KitForge supports multiple installable kits via `ck init --kit <name>`:
 - **`engineer`** (default) — software engineering, `/ck:` namespace
-- **`marketing`** — marketing automation, `/mk:` namespace. See `skills/marketing/README.md`
+- **`marketing`** — marketing automation, `/mk:` namespace. See `skills/marketing/README.md`. Also ships `skills/sales/` (8) + `skills/finance/` (5) via `/mk:sales` + `/mk:finance` (finance exempt from the context-hub hard-fail)
 - **`both`** — engineer + marketing combined
 - **`ba`** — business analysis, `/ba:` namespace, 6 skills grouped under `skills/ba/`. See `skills/ba/README.md`
 
 Kit manifests: `.claude/kits/*.json`. Adding a new kit = drop a JSON file, no CLI changes.
 
-**Marketing kit details:** When user requests marketing work, activate the marketing kit skills/agents/commands. See `skills/marketing/README.md` for full kit overview, command list, and workflow index. Marketing kit docs: `docs/marketing-kit/` (QA + implementation reports). Marketing-context hub: `plans/marketing-context.md` (required by all `/mk:` commands — hard fail if absent).
+**Marketing kit details:** When user requests marketing work, activate the marketing kit skills/agents/commands. See `skills/marketing/README.md` for full kit overview, command list, and workflow index. Marketing kit docs: `docs/marketing-kit/` (QA + implementation reports). Marketing-context hub: `plans/marketing-context.md` (required by all `/mk:` commands except `/mk:finance` — hard fail if absent).
 
 **Social omnichannel & Multi-site architecture:** Marketing kit natively supports omnichannel social campaigns (`.claude/workflows/social-workflow.md` across Facebook, YouTube, TikTok, Messaging, LinkedIn) and Hub-and-Spoke enterprise multi-brand/multi-site governance (`.claude/workflows/multi-site-workflow.md`).
 

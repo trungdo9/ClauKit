@@ -19,8 +19,8 @@ allowed-tools: Read, Write, Glob, Grep
 Covers:
 - Cold outbound to people with no prior relationship: first-touch email, follow-ups, breakup email.
 - Subject lines for cold inboxes, opening lines, body structure, one-ask CTAs.
-- Personalization tiers and the research-signal stack that feeds them.
-- Multi-touch sequence design — how many, how far apart, which angle per touch.
+- Personalization tiers — how a researched signal becomes a first line.
+- The email touches of a sequence — follow-up angles, spacing between emails, the breakup email.
 - Deliverability hygiene as it affects cold sends (bounce, complaint, link/HTML discipline).
 - Diagnosing a sequence that isn't getting replies.
 
@@ -29,6 +29,7 @@ Does NOT cover:
 - One-shot broadcast campaigns to an owned list (announcement, launch, promo) → [[emails]].
 - Landing pages, web copy, headlines, value props → [[copywriting]].
 - Building and qualifying the prospect list itself → `/mk:leads` phases 1–2 and `customer-research`.
+- Which accounts to target, buying signals, account tiering, and the multichannel cadence (phone, LinkedIn, video around the emails) → [[outbound]]. This skill writes the email touches that cadence calls for.
 
 ## Before writing
 
