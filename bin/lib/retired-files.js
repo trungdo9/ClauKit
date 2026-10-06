@@ -370,6 +370,26 @@ const RETIRED = [
   { path: ".claude/skills/software/database/supabase/references/_sections.md", token: "supabase/references/_sections.md", sha: ["8ba57c23e8119e411fcc8a230cda08e695792cac"] },
   // supabase/references/_template.md
   { path: ".claude/skills/software/database/supabase/references/_template.md", token: "supabase/references/_template.md", sha: ["91ace90e10a4d8ef354a82bb1994842e6979ebed"] },
+  // 2026-10-06, round 2 of the redundancy prune (maintainer decision). `retro`:
+  // every caller (cook's loop-cap halt, team's crash halt, primary-workflow) wanted
+  // a cause-classifying post-mortem from an agent; ~15 of its 82 lines served that,
+  // the rest was human meeting facilitation (sticky notes, timebox, attendees) and
+  // three facilitation references. Replaced by the ~15-line "Halt brief" in
+  // cook § Failure Recovery, which reads STATE.md — retro never did.
+  // `backend-mindset.md`: ~60% repeated tdd / code-review / problem-solving /
+  // backend-architecture; its CAP/PACELC, DDD and layering moved into
+  // backend-architecture.md. `backend-testing.md`: ~45% repeated test-automation;
+  // its Supertest / Testcontainers / Pact / migration-test content moved to
+  // test-automation/references/api-integration-testing.md.
+  // references/backend-mindset.md
+  { path: ".claude/skills/software/development/backend-development/references/backend-mindset.md", token: "references/backend-mindset.md", sha: ["79795a6a276a345f183078de36ec8e1d53fa0ea8"] },
+  // references/backend-testing.md
+  { path: ".claude/skills/software/development/backend-development/references/backend-testing.md", token: "references/backend-testing.md", sha: ["9884e43f3f3ebf5d9a5b327d77f8686ffa13df0e"] },
+  // software/retro
+  { path: ".claude/skills/software/retro/references/agile-retrospective-methods.md", token: "software/retro", sha: ["a961ed3849135ca95fea55a465ce113989cfa2c2"] },
+  { path: ".claude/skills/software/retro/references/aha-continuous-improvement.md", token: "software/retro", sha: ["25cf17c0a96c62b9612cbc6d0dd1a6ee5af0d048"] },
+  { path: ".claude/skills/software/retro/references/atlassian-retrospectives.md", token: "software/retro", sha: ["505bf02ccc365ead920743aaddfb4214a579c6be"] },
+  { path: ".claude/skills/software/retro/SKILL.md", token: "software/retro", sha: ["5a61c6fde009df7b99b0755fe37b70ca2f190f1f", "d4d78544ce6f6789653062250c025ae1164cdcbf"] },
 ];
 
 /**
@@ -378,8 +398,8 @@ const RETIRED = [
  * refreshed, and only on a digest match — a doc the user has edited is theirs.
  */
 const STALE = [
-  { path: ".claude/commands/ck/cook.md", sha: ["0782d9889ca2344db63a754a6653d91ef7bdfb18", "18f855427f1a3ee95bdc714ccde05c62b6c85525", "2a6079aecf4c1ba2896755d996f66bf0b10bcdab", "3e4aeda10d325294fd383f70c89b31c24f2b5b56", "4af7d14cdd9ec01dcd34ca2ba835aca2a01c48e5", "690151b1598295c4cb10fcfe8398e3e162eca047", "7f548312ab46c98758d308a8a149509786320678", "a51cd5592097c8d3c43c95f1df8b1771c3f2c6a3", "a5ea247a1c4f42fe85829fa295896b2ce199b534", "a9a7e84712edfb52ac8bb70fd4ca9950585e3bfb", "abc2acdcbea259b22bd8716afdb02aab52d4328e", "ad84b9fed7f2b3fe04260de8f2329e6db6ebb495", "b2d0b6dcabeecdca469da7fc8a060acf5c2c4ec2", "e165492780d9cc49ee1fe12e1f6effb4062be6b2", "e68919d6b8a40bdce47e1b4b6a64d23188c2be36", "f8a3fba74e8ed76291b1214e54db738ba9d70c7e"] },
-  { path: ".claude/commands/ck/team.md", sha: ["6376e98804c9ee366c53e5e34e9da48ac31d45d7", "b7384678452eb5c23fe3c46e0cbf3ca3bdb0bc9b", "fab5505e7c02282ab9c36e5c2cbf458161b52080"] },
+  { path: ".claude/commands/ck/cook.md", sha: ["0782d9889ca2344db63a754a6653d91ef7bdfb18", "18f855427f1a3ee95bdc714ccde05c62b6c85525", "2a6079aecf4c1ba2896755d996f66bf0b10bcdab", "2ac97fa787112c99020f72ad0c362db1cba4fd05", "3e4aeda10d325294fd383f70c89b31c24f2b5b56", "4af7d14cdd9ec01dcd34ca2ba835aca2a01c48e5", "690151b1598295c4cb10fcfe8398e3e162eca047", "7f548312ab46c98758d308a8a149509786320678", "a51cd5592097c8d3c43c95f1df8b1771c3f2c6a3", "a5ea247a1c4f42fe85829fa295896b2ce199b534", "a9a7e84712edfb52ac8bb70fd4ca9950585e3bfb", "abc2acdcbea259b22bd8716afdb02aab52d4328e", "ad84b9fed7f2b3fe04260de8f2329e6db6ebb495", "b2d0b6dcabeecdca469da7fc8a060acf5c2c4ec2", "e165492780d9cc49ee1fe12e1f6effb4062be6b2", "e68919d6b8a40bdce47e1b4b6a64d23188c2be36", "f8a3fba74e8ed76291b1214e54db738ba9d70c7e"] },
+  { path: ".claude/commands/ck/team.md", sha: ["2412bec3c0b0aaf582c5aba1c92a8d073987a763", "2b936e281d668f2fa72050cbb5f7d9b76b7e0b96", "3ac66bcc52a28ad4dad778772da15974641e4686", "47cd04d315f1eadcffbcb8b89382bc3933c66f4e", "4cf4d8bda633085bd69ee3db911ada8f21ae0bf2", "6376e98804c9ee366c53e5e34e9da48ac31d45d7", "6cda912ed6139248db036b5fa5640a85d0e04273", "a320ade9e78b159f4d98e014903616a4f3ce323f", "a38a058f5cf34b988533a186859ff9828f60dcbb", "b6e21bbf2ff040ff133a3b5f6345afe599d7e83b", "b7384678452eb5c23fe3c46e0cbf3ca3bdb0bc9b", "fab5505e7c02282ab9c36e5c2cbf458161b52080"] },
   { path: ".claude/commands/ck/flow.md", sha: ["7bd42c8eea564acd1f1d19f4b8a27e7ba5ca650d", "c23cc9a10a9fd860e767c446168cc8cf140eca82", "c77789107956805866eb0e02064c1a879011702f"] },
   { path: ".claude/commands/ck/refactor.md", sha: ["70d2fc5c9318d3ec349acc8b4f06594299a597ab", "edaecd719a620f84362d5827fd5a1558af335a1e"] },
   { path: ".claude/commands/ck/fix.md", sha: ["081a6db68fb3db20f114418cd1f718e65abd991f", "28e7b213ea0f8c3a4335c2a89a68ef381ac1638a", "4bb3a09ec0b5c33acf86e40ffc83b8014ebb476b", "75b7f5749b379aeb3aaccbe3bf2b281dfc854673", "775ca76afedfc89195e8d8ca78233de8f354443e", "8638d367f050439bb5f0e27a3b2222b0a4bf1b1b", "9b9715de609f948ffd9f0d332cf4058384444562", "a5c1914f3a03b8672a193037ad6a081f1927455c", "a90b0a514a738cb5419db1f2cec0c29a8e71bdc1", "c6fda115b7414a34036060f33728ea6b96df06a1", "d8f888b236011b3c81eb37d8ed54f280347bbdd4", "e102285e156d254351be628bb45b6a9274971fd0", "e56d5a4098fcc031380624565663e031933efdb9", "ff2c5ecb5734cac2846cb86b2ec0f684e231638d"] },
@@ -394,11 +414,11 @@ const STALE = [
   // an existing `.claude/hooks/`), it resolves nothing, and it fails open — the
   // shared-HEAD gate would stop existing without a single line of output.
   { path: ".claude/hooks/branch-guard.cjs", sha: ["98fcdb7a6236ea4dbb2aaa4b94c84c3b77075f32"] },
-  { path: ".claude/workflows/primary-workflow.md", sha: ["ef634ed05f639d2082e012b9abbde0cbf05a756d", "f6a19d6d52cad0c301fa560cc52ca40ceaa63fef"] },
+  { path: ".claude/workflows/primary-workflow.md", sha: ["6cbe5cd6064d3cf71f377c568cd7bf35be32a7b8", "71196d4176d2c26f4beba67c0813c8d4aea050c1", "79dce71049332ab66b7c35ce6a96499e6b1bc6dd", "e8cc108253b2089a534274e9600a6651f69cefe2", "eb7b70e6dfd6752876c1284faac8baa4bab17575", "ef634ed05f639d2082e012b9abbde0cbf05a756d", "f6a19d6d52cad0c301fa560cc52ca40ceaa63fef", "feab5e3c98164f23ce675a9e7033145c71af44a9"] },
   { path: ".claude/workflows/fix-pipeline.md", sha: ["020c28ee8a09b40c283dcb7d9ddc9512a97a6060", "0a6ce2f7fd0f62b853a75baf9e2892a206e33cc8", "1706ebe91fbe3d88d54d9ff003522c4f80d22602", "1bd6227790a0bc99b8ffc93318e36f4a111e0d81", "3b274f4418348850dc0375a3faf8d8f6a8cb6c78", "64ac3b0994919d3c0c1dd69b19e46a8f408bf5da", "6729214aa182e987476ee16b63c1c42bad3d4ebe", "889bfe1c5e4cff693bf8fb4834e9f6fa7e85c861", "8b12e2e87435845bdfdd05f9f4efb65f951a2ecd", "bc3f5f819d01e424a17563646c374aaf9bdff056", "bece0a793ea397ec00ca20523ec9c4a8432dda6a", "e20c5c4673e1891feb906d661918d0cb5044e5e4", "e6a7f2347b7fad76834b145593ded5e51277efbc", "eeb9f71e1f5229f4de6b63839b7a290cd7023bf5"] },
   { path: ".claude/workflows/development-rules.md", sha: ["06aff52fe34acd442ad5ce5156b5b3aa9bac86d0", "10255c18319fc9c55632f4e43863ca4e0c960aec", "1303c98dfb3c21bed3f117acc5d3b859d96f5505", "184e84b86c630e82f226655a747eb1c7cfe86de8", "1e7dc5b25a457db3d4a433df574b2234917d335c", "3d3b13c61db8d5209e58bdf717f61172bbd49bdc", "593a9790ad82b39c8144ec345ff8e7284ca7736d", "5a8d0fff3eb698eec5f188480efda81086db5653", "5f3b1941c9df567b9d565c43dab600ce0deb0c86", "7f6f8a9064f3de1107584c6f51e9aa04de8b90be", "847d7ea0721e7703bc1070db02088b9244b62419", "9cb0801ad035cd2858c9c6b45437c4e3714a692a", "a67104e6caac0fb21210aed925fbb9510d0144bb", "e6c49c4b70a04ece986f655b9fe47bc4c7dbd7b5", "f09a404dfcdd30802315b247c49fea786eea40b3"] },
   { path: ".claude/skills/software/tdd/SKILL.md", sha: ["0a404fcfd04d67505b66150ae4b9976fbb7d638c", "39e82fbabe6eb9640c450ed9e8ae9e39d312fc5b", "f5a5c1e738c61888b3c944b9bc35aaacef45a609"] },
-  { path: ".claude/skills/software/cook/SKILL.md", sha: ["d57a8c4520d834e9f80f408bdc1a4493200b2283", "f51691754b0a88c84ac237a6f909aff83e41e4f6"] },
+  { path: ".claude/skills/software/cook/SKILL.md", sha: ["3b75ef63d4bdc921a6be9658969373e64c98d800", "5810ffac6d76998d703cd9087a1b6cf4ec4dc9d0", "5953eda2bc4d604ae91156b3e34e549feb3fbbf9", "67040bf3dcf9f59d66889a20d161aa6a28508d6b", "922ba91459f7090a74a23c45e738e8a2802e363c", "928c15d016f1fbbc068a4beeb9caf55833f10d34", "d57a8c4520d834e9f80f408bdc1a4493200b2283", "dc36c8f06ae484e924644252dcc4f8ce89dbbaec", "e3e51e4ac8159bd72326bbf5011d74afe6ded18d", "edf5d3d659096b72129a8afe6ace423c0e9936dd", "ef1e3dfc09868ec47e4a2afef8c2a6f0db6d845f", "f51691754b0a88c84ac237a6f909aff83e41e4f6"] },
   { path: ".claude/skills/software/run-state/SKILL.md", sha: ["6fb038407f22a7c9fa1a02a0c33cebfc9f2f1607"] },
   { path: ".claude/skills/software/code-review/references/verification-patterns.md", sha: ["395dba77017bc558abcb2d0f8789613ddb3665fe", "4a008d7eeabffc544ff17f059c11250589d74c20"] },
   // Both of these pointed at the retired debugging verification reference; until
@@ -425,7 +445,7 @@ const STALE = [
   { path: ".claude/skills/software/planning/references/research-phase.md", sha: ["2267dcc3737e62d049fff8f1de84f8b4443f61e8", "a7dd9e15bc5df162217a85a926ffbbc43f52d56e"] },
   // Also the merge destination: an older install has the "Scope vs `web-testing`"
   // split still in it, pointing at the file being removed.
-  { path: ".claude/skills/software/development/test-automation/SKILL.md", sha: ["5b7f8c3a458ffde57c7b5dc5b17cb53e9522bd87", "6e1a3c5122693f2efb226168f85ddad0dccd459e"] },
+  { path: ".claude/skills/software/development/test-automation/SKILL.md", sha: ["282f0fa4ea51a0b07bb87e479275b271a6feb21e", "5b7f8c3a458ffde57c7b5dc5b17cb53e9522bd87", "6e1a3c5122693f2efb226168f85ddad0dccd459e", "6e22c020cfdb2eb86403b8a16f85f796a430f4df"] },
   // Named `markdown-novel-viewer` as a skill to activate; refreshed to the version
   // that points at `mdbook serve` / `markserv` / `grip` directly. (`preview/SKILL.md`,
   // the other one, is itself retired since 2026-10-05 — its digests are in RETIRED.)
@@ -487,9 +507,13 @@ const STALE = [
   { path: ".claude/skills/software/design/frontend-design/SKILL.md", sha: ["acc227f02037bd0cdd1df003d8a151f841f2caef"] },
   { path: ".claude/skills/software/dynamic-workflow/SKILL.md", sha: ["84cebc3f961df9154351273a28d0632dfc9e40df", "85327e1ef029642e53f13b99bc2306eec85bcc86", "88a3a434fb5deeafe8a9a34ff56f8623f83f1291", "b696100bae3437f38649961e65e3b1cceae82215", "c4ff21f160a07ecfb0452592ed703dd25b4c771d"] },
   { path: ".claude/skills/software/planning/references/forecasting-outcomes.md", sha: ["3a12c3caf83e829097c405e128ad79dd28686e7c"] },
-  { path: ".claude/skills/software/retro/SKILL.md", sha: ["d4d78544ce6f6789653062250c025ae1164cdcbf"] },
-  { path: ".claude/skills/software/team/SKILL.md", sha: ["08790dc1353bf223d0acba9001f745df824d8641", "815cfc31355c327e52d083734ef19f58de2ad46d"] },
+  { path: ".claude/skills/software/team/SKILL.md", sha: ["08790dc1353bf223d0acba9001f745df824d8641", "4d7ac54a08f17162508f67b2c693bc276d05fa98", "815cfc31355c327e52d083734ef19f58de2ad46d"] },
   { path: ".claude/skills/software/to-tickets/SKILL.md", sha: ["4ee79f4cc413d7d70b6afb47c4ad52aa9ab270ca", "b099c467c4e77e78997535a264ec03a16b08e406"] },
+  // Round 2 (2026-10-06): prose that named `retro` (now the cook halt brief) or a
+  // dropped backend reference, plus the merge destination test-automation/SKILL.md.
+  { path: ".claude/skills/software/team/references/failure-recovery.md", sha: ["fac945bf9f09c93086fb0eca95691dab552c8c08"] },
+  { path: ".claude/agents/engineering/journal-writer.md", sha: ["0a96dd075277527fcd7c300827e58df651eb77d1", "5411ec3060a21a6b13d3ee3dcb7afc95177f78a6", "a22017860dc5ed6211311a51dd63405e3b91df03"] },
+  { path: ".claude/skills/software/development/backend-development/SKILL.md", sha: ["860321e4b3ce451b7a229d91f09ea09493b3ab09"] },
 ];
 
 /** Where shipped prose lives, and which extensions carry instructions. */

@@ -1,6 +1,7 @@
 # Backend Architecture Patterns
 
-Microservices, event-driven architecture, and scalability patterns (2025).
+Microservices, event-driven architecture, domain boundaries, trade-offs, resilience, and scalability patterns.
+This file owns scaling and resilience; other backend references point here.
 
 ## Monolith vs Microservices
 
@@ -61,6 +62,42 @@ Microservices, event-driven architecture, and scalability patterns (2025).
 - Operational overhead
 
 **When to Use:** Large teams, clear domain boundaries, need independent scaling, tech diversity
+
+## Domain Boundaries & Layering
+
+### Domain-Driven Design (DDD)
+
+**Bounded Contexts** - Separate models per domain; the same word ("Product") may mean different things in each.
+Contexts are the natural seams for modules in a monolith and for services later.
+
+```
+E-commerce System:
+
+[Sales Context]          [Inventory Context]       [Shipping Context]
+- Order (id, items,      - Product (id, stock,     - Shipment (id,
+  total, customer)        location, reserved)       address, status)
+- Customer (id, email)   - Warehouse (id, name)    - Carrier (name, API)
+- Payment (status)       - StockLevel (quantity)   - Tracking (number)
+
+Each context owns its data model, business rules, schema, and API contract.
+```
+
+**Ubiquitous Language** - Shared vocabulary between developers and domain experts, used in code too.
+
+### Layered Architecture (Separation of Concerns)
+
+```
+┌─────────────────────────────┐
+│   Presentation Layer        │  Controllers, Routes, DTOs
+├─────────────────────────────┤
+│   Business Logic Layer      │  Services, Use Cases, Domain Logic
+├─────────────────────────────┤
+│   Data Access Layer         │  Repositories, ORMs, Database
+└─────────────────────────────┘
+```
+
+Dependencies point downward only; business logic must not import HTTP or ORM types. Benefits: clear
+responsibilities, layers mockable in tests, swappable implementations, reduced coupling.
 
 ## Microservices Patterns
 
@@ -188,6 +225,17 @@ const result = await breaker.fire(requestParams);
 - **Open:** Too many failures, requests fail immediately
 - **Half-Open:** Testing if service recovered
 
+### Resilience Patterns (Design for Failure)
+
+Assume every dependency fails eventually. For each one ask: what happens if it is down or slow, and what is the blast radius?
+
+1. **Timeout** - Every network call has one; never wait forever
+2. **Retry with exponential backoff + jitter** - Only for transient errors, only for idempotent operations, with a cap
+3. **Circuit Breaker** - Stop calling a failing dependency (above)
+4. **Fallback** - Graceful degradation (cached/default response)
+5. **Bulkhead** - Isolate resource pools so one slow dependency cannot exhaust all workers/connections
+6. **Idempotency keys** - Make retried writes safe (payments, webhooks)
+
 ### Saga Pattern (Distributed Transactions)
 
 **Choreography-Based Saga:**
@@ -217,8 +265,6 @@ Shipping Service
 ```
 
 ## Event-Driven Architecture
-
-**Impact:** 85% organizations recognize business value
 
 ### Event Sourcing
 
@@ -369,7 +415,15 @@ class GetOrderHandler {
 
 ## Scalability Patterns
 
-### Horizontal Scaling (Scale Out)
+### Horizontal vs Vertical Scaling
+
+| | Horizontal (scale out) | Vertical (scale up) |
+|---|---|---|
+| **Pros** | Fault tolerance, near-unlimited scaling, commodity hardware | Simple, no code changes, easy consistency |
+| **Cons** | Complexity, consistency challenges, network overhead | Hardware ceiling, single point of failure, costly at high end |
+| **Use when** | High traffic, need redundancy, stateless apps | Monoliths, quick headroom, consistency-critical data |
+
+Horizontal scaling requires stateless app instances (sessions/cache in Redis, files in object storage).
 
 ```
 Load Balancer
@@ -383,7 +437,19 @@ Load Balancer
     (with read replicas)
 ```
 
+### Read Replicas
+
+```
+Primary (Write) → Replica 1 (Read)
+               → Replica 2 (Read)
+```
+
+Route writes to the primary and read-heavy work (analytics, reporting, listings) to replicas.
+Replication is usually async: read-your-own-writes must go to the primary (or wait for replica LSN).
+
 ### Database Sharding
+
+Shard only after replicas, caching, and query tuning are exhausted — cross-shard joins and transactions are expensive.
 
 **Range-Based Sharding:**
 ```
@@ -404,16 +470,56 @@ const db = shards[shardId];
 const user = await db.users.findById(userId);
 ```
 
+**Other strategies:** geographic (EU users → EU shard; also helps data residency), entity-based (users and
+orders in different databases). Plain `hash % N` reshuffles most keys when N changes — use consistent hashing
+or a lookup directory if shards will be added.
+
 ### Caching Layers
 
-```
-Client
-  → CDN (static assets)
-  → API Gateway Cache (public endpoints)
-  → Application Cache (Redis - user sessions, hot data)
-  → Database Query Cache
-  → Database
-```
+Cache-aside, write-through, invalidation, CDN headers: [backend-performance.md](backend-performance.md) → "Caching Strategies".
+
+## Trade-Off Analysis
+
+### CAP Theorem
+
+During a network **partition**, a distributed system must choose **Consistency** (reject/stall requests) or
+**Availability** (answer, possibly with stale data). Partitions are not optional in distributed systems, so the
+real choice is CP vs AP; "CA" only describes a single-node database.
+
+- **CP:** Banking, payments, inventory reservation
+- **AP:** Social feeds, product catalogs, view counters
+
+### PACELC Extension
+
+**If Partition:** Availability or Consistency. **Else:** Latency or Consistency.
+
+- **PA/EL:** Cassandra, DynamoDB (default eventually consistent reads; strong reads are opt-in)
+- **PC/EC:** HBase, single-primary relational with synchronous replication
+- **PA/EC:** MongoDB (default config)
+
+### Performance vs Maintainability
+
+| Optimize For | When |
+|--------------|------|
+| **Performance** | Hot paths, high-traffic endpoints, real-time systems |
+| **Maintainability** | Internal tools, admin dashboards, CRUD |
+| **Both** | Core business logic, payments, authentication |
+
+Start with the readable version (ORM query); hand-optimize (raw SQL, denormalization) only where profiling shows a hot path.
+
+### Technical Debt
+
+**Quadrants (Fowler):**
+1. **Reckless + Deliberate:** "We don't have time for design"
+2. **Reckless + Inadvertent:** "What's layering?"
+3. **Prudent + Deliberate:** "Ship now, refactor later" — acceptable if recorded and scheduled
+4. **Prudent + Inadvertent:** "Now we know better" — acceptable, refactor when touched
+
+**Prioritization (interest = ongoing cost, impact = value of fixing):**
+- High interest, high impact → Fix now
+- High interest, low impact → Schedule in sprint
+- Low interest, high impact → Debt backlog
+- Low interest, low impact → Leave as-is
 
 ## Architecture Decision Matrix
 
@@ -439,7 +545,7 @@ Client
 - [ ] Database per service (no shared databases)
 - [ ] API Gateway for client requests
 - [ ] Service discovery configured
-- [ ] Circuit breakers for resilience
+- [ ] Timeouts, retries with backoff, circuit breakers on every remote call
 - [ ] Event-driven communication (Kafka/RabbitMQ)
 - [ ] CQRS for read-heavy systems
 - [ ] Distributed tracing (Jaeger/OpenTelemetry)
@@ -452,3 +558,6 @@ Client
 - **Martin Fowler - Microservices:** https://martinfowler.com/articles/microservices.html
 - **Event-Driven Architecture:** https://aws.amazon.com/event-driven-architecture/
 - **CQRS Pattern:** https://martinfowler.com/bliki/CQRS.html
+- **Domain-Driven Design:** https://martinfowler.com/bliki/DomainDrivenDesign.html
+- **Technical Debt Quadrant:** https://martinfowler.com/bliki/TechnicalDebtQuadrant.html
+- **Cloud Design Patterns (resilience):** https://learn.microsoft.com/en-us/azure/architecture/patterns/

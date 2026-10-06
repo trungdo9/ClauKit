@@ -37,29 +37,30 @@ See: `references/backend-technologies.md` for detailed comparisons
 - `backend-api-design.md` - REST, GraphQL, gRPC patterns and best practices
 
 **Security & Authentication:**
-- `backend-security.md` - OWASP Top 10 2025, security best practices, input validation
-- `backend-authentication.md` - OAuth 2.1, JWT, RBAC, MFA, session management
+- `backend-security.md` - Input validation, rate limiting, security headers (OWASP → `security` skill)
+- `backend-authentication.md` - OAuth 2.1, JWT, RBAC, MFA, session management, password hashing
 
 **Performance & Architecture:**
-- `backend-performance.md` - Caching, query optimization, load balancing, scaling
-- `backend-architecture.md` - Microservices, event-driven, CQRS, saga patterns
+- `backend-performance.md` - Connection pooling, N+1, caching, load balancing, queues, CDN
+- `backend-architecture.md` - Microservices, event-driven, CQRS, saga, DDD, CAP/PACELC, tech debt, resilience, scaling
 
 **Quality & Operations:**
-- `backend-testing.md` - Testing strategies, frameworks, tools, CI/CD testing
+- `../test-automation/references/api-integration-testing.md` - API/integration testing (moved from `backend-testing.md`)
 - `backend-code-quality.md` - SOLID principles, design patterns, clean code
-- `backend-devops.md` - Docker, Kubernetes, deployment strategies, monitoring
-- `backend-debugging.md` - Debugging strategies, profiling, logging, production debugging
-- `backend-mindset.md` - Problem-solving, architectural thinking, collaboration
+- `backend-devops.md` - Docker, Kubernetes, deployment strategies, observability, secrets
+- `backend-debugging.md` - Debugger CLIs, MongoDB/Redis, HTTP, profiling, failure scenarios
 
-## Key Best Practices (2025)
+**Related skills:** testing → [test-automation](../test-automation/SKILL.md) · debugging method → [debugging](../../debugging/SKILL.md) · security audit / OWASP → [security](../../security/SKILL.md) · PostgreSQL queries, indexes, EXPLAIN → [database/databases](../../database/databases/SKILL.md)
 
-**Security:** Argon2id passwords, parameterized queries (98% SQL injection reduction), OAuth 2.1 + PKCE, rate limiting, security headers
+## Key Best Practices
 
-**Performance:** Redis caching (90% DB load reduction), database indexing (30% I/O reduction), CDN (50%+ latency cut), connection pooling
+**Security:** argon2id passwords (bcrypt cost ≥ 12 acceptable), parameterized queries, OAuth 2.1 + PKCE, rate limiting, security headers
 
-**Testing:** 70-20-10 pyramid (unit-integration-E2E), Vitest 50% faster than Jest, contract testing for microservices, 83% migrations fail without tests
+**Performance:** Redis caching, indexes driven by query patterns, CDN for static assets, connection pooling
 
-**DevOps:** Blue-green/canary deployments, feature flags (90% fewer failures), Kubernetes 84% adoption, Prometheus/Grafana monitoring, OpenTelemetry tracing
+**Testing:** Mostly unit, fewer integration, fewest E2E; contract tests between microservices; test migrations
+
+**DevOps:** Blue-green/canary deployments, feature flags, Prometheus/Grafana metrics, OpenTelemetry tracing
 
 ## Quick Decision Matrix
 
@@ -82,7 +83,7 @@ See: `references/backend-technologies.md` for detailed comparisons
 
 **Database:** Choose DB → Design schema → Create indexes → Connection pooling → Migration strategy → Backup/restore → Test performance
 
-**Security:** OWASP Top 10 → Parameterized queries → OAuth 2.1 + JWT → Security headers → Rate limiting → Input validation → Argon2id passwords
+**Security:** OWASP Top 10 → Parameterized queries → OAuth 2.1 + JWT → Security headers → Rate limiting → Input validation → argon2id passwords
 
 **Testing:** Unit 70% → Integration 20% → E2E 10% → Load tests → Migration tests → Contract tests (microservices)
 

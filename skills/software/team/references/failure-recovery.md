@@ -81,10 +81,10 @@ Concrete procedures for team failure modes. Treat these as protocols, not sugges
 
 ## When to Halt Entirely
 
-Halt the team and run `[[retro]]` when:
+Halt the team and write a halt brief on the spawn config (`[[cook]]` § Halt brief) when:
 - Same failure mode triggers 3+ times in one run.
 - Two or more teammates crash in the same session.
 - Lead loses coordination after a restart.
 - Merge conflicts on every consolidation cycle (ownership map is broken).
 
-Retro outputs go into team-level memory so the next spawn config avoids the same trap.
+The brief's cause line goes into team-level memory so the next spawn config avoids the same trap.

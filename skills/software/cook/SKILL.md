@@ -126,14 +126,26 @@ Same stages map cleanly to GitLab CI, Buildkite, CircleCI, or a Makefile — met
 ## Failure Recovery
 
 - Gate fails → don't proceed; either fix or **explicitly waive** with a reason in the PR/plan (and a `waiver` line in `STATE.md`).
-- **Loop cap + breaker:** max 3 fix cycles per gate (Test, Review), **and ≤5 fix cycles total per feature** — a Review fix that breaks a test hands control to the Test gate with its own fresh budget, so per-gate caps alone permit 9 cycles of ping-pong. Hitting *either* cap: halt, run `[[retro]]` on spec/scope, ask the user. (The feature cap lived only in `/ck:cook` for a while; every other consumer of this skill — `/ck:fix`, `/ck:flow`, a bare activation — therefore had the ping-pong hole open.) At the 3rd failed cycle, don't just ask the user — **adjudicate each open finding and record the ruling in `STATE.md`** (`[[run-state]]`):
+- **Loop cap + breaker:** max 3 fix cycles per gate (Test, Review), **and ≤5 fix cycles total per feature** — a Review fix that breaks a test hands control to the Test gate with its own fresh budget, so per-gate caps alone permit 9 cycles of ping-pong. Hitting *either* cap: halt, write the **halt brief** (below), ask the user. (The feature cap lived only in `/ck:cook` for a while; every other consumer of this skill — `/ck:fix`, `/ck:flow`, a bare activation — therefore had the ping-pong hole open.) At the 3rd failed cycle, don't just ask the user — **adjudicate each open finding and record the ruling in `STATE.md`** (`[[run-state]]`):
   - reviewer wrong / contestable → `parked — <finding> — ruling: <why the code stands>`
   - real but nothing downstream depends on it → parked, marked deferred
   - **real and load-bearing** (a later phase builds on it, or it reveals a plan defect) → `BLOCKED`, stop, surface the finding + the plan text it collides with + the fix history
-  A silent discard is forbidden; the final review reads the parked list and triages what must be fixed before merge. Then run `[[retro]]` and ask the user.
-- Multiple gates fail → halt and run a `[[retro]]` on the spec or estimation; cook again on a refined scope.
+  A silent discard is forbidden; the final review reads the parked list and triages what must be fixed before merge. Then write the halt brief and ask the user.
+- Multiple gates fail → halt and write the halt brief (spec or estimate is the usual cause); cook again on a refined scope.
 - Production smoke fails → execute the documented rollback path before debugging.
 - **Interrupted run (spend limit, session kill, 529)** → resume via the `[[run-state]]` protocol: read the ledger, re-derive true state from git + gate re-runs, emit the derived-state table, continue from the first unconfirmed phase. Zero re-implementation.
+
+### Halt brief
+
+Written whenever a cap trips, the breaker leaves a `BLOCKED`, multiple gates fail, or a team run halts (`[[team]]`). It is what the question to the user rests on — ask after it, not instead of it.
+
+1. **Read the evidence:** `STATE.md` (FAIL / parked / BLOCKED lines, cycle count), each fix cycle's diff since the phase base, the plan or spec text the failing gate checks against; for a team run, the spawn config and path-ownership map.
+2. **Timeline:** one line per fix cycle — what failed, what changed, what failed next.
+3. **Classify the dominant cause:** *spec gap* (requirement missing or ambiguous) · *estimate* (too much for one feature) · *plan defect* (a phase claim or order is wrong — check it with `[[verify-plan]]`) · *environment* (red baseline, flaky infra) · *ownership / spawn* (team: overlapping paths, wrong agent or model).
+4. **5 Whys** on that cause, stopping at something the plan, spec or spawn config can change. Blame the process, not an agent; a cause no `STATE.md` line or diff supports is a guess — label it one.
+5. **One proposed change:** refined scope, plan edit, or corrected spawn config.
+
+Output `plans/<plan>/reports/halt-brief.md` plus one ledger line `halt — <cause> — <proposed change>`; a team run also records the cause in team memory so the next spawn avoids it. Then the user picks: apply the change and cook again, waive with a reason, or stop. A durable lesson worth more than this run → `/ck:journal`.
 
 ## Anti-Patterns
 
@@ -151,4 +163,4 @@ See `references/`:
 
 ## Cross-links
 
-`[[bootstrap]]`, `[[team]]`, `[[dynamic-workflow]]`, `[[planning]]`, `[[scenario]]`, `[[test-automation]]`, `[[code-review]]`, `[[retro]]`, `[[run-state]]`, `[[verify-plan]]`, `[[tdd]]`
+`[[bootstrap]]`, `[[team]]`, `[[dynamic-workflow]]`, `[[planning]]`, `[[scenario]]`, `[[test-automation]]`, `[[code-review]]`, `[[run-state]]`, `[[verify-plan]]`, `[[tdd]]`

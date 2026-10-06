@@ -127,7 +127,7 @@ If a teammate crashes or goes idle unexpectedly:
 1. Inspect `TaskList` for orphaned in-progress tasks.
 2. Reassign via `TaskUpdate` to another teammate or self.
 3. Teammate agent memory preserves context for handoff.
-4. If repeated crashes, halt the team and run `[[retro]]` on the spawn config.
+4. If repeated crashes, halt the team and write a halt brief on the spawn config (`[[cook]]` § Halt brief).
 
 ## Anti-Patterns
 
@@ -147,5 +147,5 @@ In-depth playbooks live in `references/`:
 
 - `[[cook]]` — single-feature lifecycle engine; `team cook` parallelizes across features
 - `[[planning]]` — generate plans before handing off to teams
-- `[[retro]]` — postmortem when team runs go sideways
+- `[[cook]]` § Halt brief — the post-mortem when a team run goes sideways
 - `[[dynamic-workflow]]` — single-session fan-out; its `references/model-tiering.md` sets the model per teammate

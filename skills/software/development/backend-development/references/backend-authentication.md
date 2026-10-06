@@ -248,7 +248,9 @@ app.use(
 
 ## Password Security
 
-### Argon2id (2025 Standard - Replaces bcrypt)
+### Argon2id (Preferred; bcrypt Acceptable)
+
+argon2id preferred for new systems; bcrypt (cost ≥ 12) remains acceptable — migrate on next login, no forced reset. Never MD5/SHA-* for passwords.
 
 **Why Argon2id:**
 - Winner of Password Hashing Competition (2015)
@@ -322,7 +324,7 @@ const keyRecord = await db.apiKeys.findOne({ hashedKey: providedHash });
 - [ ] Refresh token rotation enabled
 - [ ] RBAC with deny-by-default
 - [ ] MFA required for admin accounts
-- [ ] Passwords hashed with Argon2id
+- [ ] Passwords hashed with argon2id (or bcrypt cost ≥ 12)
 - [ ] Session cookies: HttpOnly, Secure, SameSite
 - [ ] Rate limiting on auth endpoints (10 attempts/15 min)
 - [ ] Account lockout after failed attempts

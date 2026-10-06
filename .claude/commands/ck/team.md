@@ -77,7 +77,7 @@ Flags are composable (e.g. `/ck:team cook "auth + notifications" --devs 3 --plan
 Per skill's Failure Recovery section:
 1. Inspect `TaskList` for orphaned in-progress tasks.
 2. Reassign via `TaskUpdate` to another teammate or self.
-3. On repeated crashes → halt team, run `[[retro]]` on the spawn config, then respawn with a corrected plan.
+3. On repeated crashes → halt team, write a halt brief on the spawn config (`cook` skill § Halt brief), then respawn with a corrected plan.
 
 ### Stage 4 — Consolidate & report
 

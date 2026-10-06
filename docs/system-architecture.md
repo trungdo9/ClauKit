@@ -280,12 +280,12 @@ Re-creates Claude Code's dynamic-workflow model on KitForge primitives — 4-axi
         └── examples.md
 ```
 
-**117 skills across 5 groups** (see `docs/clauKit-registry.md` § 1 for the full itemized list). The `global/` group was removed 2026-08-21 — `docs-seeker` retired and `global/common/` with it, and the path is dropped from the kit manifests
+**116 skills across 5 groups** (see `docs/clauKit-registry.md` § 1 for the full itemized list). The `global/` group was removed 2026-08-21 — `docs-seeker` retired and `global/common/` with it, and the path is dropped from the kit manifests
 - **`ba/`** (6): KitForge-authored traceability spine (`traceability`, `ba-context`, `prd`, `spec`, `diagramming`, `deliver`) — entity-driven requirements discovery, PRD→SRS→tickets chain
 - **`marketing/`** (50): claude-seo engine (`seo`, `seo-audit`, `seo-technical`, `seo-content`, `seo-schema`, `seo-geo`, +19 more `seo-*`), coreyhaines31-sourced (`copywriting`, `cro`, `ads`, `emails`, `analytics`, +18 more), KitForge-authored (`product-marketing`, `kit-builder`)
 - **`automation/`** (6): `marketing-orchestrator`, `mcp-ga4`, `mcp-gsc`, `mcp-sendgrid`, `mcp-resend`, `mcp-reviewweb`
 - **`integrations/`** (2): `wordpress-rest`, `mcp-wordpress`
-- **`software/`** (43 = 26 top-level + 17 subcategorized): top-level standalone (`git`, `research`, `planning`, `cook`, `refactor`, `debugging`, `code-review`, `dynamic-workflow`, `claude-md`, `team`, `port`, `to-tickets`, `chrome-devtools`, `security`, `problem-solving`, …) + subcategorized: `ai/` (`ai-artist`, `ai-multimodal`, `remotion`), `database/` (`postgresql`, `supabase`), `design/` (`frontend-design`, `ui-styling`, `threejs`), `development/` (`backend-development`, `frontend-development`, `csharp-developer`, `bootstrap`, `test-automation`), `document-skills/` (`docx`, `pdf`, `pptx`, `xlsx`), `git/`
+- **`software/`** (42 = 25 top-level + 17 subcategorized): top-level standalone (`git`, `research`, `planning`, `cook`, `refactor`, `debugging`, `code-review`, `dynamic-workflow`, `claude-md`, `team`, `port`, `to-tickets`, `chrome-devtools`, `security`, `problem-solving`, …) + subcategorized: `ai/` (`ai-artist`, `ai-multimodal`, `remotion`), `database/` (`postgresql`, `supabase`), `design/` (`frontend-design`, `ui-styling`, `threejs`), `development/` (`backend-development`, `frontend-development`, `csharp-developer`, `bootstrap`, `test-automation`), `document-skills/` (`docx`, `pdf`, `pptx`, `xlsx`), `git/`
 
 No `ffmpeg`, `shopify`, `mongodb`, `turborepo`, `csharp-expert`, or `security-audit` skills exist — these were either never real or have been superseded (`security-audit` → `security`; C# coverage → `csharp-developer`; image/video work → `ai-multimodal`). Verify any skill name against the registry before citing it.
 
@@ -296,7 +296,7 @@ No `ffmpeg`, `shopify`, `mongodb`, `turborepo`, `csharp-expert`, or `security-au
 
 #### 5.3 BA Kit–Engineer Kit Composition
 
-The BA kit (`/ba:` namespace, 6 skills) and engineer kit (`/ck:` namespace, 43 software skills) compose in one project via the **traceability spine**. `/ba:spec compose` renders SRS/UAT specs from entity files and emits a structured output that `/ck:tickets` (engineer kit) consumes as a first-class source, joining BA requirements discovery with engineer-kit ticket-slicing. No new dependencies or integrations required — both kits' skills reference `scenario/SKILL.md` and the shared workflows `primary-workflow.md` + `development-rules.md`, which constitutes their seam. This composition is not a new integration but a deliberate design: the two kits partition work by role (BA vs engineer) while sharing a unified ticket-driven pipeline.
+The BA kit (`/ba:` namespace, 6 skills) and engineer kit (`/ck:` namespace, 42 software skills) compose in one project via the **traceability spine**. `/ba:spec compose` renders SRS/UAT specs from entity files and emits a structured output that `/ck:tickets` (engineer kit) consumes as a first-class source, joining BA requirements discovery with engineer-kit ticket-slicing. No new dependencies or integrations required — both kits' skills reference `scenario/SKILL.md` and the shared workflows `primary-workflow.md` + `development-rules.md`, which constitutes their seam. This composition is not a new integration but a deliberate design: the two kits partition work by role (BA vs engineer) while sharing a unified ticket-driven pipeline.
 
 ### 6. Integration Layer
 

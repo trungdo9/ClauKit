@@ -52,7 +52,7 @@ Integer stages are the long-standing pipeline; decimal stages are gates inserted
 - Follow the plan; API contracts precisely; document breaking changes; `docs-manager` updates `./docs` if affected.
 
 #### 7. Debugging — `debugging` + `debugger`
-- Bugs/CI failures → `debugger` for root cause → fix → back to stage 4. **Loop cap 3 per gate**, then the breaker: adjudicate each open finding → `parked — <ruling>` or `BLOCKED` in `STATE.md` (silent discard forbidden), run `retro`, ask the user.
+- Bugs/CI failures → `debugger` for root cause → fix → back to stage 4. **Loop cap 3 per gate**, then the breaker: adjudicate each open finding → `parked — <ruling>` or `BLOCKED` in `STATE.md` (silent discard forbidden), write the halt brief (`cook` skill § Halt brief), ask the user.
 
 #### 8. Finish — `git`
 - `/ck:git pr` (or `finish`): verify green → self-review scoped diff → **draft-default PR** with the `pr-body.md` fill contract → **project-declared handoff tail** (ships empty; declared in the project CLAUDE.md, run headless + idempotent).

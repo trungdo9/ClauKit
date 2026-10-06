@@ -354,29 +354,50 @@ const logger = winston.createLogger({
 // Structured logging
 logger.info('User created', {
   userId: user.id,
-  email: user.email,
   ipAddress: req.ip,
   userAgent: req.headers['user-agent'],
 });
 ```
 
-**3. Traces (Jaeger/OpenTelemetry)**
+Lighter alternative to ELK: Loki + Grafana (Promtail/Alloy ships logs). Never log passwords, tokens, card numbers, or full bodies in prod.
+
+**3. Traces (OpenTelemetry → OTLP)**
 
 ```typescript
+// Load before the app (node --import ./tracing.js). JaegerExporter is deprecated —
+// Jaeger, Tempo, and vendor backends all ingest OTLP.
 import { NodeSDK } from '@opentelemetry/sdk-node';
-import { JaegerExporter } from '@opentelemetry/exporter-jaeger';
+import { getNodeAutoInstrumentations } from '@opentelemetry/auto-instrumentations-node';
+import { OTLPTraceExporter } from '@opentelemetry/exporter-trace-otlp-http';
 
 const sdk = new NodeSDK({
-  traceExporter: new JaegerExporter({
-    endpoint: 'http://localhost:14268/api/traces',
-  }),
   serviceName: 'api-service',
+  traceExporter: new OTLPTraceExporter({
+    url: process.env.OTEL_EXPORTER_OTLP_TRACES_ENDPOINT ?? 'http://localhost:4318/v1/traces',
+  }),
+  instrumentations: [getNodeAutoInstrumentations()],
 });
 
 sdk.start();
 
-// Traces automatically captured for HTTP requests, database queries, etc.
+// HTTP, database, Redis calls are traced automatically
 ```
+
+**Error tracking & APM**
+
+```typescript
+import * as Sentry from '@sentry/node';
+
+Sentry.init({
+  dsn: process.env.SENTRY_DSN,
+  environment: process.env.NODE_ENV,
+  tracesSampleRate: 0.1, // sample in prod; 1.0 only in dev
+});
+
+Sentry.captureException(error, { user: { id: userId }, tags: { operation: 'payment' } });
+```
+
+Commercial APM (Datadog `dd-trace`, New Relic) auto-instrument the same way; prefer OTLP so the backend stays swappable.
 
 ### Health Checks
 

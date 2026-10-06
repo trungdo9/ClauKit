@@ -38,7 +38,7 @@ Think harder to drive the following feature end-to-end. Follow the cook skill me
 
 **Guard:** `--auto` + `--no-test` cannot combine — auto-approval relies on tests; a test waiver requires human sign-off. Fall back to interactive approval and tell the user why.
 
-**Loop caps (all modes):** the per-gate cap, the per-feature cap, the breaker at the 3rd failed cycle and the `retro` halt all live in the [`cook` skill](../../skills/software/cook/SKILL.md) § Loop cap + breaker — one home, because a cap stated in two places drifts, and this pair already had: the command carried a feature-level cap the skill did not, so every other consumer of that skill ran without it.
+**Loop caps (all modes):** the per-gate cap, the per-feature cap, the breaker at the 3rd failed cycle and the halt brief all live in the [`cook` skill](../../skills/software/cook/SKILL.md) § Loop cap + breaker (halt brief just below it) — one home, because a cap stated in two places drifts, and this pair already had: the command carried a feature-level cap the skill did not, so every other consumer of that skill ran without it.
 
 ## Dispatch Tiers (Rule 0 — every dispatch names a model)
 

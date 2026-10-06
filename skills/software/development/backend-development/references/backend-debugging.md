@@ -1,26 +1,12 @@
 # Backend Debugging Strategies
 
-Comprehensive debugging techniques, tools, and best practices for backend systems (2025).
+Backend debugging tooling: structured logging, debuggers per language, MongoDB/Redis, HTTP, profiling, and common failure scenarios.
 
-## Debugging Mindset
+## Method
 
-### The Scientific Method for Debugging
-
-1. **Observe** - Gather symptoms and data
-2. **Hypothesize** - Form theories about the cause
-3. **Test** - Verify or disprove theories
-4. **Iterate** - Refine understanding
-5. **Fix** - Apply solution
-6. **Verify** - Confirm fix works
-
-### Golden Rules
-
-1. **Reproduce first** - Debugging without reproduction is guessing
-2. **Simplify the problem** - Isolate variables
-3. **Read the logs** - Error messages contain clues
-4. **Check assumptions** - "It should work" isn't debugging
-5. **Use scientific method** - Avoid random changes
-6. **Document findings** - Future you will thank you
+Debugging method (reproduce → root cause → hypothesis → fix → verify; no fix without a root cause) is owned by the
+`debugging` skill — read [.claude/skills/software/debugging/SKILL.md](../../../debugging/SKILL.md) and
+[systematic-debugging.md](../../../debugging/references/systematic-debugging.md). This file covers backend tooling only.
 
 ## Logging Best Practices
 
@@ -282,47 +268,8 @@ rust-gdb ./target/debug/myapp
 
 ### SQL Query Debugging (PostgreSQL)
 
-**1. EXPLAIN ANALYZE**
-```sql
--- Show query execution plan and actual timings
-EXPLAIN ANALYZE
-SELECT u.name, COUNT(o.id) as order_count
-FROM users u
-LEFT JOIN orders o ON u.id = o.user_id
-WHERE u.created_at > '2024-01-01'
-GROUP BY u.id, u.name
-ORDER BY order_count DESC
-LIMIT 10;
-
--- Look for:
--- - Seq Scan on large tables (missing indexes)
--- - High execution time
--- - Large row estimates
-```
-
-**2. Enable Slow Query Logging**
-```sql
--- PostgreSQL configuration
-ALTER DATABASE mydb SET log_min_duration_statement = 1000; -- Log queries >1s
-
--- Check slow queries
-SELECT query, calls, total_exec_time, mean_exec_time
-FROM pg_stat_statements
-ORDER BY mean_exec_time DESC
-LIMIT 10;
-```
-
-**3. Active Query Monitoring**
-```sql
--- See currently running queries
-SELECT pid, now() - query_start as duration, query, state
-FROM pg_stat_activity
-WHERE state = 'active'
-ORDER BY duration DESC;
-
--- Kill a long-running query
-SELECT pg_terminate_backend(pid);
-```
+`EXPLAIN ANALYZE`, slow-query log, `pg_stat_statements`: [postgresql-performance.md](../../../database/databases/references/postgresql-performance.md).
+Active/blocked queries, `pg_stat_activity`, terminating backends: [postgresql-administration.md](../../../database/databases/references/postgresql-administration.md) → "Activity".
 
 ### MongoDB Debugging
 
@@ -554,121 +501,9 @@ def memory_intensive_function():
 
 ## Production Debugging
 
-### Application Performance Monitoring (APM)
-
-**New Relic**
-```typescript
-// newrelic.js
-export const config = {
-  app_name: ['My Backend API'],
-  license_key: process.env.NEW_RELIC_LICENSE_KEY,
-  logging: { level: 'info' },
-  distributed_tracing: { enabled: true },
-};
-
-// Import at app entry
-import 'newrelic';
-```
-
-**DataDog**
-```typescript
-import tracer from 'dd-trace';
-
-tracer.init({
-  service: 'backend-api',
-  env: process.env.NODE_ENV,
-  version: '1.0.0',
-  logInjection: true
-});
-```
-
-**Sentry (Error Tracking)**
-```typescript
-import * as Sentry from '@sentry/node';
-
-Sentry.init({
-  dsn: process.env.SENTRY_DSN,
-  environment: process.env.NODE_ENV,
-  tracesSampleRate: 1.0,
-});
-
-// Capture errors
-try {
-  await riskyOperation();
-} catch (error) {
-  Sentry.captureException(error, {
-    user: { id: userId },
-    tags: { operation: 'payment' },
-  });
-}
-```
-
-### Distributed Tracing
-
-**OpenTelemetry (Vendor-Agnostic)**
-```typescript
-import { NodeSDK } from '@opentelemetry/sdk-node';
-import { getNodeAutoInstrumentations } from '@opentelemetry/auto-instrumentations-node';
-import { JaegerExporter } from '@opentelemetry/exporter-jaeger';
-
-const sdk = new NodeSDK({
-  traceExporter: new JaegerExporter({
-    endpoint: 'http://localhost:14268/api/traces',
-  }),
-  instrumentations: [getNodeAutoInstrumentations()],
-});
-
-sdk.start();
-
-// Traces HTTP, database, Redis automatically
-```
-
-### Log Aggregation
-
-**ELK Stack (Elasticsearch, Logstash, Kibana)**
-```yaml
-# docker-compose.yml
-version: '3'
-services:
-  elasticsearch:
-    image: docker.elastic.co/elasticsearch/elasticsearch:8.11.0
-    environment:
-      - discovery.type=single-node
-    ports:
-      - 9200:9200
-
-  logstash:
-    image: docker.elastic.co/logstash/logstash:8.11.0
-    volumes:
-      - ./logstash.conf:/usr/share/logstash/pipeline/logstash.conf
-
-  kibana:
-    image: docker.elastic.co/kibana/kibana:8.11.0
-    ports:
-      - 5601:5601
-```
-
-**Loki + Grafana (Lightweight)**
-```yaml
-# promtail config for log shipping
-server:
-  http_listen_port: 9080
-
-positions:
-  filename: /tmp/positions.yaml
-
-clients:
-  - url: http://loki:3100/loki/api/v1/push
-
-scrape_configs:
-  - job_name: system
-    static_configs:
-      - targets:
-          - localhost
-        labels:
-          job: backend-api
-          __path__: /var/log/app/*.log
-```
+Metrics, logs, distributed tracing (OpenTelemetry → OTLP), error tracking and APM setup:
+[backend-devops.md](backend-devops.md) → "Monitoring & Observability". In an incident: check error-rate and
+latency dashboards, find a failing trace, pivot to its logs by trace id, then compare against the last deploy.
 
 ## Common Debugging Scenarios
 
@@ -757,29 +592,8 @@ node --expose-gc --max-old-space-size=4096 app.js
 
 ### 3. Slow Database Queries
 
-**Steps:**
-1. Enable slow query log
-2. Analyze with EXPLAIN
-3. Add indexes
-4. Optimize query
-
-**PostgreSQL Example:**
-```sql
--- Before: Slow full table scan
-SELECT * FROM orders
-WHERE user_id = 123
-ORDER BY created_at DESC
-LIMIT 10;
-
--- EXPLAIN shows: Seq Scan on orders
-
--- Fix: Add index
-CREATE INDEX idx_orders_user_id_created_at
-ON orders(user_id, created_at DESC);
-
--- After: Index Scan using idx_orders_user_id_created_at
--- 100x faster
-```
+Slow-query log → `EXPLAIN (ANALYZE, BUFFERS)` → index or rewrite. PostgreSQL walkthrough:
+[postgresql-performance.md](../../../database/databases/references/postgresql-performance.md) → "Monitoring Queries", "Index Usage Analysis".
 
 ### 4. Connection Pool Exhaustion
 

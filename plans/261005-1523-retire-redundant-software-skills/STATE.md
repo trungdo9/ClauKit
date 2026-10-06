@@ -9,3 +9,9 @@
 - finding (pre-existing, not fixed): installer rewrites `scripts/ck/` → `.claude/scripts/ck/` inside development-rules.md at install → installed digest never matches a git blob → file can never STALE-refresh; rewrite also yields "not root `.claude/scripts/ck/`"
 - docs: dispatched docs-manager (registry, codebase-summary, system-architecture, pdr, guide/SKILLS.md, README counts 124→116)
 - docs: done (registry 116/42/207, codebase-summary, system-architecture, pdr, design-guidelines, guide/SKILLS.md, README 124→116) · final gate: npm test 457/0/1 · uncommitted (user did not ask to commit)
+- commit 5e17e27: 8-skill retirement · commit 5e2c51b: installer fix (fresh copies not rewritten; rewritten copies proven via install-rewrites.js) · npm test 460/0/1
+- round 2 (user): retro → fold Halt brief into cook Failure Recovery + retire · backend-development trim (drop mindset, testing → test-automation/references/api-integration-testing.md, trim security/debugging/performance, fix stale) · test-automation dedupe credential + lean SKILL (~170) + 4 refs
+- round 2: baseline 460/0/1 (5e2c51b) · foreign untracked WIP: skills/software/diagram-design/, .claude/commands/ck/diagram.md — not ours, do not touch/stage
+- round 2: dispatched 2 implementers (backend-development · test-automation+backend-testing move); retro inline
+- round 2 retro: Halt brief added to cook § Failure Recovery (inputs STATE.md + cycle diffs + plan/spawn config → timeline → cause class → 5 Whys → one change → reports/halt-brief.md + ledger line); 7 callers repointed (cook SKILL, team SKILL + failure-recovery, ck/team, ck/cook, primary-workflow, journal-writer); retro/ git rm'd (4 files)
+- round 2 gate: npm test 461/0/1 · sim from 5e2c51b (--kit both, no --force): 9 refreshed · 6 removed · 0 kept · note: foreign commit 31888a4 swept our staged retro/ deletion into its index; this commit completes it

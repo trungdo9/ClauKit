@@ -1,45 +1,16 @@
 # Backend Performance & Scalability
 
-Performance optimization strategies, caching patterns, and scalability best practices (2025).
+Performance optimization: connection pooling, N+1, caching, load balancing, async processing, CDN.
 
 ## Database Performance
 
-### Query Optimization
+### Indexes & Query Plans
 
-#### Indexing Strategies
-
-**Impact:** 30% disk I/O reduction, 10-100x query speedup
-
-```sql
--- Create index on frequently queried columns
-CREATE INDEX idx_users_email ON users(email);
-CREATE INDEX idx_orders_user_id ON orders(user_id);
-
--- Composite index for multi-column queries
-CREATE INDEX idx_orders_user_date ON orders(user_id, created_at DESC);
-
--- Partial index for filtered queries
-CREATE INDEX idx_active_users ON users(email) WHERE active = true;
-
--- Analyze query performance
-EXPLAIN ANALYZE SELECT * FROM orders
-WHERE user_id = 123 AND created_at > '2025-01-01';
-```
-
-**Index Types:**
-- **B-tree** - Default, general-purpose (equality, range queries)
-- **Hash** - Fast equality lookups, no range queries
-- **GIN** - Full-text search, JSONB queries
-- **GiST** - Geospatial queries, range types
-
-**When NOT to Index:**
-- Small tables (<1000 rows)
-- Frequently updated columns
-- Low-cardinality columns (e.g., boolean with 2 values)
+Index types, composite/partial/covering indexes, `EXPLAIN ANALYZE`, `pg_stat_statements`, missing-index
+queries: owned by the `databases` skill — read
+[.claude/skills/software/database/databases/references/postgresql-performance.md](../../../database/databases/references/postgresql-performance.md).
 
 ### Connection Pooling
-
-**Impact:** 5-10x performance improvement
 
 ```typescript
 // PostgreSQL with pg-pool
@@ -60,10 +31,10 @@ const pool = new Pool({
 const result = await pool.query('SELECT * FROM users WHERE id = $1', [userId]);
 ```
 
-**Recommended Pool Sizes:**
-- **Web servers:** `connections = (core_count * 2) + effective_spindle_count`
-- **Typical:** 20-30 connections per app instance
-- **Monitor:** Connection saturation in production
+**Pool Sizing:**
+- **DB-side budget:** start near `(db_core_count * 2) + effective_spindle_count` (PostgreSQL wiki heuristic) — this is the total for the *database*, not per app instance
+- **Per instance:** `total_budget / instance_count`; with many instances/serverless, put PgBouncer in front
+- **Monitor:** pool wait time and saturation in production
 
 ### N+1 Query Problem
 
@@ -87,8 +58,6 @@ const posts = await Post.findAll({
 ## Caching Strategies
 
 ### Redis Caching
-
-**Impact:** 90% DB load reduction, 10-100x faster response
 
 #### Cache-Aside Pattern (Lazy Loading)
 
@@ -132,15 +101,18 @@ async function deleteUser(userId: string) {
   await redis.del(`user:${userId}:posts`); // Invalidate related caches
 }
 
-// Pattern-based invalidation
-await redis.keys('user:*').then(keys => redis.del(...keys));
+// Pattern-based invalidation — SCAN, never KEYS (KEYS blocks Redis on large keyspaces)
+for await (const key of redis.scanIterator({ MATCH: 'user:*', COUNT: 100 })) {
+  await redis.unlink(key);
+}
+// Better: version the prefix (user:v2:*) or track keys in a set, so no scan is needed
 ```
 
 ### Cache Layers
 
 ```
 Client
-  → CDN Cache (static assets, 50%+ latency reduction)
+  → CDN Cache (static assets)
   → API Gateway Cache (public endpoints)
   → Application Cache (Redis)
   → Database Query Cache
@@ -188,43 +160,29 @@ upstream backend {
 
 ### Health Checks
 
-```typescript
-// Express health check endpoint
-app.get('/health', async (req, res) => {
-  const checks = {
-    uptime: process.uptime(),
-    timestamp: Date.now(),
-    database: await checkDatabase(),
-    redis: await checkRedis(),
-    memory: process.memoryUsage(),
-  };
-
-  const isHealthy = checks.database && checks.redis;
-  res.status(isHealthy ? 200 : 503).json(checks);
-});
-```
+Liveness/readiness endpoints and probe config: [backend-devops.md](backend-devops.md) → "Health Checks".
 
 ## Asynchronous Processing
 
 ### Message Queues for Long-Running Tasks
 
 ```typescript
+// BullMQ (successor to Bull)
+import { Queue, Worker } from 'bullmq';
+
+const connection = { host: 'localhost', port: 6379 };
+
 // Producer - Add job to queue
-import Queue from 'bull';
-
-const emailQueue = new Queue('email', {
-  redis: { host: 'localhost', port: 6379 },
+const emailQueue = new Queue('email', { connection });
+await emailQueue.add('send-welcome', { userId: user.id, email: user.email }, {
+  attempts: 3,
+  backoff: { type: 'exponential', delay: 1000 },
 });
 
-await emailQueue.add('send-welcome', {
-  userId: user.id,
-  email: user.email,
-});
-
-// Consumer - Process jobs
-emailQueue.process('send-welcome', async (job) => {
-  await sendWelcomeEmail(job.data.email);
-});
+// Consumer - Process jobs (make handlers idempotent: jobs can be retried)
+new Worker('email', async (job) => {
+  if (job.name === 'send-welcome') await sendWelcomeEmail(job.data.email);
+}, { connection });
 ```
 
 **Use Cases:**
@@ -235,8 +193,6 @@ emailQueue.process('send-welcome', async (job) => {
 - Webhook delivery
 
 ## CDN (Content Delivery Network)
-
-**Impact:** 50%+ latency reduction for global users
 
 ### Configuration
 
@@ -252,80 +208,9 @@ res.setHeader('Cache-Control', 'private, no-cache'); // User-specific data
 - AWS CloudFront (AWS integration)
 - Fastly (real-time purging)
 
-## Horizontal vs Vertical Scaling
+## Scaling (Horizontal/Vertical, Read Replicas, Sharding)
 
-### Horizontal Scaling (Scale Out)
-
-**Pros:**
-- Better fault tolerance
-- Unlimited scaling potential
-- Cost-effective (commodity hardware)
-
-**Cons:**
-- Complex architecture
-- Data consistency challenges
-- Network overhead
-
-**When to use:** High traffic, need redundancy, stateless applications
-
-### Vertical Scaling (Scale Up)
-
-**Pros:**
-- Simple architecture
-- No code changes needed
-- Easier data consistency
-
-**Cons:**
-- Hardware limits
-- Single point of failure
-- Expensive at high end
-
-**When to use:** Monolithic apps, rapid scaling needed, data consistency critical
-
-## Database Scaling Patterns
-
-### Read Replicas
-
-```
-Primary (Write) → Replica 1 (Read)
-               → Replica 2 (Read)
-               → Replica 3 (Read)
-```
-
-**Implementation:**
-```typescript
-// Write to primary
-await primaryDb.users.create(userData);
-
-// Read from replica
-const users = await replicaDb.users.findAll();
-```
-
-**Use Cases:**
-- Read-heavy workloads (90%+ reads)
-- Analytics queries
-- Reporting dashboards
-
-### Database Sharding
-
-**Horizontal Partitioning** - Split data across databases
-
-```typescript
-// Shard by user ID
-function getShardId(userId: string): number {
-  return hashCode(userId) % SHARD_COUNT;
-}
-
-const shardId = getShardId(userId);
-const db = shards[shardId];
-const user = await db.users.findById(userId);
-```
-
-**Sharding Strategies:**
-- **Range-based:** Users 1-1M → Shard 1, 1M-2M → Shard 2
-- **Hash-based:** Hash(userId) % shard_count
-- **Geographic:** EU users → EU shard, US users → US shard
-- **Entity-based:** Users → Shard 1, Orders → Shard 2
+Owned by [backend-architecture.md](backend-architecture.md) → "Scalability Patterns".
 
 ## Performance Monitoring
 
