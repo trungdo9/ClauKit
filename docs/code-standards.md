@@ -710,6 +710,14 @@ ReferenceError: require is not defined in ES module scope
 - **Renaming one is a migration, not a rename.** Existing installs keep the old
   file, and their `settings.json` and shipped command docs keep invoking it. See
   `bin/lib/cjs-migrate.js` and `bin/lib/cjs-migrate-refs.js`.
+- **An install-time doc rewrite must not touch the package's own copy.** The
+  ref rewriters (`cjs-migrate-refs`, `relocate-scripts`) repair *old* copies;
+  a doc byte-identical to its source is skipped (`isPackageCopy`). Rewriting a
+  fresh copy gives it a digest no release shipped, and every STALE/RETIRED
+  decision is a digest proof. Copies an older installer already rewrote are
+  still proven by `bin/lib/install-rewrites.js` (undo the known rewrites, match
+  the blob, re-apply, compare byte for byte). Guarded by
+  `tests/install-fidelity.test.js`; add any new rewrite to `installRewrite` too.
 
 `bin/` is exempt — it executes inside KitForge's own package, under KitForge's
 `package.json`.

@@ -32,7 +32,7 @@
 const fs = require("fs");
 const path = require("path");
 const { digestOf, digestOfBuffer } = require("./blob-digest");
-const { walk, DOC_ROOTS } = require("./cjs-migrate-refs");
+const { walk, DOC_ROOTS, isPackageCopy } = require("./cjs-migrate-refs");
 
 const OLD_ROOT = "scripts/ck";
 const NEW_ROOT = ".claude/scripts/ck";
@@ -98,10 +98,11 @@ const REF_PATTERN = /(?<![\w./\\-])scripts[/\\]ck[/\\]/g;
  * cjs-migrate-refs documents: `ck-review.yml` is copied into the consumer's repo
  * and invokes the path directly, so a stale reference is a red check on every PR.
  */
-function relocateDocRefs(projectRoot) {
+function relocateDocRefs(projectRoot, resolveSourcePath) {
   const changed = [];
   for (const root of DOC_ROOTS) {
     for (const file of walk(path.join(projectRoot, root))) {
+      if (isPackageCopy(projectRoot, file, resolveSourcePath)) continue;
       let text;
       try {
         text = fs.readFileSync(file, "utf-8");
@@ -165,7 +166,7 @@ function relocateScripts(projectRoot, resolveSourcePath) {
     }
   }
 
-  const refs = relocateDocRefs(projectRoot);
+  const refs = relocateDocRefs(projectRoot, resolveSourcePath);
   if (removed.length) pruneEmptyDirs(projectRoot);
 
   return { removed, kept, refs };

@@ -27,6 +27,18 @@
 const fs = require("fs");
 const path = require("path");
 const { digestOf } = require("./blob-digest");
+const { matchesShipped } = require("./install-rewrites");
+
+/** A digest proof that tolerates what an older `ck init` rewrote; unreadable ⇒ not proven. */
+function isShipped(abs, shas) {
+  let buf;
+  try {
+    buf = fs.readFileSync(abs);
+  } catch {
+    return false;
+  }
+  return matchesShipped(buf, shas);
+}
 
 /**
  * Paths ClauKit used to ship, with every content digest it shipped there.
@@ -542,7 +554,7 @@ function syncRetired(projectRoot, resolveSourcePath) {
 
   for (const entry of STALE) {
     const abs = path.join(projectRoot, entry.path);
-    if (!fs.existsSync(abs) || !entry.sha.includes(digestOf(abs))) continue;
+    if (!fs.existsSync(abs) || !isShipped(abs, entry.sha)) continue;
     const src = resolveSourcePath ? resolveSourcePath(entry.path) : null;
     if (!src || !fs.existsSync(src)) continue;
     try {
@@ -558,7 +570,7 @@ function syncRetired(projectRoot, resolveSourcePath) {
   for (const entry of RETIRED) {
     const abs = path.join(projectRoot, entry.path);
     if (!fs.existsSync(abs)) continue;
-    if (!entry.sha.includes(digestOf(abs))) {
+    if (!isShipped(abs, entry.sha)) {
       kept.push({ path: entry.path, why: "not a copy ClauKit shipped — yours, or edited by you" });
       continue;
     }

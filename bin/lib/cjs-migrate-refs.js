@@ -64,13 +64,31 @@ function walk(dir, out = []) {
 }
 
 /**
- * Rewrite stale references in every shipped doc under `projectRoot`.
+ * A doc byte-identical to the package's copy is current by definition: the copy
+ * loop just wrote it, or it was never touched. Rewriting it anyway is how fresh
+ * installs used to end up with docs whose digest no release shipped — and a
+ * sentence about the legacy root path turned into nonsense. See install-rewrites.js.
+ */
+function isPackageCopy(projectRoot, file, resolveSourcePath) {
+  if (!resolveSourcePath) return false;
+  try {
+    const src = resolveSourcePath(path.relative(projectRoot, file).split(path.sep).join("/"));
+    return Boolean(src) && fs.existsSync(src) && fs.readFileSync(src).equals(fs.readFileSync(file));
+  } catch {
+    return false;
+  }
+}
+
+/**
+ * Rewrite stale references in every shipped doc under `projectRoot` — except a
+ * doc that is still the package's own copy.
  * Returns the project-relative paths that changed.
  */
-function migrateDocRefs(projectRoot) {
+function migrateDocRefs(projectRoot, resolveSourcePath) {
   const changed = [];
   for (const root of DOC_ROOTS) {
     for (const file of walk(path.join(projectRoot, root))) {
+      if (isPackageCopy(projectRoot, file, resolveSourcePath)) continue;
       let text;
       try {
         text = fs.readFileSync(file, "utf-8");
@@ -90,4 +108,4 @@ function migrateDocRefs(projectRoot) {
   return changed;
 }
 
-module.exports = { migrateDocRefs, REF_PATTERN, walk, DOC_ROOTS };
+module.exports = { migrateDocRefs, REF_PATTERN, walk, DOC_ROOTS, isPackageCopy };

@@ -101,7 +101,7 @@ function initCommand(options = {}) {
   // a doc left pointing at a deleted path is the quiet half of this bug. Reading
   // ~600 shipped .md/.sh files costs less than the copy loop already spent, and
   // the sweep only writes when a shipped path actually changed.
-  const staleDocs = migrateDocRefs(projectRoot);
+  const staleDocs = migrateDocRefs(projectRoot, resolveSourcePath);
   // A file dropped from the package survives in every project that installed an
   // earlier version, because the copy loop only ever writes. This removes them —
   // but only where a content digest proves ClauKit shipped that exact file, and
