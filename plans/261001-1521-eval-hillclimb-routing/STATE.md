@@ -1,0 +1,26 @@
+# STATE — eval-hillclimb-routing
+
+- stage0: gate exact-requirements → PASS (from-plan; 5 items extracted from plan.md) · [ASSUMED] commits on current branch `main` (phase-06 `feat/routing-eval-hillclimb` conflicts with git Branch Policy — pending user)
+- baseline: 381/382 pass, 0 fail, 1 skip (c1653ba) — `npm test`
+- verify-plan: dispatched 3 groups (harness · cli-data · docs)
+- verify-plan: gate → PASS for phases 01–02 (26 claims: 21 confirmed, 3 refuted-partial non-load-bearing for 01–02, 2 unverifiable → phase-04 probe) — reports/plan-verification.md
+- decision (user): commits on current branch `main` (no feat branch; phase-06 line 10 overridden) · eval model = default CLI model · budget: user asked for explanation, pending before phase 05
+- phase 01: started (base c1653ba)
+- phase 01: gate → PASS (node --test tests/behavior-routing.test.js → 21/0; npm test → 402 pass/0 fail/1 skip; all files <200 lines) · complete (commits 52ad80f..e0b55f4) · fix-1: /dev/null redirect false-mutation
+- phase 02: started (base e0b55f4)
+- phase 02: gate → PASS (behavior-harness 44/0; bash -n ok; installer-packaging 23/0; npm test 406 pass/0 fail/1 skip; development-rules.md 12277→12489 B) · complete (commit d891d76)
+- review: dispatched opus ×2 (correctness · test-coverage) over c1653ba..d891d76 · waiver: security/perf dimensions skipped — offline test tooling, no auth/network/IO beyond local files
+- review: cycle 1 findings — High CONFIRMED 6/6 (F1 --negative=0 credits · F2 failed route counts · F3 bash compound reads missed 39/46 · F4 route-grade CLI untested · F5 decide float tie ACCEPT · F6 leak CLI fails open + echoes text) + M-a bare Skill = harness skill · reports/verify-*.md
+- parked (deferred, Medium): BASH_WRITE misses `echo x>f`/`rm`, flags `awk '$3 > 1'` — shared tool-sequence regex, revisit after phase-04 probe shows real frequency
+- fix cycle 1/3: dispatched (feature cycles 1/5)
+- fix cycle 1: implemented · npm test 428 pass/0 fail/1 skip (verified by orchestrator) · re-review dispatched (sonnet)
+- review: gate → PASS (re-review cycle 1: Critical 0 · High 0; F1–F6 + M-a closed with repros — reports/re-review-cycle-1.md)
+- parked (deferred): M1 bash segment split inside quotes (`grep -E "head|cat" …SKILL.md` → route) · L1 `--negative=00` bypasses N>=1 check · L2 test-Δ EPS test vacuous · L3 later failing segment neutralises a successful read · L4 `for`/`then`/`X=1 cat`/`timeout` prefixes miss — none flips a phase-04 verdict class at expected frequency; revisit with phase-04 probe data
+- closing: phases 01–02 complete (HEAD 08cc5f6, npm test 428/0/1). HALT before phase 03 per user. ⚠ 4 unpushed commits mention client dir name '<client>' (plan.md, phase-03, 2 reports); repo PUBLIC — scrub before push (pending user)
+- history rewrite (user-approved): client name scrubbed from origin/main..HEAD via filter-branch tree-filter; only 6 doc lines changed, code identical. SHA map: 52ad80f→5ad92bc · e0b55f4→cc37375 · d891d76→f9c3664 · 08cc5f6→d37f5a9 (phase 02 base now cc37375). Backup ref: refs/original/refs/heads/main (local only)
+- phase 03: started (base d37f5a9) · split 03a code (tasks 1,2,3,7 + tests) → 03b mine+seed terms → user PII review → 03c label+split+summary
+- phase 03a: complete (commit 77fe594; npm test 442/0/1) · mined 119 candidates (65 files, 7 -tmp skipped), 57 scrubbed
+- finding: scrub order defect (terms before URL/email ⇒ URL paths + client-domain email leak) + 6+-digit ids/org no. leak → fix dispatched
+- decision (user): dataset = ~44 task-shaped real prompts + ~30 handwritten (source:"handwritten", blind fresh subagent, no access to surface/registry). Amends phase-03 threshold: ≥40 non-registry cases (transcript + handwritten); handwritten split like transcript (stratified train/test). 9 orchestrator-brief prompts + follow-ups excluded
+- phase 03: scrub fix done (npm test 448/0/1; commit pending) · re-scrubbed 62/119 changed, 14 terms (8 person/company/internal names added after residual scan) · selected 74 (44 transcript + 30 handwritten) → data/pii-review.md · WAITING: user PII review (task 4 human gate)
+- phase 03: scrub fix committed 15f4873
