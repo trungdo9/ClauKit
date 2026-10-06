@@ -1,14 +1,14 @@
 ---
 name: ba-diagramming
-description: Draw BA diagrams in mermaid — sequence, flow, state, erd — derived from the entity spine first, free text second, and ship every one compiled or labelled [UNRENDERED], never a third state. Use when a PRD/SRS needs a picture of who-calls-whom, a decision flow, an entity's lifecycle, or the data model, or before /ba:spec compose embeds one.
+description: Draw BA diagrams in mermaid — sequence, flow, state, erd — derived from the entity spine first, free text second, and ship every one compiled or labelled [UNRENDERED], never a third state. Use when a PRD/SRS needs a picture of who-calls-whom, a decision flow, an entity's lifecycle, or the data model, or before /ba:spec compose embeds one. With --html, also redraws it (or a context/dfd/journey/class/swimlane/story-map view) as a gated stakeholder HTML through software/diagram-design.
 license: MIT
 ---
 
 # Diagramming
 
 One command (`/ba:diagram`), four mermaid types, one render gate. Wave 0 — D-10 cut
-D2/PlantUML/BPMN/DBML and three of the seven mermaid diagram kinds (`context`/`dfd`/`journey`/
-`class` wait for a real project to ask; see the capability map).
+D2/PlantUML/BPMN/DBML and the other mermaid diagram kinds; `context`/`dfd`/`journey`/`class` (plus
+`swimlane`/`story-map`) now ship as HTML-only types behind `--html` — see "Presentation layer" below.
 
 ## The four types, and what each is for
 
@@ -54,6 +54,20 @@ Try `npx -y @mermaid-js/mermaid-cli` (`mmdc`) first. Two outcomes, and only two:
 No third state. A file that is neither compiled nor labelled fails the exit gate — that third
 state is exactly what rule 4 exists to forbid.
 
+## Presentation layer — `--html` (diagram-design)
+
+Mermaid answers "what does the spec say"; a stakeholder deck, a sign-off pack or a UAT walkthrough
+needs a picture people read without a renderer. `--html` redraws through the engineer kit's
+`diagram-design` skill (shipped with `ba` via `requires.shared`) and unlocks the four types this
+skill deferred — `context`, `dfd`, `journey`, `class` — plus `swimlane` and `story-map`, all as
+HTML-only types (mapping in `/ba:diagram`). Two invariants carry over unchanged:
+
+- **Spine first.** The HTML draws from the same entities; it never introduces a node the spine
+  does not name. A redraw of a mermaid type starts from the mermaid file, so the two cannot drift.
+- **Rule 4, two states.** HTML is "compiled" when `self_check.py` and `verify_geometry.py` both
+  pass; with no `python3` no HTML is written at all (reported `HTML skipped`) — an unverified
+  stakeholder page is not shipped with a label nobody sees.
+
 ## Anti-patterns (auto-reject)
 
 - A 40-node `flow` nobody can read — split it, or state in prose what the picture cannot carry.
@@ -71,4 +85,5 @@ state is exactly what rule 4 exists to forbid.
 
 - **Read the `ba-traceability` skill file** ([.claude/skills/ba/traceability/SKILL.md](../traceability/SKILL.md)) — the entity contract this skill reads before drawing anything.
 - **Read the `business-analysis-rules` workflow** ([.claude/workflows/business-analysis-rules.md](../../../workflows/business-analysis-rules.md)) — rule 2 (confidence, for free-text input), rule 4 (the render gate this skill implements), rule 6 (hard-fail pre-flight), rule 7 (output language).
+- **Read the `diagram-design` skill file** ([.claude/skills/software/diagram-design/SKILL.md](../../software/diagram-design/SKILL.md)) — only for `--html`: type grammar, style-guide gate, taste gate, Mermaid import.
 - `.claude/commands/ba/diagram.md` ([../../commands/ba/diagram.md](../../../commands/ba/diagram.md)) — the four actions this skill backs.

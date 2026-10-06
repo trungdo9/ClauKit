@@ -17,6 +17,7 @@
   "requires": {
     "shared": [
       ".claude/skills/software/scenario/SKILL.md",
+      ".claude/skills/software/diagram-design/",
       ".claude/workflows/primary-workflow.md",
       ".claude/workflows/development-rules.md"
     ]

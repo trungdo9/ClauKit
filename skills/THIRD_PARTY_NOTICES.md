@@ -44,6 +44,24 @@ Source: [https://github.com/social-media-skills/skills](https://github.com/socia
 
 License: MIT
 
+The `diagram-design` skill under `skills/software/diagram-design/` and the `/ck:diagram` command are ADAPTED from the following source (v2.6.59). The skill body, 61 references, the light example per visual type, templates, icon gallery, and the five stdlib Python helpers are carried over (plus the repository's `verify-geometry.py` as `scripts/verify_geometry.py`); the `-dark`/`-full`/most `-animated` example variants, the `doctor` reference, the repository's CI/verifier/build scripts, and the host plugin manifests are not included. Upstream's five slash commands were merged into one `/ck:diagram` dispatcher.
+
+**diagram-design**, Copyright (c) 2025 Cathryn Lavery
+
+Source: [https://github.com/cathrynlavery/diagram-design](https://github.com/cathrynlavery/diagram-design)
+
+License: MIT
+
+The icon glyphs in `skills/software/diagram-design/assets/icons.html` and `references/primitive-icons.md` are redistributed by diagram-design from the following sources (per its `THIRD_PARTY_LICENSES.md`):
+
+- **Tabler Icons** — MIT — [https://github.com/tabler/tabler-icons](https://github.com/tabler/tabler-icons) (stroked icons + stroked brand outlines). License: [LICENSE](https://github.com/tabler/tabler-icons/blob/main/LICENSE)
+- **Simple Icons** — CC0 1.0 — [https://github.com/simple-icons/simple-icons](https://github.com/simple-icons/simple-icons) (filled brand silhouettes). Dedication: [LICENSE.md](https://github.com/simple-icons/simple-icons/blob/develop/LICENSE.md)
+- **log-z/logos** — MIT — [https://github.com/log-z/logos](https://github.com/log-z/logos) (MySQL, Redis, StarRocks silhouettes). License: [LICENSE](https://github.com/log-z/logos/blob/main/LICENSE)
+- **Devicon** — MIT — [https://github.com/devicons/devicon](https://github.com/devicons/devicon) (RStudio, SPSS). License: [LICENSE](https://github.com/devicons/devicon/blob/master/LICENSE)
+- **SAS** mark from Wikimedia Commons (public domain); **Stata** mark from the IcePanel Technology Icons collection via techicons.dev.
+
+Brand logos remain the trademarks of their respective owners; they are included for documentation and illustrative use only, and their presence implies no endorsement, sponsorship, or affiliation.
+
 Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
 
 The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.

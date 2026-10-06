@@ -31,10 +31,10 @@
 | 27 | Sơ đồ luồng nghiệp vụ (flow) | các bước xử lý nối tiếp nhau | `/ba:diagram flow` | ba | W0 |
 | 28 | Sơ đồ tuần tự (sequence) | ai gọi ai, theo thứ tự thời gian | `/ba:diagram sequence` | ba | W0 |
 | 29 | Sơ đồ trạng thái (state) | một thực thể chuyển từ trạng thái này sang trạng thái khác | `/ba:diagram state` | ba | W0 |
-| 30 | Sơ đồ bối cảnh hệ thống (context) | hệ thống này nối với những hệ thống/người nào bên ngoài | `/ba:diagram context` | ba | W3 |
-| 31 | Sơ đồ luồng dữ liệu (DFD) | dữ liệu di chuyển qua các bước xử lý ra sao | `/ba:diagram dfd` | ba | W4 |
-| 32 | Bản đồ hành trình người dùng (journey map) | trải nghiệm người dùng từ đầu đến cuối | `/ba:diagram journey` | ba | W4 |
-| 33 | Sơ đồ lớp (class) | các đối tượng dữ liệu và quan hệ giữa chúng | `/ba:diagram class` | ba | W4 |
+| 30 | Sơ đồ bối cảnh hệ thống (context) | hệ thống này nối với những hệ thống/người nào bên ngoài | `/ba:diagram context --html` (diagram-design) | ba + ck | W0 |
+| 31 | Sơ đồ luồng dữ liệu (DFD) | dữ liệu di chuyển qua các bước xử lý ra sao | `/ba:diagram dfd --html` (diagram-design) | ba + ck | W0 |
+| 32 | Bản đồ hành trình người dùng (journey map) | trải nghiệm người dùng từ đầu đến cuối | `/ba:diagram journey --html` (diagram-design) | ba + ck | W0 |
+| 33 | Sơ đồ lớp (class) | các đối tượng dữ liệu và quan hệ giữa chúng | `/ba:diagram class --html` (diagram-design) | ba + ck | W0 |
 | 34 | Kiểm tra khoảng trống truy vết | requirement nào chưa có nguồn hoặc chưa có tài liệu con | `/ba:qc gap` | ba | W0 |
 | 35 | Phát hiện entity mồ côi (orphan) | entity không gắn với tài liệu cha nào | `/ba:qc orphan` | ba | W1 |
 | 36 | Checklist ký nhận trước bàn giao | danh sách kiểm tra trước khi coi là "xong" | `/ba:qc signoff` | ba | W2 |

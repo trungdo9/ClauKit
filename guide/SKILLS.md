@@ -122,6 +122,18 @@ Or combine with slash commands:
 
 ---
 
+### diagram-design
+
+**Editorial HTML/SVG diagrams** — `/ck:diagram`, `/ba:diagram --html`
+
+**Features:**
+- 44 visual types (architecture, sequence, state, ER, deployment, journey, story map, swimlane, Sankey, Wardley, …)
+- Brand style guide + saved client profiles
+- Redraw-import from `.drawio`, Mermaid, `.excalidraw`
+- SVG/PNG export (PNG needs Playwright)
+
+---
+
 ### chrome-devtools
 
 **Browser automation with Puppeteer**

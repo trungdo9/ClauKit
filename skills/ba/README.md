@@ -16,7 +16,7 @@ Cài xong có **6 command**, **6 skill** (`ba-context`, `ba-prd`, `ba-spec`, `ba
 - `/ba:plan [fast|full] [<project-slug>]` — tạo/cập nhật hub `plans/ba-context.md` (phạm vi, actor, glossary). **Chạy đầu tiên**; mọi command khác dừng nếu thiếu file này.
 - `/ba:prd prd|roadmap [<project-slug>]` — PRD + bóc EPIC · roadmap Now/Next/Later.
 - `/ba:spec fr|nfr|uc|us|ac|tc|cr|bp|compose [<project-slug>]` — viết từng loại yêu cầu thành entity; `compose` ghép thành `SRS-001.md` để ký.
-- `/ba:diagram sequence|flow|state|erd <FR-###|mô tả> [<project-slug>]` — sơ đồ mermaid.
+- `/ba:diagram sequence|flow|state|erd <FR-###|mô tả> [<project-slug>] [--html]` — sơ đồ mermaid; `--html` vẽ lại bản trình bày (skill `diagram-design`), và mở thêm `context|dfd|journey|class|swimlane|story-map` (chỉ HTML).
 - `/ba:qc gap [<project-slug>]` — soi yêu cầu mồ côi / chưa có nguồn. Exit 0 = đủ điều kiện bàn giao.
 - `/ba:deliver scope|uat|acceptance|release-notes|golive|handover|all [<project-slug>] [--force]` — tài liệu bàn giao: phạm vi, UAT, biên bản nghiệm thu, release notes, go-live, vận hành.
 

@@ -501,6 +501,27 @@ test('ba installs its six skills grouped under skills/ba/, each named ba-<dir>',
   assert.ok(fs.existsSync(path.join(p, '.claude/skills/software/scenario/SKILL.md')));
 });
 
+// `/ba:diagram --html` and `/ck:diagram` read one copy of `diagram-design`. The
+// gates they name are scripts, not prose: a kit that ships SKILL.md without
+// them leaves the command telling the model to run files that are not there.
+test('engineer and ba both install diagram-design with its gate scripts', () => {
+  const shipped = [
+    'SKILL.md',
+    'scripts/self_check.py',
+    'scripts/verify_geometry.py',
+    'scripts/mermaid_extract.py',
+    'assets/template.html',
+    'references/import-mermaid.md',
+  ];
+  for (const kit of ['engineer', 'ba']) {
+    const p = fresh();
+    const r = init(p, [], kit);
+    assert.strictEqual(r.status, 0, `[${kit}] ${r.stderr}`);
+    const dir = path.join(p, '.claude/skills/software/diagram-design');
+    for (const f of shipped) assert.ok(fs.existsSync(path.join(dir, f)), `[${kit}] missing diagram-design/${f}`);
+  }
+});
+
 test('no kit installs a skill at the registered depth, and only ba installs skills/ba/', () => {
   const kits = packagedKits();
   assert.ok(kits.length >= 4, 'the kit glob returned nothing — the loop would pass vacuously');
