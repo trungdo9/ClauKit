@@ -11,10 +11,9 @@ status: active
 
 Convert prose into a **semantic knowledge graph**: nodes are concepts (services, people, decisions, components), edges are relations (depends-on, owns, supersedes). The output is queryable and feeds retrieval-augmented agents.
 
-Distinct from:
-- `[[ck-graphify]]` — syntactic code graph (AST, calls, imports). Different input (source code), different node types.
+Distinct from a code graph (AST, calls, imports): different input (source code), different node types. For code structure use the language's own tooling — `tree-sitter`, `dependency-cruiser` (JS/TS), Python's `ast` module — or `/ck:scout`.
 
-**When NOT to use this skill** → use `[[ck-graphify]]` for code structure; write a static diagram (Mermaid / GraphViz) directly for docs.
+**When NOT to use this skill** → use a code-graph tool (above) for code structure; write a static diagram (Mermaid / GraphViz) directly for docs.
 
 ## When to Use
 
@@ -27,7 +26,7 @@ Activation phrases: *"extract knowledge from these docs"*, *"build a semantic gr
 
 ## Workflow
 
-1. **Source** — corpus selection. Design docs, RFCs, ADRs, post-mortems, meeting notes. Keep code out (that's `[[ck-graphify]]`'s job).
+1. **Source** — corpus selection. Design docs, RFCs, ADRs, post-mortems, meeting notes. Keep code out (that is a code graph's job).
 2. **Extract** — pull entities and relations:
    - **LLM extraction** — prompt with a schema; fast iteration; cost scales per document.
    - **Rule-based / spaCy** — fast, cheap, deterministic; brittle on prose variation.
@@ -85,4 +84,4 @@ See `references/`:
 
 ## Cross-links
 
-`[[ck-graphify]]`, `[[research]]`, `[[context-engineering]]`, `[[planning]]`
+`[[research]]`, `[[planning]]`, `[[dynamic-workflow]]`

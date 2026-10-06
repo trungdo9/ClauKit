@@ -1,6 +1,6 @@
 ---
 name: research
-description: Use when you need to research, analyze, and plan technical solutions that are scalable, secure, and maintainable.
+description: Use when you need to research a technology, library, or approach from external sources — docs, changelogs, issues, benchmarks — and deliver a cited report (best practices, trade-offs, recommendation). Gathers evidence; planning the implementation belongs to the `planning` skill.
 license: MIT
 ---
 

@@ -77,7 +77,7 @@ What the software kit already owns, in one place — ask for these there, not he
 - research → /ck:research
 - design, wireframes → /ck:design
 - tracker publishing → /ck:tickets --jira (draft-default, rule 3)
-- kanban → the `plans-kanban` skill
+- slicing work and its blocking order → /ck:tickets
 - knowledge graph → the `gkg` skill
 - test-case methodology → the `scenario` skill: `/ba:spec tc` reads `.claude/skills/software/scenario/SKILL.md` (shipped with `ba` via `requires.shared`) instead of carrying a second method
 - implementation → /ck:cook

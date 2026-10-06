@@ -6,7 +6,7 @@ argument-hint: [tasks-or-screenshot] [fast|good] [3d|screenshot|describe|ui-ux-p
 **Think hard.** Plan & design from:
 <input>$ARGUMENTS</input>
 
-Design work routes to the `frontend-developer` agent, which must activate the canonical design skills (`aesthetic` + `frontend-design`) — no need to re-list here.
+Design work routes to the `frontend-developer` agent, which reads the canonical design skill file — `frontend-design` ([.claude/skills/software/design/frontend-design/SKILL.md](../../skills/software/design/frontend-design/SKILL.md)) — no need to re-list here.
 
 ## Flags (parse `$ARGUMENTS` — workflow flags + output-type flags are combinable; output-type flags are mutually exclusive)
 
@@ -21,10 +21,10 @@ Design work routes to the `frontend-developer` agent, which must activate the ca
 
 | Flag | Effect |
 |---|---|
-| `3d` | **Three.js/WebGL** — immersive 3D experiences with custom shaders, particle systems, GPU rendering, 60fps target. Activates `threejs` + `shader` skills. |
+| `3d` | **Three.js/WebGL** — immersive 3D experiences with custom shaders, particle systems, GPU rendering, 60fps target. Reads the `threejs` skill (materials, node materials, post-processing references cover the shaders). |
 | `screenshot` | **match reference** — `<input>` is a screenshot/path; output must match its visual style exactly. |
 | `describe` | **describe + plan only** — `<input>` is a screenshot/video; output is a detailed implementation hand-off doc. **No implementation.** |
-| `ui-ux-pro-max` | **Style Intelligence** — `<input>` is `[product-type] [style] [industry]`. Applies 50+ styles · 21 palettes · 50 font pairings · domain patterns · Pre-Delivery Checklist. |
+| `ui-ux-pro-max` | **Style system** — `<input>` is `[product-type] [style] [industry]`. Commits to a direction for that domain and delivers it as tokens (palette roles · type scale · spacing) + UI, checked before delivery. |
 
 Output-type flags drive the *what*; workflow flags drive the *how* (e.g. `good 3d` = research-driven 3D; `fast screenshot` = quick screenshot match).
 
@@ -63,25 +63,24 @@ Output-type flags drive the *what*; workflow flags drive the *how* (e.g. `good 3
 2. `frontend-developer` subagent → create implementation plan via `planning` skill's progressive disclosure structure.
 3. Report plan summary to user. **No implementation.**
 
-### `ui-ux-pro-max` — Style Intelligence
+### `ui-ux-pro-max` — Style system
 
 Input: `[product-type] [style] [industry]` (e.g. `SaaS minimal fintech`, `landing page elegant beauty`, `dashboard brutalism gaming`).
 
 1. Analyze requirements (product type · style · industry).
-2. Delegate to `frontend-developer` agent reading the `ui-ux-pro-max` skill file (Style Intelligence):
-   - Select style (50+ options: Minimalism · Brutalism · Glassmorphism · Neumorphism · Dark Mode · …)
-   - Choose palette (21 options: SaaS Blue · Healthcare · Beauty/Spa · Fintech · …)
-   - Pick font pairing (50 options: Elegant/Luxury · Modern/Tech · Professional · …)
-   - Apply domain-specific patterns.
-3. Agent validates with Pre-Delivery Checklist.
-4. Output comprehensive UI implementation.
+2. Delegate to `frontend-developer` agent reading the `frontend-design` skill file and its `references/design-principles.md`:
+   - Commit to one aesthetic direction that fits the domain (Design Thinking).
+   - Define tokens: semantic color roles with WCAG AA contrast, a constrained type scale with a distinctive display + body pairing, a spacing scale.
+   - Apply domain-specific patterns (e.g. gains/losses colors in fintech, trust cues in healthcare).
+3. Agent checks before delivery: contrast, touch targets, light + dark themes, responsive breakpoints.
+4. Output UI implementation + the tokens, recorded in `./docs/design-guidelines.md` on approval.
 
 **Stack:** default `html-tailwind`. Supported: react · nextjs · vue · svelte · swiftui · react-native · flutter · shadcn.
-**Reference:** [.claude/skills/software/design/ui-ux-pro-max/SKILL.md](../../skills/software/design/ui-ux-pro-max/SKILL.md) for full Style Intelligence docs.
+**Reference:** [.claude/skills/software/design/frontend-design/references/design-principles.md](../../skills/software/design/frontend-design/references/design-principles.md) § Design Tokens & Scales.
 
 ## Notes
 - All plan structure → `planning` skill ([.claude/skills/software/planning/SKILL.md](../../skills/software/planning/SKILL.md)).
-- All design methodology → `frontend-developer` agent + design skills (`aesthetic`, `frontend-design`, `ui-ux-pro-max`).
+- All design methodology → `frontend-developer` agent + design skills (`frontend-design`, `ui-styling`, `threejs`).
 - Generate visual assets with `ai-multimodal`; verify quality with same skill. Background removal via `ai-multimodal`.
 - Concise grammar in reports. List unresolved questions at end.
 
@@ -92,4 +91,4 @@ Input: `[product-type] [style] [industry]` (e.g. `SaaS minimal fintech`, `landin
 - `/ck:design good 3d portfolio hero` — research + 3D.
 - `/ck:design screenshot ref.png` — match the screenshot.
 - `/ck:design describe ref.png` — describe + plan only.
-- `/ck:design ui-ux-pro-max SaaS minimal fintech` — Style Intelligence.
+- `/ck:design ui-ux-pro-max SaaS minimal fintech` — domain style system.

@@ -53,7 +53,7 @@ Summary reports include:
 ## Agent-Specific Notes
 
 - **Token efficiency** while maintaining high quality.
-- **Skills catalog:** auto-activate relevant skills (`debugging`, `problem-solving`, `sequential-thinking`).
+- **Skills catalog:** auto-activate relevant skills (`debugging`, `problem-solving`, `tdd`).
 - **Verify assumptions with concrete evidence.** No "should" / "probably" / "seems to."
 - **Report handoff:** save to `./plans/<plan-name>/reports/YYMMDD-from-agent-to-agent-task-name-report.md`.
 - **Communication:** clear progress updates, accessible language, highlight criticals, risk-assess proposed solutions, methodical tone.

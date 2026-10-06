@@ -42,7 +42,7 @@ Think harder to drive the following feature end-to-end. Follow the cook skill me
 
 ## Dispatch Tiers (Rule 0 — every dispatch names a model)
 
-An omitted `model` inherits the session's tier and silently defeats tiering; a dispatch without one **is a review finding**. Source of truth: [model-tiering.md](../../skills/software/context-engineering/references/model-tiering.md).
+An omitted `model` inherits the session's tier and silently defeats tiering; a dispatch without one **is a review finding**. Source of truth: [model-tiering.md](../../skills/software/dynamic-workflow/references/model-tiering.md).
 
 | Stage | Agent | `model` |
 |---|---|---|
@@ -113,7 +113,7 @@ Stages are named; numbering lives in the cook skill (source of truth).
 
 * Read the plan general overview only; implement phases one by one — do **not** load all phases at once.
 * **Fresh implementer subagent per phase** (cook skill "Implement" section is the contract): main session keeps only the loop, gates, and ledger. Dispatch = 1 line of context + **brief file path** (`node .claude/scripts/ck/phase-brief.cjs <plan> <N>`) + cross-phase interfaces + known ambiguity resolutions + report path. **Never paste session history; keep dispatches <2k chars.** Statuses: `DONE`/`DONE_WITH_CONCERNS`/`NEEDS_CONTEXT`/`BLOCKED`.
-* Frontend (UI, components, pages, styling/design) → `frontend-developer` (activates `aesthetic` + `frontend-design` skills for design work; `ai-multimodal` skill to generate + verify image assets).
+* Frontend (UI, components, pages, styling/design) → `frontend-developer` (reads the `frontend-design` skill for design work; `ai-multimodal` skill to generate + verify image assets).
 * Backend (APIs, database, server) → `backend-developer`.
 * Never two implementers in parallel on the same tree — dispatch editing phases sequentially.
 * `project-manager` updates phase progress in the plan file between phases.

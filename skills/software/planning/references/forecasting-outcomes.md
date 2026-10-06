@@ -47,7 +47,7 @@ Risk = Impact × Likelihood. Sort plans by risk; mitigate the top 20%.
 
 ### 4. Bottleneck prediction from dependency graph
 
-Build the plan-dependency graph (see `[[plans-kanban]]`'s `unblocks:` field). Nodes with highest in-degree are bottlenecks: many plans wait on them. Prioritize their delivery to unlock flow.
+Build the dependency graph — across plans from what each plan says it waits on, inside one plan from `[[to-tickets]]`' blocking edges. Nodes with highest in-degree are bottlenecks: many plans wait on them. Prioritize their delivery to unlock flow.
 
 ## Data inputs (DORA + agile metrics)
 

@@ -148,4 +148,4 @@ In-depth playbooks live in `references/`:
 - `[[cook]]` — single-feature lifecycle engine; `team cook` parallelizes across features
 - `[[planning]]` — generate plans before handing off to teams
 - `[[retro]]` — postmortem when team runs go sideways
-- `[[context-engineering]]` — per-teammate token budgets and layer caps
+- `[[dynamic-workflow]]` — single-session fan-out; its `references/model-tiering.md` sets the model per teammate

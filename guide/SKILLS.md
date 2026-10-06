@@ -257,17 +257,6 @@ Or combine with slash commands:
 
 ---
 
-### sequential-thinking
-
-**Structured problem-solving**
-
-**Features:**
-- Multi-step analysis
-- Hypothesis verification
-- Adaptive planning
-
----
-
 ## Creating Custom Skills
 
 Create a new skill:

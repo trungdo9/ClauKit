@@ -4,8 +4,8 @@
 
 - Node.js 18+
 - Skill directory:
-  - Project-scope (preferred): `.claude/skills/chrome-devtools/`
-  - User-scope: `~/.claude/skills/chrome-devtools/`
+  - Project-scope (preferred): `.claude/skills/software/chrome-devtools/`
+  - User-scope: `~/.claude/skills/software/chrome-devtools/`
 - Linux/WSL: Chrome system libraries (`./install-deps.sh` ships with the skill)
 
 ## Install
@@ -13,10 +13,10 @@
 ```bash
 # Detect skill location (project-scope preferred)
 SKILL_DIR=""
-if [ -d ".claude/skills/chrome-devtools/scripts" ]; then
-  SKILL_DIR=".claude/skills/chrome-devtools/scripts"
-elif [ -d "$HOME/.claude/skills/chrome-devtools/scripts" ]; then
-  SKILL_DIR="$HOME/.claude/skills/chrome-devtools/scripts"
+if [ -d ".claude/skills/software/chrome-devtools/scripts" ]; then
+  SKILL_DIR=".claude/skills/software/chrome-devtools/scripts"
+elif [ -d "$HOME/.claude/skills/software/chrome-devtools/scripts" ]; then
+  SKILL_DIR="$HOME/.claude/skills/software/chrome-devtools/scripts"
 fi
 
 cd "$SKILL_DIR"
@@ -51,7 +51,7 @@ Override with `--headless false` to force a visible window, or `--headless true`
 ## Directory Structure
 
 ```
-.claude/skills/chrome-devtools/
+.claude/skills/software/chrome-devtools/
 ├── SKILL.md
 ├── scripts/
 │   ├── navigate.js

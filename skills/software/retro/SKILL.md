@@ -68,7 +68,7 @@ Save to `plans/retros/YYMMDD-<topic>-retro.md`:
 
 ## Future Enhancement
 
-Auto-extract candidate retro topics from `[[plans-kanban]]` blockers and `[[journal]]` entries — deferred until both skills mature.
+Auto-extract candidate retro topics from `STATE.md` halt rulings (`[[run-state]]`) and `/ck:journal` entries — deferred.
 
 ## References
 
@@ -79,4 +79,4 @@ See `references/`:
 
 ## Cross-links
 
-`[[journal]]`, `[[planning]]`, `[[orchestrate]]`, `[[plans-kanban]]`
+`/ck:journal`, `[[planning]]`, `[[team]]`, `[[run-state]]`

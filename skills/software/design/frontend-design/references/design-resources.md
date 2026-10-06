@@ -59,7 +59,7 @@ Use multiple agents to generate design style variations simultaneously, compare 
 
 ### Required Files
 Create in `./docs/` directory:
-- **design-guideline.md**: Color patterns, typography, layout principles, component styling, design highlights
+- **design-guidelines.md**: Color patterns, typography, layout principles, component styling, design highlights
 - **design-story.md**: Narrative elements, thematic decisions, user journey considerations
 
 ### Content

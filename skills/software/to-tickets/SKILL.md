@@ -17,7 +17,7 @@ Turn one plan into a set of **tickets**: vertical tracer-bullet slices, each dec
 
 This is the missing link between [`/ck:plan`](../../../commands/ck/plan.md) and [`/ck:cook`](../../../commands/ck/cook.md). A plan's `phase-*.md` files are *sequential implementation detail*; tickets are *delivery units with an explicit dependency graph* — which is what you need to parallelize work, hand a slice to a fresh context, or sequence a refactor that cannot land in one commit.
 
-Distinct from `[[plans-kanban]]`, which organizes *whole plans* into board columns. This skill cuts *inside* one plan.
+This skill cuts *inside* one plan; it does not order whole plans against each other.
 
 ## Where tickets go
 
@@ -118,5 +118,4 @@ Take any ticket whose blockers are all closed — for a linear chain that is top
 - `[[planning]]` — the plan this skill slices; plan dir contract + phase-file spec
 - `[[cook]]` — executes a slice; its waves are the frontier
 - `[[run-state]]` — durable ledger across a multi-ticket run
-- `[[plans-kanban]]` — the board *above* this skill: whole plans, not slices inside one
 - `[[refactor]]` — executes an expand–contract migrate batch

@@ -36,4 +36,4 @@ Command-only: the per-repo agent is `scout` (already Edit/Write-free), and the r
 - **IMPORTANT:** Sacrifice grammar for the sake of concision when writing reports.
 - **IMPORTANT:** In reports, list any unresolved questions at the end, if any.
 
-**Related skills** (look up `docs/clauKit-registry.md`): `find-skills`, `ck-graphify`, `gkg`, `research`.
+**Related skills** (look up `docs/clauKit-registry.md`): `find-skills`, `gkg`, `research`.

@@ -42,4 +42,4 @@ This file is shared by both engineer and marketing kits.
 **Engineer kit (`/ck:`):**
 - `/ck:plan cro` — create CRO **plan** with framework-driven recommendations
 
-**Agents:** `copywriter`, `content-strategist` (both marketing kit; engineer-kit-only installs: main agent + `show-off` skill)
+**Agents:** `copywriter`, `content-strategist` (both marketing kit; engineer-kit-only installs: main agent + `frontend-design` skill)

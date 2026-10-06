@@ -121,9 +121,5 @@ Follow `references/output-format.md`. Verdict: CRITICAL findings = FAIL, HIGH on
 - `references/i18n/vi.md` + `references/i18n/en.md` — localization strings
 
 ## Guardrails
-- License first: check LICENSE before copying any external code
-- Provenance: ported files get `Adapted from <url>@<sha>:<path> (<license>)` header
-- No drive-by deps: only add deps the ported code actually needs
-- Trust local conventions over source style
 - Reports use `security-reports/scan-<timestamp>.md` (not `vbsec-reports/`)
 - **No pattern-matching pre-scanner.** A Python pattern pre-scanner shipped under this skill's `scripts/` until 2026-08-21: referenced by no workflow, and a trial run false-positived in its pattern category — `exec() usage CRITICAL` on a plain `/regex/.exec()` call (reproduced before removal). Do not reintroduce one to save tokens. The Core Principle above is the contract: a regex pass that skips L1-L4 tracing is cheap and wrong, and its noise costs more to triage than the scan saved.

@@ -42,6 +42,14 @@ Search "Figma Design System + [style]" to understand:
 - Layout principles (grid systems, responsive breakpoints)
 - UX patterns & interactions
 
+### Design Tokens & Scales
+Decide once, export as tokens (CSS vars or JSON — `--color-primary`, `--font-headline-md`, `--space-4`), and consume tokens in components instead of raw values. That is what makes a theme switch (light/dark) automatic.
+- **Semantic color roles**: Primary · Secondary · Tertiary · Success · Warning · Error, each with an "On" role for the text that sits on it. 5–9 shades per hue; ad-hoc colors outside the palette fragment consistency. Material Design 3 builds these in the HCT color space so light and dark palettes stay perceptually even.
+- **Type scale**: a constrained ladder — Display → Headline → Title → Body → Label, each Small/Medium/Large (Material Design 3). Constraint gives hierarchy without choice overload.
+- **Spacing scale**: one base unit and its multiples (4 · 8 · 12 · 16 · 24 · 32 · 48 · 64px) for margin, padding and gap.
+- **Touch targets**: ≥ 44×44pt (Apple HIG) / 48×48dp (Material).
+- Cross-check against [Material Design 3](https://m3.material.io/styles), [Apple HIG](https://developer.apple.com/design/human-interface-guidelines/) and [Web Interface Guidelines](https://interfaces.rauno.me/); verify contrast with a checker, not by eye.
+
 ### Component Library Standards
 - Semantic HTML first (button > div with ARIA roles)
 - Built-in accessibility, focus handling, keyboard interaction

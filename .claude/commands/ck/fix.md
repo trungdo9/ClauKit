@@ -73,7 +73,6 @@ Turns the three prose gates into **discrete, inspectable agent stages** ([2.5] S
 
 ### Companion skills
 - `problem-solving` — activates during diagnose for root-cause synthesis.
-- `sequential-thinking` — break complex problems into steps (default + `--review`).
 - `ai-multimodal` — Stage [2], plus visual-asset generation if needed.
 
 ## Variant Workflows (distinct inputs / pipeline shapes)
@@ -164,7 +163,7 @@ Command-only: append `baseline: <X/Y> (<sha7>)` and then `gate tdd → PASS (evi
 
 ### `ui` — UI-specialist pipeline (⚡⚡)
 
-`frontend-developer` subagent (with `aesthetic` + `frontend-design` skills) reads `./docs/design-guidelines.md` then fixes:
+`frontend-developer` subagent (with the `frontend-design` skill) reads `./docs/design-guidelines.md` then fixes:
 <issue>{ISSUES}</issue>
 
 - **Stage [2]** (multimodal): if screenshots/videos → `ai-multimodal` skill for detailed issue description.

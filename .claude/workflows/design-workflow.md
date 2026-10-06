@@ -9,7 +9,7 @@
 
 ## Phase 1 — Concept
 
-Mood board, sketches, brief. Skills: `ui-ux-pro-max`, `aesthetic`, `frontend-design`.
+Mood board, sketches, brief. Skills: `frontend-design` (direction, tokens, inspiration capture), `ai-multimodal` (mood-board images).
 *Output:* `concept.md` + `moodboard.png`.
 
 ## Phase 2 — Model

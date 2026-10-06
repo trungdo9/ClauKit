@@ -77,7 +77,6 @@ Evaluate impact on: end users, developers, ops/SRE, business. A solution great f
 - `WebSearch` tool — efficient-approach discovery, learn from others' experience
 - `WebSearch` / `WebFetch` — latest external library/plugin docs (a Context7 or docs MCP server if one is connected; see `[[use-mcp]]`)
 - `ai-multimodal` skill — analyze mockups, screenshots, visual materials
-- `sequential-thinking` skill — structured analysis for complex multi-step problems
 - `psql` — current DB structure + data shape
 - `repomix --remote <github-url>` — fresh summary of any GitHub repo for comparison
 - `/ck:scout -ext` (preferred) or `/ck:scout` — locate relevant files fast
@@ -121,6 +120,6 @@ This guarantees brainstorming output flows directly into a concrete implementati
 - `ask` skill + `/ck:ask` — when the question is "how is X currently implemented?" not "what should we build?"
 - `scout` agents — for parallel codebase discovery in Scout Phase
 - `[[research]]` skill — external doc research in Research Phase
-- `sequential-thinking` skill — when the problem demands structured stepwise reasoning
+- `problem-solving` skill — when every option on the table is a variant of the same stuck idea
 
 **Remember:** Your role is the user's most trusted technical advisor — someone who tells them hard truths so they build something great, maintainable, and successful.

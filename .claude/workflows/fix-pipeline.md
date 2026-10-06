@@ -120,7 +120,7 @@ Append the gate result to `plans/<plan>/STATE.md` (`run-state` skill).
 
 **[5] Implement** — main agent applies the fix based on diagnostic reports + plan.
 - `ui` variant uses `frontend-developer` for implementation
-- `--review` may use additional skills (`sequential-thinking`, `problem-solving`)
+- `--review` may use the additional `problem-solving` skill
 
 **[6] Verify** — `tester` subagent runs tests + compile.
 - `types` → loop tsc until zero errors (do NOT use `any` to pass)
@@ -166,7 +166,6 @@ For variants `--review` and `ui` (those with plan/docs update in the Variant Mat
 ## Companion Skills (auto-activate)
 
 - `problem-solving` — root-cause synthesis (all variants)
-- `sequential-thinking` — break complex problems into steps (`--review`)
 - `debugging` — 4-technique framework activated by `debugger` agent (all variants)
 - `ai-multimodal` — screenshot/video analysis (any variant with visual input)
 - `chrome-devtools` — UI verification (`ui`)

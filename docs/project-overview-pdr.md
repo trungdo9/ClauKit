@@ -340,7 +340,7 @@ No `csharp-expert` agent exists — C#/.NET is covered by the `csharp-developer`
 
 **MCP Tools** (`.claude/.mcp.json.example`):
 - **context7**: Read latest documentation
-- **sequential-thinking**: Structured problem solving
+- **sequential-thinking**: Structured problem solving (an MCP server; the same-named skill was retired 2026-10-05)
 - **human-mcp**: Gemini-backed multimodal helper
 - **chrome-devtools**: Browser automation / devtools access
 

@@ -263,4 +263,4 @@ Export design tokens for code:
 - [System Architecture](./system-architecture.md)
 - [Code Standards](./code-standards.md)
 - [Deployment Guide](./deployment-guide.md)
-- [UI/UX Pro Max Skill (Style Intelligence)](../.claude/skills/software/design/ui-ux-pro-max/SKILL.md)
+- [Frontend Design Skill](../.claude/skills/software/design/frontend-design/SKILL.md) and its [Design Principles](../.claude/skills/software/design/frontend-design/references/design-principles.md) (design tokens & scales; the `ui-ux-pro-max` skill was retired 2026-10-05, the `/ck:design ui-ux-pro-max` flag reads these)

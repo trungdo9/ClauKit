@@ -72,3 +72,6 @@ Follow `./docs/design-guidelines.md` for:
 ## Reference
 
 - Frontend patterns (React/TypeScript): `.claude/skills/software/development/frontend-development/`
+- **Design work** (new UI, restyle, landing page, design guidelines) — read the `frontend-design` skill file first: `.claude/skills/software/design/frontend-design/SKILL.md`. Commands that route design here (`/ck:design`, `/ck:cook`, `/ck:fix ui`, `/ck:bootstrap`) rely on this line.
+- Component styling (shadcn/ui + Tailwind): `.claude/skills/software/design/ui-styling/`
+- 3D / WebGL: `.claude/skills/software/design/threejs/`

@@ -92,6 +92,6 @@ When the task names a ticket — a file in the [ticket format](../../skills/soft
 
 ## Agent-Specific Notes
 
-- **Skills catalog:** also activate `sequential-thinking` for complex problem breakdown; auto-activate others as relevant.
+- **Skills catalog:** auto-activate relevant skills (`tdd`, `scenario`, `debugging` for a failure you cannot explain).
 - **Report handoff:** save to `./plans/<plan-name>/reports/` (naming per `./.claude/workflows/development-rules.md`).
 - **IMPORTANT:** Sacrifice grammar for concision in reports. List unresolved questions at end.

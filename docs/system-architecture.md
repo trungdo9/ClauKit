@@ -200,7 +200,7 @@ Three mechanisms every gated pipeline builds on:
 
 - **Run ledger** — `plans/<plan>/STATE.md` (`run-state` skill): append-only event log written at every gate transition; a killed run resumes by re-deriving truth from git + re-running the plan's executable exit gates. One ledger per plan; safe under concurrent sessions.
 - **Concurrency substrate** — `file-claims` hook records per-worktree file claims; `guard-destructive` denies whole-tree git ops only when another *live* session owns an affected file; `/ck:git cm` derives its commit manifest from the same registry. Concurrent sessions **coordinate rather than isolate**: pipelines confine edits to unclaimed paths, `/ck:team` hands each editing teammate a disjoint path set and serializes overlaps. (The auto-provisioned worktree fleet was removed 2026-08-05 — it fired on every concurrent session, paid a full dependency install each time, and left stale trees behind.)
-- **Context hygiene** — artifacts move between agents as **file paths** (`phase-brief.js`, `review-package.js`, `run-workspace.js`); implementation runs in a fresh subagent per phase; models are tiered per dispatch (`context-engineering/references/model-tiering.md`, with 529 one-tier fallback + dead-agent diff detection).
+- **Context hygiene** — artifacts move between agents as **file paths** (`phase-brief.js`, `review-package.js`, `run-workspace.js`); implementation runs in a fresh subagent per phase; models are tiered per dispatch (`dynamic-workflow/references/model-tiering.md`, with 529 one-tier fallback + dead-agent diff detection).
 
 #### 4.1 Orchestration Patterns
 
@@ -280,12 +280,12 @@ Re-creates Claude Code's dynamic-workflow model on KitForge primitives — 4-axi
         └── examples.md
 ```
 
-**124 skills across 5 groups** (see `docs/clauKit-registry.md` § 1 for the full itemized list). The `global/` group was removed 2026-08-21 — `docs-seeker` retired and `global/common/` with it, and the path is dropped from the kit manifests
+**116 skills across 5 groups** (see `docs/clauKit-registry.md` § 1 for the full itemized list). The `global/` group was removed 2026-08-21 — `docs-seeker` retired and `global/common/` with it, and the path is dropped from the kit manifests
 - **`ba/`** (6): KitForge-authored traceability spine (`traceability`, `ba-context`, `prd`, `spec`, `diagramming`, `deliver`) — entity-driven requirements discovery, PRD→SRS→tickets chain
 - **`marketing/`** (50): claude-seo engine (`seo`, `seo-audit`, `seo-technical`, `seo-content`, `seo-schema`, `seo-geo`, +19 more `seo-*`), coreyhaines31-sourced (`copywriting`, `cro`, `ads`, `emails`, `analytics`, +18 more), KitForge-authored (`product-marketing`, `kit-builder`)
 - **`automation/`** (6): `marketing-orchestrator`, `mcp-ga4`, `mcp-gsc`, `mcp-sendgrid`, `mcp-resend`, `mcp-reviewweb`
 - **`integrations/`** (2): `wordpress-rest`, `mcp-wordpress`
-- **`software/`** (50): top-level standalone (`git`, `research`, `planning`, `cook`, `refactor`, `debugging`, `code-review`, `dynamic-workflow`, `claude-md`, `team`, `port`, `to-tickets`, `chrome-devtools`, `security`, `problem-solving`, `sequential-thinking`, …) + subcategorized: `ai/` (`ai-artist`, `ai-multimodal`, `remotion`), `database/` (`postgresql`, `supabase`), `design/` (`aesthetic`, `frontend-design`, `ui-ux-pro-max`, `threejs`, …), `development/` (`backend-development`, `frontend-development`, `csharp-developer`, `bootstrap`, `test-automation`), `document-skills/` (`docx`, `pdf`, `pptx`, `xlsx`), `git/`
+- **`software/`** (42 = 25 top-level + 17 subcategorized): top-level standalone (`git`, `research`, `planning`, `cook`, `refactor`, `debugging`, `code-review`, `dynamic-workflow`, `claude-md`, `team`, `port`, `to-tickets`, `chrome-devtools`, `security`, `problem-solving`, …) + subcategorized: `ai/` (`ai-artist`, `ai-multimodal`, `remotion`), `database/` (`postgresql`, `supabase`), `design/` (`frontend-design`, `ui-styling`, `threejs`), `development/` (`backend-development`, `frontend-development`, `csharp-developer`, `bootstrap`, `test-automation`), `document-skills/` (`docx`, `pdf`, `pptx`, `xlsx`), `git/`
 
 No `ffmpeg`, `shopify`, `mongodb`, `turborepo`, `csharp-expert`, or `security-audit` skills exist — these were either never real or have been superseded (`security-audit` → `security`; C# coverage → `csharp-developer`; image/video work → `ai-multimodal`). Verify any skill name against the registry before citing it.
 
@@ -296,7 +296,7 @@ No `ffmpeg`, `shopify`, `mongodb`, `turborepo`, `csharp-expert`, or `security-au
 
 #### 5.3 BA Kit–Engineer Kit Composition
 
-The BA kit (`/ba:` namespace, 6 skills) and engineer kit (`/ck:` namespace, 50 software skills) compose in one project via the **traceability spine**. `/ba:spec compose` renders SRS/UAT specs from entity files and emits a structured output that `/ck:tickets` (engineer kit) consumes as a first-class source, joining BA requirements discovery with engineer-kit ticket-slicing. No new dependencies or integrations required — both kits' skills reference `scenario/SKILL.md` and the shared workflows `primary-workflow.md` + `development-rules.md`, which constitutes their seam. This composition is not a new integration but a deliberate design: the two kits partition work by role (BA vs engineer) while sharing a unified ticket-driven pipeline.
+The BA kit (`/ba:` namespace, 6 skills) and engineer kit (`/ck:` namespace, 42 software skills) compose in one project via the **traceability spine**. `/ba:spec compose` renders SRS/UAT specs from entity files and emits a structured output that `/ck:tickets` (engineer kit) consumes as a first-class source, joining BA requirements discovery with engineer-kit ticket-slicing. No new dependencies or integrations required — both kits' skills reference `scenario/SKILL.md` and the shared workflows `primary-workflow.md` + `development-rules.md`, which constitutes their seam. This composition is not a new integration but a deliberate design: the two kits partition work by role (BA vs engineer) while sharing a unified ticket-driven pipeline.
 
 ### 6. Integration Layer
 
@@ -338,11 +338,10 @@ The BA kit (`/ba:` namespace, 6 skills) and engineer kit (`/ck:` namespace, 50 s
 - **context7**: Read latest documentation
 - **human-mcp**: Gemini-backed multimodal helper (requires `GOOGLE_GEMINI_API_KEY`)
 - **chrome-devtools**: Browser automation / devtools access
-- **sequential-thinking**: Structured thinking process
+- **sequential-thinking**: Structured thinking process (an MCP server; the same-named skill was retired 2026-10-05)
 
 **Skills Integration**:
 - **ai-multimodal**: Visual analysis + image generation/editing (images, videos, documents)
-- **sequential-thinking**: Problem decomposition
 
 #### 6.3 External Service Integration
 

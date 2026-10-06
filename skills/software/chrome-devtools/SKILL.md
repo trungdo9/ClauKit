@@ -29,7 +29,7 @@ The skill emphasizes **persistent browser sessions**: the browser keeps running 
 ## Prerequisites
 
 - Node.js 18+
-- Skill directory (project-scope `.claude/skills/chrome-devtools/` or user-scope `~/.claude/skills/chrome-devtools/`)
+- Skill directory (project-scope `.claude/skills/software/chrome-devtools/` or user-scope `~/.claude/skills/software/chrome-devtools/`)
 - Linux/WSL: Chrome system libraries (skill includes `install-deps.sh`)
 
 See [references/installation.md](references/installation.md) for full setup.
@@ -38,7 +38,7 @@ See [references/installation.md](references/installation.md) for full setup.
 
 ```bash
 # Install
-cd .claude/skills/chrome-devtools/scripts && npm install
+cd .claude/skills/software/chrome-devtools/scripts && npm install
 ./install-deps.sh   # Linux/WSL only
 
 # Verify

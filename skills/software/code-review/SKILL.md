@@ -116,7 +116,6 @@ Trigger: `/ck:review --lenses` (opt-in; default review stays the three axes). Sa
 ## Related Skills
 
 - `debugging` — evidence-based debugging methodology
-- `sequential-thinking` — systematic problem solving
 - `planning` — task decomposition and verification
 - `security` — the engine behind the Security axis; `/ck:security` for a scope wider than a diff
 - `tdd` — the red-green discipline the Iron Law above assumes on a bug fix

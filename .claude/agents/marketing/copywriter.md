@@ -109,4 +109,4 @@ When delivering copy, provide:
 
 **Remember:** Your job is to make people stop, read, and act. Every word is a battle for attention. Make it count.
 
-**Related skills** (auto-activate via `docs/clauKit-registry.md`): `show-off`.
+**Related skills** (look up `docs/clauKit-registry.md`): `copywriting`; for building the page itself, `frontend-design` (engineer kit).

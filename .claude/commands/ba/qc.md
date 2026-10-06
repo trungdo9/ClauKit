@@ -36,7 +36,7 @@ index is derived.
   Never rewrite an entity from here; `gap` reports, `/ba:spec` edits.
 - **Not in wave 0** — typing one of these prints the redirect and exits, nothing else:
   - `drift`, `cr` → wave 2 of `/ba:qc` (drift: `compose(entities) == committed deliverable`; cr: reverse reachability from a change request).
-  - `dashboard` → the `plans-kanban` skill (engineer kit).
+  - `dashboard` → wave 2 of `/ba:qc` (entity-status overview); until then `gap` lists what is not yet traced.
   - `kg` → the `gkg` skill (engineer kit).
 
 ## Output

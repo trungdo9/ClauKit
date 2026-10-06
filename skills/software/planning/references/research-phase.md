@@ -9,10 +9,9 @@
 - Wait for all researcher agents to report back before proceeding
 - Each researcher investigates a specific aspect or approach
 
-### Sequential Thinking
-- Use `sequential-thinking` skill for dynamic and reflective problem-solving
-- Structured thinking process for complex analysis
-- Enables multi-step reasoning with revision capability
+### Stepwise Analysis
+- Work multi-step problems as explicit steps, revising earlier ones as evidence arrives
+- When stuck, the `problem-solving` skill's techniques (inversion, simplification cascades)
 
 ### Documentation Research
 - Fetch documentation with `WebSearch` / `WebFetch` (or a connected docs MCP server) and read it before planning against it

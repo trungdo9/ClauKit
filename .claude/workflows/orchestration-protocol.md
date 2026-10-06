@@ -64,7 +64,7 @@ The 4th orchestration layer (above plain fan-out/pipeline): a **gated, inheritan
 
 ## Agent Selection Guidelines
 
-**Always specify `model` explicitly on every dispatch** — an omitted model inherits the session's (often the most expensive) and silently defeats tiering. Tier source of truth: [model-tiering.md](../skills/software/context-engineering/references/model-tiering.md).
+**Always specify `model` explicitly on every dispatch** — an omitted model inherits the session's (often the most expensive) and silently defeats tiering. Tier source of truth: [model-tiering.md](../skills/software/dynamic-workflow/references/model-tiering.md).
 
 | Scenario | Agent(s) | Tier |
 |-----------|----------|------|

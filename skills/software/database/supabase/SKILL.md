@@ -40,11 +40,9 @@ Two complementary layers:
 
 | Prefix | Category | Files |
 |--------|----------|-------|
-| `auth-` | Auth + RLS policies (app-layer) | auth-rls-policies, auth-custom-claims, auth-service-role-vs-anon |
-| `client-` | Client SDK (supabase-js, Dart, Swift) | client-typed-queries, client-error-handling, client-realtime-channels |
-| `storage-` | Storage buckets + RLS on `storage.objects` | storage-rls-policies, storage-upload-patterns |
-| `edge-` | Edge Functions (Deno runtime) | edge-functions-auth, edge-functions-deno |
-| `migration-` | Supabase CLI, local dev, schema/policy deploy | migration-supabase-cli, migration-rls-deploy |
+| `auth-` | Auth + RLS policies (app-layer) | auth-rls-policies, auth-service-role-vs-anon |
+
+Client SDK, Storage, Edge Functions and CLI/migrations have **no local reference** — read the official docs below (fetch them; do not answer from memory).
 
 ### Postgres Layer (by priority)
 

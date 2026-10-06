@@ -55,7 +55,7 @@
 | 51 | Xuất báo cáo truy vết | bảng requirement → thiết kế → test, dùng để kiểm toán | `/ba:export traceability` | ba | W4 |
 | 52 | Gói bàn giao cho dev | đóng gói toàn bộ entity đã duyệt để chuyển giao | `/ba:export handoff` | ba | W0 |
 | 53 | Đồng bộ FR/AC thành ticket cho dev | biến yêu cầu đã duyệt thành việc dev có thể nhận (FR = yêu cầu chức năng, AC = tiêu chí nghiệm thu) | `/ck:tickets --jira` | **ck** | — |
-| 54 | Tổng quan trạng thái entity (QC dashboard) | nhìn nhanh việc nào xong, việc nào chưa | `/ck:plan` (bảng kanban, dùng skill `plans-kanban`) | **ck** | — |
+| 54 | Tổng quan trạng thái entity (QC dashboard) | nhìn nhanh việc nào xong, việc nào chưa | `/ba:qc dashboard` (hoãn; trong lúc chờ, `/ba:qc gap` liệt kê entity chưa truy vết) | ba | W2 |
 | 55 | Sinh sơ đồ tri thức từ tài liệu (knowledge graph) | biến văn bản thành sơ đồ khái niệm liên kết | `/ck:scout` (dùng skill `gkg`) | **ck** | — |
 
 ## Delivery-governance capabilities (D-13)
@@ -71,7 +71,7 @@
 | D7 | Data migration + reconciliation | ❌ | `/ba:spec ac` on the migration FR (the criterion) + the `database-admin` agent (the plan) | ba + ck | W0 |
 | D8 | Handover / ops doc | 🟡 | `/ba:deliver handover` (shape) + the `docs-manager` agent (content) | ba + ck | W1.5 |
 | D9 | UAT sign-off | ❌ | `/ba:deliver uat` | ba | W1.5 |
-| D10 | Backlog Epic→Feature→Story + sprint plan | 🟡 | spine `EPIC→FR→US` + `/ck:tickets` and skill `plans-kanban` (sprint plan) | ba + ck | W0 |
+| D10 | Backlog Epic→Feature→Story + sprint plan | 🟡 | spine `EPIC→FR→US` + `/ck:tickets` (sprint plan = the ticket frontier) | ba + ck | W0 |
 | D11 | Release plan / roadmap | 🟡 | `/ba:prd roadmap` — **stays 🟡**: dates and version policy are not derivable from a spine | ba | W0 |
 | D12 | Change Request form + Change Log | 🟡 | `/ba:spec cr` (form) + `traceability.cjs changelog` (log) | ba | W1.5 |
 | D13 | Business Process Definition | 🟡 | `/ba:spec bp` | ba | W1.5 |

@@ -1,6 +1,6 @@
 # KitForge — The Opinionated Multi-Agent Orchestration Framework for Coding Agents
 
-*124 skills · 28 agents · 63 gated commands · atomic-commit safety · MCP-ready · 4 installable kits · runs in Claude Code, exports to Codex + Antigravity via `ck convert`*
+*116 skills · 28 agents · 63 gated commands · atomic-commit safety · MCP-ready · 4 installable kits · runs in Claude Code, exports to Codex + Antigravity via `ck convert`*
 
 [![GitHub stars](https://img.shields.io/github/stars/trungdo9/ClauKit?style=social)](https://github.com/trungdo9/ClauKit/stargazers)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
@@ -9,7 +9,7 @@
 
 Claude Code gives you the primitives — but no opinions on how to combine them. You're left to invent your own workflows, manage parallel agents by hand, and hope you don't `git push` a broken refactor. Most Claude Code templates throw a thousand skills at the wall and call it a day.
 
-**KitForge is the opinionated alternative.** 124 curated skills, 28 specialized agents, 63 gated commands — each one earns its place. Built-in pre-flight checks block destructive operations. Multi-agent orchestration via `/ck:team` and `/ck:flow` runs parallel Claude Code work safely. **4 installable kits** — engineer (default), marketing, both, ba.
+**KitForge is the opinionated alternative.** 116 curated skills, 28 specialized agents, 63 gated commands — each one earns its place. Built-in pre-flight checks block destructive operations. Multi-agent orchestration via `/ck:team` and `/ck:flow` runs parallel Claude Code work safely. **4 installable kits** — engineer (default), marketing, both, ba.
 
 > Plan once. `/clear` context. Cook with confidence. That's the KitForge workflow.
 
@@ -17,7 +17,7 @@ Claude Code gives you the primitives — but no opinions on how to combine them.
 
 - **Gated pipelines, not gambling.** `/ck:refactor` and `/ck:cook` enforce pre-flight gates — clean working tree, tests green, not on `main`. See [`.claude/workflows/primary-workflow.md`](./.claude/workflows/primary-workflow.md). Skip the gates and the command refuses to run.
 - **Trio architecture — one concept, one entry point.** Every skill (knowledge) maps to an agent (persona) and a command (`/ck:<name>` trigger). No tool roulette. Full map in [`docs/clauKit-registry.md`](./docs/clauKit-registry.md).
-- **Curated, not crawled.** 124 skills hand-selected for AI dev workflows — research, planning, refactoring, testing, code review, SEO, payments, business analysis. Each maintained, each documented, each in the registry. No abandoned scaffolds.
+- **Curated, not crawled.** 116 skills hand-selected for AI dev workflows — research, planning, refactoring, testing, code review, SEO, payments, business analysis. Each maintained, each documented, each in the registry. No abandoned scaffolds.
 
 ## Quick Start
 
@@ -312,7 +312,7 @@ flowchart LR
     I --> J["/ck:git pr<br/>draft PR + declared tail"]
 ```
 
-**Tip**: `/ck:find` is your meta-helper across 124 skills + 57 commands. Use it whenever you think "there's probably a KitForge tool for this".
+**Tip**: `/ck:find` is your meta-helper across 116 skills + 57 commands. Use it whenever you think "there's probably a KitForge tool for this".
 
 **Wrap-up notes**: `/ck:git cm` commits only *your session's* files (manifest from the file-claims registry — foreign WIP is reported, never staged). `/ck:git pr` finishes the branch: verify green → **draft-default** PR with an evidence-backed body → your project's declared post-PR steps (if any — see the `Delivery tail` block in `/ck:claude-md init`). If `gh`/`glab` auth fails, you get a paste-ready PR block instead of a dead end.
 
@@ -563,7 +563,7 @@ ClauKit/                     # repo root — GitHub repo name, unchanged
 │   ├── agents/                 # Specialized agent definitions (28 agents: 16 engineering/ + 12 marketing/)
 │   ├── commands/               # Slash command implementations (57 commands)
 │   ├── hooks/                  # PreToolUse/PostToolUse hooks (6 wired in settings.json)
-│   ├── skills/                 # Specialized skills library (124 skills)
+│   ├── skills/                 # Specialized skills library (116 skills)
 │   ├── scripts/ck/             # Shipped helpers (7 + lib/): context hygiene, gates, headless
 │   ├── workflows/              # Development workflow definitions
 │   ├── settings.json           # Claude Code settings
@@ -697,7 +697,7 @@ All documentation is maintained in `./docs`:
 <details>
 <summary><strong>What is KitForge and how is it different from aggregate Claude Code templates?</strong></summary>
 
-KitForge is an opinionated multi-agent orchestration framework for Claude Code with 124 curated skills, 28 agents, and 63 gated commands. Unlike aggregate Claude Code templates (often 1000+ skills, kitchen-sink approach), KitForge hand-selects each skill, enforces pre-flight safety gates on destructive operations, and ships a trio architecture (skill + agent + command) so every concept has exactly one entry point. See the [comparison table](#kitforge-vs-other-ai-coding-tools) for side-by-side capabilities.
+KitForge is an opinionated multi-agent orchestration framework for Claude Code with 116 curated skills, 28 agents, and 63 gated commands. Unlike aggregate Claude Code templates (often 1000+ skills, kitchen-sink approach), KitForge hand-selects each skill, enforces pre-flight safety gates on destructive operations, and ships a trio architecture (skill + agent + command) so every concept has exactly one entry point. See the [comparison table](#kitforge-vs-other-ai-coding-tools) for side-by-side capabilities.
 
 </details>
 
@@ -780,7 +780,7 @@ eligibility in SERP.
   "name": "KitForge",
   "applicationCategory": "DeveloperApplication",
   "operatingSystem": "Cross-platform",
-  "description": "Opinionated multi-agent orchestration framework for coding agents — 124 curated skills, 28 agents, and 63 gated commands. Runs in Claude Code; exports to Codex and Antigravity.",
+  "description": "Opinionated multi-agent orchestration framework for coding agents — 116 curated skills, 28 agents, and 63 gated commands. Runs in Claude Code; exports to Codex and Antigravity.",
   "url": "https://github.com/trungdo9/ClauKit",
   "license": "https://opensource.org/licenses/MIT",
   "author": { "@type": "Person", "name": "trungdo9" },
@@ -795,7 +795,7 @@ eligibility in SERP.
     {
       "@type": "Question",
       "name": "What is KitForge and how is it different from aggregate Claude Code templates?",
-      "acceptedAnswer": { "@type": "Answer", "text": "KitForge is an opinionated multi-agent orchestration framework for Claude Code with 124 curated skills, 28 agents, and 63 gated commands. Unlike aggregate Claude Code templates (often 1000+ skills, kitchen-sink approach), KitForge hand-selects each skill, enforces pre-flight safety gates on destructive operations, and ships a trio architecture (skill + agent + command)." }
+      "acceptedAnswer": { "@type": "Answer", "text": "KitForge is an opinionated multi-agent orchestration framework for Claude Code with 116 curated skills, 28 agents, and 63 gated commands. Unlike aggregate Claude Code templates (often 1000+ skills, kitchen-sink approach), KitForge hand-selects each skill, enforces pre-flight safety gates on destructive operations, and ships a trio architecture (skill + agent + command)." }
     },
     {
       "@type": "Question",

@@ -15,7 +15,7 @@
 - Use `psql` bash command to query Postgres database for debugging if needed
 - Use `ai-multimodal` skill for describing details of images, videos, documents, etc. if needed
 - Use `ai-multimodal` skill for generating and editing images, videos, documents, etc. if needed
-- Use `sequential-thinking` skill and `debugging` skills for sequential thinking, analyzing code, debugging, etc. if needed
+- Use the `debugging` skill for analyzing code and debugging, and `problem-solving` when an approach is stuck, if needed
 - **[IMPORTANT]** Follow the codebase structure and code standards in `./docs` during implementation.
 - **[IMPORTANT]** Do not just simulate the implementation or mocking them, always implement the real code.
 

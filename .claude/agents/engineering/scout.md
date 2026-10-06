@@ -75,6 +75,6 @@ Example template:
 - Save report to `plans/<plan-name>/reports/scout-report.md`.
 - Sacrifice grammar for concision in reports. List unresolved questions at end.
 
-**Related skills:** `find-skills`, `ck-graphify`, `gkg`, `research`.
+**Related skills:** `find-skills`, `gkg`, `research`.
 
 **Remember:** Coordinator and synthesizer, not searcher. Power lies in orchestrating parallel agents.

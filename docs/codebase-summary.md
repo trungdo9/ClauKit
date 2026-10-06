@@ -25,7 +25,7 @@ ClauKit/
 │   ├── hooks/                  # Git hooks and scripts (scout-block.cjs dispatcher)
 │   ├── kits/                   # Kit manifests (*.json) — engineer/marketing/both/ba
 │   ├── scripts/ck/             # 7 shipped helpers + lib/ — see § Scripts below
-│   ├── skills/                 # 124 SKILL.md files — see § Skills Library below
+│   ├── skills/                 # 116 SKILL.md files — see § Skills Library below
 │   ├── workflows/              # Development workflow definitions (*.md)
 │   ├── settings.json           # Claude Code settings
 │   ├── metadata.json           # Installed-project metadata (kit, version)
@@ -86,7 +86,7 @@ ClauKit/
 | `marketing/` (marketing kit) | 11 | `campaign-manager`, `content-strategist`, `copywriter`, `crm-specialist`, `email-specialist`, `market-researcher`, `seo-content`, `seo-geo`, `seo-schema`, `seo-technical`, `video-producer` |
 
 Notes:
-- `ui-ux-designer` agent was **removed** (2026-07-16) — design work now routes to `frontend-developer` + design skills (`aesthetic`, `frontend-design`, `ui-ux-pro-max`).
+- `ui-ux-designer` agent was **removed** (2026-07-16) — design work now routes to `frontend-developer` + design skills (`frontend-design`, `ui-styling`, `threejs`; `aesthetic` merged into `frontend-design` and `ui-ux-pro-max` retired 2026-10-05).
 - `copywriter` was **relocated** `engineering/` → `marketing/` (2026-07-16) — it's a marketing persona, not shipped with the engineer kit.
 - No `csharp-expert` or `lovable-to-nextjs` agents exist (never did on disk, or were removed — verify against `docs/clauKit-registry.md` § 2 before citing any agent name).
 
@@ -105,14 +105,15 @@ Several `/ck:` commands are dispatchers with positional-arg variants (no dash), 
 
 ### 3. Skills Library
 
-**Skills Organization** (`.claude/skills/` — 126 `SKILL.md` files across 4 top-level groups):
+**Skills Organization** (`.claude/skills/` — 116 `SKILL.md` files across 5 groups):
 
 | Group | Count | Notes |
 |-------|------:|-------|
-| `marketing/` | 50 | 25 claude-seo engine skills + 23 coreyhaines31-sourced + 2 KitForge-authored (`product-marketing`, `kit-builder`) |
+| `marketing/` | 59 | claude-seo engine skills + coreyhaines31-sourced + KitForge-authored (`product-marketing`, `kit-builder`, `market-sizing`, `seo-writing`) — itemised in registry § 1 |
 | `automation/` | 6 | MCP wrappers: `marketing-orchestrator`, `mcp-ga4`, `mcp-gsc`, `mcp-sendgrid`, `mcp-resend`, `mcp-reviewweb` |
-| `integrations/` | 2 | `wordpress-rest`, `mcp-wordpress` |
-| `software/` | 50 | Top-level standalone (31, incl. `git`) + subcategorized (19): `ai/` (3), `database/` (2), `design/` (5), `development/` (5), `document-skills/` (4). 18 unrouted skills retired 2026-09-28 — see registry § 5 |
+| `integrations/` | 3 | `wordpress-rest`, `mcp-wordpress`, `shopify-publish` |
+| `ba/` | 6 | `context`, `prd`, `spec`, `traceability`, `diagramming`, `deliver` (read by path from `/ba:*`) |
+| `software/` | 42 | Top-level standalone (25) + subcategorized (17): `ai/` (3), `database/` (2), `design/` (3: `frontend-design`, `threejs`, `ui-styling`), `development/` (5), `document-skills/` (4). 18 unrouted skills retired 2026-09-28 and 8 redundant ones 2026-10-05 (incl. `design/aesthetic` merged into `frontend-design`) — see registry § 5 |
 
 No `ffmpeg`, `shopify`, `csharp-expert`, `docs-seeker`, `cti-expert`, or `web-testing` skills exist. Testing at every layer is one skill — `software/development/test-automation` (v2.0.0, absorbed `web-testing` 2026-08-21); external docs come from `WebFetch` / `WebSearch`, not a skill. Image/video generation and editing route through the `ai-multimodal` skill (stale `imagemagick` references were purged 2026-07-16 along with the earlier-deleted `media-processing` skill). C#/.NET work is covered by the `csharp-developer` skill (`software/development/csharp-developer/`), not `csharp-expert`.
 
@@ -253,7 +254,7 @@ Not regenerated this pass — no `repomix-output.xml` is committed to the repo (
 **Verified counts** (via `ls`/`find` against the filesystem, 2026-09-11):
 - Agent definitions: 28 (16 engineering + 12 marketing; ba kit ships no agents)
 - Command files: 45 (27 `ck/` + 12 `mk/` + 6 `ba/`)
-- Skill files: 124 `SKILL.md` (50 software · 50 marketing · 6 automation · 2 integrations · 6 ba · 10 legacy compat)
+- Skill files: 116 `SKILL.md` (42 software · 59 marketing · 6 automation · 3 integrations · 6 ba) — re-counted from disk 2026-10-05; the old split (50/50/6/2/6 + "10 legacy compat") had drifted
 - Workflow files: 19 in `.claude/workflows/` (7 shipped by the engineer kit + 11 by the marketing kit + 1 by the ba kit; `cro-framework.md` shared — see `.claude/kits/*.json`)
 - Test files: `tests/ba-spine.test.js` (13 tests) · `tests/ba-deliver.test.js` (4 tests) · `tests/lib/kits.js` (shared kit-loading helpers) · plus 15 engineer-kit test files
 
