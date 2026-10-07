@@ -501,6 +501,23 @@ test('ba installs its six skills grouped under skills/ba/, each named ba-<dir>',
   assert.ok(fs.existsSync(path.join(p, '.claude/skills/software/scenario/SKILL.md')));
 });
 
+test('hr installs its thirteen skills grouped under skills/hr/, each named hr-<dir>', () => {
+  const p = fresh();
+  const r = init(p, [], 'hr');
+  assert.strictEqual(r.status, 0, r.stderr);
+  const hrDir = path.join(p, '.claude', 'skills', 'hr');
+  const skills = depthOneSkills(hrDir).sort();
+  assert.deepStrictEqual(skills, [
+    'context', 'culture', 'employee-relations', 'global', 'learning', 'org-change', 'people-ops',
+    'performance', 'recruiting', 'rewards', 'tech-hiring', 'technology', 'workforce-analytics',
+  ]);
+  for (const s of skills) {
+    assert.strictEqual(frontmatterName(path.join(hrDir, s, 'SKILL.md')), `hr-${s}`, `hr/${s}: frontmatter name must be hr-${s}`);
+  }
+  assert.ok(fs.existsSync(path.join(p, '.claude/workflows/hr-rules.md')), 'hr-rules.md is what every /hr: command cites');
+  assert.ok(fs.existsSync(path.join(p, '.claude/commands/hr/plan.md')));
+});
+
 // `/ba:diagram --html` and `/ck:diagram` read one copy of `diagram-design`. The
 // gates they name are scripts, not prose: a kit that ships SKILL.md without
 // them leaves the command telling the model to run files that are not there.
@@ -524,7 +541,7 @@ test('engineer and ba both install diagram-design, its gate scripts and /ck:diag
   }
 });
 
-test('no kit installs a skill at the registered depth, and only ba installs skills/ba/', () => {
+test('no kit installs a skill at the registered depth, and only ba/hr install skills/ba/ and skills/hr/', () => {
   const kits = packagedKits();
   assert.ok(kits.length >= 4, 'the kit glob returned nothing — the loop would pass vacuously');
   for (const kit of kits) {
@@ -536,6 +553,10 @@ test('no kit installs a skill at the registered depth, and only ba installs skil
       const leaked = fs.existsSync(skillsDir) ? fs.readdirSync(skillsDir).filter((d) => d === 'ba' || d.startsWith('ba-')) : [];
       assert.deepStrictEqual(leaked, [], `[${kit}] must not ship BA skills`);
     }
+    if (kit !== 'hr') {
+      const leaked = fs.existsSync(skillsDir) ? fs.readdirSync(skillsDir).filter((d) => d === 'hr' || d.startsWith('hr-')) : [];
+      assert.deepStrictEqual(leaked, [], `[${kit}] must not ship HR skills`);
+    }
   }
 });
 
@@ -545,7 +566,7 @@ test('no skill sits at depth 1 in the package', () => {
   assert.deepStrictEqual(depthOneSkills(path.join(REPO, 'skills')), [], 'skills belong in a group directory');
 });
 
-test('no two shipped skills share a frontmatter name, and no grouped skill claims the ba- prefix', () => {
+test('no two shipped skills share a frontmatter name, and no grouped skill claims the ba- or hr- prefix', () => {
   const seen = new Map();
   const walk = (dir) => {
     for (const e of fs.readdirSync(dir, { withFileTypes: true })) {
@@ -557,6 +578,7 @@ test('no two shipped skills share a frontmatter name, and no grouped skill claim
         if (!n) continue;
         const rel = path.relative(path.join(REPO, 'skills'), full);
         if (n.startsWith('ba-')) assert.ok(/^ba[/\\][^/\\]+[/\\]SKILL\.md$/.test(rel), `${rel}: the ba- prefix is reserved for the BA kit`);
+        if (n.startsWith('hr-')) assert.ok(/^hr[/\\][^/\\]+[/\\]SKILL\.md$/.test(rel), `${rel}: the hr- prefix is reserved for the HR kit`);
         if (seen.has(n)) assert.fail(`duplicate skill name '${n}': ${seen.get(n)} and ${rel}`);
         seen.set(n, rel);
       }

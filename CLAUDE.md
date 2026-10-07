@@ -24,6 +24,7 @@ KitForge supports multiple installable kits via `ck init --kit <name>`:
 - **`marketing`** — marketing automation, `/mk:` namespace. See `skills/marketing/README.md`. Also ships `skills/sales/` (8) + `skills/finance/` (2) via `/mk:sales` + `/mk:finance` (finance exempt from the context-hub hard-fail)
 - **`both`** — engineer + marketing combined
 - **`ba`** — business analysis, `/ba:` namespace, 6 skills grouped under `skills/ba/`. See `skills/ba/README.md`
+- **`hr`** — human resources, `/hr:` namespace, 11 commands + 13 skills grouped under `skills/hr/` + `hr-rules.md`. Standalone (not in `both`). Hub `plans/hr-context.md` (required by every `/hr:` command except `/hr:plan`). See `skills/hr/README.md`
 
 Kit manifests: `.claude/kits/*.json`. Adding a new kit = drop a JSON file, no CLI changes.
 
@@ -69,9 +70,9 @@ and **exactly that depth**. Two probe skills with identical frontmatter, differi
 
 The second control used a brand-new group directory, so the cause is **depth**, not a group name.
 
-**This kit groups its 136 skills on purpose** (`skills/software/…`, `skills/marketing/…`) — the tree is
+**This kit groups its 139 skills on purpose** (`skills/software/…`, `skills/marketing/…`) — the tree is
 a **reference library reached by path**, not a set of registered skills. That is a deliberate trade:
-flattening would register all 136 and load 136 descriptions into every session, and most of them have
+flattening would register all 139 and load 139 descriptions into every session, and most of them have
 no `ck:` command because they were never meant to be entry points. The **commands** are the invocation
 surface; the skill files are the methodology those commands read.
 
@@ -94,7 +95,7 @@ registered; that was reversed because the repo carries several kits and each kee
 
 - **No skill at depth 1** — not in the package, not in any kit's install. One there registers by accident.
 - **The `ba-` prefix is reserved for the BA kit** (frontmatter names inside `skills/ba/` only); no other
-  kit installs `skills/ba/`. BA's shared `software/scenario` stays in the engineer group, read by path.
+  kit installs `skills/ba/`. Likewise **`hr-` is reserved for the HR kit** (`skills/hr/`, 13 skills, `name: hr-<dir>`). BA's shared `software/scenario` stays in the engineer group, read by path.
 - Moving a skill between install paths is a retirement: old paths go in `RETIRED`, the prose that named
   them in `STALE` (`bin/lib/retired-files.js`). A path that becomes live again must leave `RETIRED`
   (its unchanged files would match the digest and be deleted right after the copy) — move it to `STALE`.

@@ -477,3 +477,14 @@ This license becomes null and void if any of the above conditions are not met.
 DISCLAIMER
 
 THE FONT SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO ANY WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT OF COPYRIGHT, PATENT, TRADEMARK, OR OTHER RIGHT. IN NO EVENT SHALL THE COPYRIGHT HOLDER BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, INCLUDING ANY GENERAL, SPECIAL, INDIRECT, INCIDENTAL, OR CONSEQUENTIAL DAMAGES, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF THE USE OR INABILITY TO USE THE FONT SOFTWARE OR FROM OTHER DEALINGS IN THE FONT SOFTWARE.  
+---
+
+## **MIT License — HR kit**
+
+The HR skills under `skills/hr/` (except `context`, which is original) are ADAPTED (re-authored) from the following source. The 146 source skills were consolidated into 12 domain skills. Domain method (staged workflows, checklists and templates from the source's `content/` and `examples/`) is carried over. The source's templated prompt libraries were distilled rather than copied, and its Bun/Turborepo tooling (CLI, registry, planner, evals, web app, Discord bot) is not included. Unsourced figures were removed or marked `[NEEDS DATA]`. Statutory figures, including those in the Vietnam reference, are marked `[VERIFY]`.
+
+**hr-skills**, Copyright (c) 2026 Tuan Duc Tran
+
+Source: [https://github.com/tuanductran/hr-skills](https://github.com/tuanductran/hr-skills)
+
+License: MIT

@@ -2,13 +2,13 @@
 
 **Project Name**: KitForge
 **Version**: 1.3.6
-**Last Updated**: 2026-07-16
+**Last Updated**: 2026-10-07
 **Status**: Active Development
 **Repository**: https://github.com/trungdo9/ClauKit
 
 ## Executive Summary
 
-KitForge is an opinionated multi-agent orchestration framework for coding agents, distributed as the npm package `@trungdo9/ClauKit` (CLI: `ck`/`claukit`). `ck init` copies `.claude/` (agents, commands, skills, workflows) into any project, giving it a standardized foundation for AI-assisted development. Three installable kits: `engineer` (default), `marketing`, `both`.
+KitForge is an opinionated multi-agent orchestration framework for coding agents, distributed as the npm package `@trungdo9/ClauKit` (CLI: `ck`/`claukit`). `ck init` copies `.claude/` (agents, commands, skills, workflows) into any project, giving it a standardized foundation for AI-assisted development. Five installable kits: `engineer` (default), `marketing`, `both`, `ba`, `hr`.
 
 ## Project Purpose
 
@@ -80,7 +80,7 @@ No `csharp-expert` agent exists — C#/.NET is covered by the `csharp-developer`
 - **Query Fan-Out**: Simultaneous investigation of technical solutions
 - **Controlled Fan-Out/Pipeline** (`/ck:flow`): phase-gated, cost-previewed orchestration over agent personas — re-creates the dynamic-workflow model on KitForge primitives, never the native `ultracode` runtime
 
-### 2. Slash Commands (48 files: 28 `/ck:<name>` + 14 `/mk:<name>` + 6 `/ba:<name>`)
+### 2. Slash Commands (59 files: 28 `/ck:<name>` + 14 `/mk:<name>` + 6 `/ba:<name>` + 11 `/hr:<name>`)
 
 **Development**:
 - `/ck:plan [task]` - Research and create implementation plans
@@ -147,6 +147,8 @@ No `csharp-expert` agent exists — C#/.NET is covered by the `csharp-developer`
 - `/mk:plan`, `/mk:seo`, `/mk:content`, `/mk:email`, `/mk:ads`, `/mk:cro`, `/mk:research`, `/mk:growth`, `/mk:campaign`, `/mk:leads`, `/mk:nurture`, `/mk:video`, `/mk:sales`, `/mk:finance`
 
 **Business-analysis kit** (`/ba:` namespace, 6 commands — in-package third kit, installed on its own via `ck init --kit ba`; the `/ck:tickets` → `/ck:cook` handoff needs `engineer` in the same project): `/ba:plan` (context hub) · `/ba:prd` (PRD + EPIC breakdown, roadmap) · `/ba:spec` (FR/NFR/UC/US/AC/TC entities, compose to SRS) · `/ba:diagram` (mermaid: sequence · flow · state · erd) · `/ba:qc` (gap analysis over the traceability spine) · `/ba:deliver` (scope · UAT · acceptance · release-notes · go-live · handover). Traceability spine: per-entity markdown (source of truth) → derived index → compose → ticket handoff via `/ck:tickets`. Shipped wave 0 + 1.5.
+
+**Human-resources kit** (`/hr:` namespace, 11 commands + 13 skills + `hr-rules.md` — in-package fifth kit, installed on its own via `ck init --kit hr`, not part of `both`; every command except `/hr:plan` hard-fails without `plans/hr-context.md`): `/hr:plan` (context hub) · `/hr:recruit` (intake · jd · source · interview · assess · offer · brand · ops · exec · tech) · `/hr:people` (onboard · offboard · lifecycle · service) · `/hr:perform` (goals · review · pip · calibrate · succession · career · coach) · `/hr:reward` (structure · benchmark · benefits · recognition · equity) · `/hr:learn` · `/hr:org` · `/hr:workforce` · `/hr:comply` (policy · investigate · discipline · risk · audit · labor · payroll · accommodate · immigration · global · country) · `/hr:culture` · `/hr:tech`. Rules: jurisdiction first · no statutory figures from memory (`[VERIFY]`) · no employee PII in committed files · no invented benchmarks (`[NEEDS DATA]`) · fair job-related selection · human in the loop · outputs under `plans/hr/<slug>/`. Re-authored from `tuanductran/hr-skills` (MIT © 2026 Tuan Duc Tran), 146 source skills consolidated into 12 domain skills + 1 original hub.
 
 ### 3. Workflow System
 

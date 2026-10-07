@@ -1,6 +1,6 @@
 # System Architecture
 
-**Last Updated**: 2026-07-16
+**Last Updated**: 2026-10-07
 **Version**: 1.3.6
 **Project**: KitForge
 
@@ -152,7 +152,7 @@ Issues, blockers, or questions
 
 #### 3.1 Command Categories
 
-**45 command files** — 27 under `.claude/commands/ck/` (`/ck:<name>`) + 12 under `.claude/commands/mk/` (`/mk:<name>`) + 6 under `.claude/commands/ba/` (`/ba:<name>`). All engineer-kit commands live under the `ck:` prefix (applied 2026-05-17); `/skill:*` commands referenced in older docs never existed as files and are not part of the current command set.
+**59 command files** — 28 under `.claude/commands/ck/` (`/ck:<name>`) + 14 under `.claude/commands/mk/` (`/mk:<name>`) + 6 under `.claude/commands/ba/` (`/ba:<name>`) + 11 under `.claude/commands/hr/` (`/hr:<name>`). All engineer-kit commands live under the `ck:` prefix (applied 2026-05-17); `/skill:*` commands referenced in older docs never existed as files and are not part of the current command set.
 
 | Category | Commands |
 |----------|----------|
@@ -171,6 +171,7 @@ Issues, blockers, or questions
 | Research | `/ck:research` |
 | Marketing kit (14, `/mk:` namespace) | `/mk:plan`, `/mk:seo`, `/mk:content`, `/mk:email`, `/mk:ads`, `/mk:cro`, `/mk:research`, `/mk:growth`, `/mk:campaign`, `/mk:leads`, `/mk:nurture`, `/mk:video`, `/mk:sales`, `/mk:finance` |
 | BA kit (6, `/ba:` namespace) | `/ba:plan`, `/ba:prd`, `/ba:spec`, `/ba:diagram`, `/ba:qc`, `/ba:deliver` |
+| HR kit (11, `/hr:` namespace; standalone, not in `both`) | `/hr:plan`, `/hr:recruit`, `/hr:people`, `/hr:perform`, `/hr:reward`, `/hr:learn`, `/hr:org`, `/hr:workforce`, `/hr:comply`, `/hr:culture`, `/hr:tech` — each hard-fails without `plans/hr-context.md` except `/hr:plan`; rules in `.claude/workflows/hr-rules.md` |
 
 #### 3.2 Command Workflow Pattern
 
@@ -280,8 +281,9 @@ Re-creates Claude Code's dynamic-workflow model on KitForge primitives — 4-axi
         └── examples.md
 ```
 
-**126 skills across 7 groups** (see `docs/clauKit-registry.md` § 1 for the full itemized list). The `global/` group was removed 2026-08-21 — `docs-seeker` retired and `global/common/` with it, and the path is dropped from the kit manifests
+**139 skills across 8 groups** (see `docs/clauKit-registry.md` § 1 for the full itemized list). The `global/` group was removed 2026-08-21 — `docs-seeker` retired and `global/common/` with it, and the path is dropped from the kit manifests
 - **`ba/`** (6): KitForge-authored traceability spine (`traceability`, `ba-context`, `prd`, `spec`, `diagramming`, `deliver`) — entity-driven requirements discovery, PRD→SRS→tickets chain
+- **`hr/`** (13): `context` (original hub, `plans/hr-context.md`), `recruiting`, `tech-hiring`, `people-ops`, `performance`, `rewards`, `learning`, `org-change`, `workforce-analytics`, `employee-relations`, `culture`, `technology`, `global` (+ `references/vietnam.md`) — re-authored from `tuanductran/hr-skills` (MIT); frontmatter `hr-<dir>` (prefix reserved); HR kit only, read by path from `/hr:*`, not registered skills
 - **`marketing/`** (59): claude-seo engine (`seo`, `seo-audit`, `seo-technical`, `seo-content`, `seo-schema`, `seo-geo`, +19 more `seo-*`), coreyhaines31-sourced (`copywriting`, `cro`, `ads`, `emails`, `analytics`, +18 more), KitForge-authored (`product-marketing`, `kit-builder`)
 - **`sales/`** (8) + **`finance/`** (2): adapted from `msitarzewski/agency-agents` (MIT) — `deal-strategy`, `discovery`, `sales-engineering`, `proposal`, `account-expansion`, `pipeline-forecast`, `outbound`, `offer-design`; `financial-model`, `fpa`. Marketing + both kits; read by path from `/mk:sales` / `/mk:finance`
 - **`automation/`** (6): `marketing-orchestrator`, `mcp-ga4`, `mcp-gsc`, `mcp-sendgrid`, `mcp-resend`, `mcp-reviewweb`

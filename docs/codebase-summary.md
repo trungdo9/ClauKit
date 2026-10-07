@@ -1,12 +1,12 @@
 # Codebase Summary
 
-**Last Updated**: 2026-07-16
+**Last Updated**: 2026-10-07
 **Version**: 1.3.6
 **Repository**: https://github.com/trungdo9/ClauKit
 
 ## Overview
 
-KitForge is an opinionated multi-agent orchestration framework that runs inside Claude Code. It ships pre-configured agents, slash commands, skills, and gated workflows via `ck init` (installs `.claude/` into any project). Three installable kits: `engineer` (default, `/ck:` namespace), `marketing` (`/mk:` namespace), `both`.
+KitForge is an opinionated multi-agent orchestration framework that runs inside Claude Code. It ships pre-configured agents, slash commands, skills, and gated workflows via `ck init` (installs `.claude/` into any project). Five installable kits: `engineer` (default, `/ck:` namespace), `marketing` (`/mk:` namespace), `both`, `ba` (`/ba:` namespace), `hr` (`/hr:` namespace).
 
 `ck init` also touches two files it does not simply copy, because copying alone leaves them inert: it merges hook entries into an existing `.claude/settings.json` (`bin/lib/settings-merge.js`), and it wires the kit's workflows into the project's root `CLAUDE.md` (`bin/lib/claude-md-wire.js`) — creating a minimal one when absent, appending a `## Workflows` section when present, and doing nothing when the project already references them. Claude Code only auto-reads `CLAUDE.md`, so without that pointer every gate in `.claude/workflows/` is a file nobody opens.
 
@@ -19,13 +19,14 @@ ClauKit/
 │   │   ├── engineering/        # 16 engineer-kit agent definitions
 │   │   └── marketing/          # 12 marketing-kit agent definitions
 │   ├── commands/
-│   │   ├── ck/                 # 27 engineer-kit command files (/ck:<name>)
-│   │   ├── mk/                 # 12 marketing-kit command files (/mk:<name>)
-│   │   └── ba/                 # 6 BA-kit command files (/ba:<name>)
+│   │   ├── ck/                 # 28 engineer-kit command files (/ck:<name>)
+│   │   ├── mk/                 # 14 marketing-kit command files (/mk:<name>)
+│   │   ├── ba/                 # 6 BA-kit command files (/ba:<name>)
+│   │   └── hr/                 # 11 HR-kit command files (/hr:<name>)
 │   ├── hooks/                  # Git hooks and scripts (scout-block.cjs dispatcher)
-│   ├── kits/                   # Kit manifests (*.json) — engineer/marketing/both/ba
+│   ├── kits/                   # Kit manifests (*.json) — engineer/marketing/both/ba/hr
 │   ├── scripts/ck/             # 7 shipped helpers + lib/ — see § Scripts below
-│   ├── skills/                 # 126 SKILL.md files — see § Skills Library below
+│   ├── skills/                 # 139 SKILL.md files — see § Skills Library below
 │   ├── workflows/              # Development workflow definitions (*.md)
 │   ├── settings.json           # Claude Code settings
 │   ├── metadata.json           # Installed-project metadata (kit, version)
@@ -94,18 +95,20 @@ Notes:
 
 ### 2. Slash Commands System
 
-**Command files**: 27 under `.claude/commands/ck/` (`/ck:<name>`) + 12 under `.claude/commands/mk/` (`/mk:<name>`) + 6 under `.claude/commands/ba/` (`/ba:<name>`) = 45 files. `docs/clauKit-registry.md` counts "commands" differently (dispatcher sub-actions like `/ck:fix ci` counted separately) — its header/§1/§3/§6 figures are now reconciled to **63** logical commands (= 215 total entries with 124 skills + 28 agents). The registry's § 3 tables remain the itemized source of truth.
+**Command files**: 27 under `.claude/commands/ck/` (`/ck:<name>`) + 12 under `.claude/commands/mk/` (`/mk:<name>`) + 6 under `.claude/commands/ba/` (`/ba:<name>`) + 11 under `.claude/commands/hr/` (`/hr:<name>`) = 59 files (disk 2026-10-07: 28 `ck/` + 14 `mk/` + 6 `ba/` + 11 `hr/`). `docs/clauKit-registry.md` counts "commands" differently (dispatcher sub-actions like `/ck:fix ci` counted separately) — its header/§1/§3/§6 figures are now reconciled to **63** logical commands (= 215 total entries with 124 skills + 28 agents). The registry's § 3 tables remain the itemized source of truth.
 
 | Namespace | Commands |
 |-----------|----------|
-| `/ck:` (engineer kit, 25 files) | `ask`, `bootstrap`, `brainstorm`, `claude-md`, `cook`, `debug`, `design`, `docs`, `find`, `fix`, `flow`, `git`, `journal`, `plan`, `port`, `refactor`, `research`, `review`, `scout`, `security`, `sepay`, `team`, `test`, `use-mcp`, `watzup` |
+| `/ck:` (engineer kit, 28 files) | `ask`, `bootstrap`, `brainstorm`, `claude-md`, `cook`, `debug`, `design`, `docs`, `find`, `fix`, `flow`, `git`, `journal`, `plan`, `port`, `refactor`, `research`, `review`, `scout`, `security`, `sepay`, `team`, `test`, `use-mcp`, `watzup` |
 | `/mk:` (marketing kit, 14 files) | `ads`, `campaign`, `content`, `cro`, `email`, `finance`, `growth`, `leads`, `nurture`, `plan`, `research`, `sales`, `seo`, `video` |
+| `/ba:` (BA kit, 6 files) | `plan`, `prd`, `spec`, `diagram`, `qc`, `deliver` |
+| `/hr:` (HR kit, 11 files) | `plan`, `recruit`, `people`, `perform`, `reward`, `learn`, `org`, `workforce`, `comply`, `culture`, `tech` |
 
 Several `/ck:` commands are dispatchers with positional-arg variants (no dash), e.g. `/ck:fix [ci|logs|test|types|ui]`, `/ck:git [cm|cp|pr|merge]`, `/ck:plan [fast|hard|two|ci|cro]`, `/ck:docs [init|update|summarize]`. `/ck:fix` also takes combinable flags: `--auto --review --quick --parallel --flow`.
 
 ### 3. Skills Library
 
-**Skills Organization** (`.claude/skills/` — 126 `SKILL.md` files across 7 groups):
+**Skills Organization** (`.claude/skills/` — 139 `SKILL.md` files across 8 groups):
 
 | Group | Count | Notes |
 |-------|------:|-------|
@@ -115,6 +118,7 @@ Several `/ck:` commands are dispatchers with positional-arg variants (no dash), 
 | `automation/` | 6 | MCP wrappers: `marketing-orchestrator`, `mcp-ga4`, `mcp-gsc`, `mcp-sendgrid`, `mcp-resend`, `mcp-reviewweb` |
 | `integrations/` | 3 | `wordpress-rest`, `mcp-wordpress`, `shopify-publish` |
 | `ba/` | 6 | `context`, `prd`, `spec`, `traceability`, `diagramming`, `deliver` (read by path from `/ba:*`) |
+| `hr/` | 13 | `context`, `recruiting`, `tech-hiring`, `people-ops`, `performance`, `rewards`, `learning`, `org-change`, `workforce-analytics`, `employee-relations`, `culture`, `technology`, `global` (frontmatter `hr-<dir>`; read by path from `/hr:*`; HR kit only). Re-authored from `tuanductran/hr-skills` (MIT) — see `skills/THIRD_PARTY_NOTICES.md` |
 | `software/` | 42 | Top-level standalone (25) + subcategorized (17): `ai/` (3), `database/` (2), `design/` (3: `frontend-design`, `threejs`, `ui-styling`), `development/` (5), `document-skills/` (4). 18 unrouted skills retired 2026-09-28 and 8 redundant ones 2026-10-05 (incl. `design/aesthetic` merged into `frontend-design`) — see registry § 5 |
 
 No `ffmpeg`, `shopify`, `csharp-expert`, `docs-seeker`, `cti-expert`, or `web-testing` skills exist. Testing at every layer is one skill — `software/development/test-automation` (v2.0.0, absorbed `web-testing` 2026-08-21); external docs come from `WebFetch` / `WebSearch`, not a skill. Image/video generation and editing route through the `ai-multimodal` skill (stale `imagemagick` references were purged 2026-07-16 along with the earlier-deleted `media-processing` skill). C#/.NET work is covered by the `csharp-developer` skill (`software/development/csharp-developer/`), not `csharp-expert`.
@@ -255,9 +259,9 @@ Not regenerated this pass — no `repomix-output.xml` is committed to the repo (
 
 **Verified counts** (via `ls`/`find` against the filesystem, 2026-09-11):
 - Agent definitions: 28 (16 engineering + 12 marketing; ba kit ships no agents)
-- Command files: 48 (28 `ck/` + 14 `mk/` + 6 `ba/`)
-- Skill files: 126 `SKILL.md` (42 software · 59 marketing · 8 sales · 2 finance · 6 automation · 3 integrations · 6 ba) — re-counted from disk 2026-10-06; the old split (50/50/6/2/6 + "10 legacy compat") had drifted
-- Workflow files: 19 in `.claude/workflows/` (7 shipped by the engineer kit + 11 by the marketing kit + 1 by the ba kit; `cro-framework.md` shared — see `.claude/kits/*.json`)
+- Command files: 59 (28 `ck/` + 14 `mk/` + 6 `ba/` + 11 `hr/`)
+- Skill files: 139 `SKILL.md` (42 software · 59 marketing · 8 sales · 2 finance · 6 automation · 3 integrations · 6 ba · 13 hr) — re-counted from disk 2026-10-06; the old split (50/50/6/2/6 + "10 legacy compat") had drifted
+- Workflow files: 20 in `.claude/workflows/` (7 shipped by the engineer kit + 11 by the marketing kit + 1 by the ba kit + 1 by the hr kit (`hr-rules.md`); `cro-framework.md` shared — see `.claude/kits/*.json`)
 - Test files: `tests/ba-spine.test.js` (13 tests) · `tests/ba-deliver.test.js` (4 tests) · `tests/lib/kits.js` (shared kit-loading helpers) · plus 15 engineer-kit test files
 
 ## Integration Capabilities

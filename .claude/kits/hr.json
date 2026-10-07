@@ -1,0 +1,19 @@
+{
+  "name": "hr",
+  "description": "HR Kit — human resources, /hr: namespace. Recruiting, people ops, performance, rewards, learning, org change, workforce analytics, employee relations, culture, HR tech, global/Vietnam. 11 commands, 13 skills grouped under skills/hr/.",
+  "namespace": "hr",
+  "version": "0.1.0",
+  "paths": {
+    "commands":  [".claude/commands/hr/"],
+    "skills":    [".claude/skills/hr/"],
+    "workflows": [".claude/workflows/hr-rules.md"],
+    "hooks":     [".claude/hooks/"],
+    "statusline":[".claude/statusline.cjs", ".claude/statusline.sh", ".claude/statusline.ps1"],
+    "config":    [".claude/settings.json", ".claude/mcp.json", ".claude/.env.example", ".claude/.mcp.json.example"]
+  },
+  "requires": {
+    "shared": [
+      ".claude/workflows/development-rules.md"
+    ]
+  }
+}

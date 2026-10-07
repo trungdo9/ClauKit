@@ -49,6 +49,7 @@ const LABELS = {
   "design-workflow.md": "Design workflow",
   "marketing-rules.md": "Marketing rules",
   "automation-rules.md": "Automation rules",
+  "hr-rules.md": "HR rules",
 };
 
 /** Fall back to a readable label so an unlisted workflow still gets wired. */
