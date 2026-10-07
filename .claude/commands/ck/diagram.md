@@ -62,4 +62,6 @@ Follow `references/profiles.md` verbatim (library `~/.diagram-design/profiles/`,
 - `draw` / `import`: file path(s), chosen type (and pattern), size preset, and the result of `self_check.py` + `verify_geometry.py` for each file. If a check could not run, say so; do not imply it passed. Repo-only upstream verifiers named in a reference are never reported as run (SKILL.md §13).
 - `export`: output paths and sizes. `profile`: active profile and the file or marker touched, re-read after writing.
 
-**Related:** `/ba:diagram --html` (BA spine → presentation diagram) · `docs-manager` agent (architecture docs) · `/ck:plan -o html` (embed an exported SVG).
+Ships with the engineer, `both` and `ba` kits (`ba` via `requires.shared`).
+
+**Related:** `/ba:diagram --html` (BA spine → presentation diagram, ba kit) · `docs-manager` agent (architecture docs) and `/ck:plan -o html` (embed an exported SVG) — engineer kit only.

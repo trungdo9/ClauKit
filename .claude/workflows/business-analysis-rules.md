@@ -81,7 +81,7 @@ What the software kit already owns, in one place — ask for these there, not he
 - knowledge graph → the `gkg` skill
 - test-case methodology → the `scenario` skill: `/ba:spec tc` reads `.claude/skills/software/scenario/SKILL.md` (shipped with `ba` via `requires.shared`) instead of carrying a second method
 - implementation → /ck:cook
-- presentation-grade diagrams (HTML/SVG, 44 types, brand skin) → the `diagram-design` skill: `/ba:diagram --html` reads `.claude/skills/software/diagram-design/SKILL.md` (shipped with `ba` via `requires.shared`); mermaid stays the spec notation (rule 4)
+- presentation-grade diagrams (HTML/SVG, 44 types, brand skin) → the `diagram-design` skill: `/ba:diagram --html` reads `.claude/skills/software/diagram-design/SKILL.md` (shipped with `ba` via `requires.shared`, together with `/ck:diagram` for draw · import · export · profile); mermaid stays the spec notation (rule 4)
 
 ## 11. Cross-references
 

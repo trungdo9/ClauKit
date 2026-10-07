@@ -166,7 +166,7 @@ All are active (`dynamic-workflow` added 2026-06-03, paired with `/ck:flow`; bas
 | Name | Status | Folder | Scope |
 |---|:---:|---|---|
 | `ask` 🔁 | ✅ | `software/ask/` | Technical/architectural consultation methodology — 4 advisor personas, grounded-context protocol, synthesis |
-| `diagram-design` 🔁 | ✅ | `software/diagram-design/` | Editorial HTML/SVG diagrams — 44 visual types + semantic patterns, skinnable style guide + client profiles (`~/.diagram-design/`), redraw-import from drawio/mermaid/excalidraw, SVG/PNG export, stdlib-only `self_check.py` + `verify_geometry.py` gates. ADAPTED from `cathrynlavery/diagram-design` v2.6.59 (MIT). Read by `/ck:diagram` and `/ba:diagram --html`; ships to `ba` via `requires.shared` |
+| `diagram-design` 🔁 | ✅ | `software/diagram-design/` | Editorial HTML/SVG diagrams — 44 visual types + semantic patterns, skinnable style guide + client profiles (`~/.diagram-design/`), redraw-import from drawio/mermaid/excalidraw, SVG/PNG export, stdlib-only `self_check.py` + `verify_geometry.py` gates. ADAPTED from `cathrynlavery/diagram-design` v2.6.59 (MIT). Read by `/ck:diagram` and `/ba:diagram --html`; skill + `/ck:diagram` ship to `ba` via `requires.shared` |
 | `chrome-devtools` | ✅ | `software/chrome-devtools/` | Puppeteer CLI scripts with persistent sessions + JSON output |
 | `brainstorm` 🔁 | ✅ | `software/brainstorm/` | Architecture/solution advisory methodology — 5 pillars, 7-phase process, YAGNI/KISS/DRY, brutally-honest alternatives debate |
 | `claude-md` 🔁 | ✅ | `software/claude-md/` | CLAUDE.md lifecycle — init (from ground truth, no phantom commands) · verify (9-point audit, Critical/High/Medium/Low) · analyze (per-section token-cost profile → ranked optimization plan; alias `optimize`) · refactor (behavior-preserving slim-down, directive inventory 1:1); paired with `/ck:claude-md`, added 2026-07-17, analyze added 2026-07-31 |
@@ -314,7 +314,7 @@ All commands are ✅ active. Grouped by namespace. **Prefix `ck:` applied 2026-0
 | `/ck:brainstorm` 🔁 | Brainstorm a feature |
 | `/ck:cook` 🔁 | Drive feature spec → production (full lifecycle: research, plan, code, test, review) |
 | `/ck:debug` 🔁 | Debugging technical issues |
-| `/ck:diagram [draw\|import\|export\|profile]` 🔁 | Editorial HTML/SVG diagrams via `diagram-design` — `draw` (default, from a brief or repo source) · `import` (redraw .drawio/.mmd/.excalidraw) · `export` (SVG/PNG) · `profile` (client brand skins) |
+| `/ck:diagram [draw\|import\|export\|profile]` 🔁 | Editorial HTML/SVG diagrams via `diagram-design` — `draw` (default, from a brief or repo source) · `import` (redraw .drawio/.mmd/.excalidraw) · `export` (SVG/PNG) · `profile` (client brand skins). Also ships with `ba` via `requires.shared` |
 | `/ck:design [fast\|good] [3d\|screenshot\|describe\|ui-ux-pro-max]` 🔁 | Design UI/UX — workflow flags: `fast` (minimal) · `good` (research-driven). Output-type flags: `3d` · `screenshot` · `describe` · `ui-ux-pro-max` (flag kept; reads `frontend-design` + `references/design-principles.md`, the `ui-ux-pro-max` skill was retired 2026-10-05) |
 | `/ck:find` 🔁 | Recommend KitForge skill/agent/command for a task — local registry first, external skills fallback |
 | `/ck:flow [save\|list]` 🔁 | Controllable orchestration — plan phases, cost preview, fan-out/pipeline over the kit's agents, 4-axis inheritance, gated (re-creates dynamic workflows; never native ultracode). Paired with `dynamic-workflow` skill |

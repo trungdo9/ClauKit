@@ -7,7 +7,7 @@ Convert a generated diagram HTML file into a portable `.svg` and/or `.png` next 
 
 Load this file when:
 
-- The user invokes `/ck:diagram export <html-file>` (engineer kit), or asks to export a diagram `/ba:diagram --html` produced.
+- The user invokes `/ck:diagram export <html-file>`, or asks to export a diagram `/ba:diagram --html` produced.
 - The user asks in natural language to export, save, rasterize, convert, or download a diagram in `.svg` or `.png` form. Typical phrasings:
   - "export this as PNG"
   - "save as SVG"

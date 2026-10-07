@@ -78,7 +78,7 @@ Read the `diagram-design` skill file ([.claude/skills/software/diagram-design/SK
 - Spine first, free text second (same rule as mermaid); free-text input ⇒ `confidence: low` in the caption.
 - **Render gate, HTML branch** — `python3 .claude/skills/software/diagram-design/scripts/self_check.py <file>` **and** `…/scripts/verify_geometry.py <file>` both pass ⇒ ship as compiled. Either fails ⇒ fix, re-run; never ship a failing file.
 - **`python3` absent ⇒ no HTML.** The extractor and both gates are Python, so nothing can be imported or checked. Write no `.html`, ship the mermaid (if any) through its own gate, and report `HTML skipped — python3 not found`. An HTML stakeholder copy is either verified or not produced; there is no `[UNRENDERED]` HTML, because a comment in a page is invisible to the people the label protects.
-- Skin: the skill's §0 style-guide gate runs once per project. Profiles follow the skill's `references/profiles.md` (`/ck:diagram profile` when the engineer kit is also installed — a ba-only install does not have it); a `.diagram-design` marker in the project selects one.
+- Skin: the skill's §0 style-guide gate runs once per project. Manage client profiles with `/ck:diagram profile` (shipped with `ba`); a `.diagram-design` marker in the project selects one.
 
 ## Output
 

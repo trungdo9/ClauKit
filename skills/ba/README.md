@@ -9,7 +9,7 @@ ck init --kit ba          # cài kit BA vào .claude/ của project
 ck init --kit engineer    # (tuỳ chọn) cần cho bước cuối: /ck:tickets → /ck:cook
 ```
 
-Cài xong có **6 command**, **6 skill** (`ba-context`, `ba-prd`, `ba-spec`, `ba-traceability`, `ba-diagramming`, `ba-deliver` — nằm ở `.claude/skills/ba/<name>/`, là file methodology mà các command `/ba:*` đọc theo đường dẫn, không đăng ký với tool `Skill`), 1 file rules ([.claude/workflows/business-analysis-rules.md](../../workflows/business-analysis-rules.md)) và 1 helper CLI (`.claude/scripts/ba/traceability.cjs`).
+Cài xong có **6 command**, **6 skill** (`ba-context`, `ba-prd`, `ba-spec`, `ba-traceability`, `ba-diagramming`, `ba-deliver` — nằm ở `.claude/skills/ba/<name>/`, là file methodology mà các command `/ba:*` đọc theo đường dẫn, không đăng ký với tool `Skill`), 1 file rules ([.claude/workflows/business-analysis-rules.md](../../workflows/business-analysis-rules.md)) và 1 helper CLI (`.claude/scripts/ba/traceability.cjs`). Dùng chung với kit engineer: skill `scenario`, skill `diagram-design` và command `/ck:diagram`.
 
 ## Các command
 
@@ -17,6 +17,7 @@ Cài xong có **6 command**, **6 skill** (`ba-context`, `ba-prd`, `ba-spec`, `ba
 - `/ba:prd prd|roadmap [<project-slug>]` — PRD + bóc EPIC · roadmap Now/Next/Later.
 - `/ba:spec fr|nfr|uc|us|ac|tc|cr|bp|compose [<project-slug>]` — viết từng loại yêu cầu thành entity; `compose` ghép thành `SRS-001.md` để ký.
 - `/ba:diagram sequence|flow|state|erd <FR-###|mô tả> [<project-slug>] [--html]` — sơ đồ mermaid; `--html` vẽ lại bản trình bày (skill `diagram-design`), và mở thêm `context|dfd|journey|class|swimlane|story-map` (chỉ HTML).
+- `/ck:diagram [draw|import|export|profile] …` — sơ đồ HTML/SVG tự do (không đi qua spine): vẽ từ mô tả, vẽ lại file .drawio/.mmd/.excalidraw, xuất SVG/PNG, quản lý profile thương hiệu khách hàng.
 - `/ba:qc gap [<project-slug>]` — soi yêu cầu mồ côi / chưa có nguồn. Exit 0 = đủ điều kiện bàn giao.
 - `/ba:deliver scope|uat|acceptance|release-notes|golive|handover|all [<project-slug>] [--force]` — tài liệu bàn giao: phạm vi, UAT, biên bản nghiệm thu, release notes, go-live, vận hành.
 

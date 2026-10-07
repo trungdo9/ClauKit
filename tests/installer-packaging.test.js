@@ -504,7 +504,7 @@ test('ba installs its six skills grouped under skills/ba/, each named ba-<dir>',
 // `/ba:diagram --html` and `/ck:diagram` read one copy of `diagram-design`. The
 // gates they name are scripts, not prose: a kit that ships SKILL.md without
 // them leaves the command telling the model to run files that are not there.
-test('engineer and ba both install diagram-design with its gate scripts', () => {
+test('engineer and ba both install diagram-design, its gate scripts and /ck:diagram', () => {
   const shipped = [
     'SKILL.md',
     'scripts/self_check.py',
@@ -519,6 +519,8 @@ test('engineer and ba both install diagram-design with its gate scripts', () => 
     assert.strictEqual(r.status, 0, `[${kit}] ${r.stderr}`);
     const dir = path.join(p, '.claude/skills/software/diagram-design');
     for (const f of shipped) assert.ok(fs.existsSync(path.join(dir, f)), `[${kit}] missing diagram-design/${f}`);
+    // ba has no other way to manage client profiles or export: the command ships too.
+    assert.ok(fs.existsSync(path.join(p, '.claude/commands/ck/diagram.md')), `[${kit}] missing /ck:diagram`);
   }
 });
 
