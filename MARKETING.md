@@ -2,7 +2,7 @@
 
 > Everything to automate marketing — from campaign planning to community engagement — inside Claude Code via the `/mk:` namespace.
 
-Install with `ck init --kit marketing` (or `--kit both`). Adds **59 marketing + 8 sales + 5 finance skills, 12 agents, 14 commands, 12 workflows, 5 MCP wrappers, WordPress publishing**.
+Install with `ck init --kit marketing` (or `--kit both`). Adds **59 marketing + 8 sales + 2 finance skills, 12 agents, 14 commands, 12 workflows, 5 MCP wrappers, WordPress publishing**.
 
 > **The marketing rule**: `/mk:plan` once → it writes the context hub (`plans/marketing-context.md`) → every other `/mk:` command reads from it. Plan once, run many. Every `/mk:` command **except** `/mk:plan` and `/mk:finance` (reads the hub if present) hard-fails without the hub.
 
@@ -247,7 +247,7 @@ flowchart TD
 | 📈 Lead pipeline | `/mk:leads` | → `/mk:nurture` |
 | 🎬 AI video | `/mk:video` | (script → render → distribute) |
 | 🤝 Sales execution | `/mk:sales` | (deal · discovery · demo · proposal · account · pipeline · outbound · offer) |
-| 💰 Finance | `/mk:finance` | (model · budget · close · tax · invest) — context hub optional |
+| 💰 Finance | `/mk:finance` | (model · budget) — context hub optional |
 | 📱 Social omnichannel campaign | `/mk:content social <theme>` | → `social-workflow.md` (repurpose 1-to-N) |
 | 🏛️ Multi-site enterprise rollout | `/mk:content` + `multi-site-workflow.md` | → tenant-specific publish `--site=<slug>` |
 

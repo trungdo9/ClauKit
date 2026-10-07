@@ -1,6 +1,6 @@
 ---
 name: fpa
-description: Financial planning and analysis — annual operating plan, driver-based department and hiring budgets, budget-vs-actual variance analysis with forward impact, monthly business review, rolling quarterly re-forecast, and marketing budget allocation (spend, CAC, payback). Use for "budget", "annual plan", "AOP", "operating plan", "variance analysis", "budget vs actual", "BvA", "re-forecast", "rolling forecast", "monthly business review", "MBR", "headcount plan", "hiring plan cost", "how much should we spend on marketing", "marketing budget", "should we approve this spend". For a three-statement model, valuation or one-off investment decision use financial-model; for closing the books use close-controls.
+description: Financial planning and analysis — annual operating plan, driver-based department and hiring budgets, budget-vs-actual variance analysis with forward impact, monthly business review, rolling quarterly re-forecast, and marketing budget allocation (spend, CAC, payback). Use for "budget", "annual plan", "AOP", "operating plan", "variance analysis", "budget vs actual", "BvA", "re-forecast", "rolling forecast", "monthly business review", "MBR", "headcount plan", "hiring plan cost", "how much should we spend on marketing", "marketing budget", "should we approve this spend". For a three-statement model, valuation or one-off investment decision use financial-model. Bookkeeping, month-end close and tax are out of this kit's scope.
 allowed-tools: Read, Write, Glob, Grep
 ---
 
@@ -26,8 +26,8 @@ Covers:
 
 Does NOT cover:
 - Integrated three-statement model, DCF, one-off investment cases, the LTV / unit-economics model → [[financial-model]]. This skill owns channel spend allocation and marginal CAC.
-- Producing the actuals — close, reconciliations, journal entries → [[close-controls]].
-- Tax provision and structure → [[tax-strategy]].
+- Producing the actuals — close, reconciliations, journal entries. Out of kit scope: actuals come from the user's accounting system / finance team.
+- Tax provision and structure. Out of kit scope — tax lines are a sourced input from a licensed advisor.
 - Deal-level sales forecast and pipeline coverage → [[pipeline-forecast]]; this skill consumes its output as the revenue driver.
 
 ## Rules
@@ -54,7 +54,7 @@ Does NOT cover:
 
 | Days | Step |
 |---|---|
-| 1–3 | Collect closed actuals (from [[close-controls]]) and operational KPIs |
+| 1–3 | Collect closed actuals (from the accounting system) and operational KPIs |
 | 3–5 | Variance analysis — revenue, expense, headcount, KPIs, with root causes |
 | 5–7 | Review variances with department heads; confirm forward outlook |
 | 7–8 | Update rolling forecast |
@@ -181,9 +181,7 @@ Read `plans/marketing-context.md` if present (business model, pricing, channels,
 ## Cross-references
 
 - [[financial-model]] — three-statement model and investment cases built on the same drivers
-- [[close-controls]] — closed actuals feed every variance
 - [[pipeline-forecast]] — revenue driver from the sales pipeline
-- [[tax-strategy]] — tax lines in the plan
 - [[market-sizing]] — ceiling check for growth targets
 - `.claude/workflows/marketing-rules.md` — no-hallucinated-metrics rule
 

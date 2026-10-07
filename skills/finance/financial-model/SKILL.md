@@ -1,6 +1,6 @@
 ---
 name: financial-model
-description: Financial modeling for a decision — integrated three-statement model (income statement, balance sheet, cash flow), base/upside/downside scenarios, sensitivity tables, unit economics, break-even, and DCF/comps valuation, with every assumption sourced and every forecast labelled. Use for "financial model", "3-statement model", "cash flow forecast", "runway", "scenario analysis", "sensitivity analysis", "unit economics", "CAC/LTV/payback", "break-even", "DCF", "valuation model", "should we make this investment", "model this decision". For the annual budget, budget-vs-actual and rolling forecast use fpa; for TAM/SAM/SOM use market-sizing; for equity research on another company use investment-research.
+description: Financial modeling for a decision — integrated three-statement model (income statement, balance sheet, cash flow), base/upside/downside scenarios, sensitivity tables, unit economics, break-even, and DCF/comps valuation, with every assumption sourced and every forecast labelled. Use for "financial model", "3-statement model", "cash flow forecast", "runway", "scenario analysis", "sensitivity analysis", "unit economics", "CAC/LTV/payback", "break-even", "DCF", "valuation model", "should we make this investment", "model this decision". For the annual budget, budget-vs-actual and rolling forecast use fpa; for TAM/SAM/SOM use market-sizing. Equity research, bookkeeping and tax planning are out of this kit's scope.
 allowed-tools: Read, Write, Glob, Grep, WebSearch, WebFetch
 ---
 
@@ -26,9 +26,9 @@ Covers:
 
 Does NOT cover:
 - Annual operating plan, department budgets, budget-vs-actual, monthly business review, rolling re-forecast → [[fpa]].
-- Recording transactions, reconciliations, month-end close → [[close-controls]]. The model consumes closed actuals; it does not produce them.
-- Tax structuring and effective-tax-rate analysis → [[tax-strategy]]. The model takes a tax rate as a sourced input.
-- Researching an external company as an investment → [[investment-research]].
+- Recording transactions, reconciliations, month-end close — out of kit scope. The model consumes closed actuals; it does not produce them.
+- Tax structuring and effective-tax-rate analysis — out of kit scope (licensed advisor). The model takes a tax rate as a sourced input.
+- Researching an external company as an investment — out of kit scope.
 - Market size (a ceiling, not a forecast) → [[market-sizing]]. A TAM never substitutes for a revenue build.
 - Sales pipeline coverage and forecast-by-deal → [[pipeline-forecast]], which is the best near-term revenue input this model can take.
 - Marketing channel spend allocation and marginal CAC by channel → [[fpa]]. This skill owns the LTV / unit-economics model those allocations are judged against.
@@ -86,7 +86,7 @@ Does NOT cover:
 | OpEx as % of revenue | [ ] | [ ] | [ ] | [ ] | |
 | CapEx as % of revenue | [ ] | [ ] | [ ] | [ ] | |
 | Working capital days (DSO/DPO) | [ ] | [ ] | [ ] | [ ] | |
-| Tax rate | [ ] | [ ] | [ ] | [cited — see tax-strategy] | |
+| Tax rate | [ ] | [ ] | [ ] | [cited — from advisor or tax authority, dated] | |
 
 ## Income Statement Summary
 | Line | Y1 | Y2 | Y3 | Y4 | Y5 |
@@ -171,9 +171,6 @@ Read `plans/marketing-context.md` if present (business model, ICP, pricing, mark
 ## Cross-references
 
 - [[fpa]] — budget, variance and rolling forecast; shares the revenue and headcount drivers
-- [[close-controls]] — source of the closed actuals this model starts from
-- [[tax-strategy]] — sourced tax inputs and structure effects
-- [[investment-research]] — valuation of an external company
 - [[market-sizing]] — ceiling check on revenue assumptions
 - [[pipeline-forecast]] — near-term revenue input from the sales pipeline
 - `.claude/workflows/marketing-rules.md` — no-hallucinated-metrics rule

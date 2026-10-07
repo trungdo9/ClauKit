@@ -21,7 +21,7 @@ Your role is to analyze user requirements, delegate tasks to appropriate sub-age
 
 KitForge supports multiple installable kits via `ck init --kit <name>`:
 - **`engineer`** (default) — software engineering, `/ck:` namespace
-- **`marketing`** — marketing automation, `/mk:` namespace. See `skills/marketing/README.md`. Also ships `skills/sales/` (8) + `skills/finance/` (5) via `/mk:sales` + `/mk:finance` (finance exempt from the context-hub hard-fail)
+- **`marketing`** — marketing automation, `/mk:` namespace. See `skills/marketing/README.md`. Also ships `skills/sales/` (8) + `skills/finance/` (2) via `/mk:sales` + `/mk:finance` (finance exempt from the context-hub hard-fail)
 - **`both`** — engineer + marketing combined
 - **`ba`** — business analysis, `/ba:` namespace, 6 skills grouped under `skills/ba/`. See `skills/ba/README.md`
 

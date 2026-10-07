@@ -2,10 +2,13 @@
 
 Source `msitarzewski/agency-agents` (local copy, no SHA) · MIT © 2025 AgentLand Contributors · decisions (user, 2026-10-06): skills + 2 commands · consolidate to 13 · `/mk:finance` exempt from hub hard-fail.
 
+## Scope cut (2026-10-07, user)
+Dropped `close-controls`, `tax-strategy`, `investment-research` — off-topic for a marketing kit. Finance = `financial-model` + `fpa` only; `/mk:finance model|budget`. Final: 10 skills, 126 total, 220 entries. Already committed in `bd86955` → 3 RETIRED + 1 STALE (`commands/mk/finance.md`) in `bin/lib/retired-files.js`; upgrade from bd86955 simulated: 1 refreshed · 3 removed; npm test 461/0/1.
+
 ## Added
 - `skills/sales/` (8): deal-strategy (+refs/templates) · discovery (+refs/call-debrief) · sales-engineering (+refs/templates) · proposal (+refs/templates) · account-expansion · pipeline-forecast · outbound · offer-design
-- `skills/finance/` (5): financial-model · fpa · close-controls · tax-strategy · investment-research
-- `.claude/commands/mk/sales.md` (8 actions) · `.claude/commands/mk/finance.md` (5 actions, soft pre-flight)
+- `skills/finance/` (2): financial-model · fpa
+- `.claude/commands/mk/sales.md` (8 actions) · `.claude/commands/mk/finance.md` (2 actions, soft pre-flight)
 
 ## Modified
 - `.claude/kits/marketing.json`, `both.json` — + `.claude/skills/sales/`, `.claude/skills/finance/`; marketing description counts

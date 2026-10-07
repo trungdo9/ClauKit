@@ -7,7 +7,7 @@
 - **56 marketing skills** (SEO, content, social, email, ads, CRO, research, growth, etc. — incl. the `seo-writing` article-production pipeline)
 - **8 marketing agents** (content-strategist, market-researcher, email-specialist, 4 SEO specialists, seo-writer)
 - **3 automation agents** (campaign-manager, crm-specialist, video-producer)
-- **8 sales + 5 finance skills** (grouped at `.claude/skills/sales/` + `.claude/skills/finance/`, adapted from `msitarzewski/agency-agents`, MIT) — deal strategy, discovery, demo/POC, proposals, account expansion, pipeline forecast, outbound, offer design; financial model, FP&A, close & controls, tax memo, investment research
+- **8 sales + 2 finance skills** (grouped at `.claude/skills/sales/` + `.claude/skills/finance/`, adapted from `msitarzewski/agency-agents`, MIT) — deal strategy, discovery, demo/POC, proposals, account expansion, pipeline forecast, outbound, offer design; financial model (unit economics) + FP&A (budget, marketing spend)
 - **14 commands** under `/mk:` namespace
 - **6 workflow files** (marketing 10-phase, seo 7-phase closed loop, sales 5-phase, crm 5-phase, video 6-phase, design 5-phase)
 - **5 MCP wrappers** (ga4, gsc, sendgrid, resend, reviewweb) — with manual fallback
@@ -55,7 +55,7 @@ mk:campaign <campaign-name>
 | `/mk:nurture` | 5-phase lifecycle nurture (calendar → forms → tasks → gmail → bigquery) | `crm-specialist`, `user-onboarding`, `email-sequence` |
 | `/mk:video` | 6-phase AI video (script → voiceover → visuals → edit → render → distribute) | `video-producer`, `copywriting`, `ai-multimodal`, `ai-artist`, `remotion` |
 | `/mk:sales` | Sales execution (deal, discovery, demo, proposal, account, pipeline, outbound, offer) — one skill per action | `deal-strategy`, `discovery`, `sales-engineering`, `proposal`, `account-expansion`, `pipeline-forecast`, `outbound`, `offer-design` |
-| `/mk:finance` | Finance (model, budget, close, tax, invest) — **context hub optional** | `financial-model`, `fpa`, `close-controls`, `tax-strategy`, `investment-research` |
+| `/mk:finance` | Finance (model, budget) — **context hub optional** | `financial-model`, `fpa` |
 
 ## Workflows
 

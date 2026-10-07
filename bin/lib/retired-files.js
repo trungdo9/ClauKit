@@ -390,6 +390,13 @@ const RETIRED = [
   { path: ".claude/skills/software/retro/references/aha-continuous-improvement.md", token: "software/retro", sha: ["25cf17c0a96c62b9612cbc6d0dd1a6ee5af0d048"] },
   { path: ".claude/skills/software/retro/references/atlassian-retrospectives.md", token: "software/retro", sha: ["505bf02ccc365ead920743aaddfb4214a579c6be"] },
   { path: ".claude/skills/software/retro/SKILL.md", token: "software/retro", sha: ["5a61c6fde009df7b99b0755fe37b70ca2f190f1f", "d4d78544ce6f6789653062250c025ae1164cdcbf"] },
+  // 2026-10-07, finance scope cut (maintainer decision): of the five finance
+  // personas ported from msitarzewski/agency-agents on 2026-10-06, the bookkeeper,
+  // tax and investment-research skills were off-topic for a marketing kit and drew
+  // advice-liability guardrails to compensate. `financial-model` + `fpa` stay.
+  { path: ".claude/skills/finance/close-controls/SKILL.md", token: "finance/close-controls", sha: ["86a02b3a8b245cbad8564f4096e11d914631f0ab"] },
+  { path: ".claude/skills/finance/tax-strategy/SKILL.md", token: "finance/tax-strategy", sha: ["c5fbcb6b9e83a3d2dde174b3b79487283cb8c92d"] },
+  { path: ".claude/skills/finance/investment-research/SKILL.md", token: "finance/investment-research", sha: ["b83eeea6c0ebe64cb600915503dac99e6c6d8220"] },
 ];
 
 /**
@@ -514,6 +521,8 @@ const STALE = [
   { path: ".claude/skills/software/team/references/failure-recovery.md", sha: ["fac945bf9f09c93086fb0eca95691dab552c8c08"] },
   { path: ".claude/agents/engineering/journal-writer.md", sha: ["0a96dd075277527fcd7c300827e58df651eb77d1", "5411ec3060a21a6b13d3ee3dcb7afc95177f78a6", "a22017860dc5ed6211311a51dd63405e3b91df03"] },
   { path: ".claude/skills/software/development/backend-development/SKILL.md", sha: ["860321e4b3ce451b7a229d91f09ea09493b3ab09"] },
+  // /mk:finance close|tax|invest actions, retired 2026-10-07 (see RETIRED above).
+  { path: ".claude/commands/mk/finance.md", sha: ["23d5003ca95d049ef58d231b3344152e2dd49f74"] },
 ];
 
 /** Where shipped prose lives, and which extensions carry instructions. */

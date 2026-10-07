@@ -13,7 +13,7 @@ If absent:
 
 **Rationale:** Marketing outputs (copy, campaigns, content) need consistent ICP, positioning, brand voice, and goals. Without the context hub, outputs will be inconsistent and low-quality.
 
-**Exceptions:** `/mk:plan` itself, which creates the context hub; `/mk:finance`, which reads the hub when present but does not require it (budgets, close, tax and investment research are not brand-voice outputs).
+**Exceptions:** `/mk:plan` itself, which creates the context hub; `/mk:finance`, which reads the hub when present but does not require it (models and budgets are not brand-voice outputs).
 
 ## 2. YAGNI / KISS / DRY for content
 

@@ -1,6 +1,6 @@
 ---
-description: Finance — financial model, budget & variance (FP&A), month-end close & controls, tax planning memo, investment research
-argument-hint: model|budget|close|tax|invest <company-or-goal>
+description: Finance for marketing & growth — financial model (unit economics, scenarios) and FP&A (budget, variance, marketing spend allocation)
+argument-hint: model|budget <company-or-goal>
 ---
 
 ## Pre-flight (soft)
@@ -18,16 +18,12 @@ Read the action's skill file below **before** starting — it is the method, not
 
 ### Actions
 
-- **`model`** — 3-statement model, scenarios, sensitivity, decision memo
+- **`model`** — 3-statement model, unit economics (CAC, LTV, payback), scenarios, sensitivity, decision memo
   - Read [.claude/skills/finance/financial-model/SKILL.md](../../skills/finance/financial-model/SKILL.md)
-- **`budget`** — annual budget, variance analysis, rolling forecast, department + hiring plan
+- **`budget`** — annual budget, variance analysis, rolling forecast, marketing spend allocation, hiring plan
   - Read [.claude/skills/finance/fpa/SKILL.md](../../skills/finance/fpa/SKILL.md)
-- **`close`** — month-end close calendar, reconciliations, internal controls, audit readiness
-  - Read [.claude/skills/finance/close-controls/SKILL.md](../../skills/finance/close-controls/SKILL.md)
-- **`tax`** — tax planning memo for a licensed advisor to review (jurisdiction + year + cited authority)
-  - Read [.claude/skills/finance/tax-strategy/SKILL.md](../../skills/finance/tax-strategy/SKILL.md)
-- **`invest`** — equity / private-market research report, due diligence, valuation, bear case
-  - Read [.claude/skills/finance/investment-research/SKILL.md](../../skills/finance/investment-research/SKILL.md)
+
+Out of scope for this kit: bookkeeping / month-end close, tax planning, investment research — use the finance team, a licensed advisor, or dedicated tooling.
 
 ## Output
 
@@ -35,7 +31,6 @@ Results written to `plans/finance/<slug>/<artifact>.md` (each skill's § Output 
 
 ## Notes
 
-- **Not professional advice.** `tax` and `invest` produce research memos, not tax, legal or personalized investment advice; every output says so and names what a licensed professional must confirm.
 - Every figure is sourced and dated, or `[NEEDS DATA]` — no rates, thresholds or benchmarks from memory.
 - No account numbers, bank details, tax IDs or personal financial data in committed files.
 - Concise grammar in reports. List unresolved questions at end.
@@ -46,5 +41,4 @@ Results written to `plans/finance/<slug>/<artifact>.md` (each skill's § Output 
 ```
 /mk:finance model acme "3 scenarios for a price increase"
 /mk:finance budget fy27 "marketing at 18% of revenue — does payback hold?"
-/mk:finance tax acme "US + NO entities, R&D credit eligibility"
 ```

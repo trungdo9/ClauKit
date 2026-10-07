@@ -25,7 +25,7 @@ ClauKit/
 │   ├── hooks/                  # Git hooks and scripts (scout-block.cjs dispatcher)
 │   ├── kits/                   # Kit manifests (*.json) — engineer/marketing/both/ba
 │   ├── scripts/ck/             # 7 shipped helpers + lib/ — see § Scripts below
-│   ├── skills/                 # 129 SKILL.md files — see § Skills Library below
+│   ├── skills/                 # 126 SKILL.md files — see § Skills Library below
 │   ├── workflows/              # Development workflow definitions (*.md)
 │   ├── settings.json           # Claude Code settings
 │   ├── metadata.json           # Installed-project metadata (kit, version)
@@ -105,13 +105,13 @@ Several `/ck:` commands are dispatchers with positional-arg variants (no dash), 
 
 ### 3. Skills Library
 
-**Skills Organization** (`.claude/skills/` — 129 `SKILL.md` files across 7 groups):
+**Skills Organization** (`.claude/skills/` — 126 `SKILL.md` files across 7 groups):
 
 | Group | Count | Notes |
 |-------|------:|-------|
 | `marketing/` | 59 | claude-seo engine skills + coreyhaines31-sourced + KitForge-authored (`product-marketing`, `kit-builder`, `market-sizing`, `seo-writing`) — itemised in registry § 1 |
 | `sales/` | 8 | `deal-strategy`, `discovery`, `sales-engineering`, `proposal`, `account-expansion`, `pipeline-forecast`, `outbound`, `offer-design` — adapted from `msitarzewski/agency-agents` (MIT); read by path from `/mk:sales` + `sales-workflow.md` |
-| `finance/` | 5 | `financial-model`, `fpa`, `close-controls`, `tax-strategy`, `investment-research` — same source; read by path from `/mk:finance` (context hub optional) |
+| `finance/` | 2 | `financial-model`, `fpa` — same source (bookkeeping/tax/investment personas not ported); read by path from `/mk:finance` (context hub optional) |
 | `automation/` | 6 | MCP wrappers: `marketing-orchestrator`, `mcp-ga4`, `mcp-gsc`, `mcp-sendgrid`, `mcp-resend`, `mcp-reviewweb` |
 | `integrations/` | 3 | `wordpress-rest`, `mcp-wordpress`, `shopify-publish` |
 | `ba/` | 6 | `context`, `prd`, `spec`, `traceability`, `diagramming`, `deliver` (read by path from `/ba:*`) |
@@ -256,7 +256,7 @@ Not regenerated this pass — no `repomix-output.xml` is committed to the repo (
 **Verified counts** (via `ls`/`find` against the filesystem, 2026-09-11):
 - Agent definitions: 28 (16 engineering + 12 marketing; ba kit ships no agents)
 - Command files: 48 (28 `ck/` + 14 `mk/` + 6 `ba/`)
-- Skill files: 129 `SKILL.md` (42 software · 59 marketing · 8 sales · 5 finance · 6 automation · 3 integrations · 6 ba) — re-counted from disk 2026-10-06; the old split (50/50/6/2/6 + "10 legacy compat") had drifted
+- Skill files: 126 `SKILL.md` (42 software · 59 marketing · 8 sales · 2 finance · 6 automation · 3 integrations · 6 ba) — re-counted from disk 2026-10-06; the old split (50/50/6/2/6 + "10 legacy compat") had drifted
 - Workflow files: 19 in `.claude/workflows/` (7 shipped by the engineer kit + 11 by the marketing kit + 1 by the ba kit; `cro-framework.md` shared — see `.claude/kits/*.json`)
 - Test files: `tests/ba-spine.test.js` (13 tests) · `tests/ba-deliver.test.js` (4 tests) · `tests/lib/kits.js` (shared kit-loading helpers) · plus 15 engineer-kit test files
 
