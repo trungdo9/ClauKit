@@ -44,7 +44,7 @@ payload=$(cat <<EOF
     "color": 5763719,
     "timestamp": "$(date -u +%Y-%m-%dT%H:%M:%S.000Z)",
     "footer": {
-        "text": "DevPocket API • $(basename "$(pwd)")"
+        "text": "KitForge • $(basename "$(pwd)")"
     },
     "fields": [
         {

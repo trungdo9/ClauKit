@@ -1,20 +1,20 @@
 ---
 name: kit-builder
-description: Build custom ClaudeKit Marketing components - skills, agents, and workflows tailored to specific business needs.
+description: Build custom KitForge marketing-kit components - skills, agents, and workflows tailored to specific business needs.
 allowed-tools: Read, Write, Edit, Glob, Grep, Bash
 ---
 
 # Kit Builder
 
-> Create custom skills, agents, and workflows to extend ClaudeKit Marketing for your specific needs.
+> Create custom skills, agents, and workflows to extend the KitForge marketing kit for your specific needs.
 
 ---
 
 ## What This Skill Does
 
-**Challenge**: Every marketing team has unique processes and tools. The built-in skills in ClaudeKit Marketing are great for common use cases but may not cover the specifics of each business.
+**Challenge**: Every marketing team has unique processes and tools. The built-in skills in the KitForge marketing kit are great for common use cases but may not cover the specifics of each business.
 
-**Solution**: The kit-builder skill provides a framework to create custom skills, agents, and workflows — from simple slash commands to complex multi-agent pipelines — and integrate them into ClaudeKit Marketing.
+**Solution**: The kit-builder skill provides a framework to create custom skills, agents, and workflows — from simple slash commands to complex multi-agent pipelines — and integrate them into the KitForge marketing kit.
 
 ---
 
@@ -55,7 +55,7 @@ Single responsibility, fail gracefully, document-first; common use cases and tro
 
 ## Prerequisites
 
-- ClaudeKit Marketing installed
+- KitForge marketing kit installed
 - Node.js 18+ or Python 3.10+
 - Anthropic API key or Google Gemini API key
 

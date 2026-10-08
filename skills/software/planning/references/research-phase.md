@@ -31,7 +31,7 @@ When given GitHub repository URL, generate fresh codebase summary:
 # usage: 
 repomix --remote <github-repo-url>
 # example: 
-repomix --remote https://github.com/mrgoonie/human-mcp
+repomix --remote https://github.com/yamadashy/repomix
 ```
 
 ### Debugger Delegation
