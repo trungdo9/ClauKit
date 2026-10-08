@@ -82,6 +82,6 @@ ck help
 
 ## License
 
-MIT (`package.json`). Third-party attributions: [skills/THIRD_PARTY_NOTICES.md](./skills/THIRD_PARTY_NOTICES.md).
+MIT — see [LICENSE](./LICENSE). Third-party attributions: [skills/THIRD_PARTY_NOTICES.md](./skills/THIRD_PARTY_NOTICES.md).
 
 Issues: https://github.com/trungdo9/ClauKit/issues
