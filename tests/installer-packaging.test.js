@@ -501,6 +501,25 @@ test('ba installs its six skills grouped under skills/ba/, each named ba-<dir>',
   assert.ok(fs.existsSync(path.join(p, '.claude/skills/software/scenario/SKILL.md')));
 });
 
+// The statusline required `scripts/ck/statusline-context-meter.cjs` unguarded, so in
+// every kit that does not ship `scripts/ck/` (marketing, ba, hr) it died with
+// "Cannot find module" on each render — for two weeks, because no test ran it in a
+// kit. A kit without the meter renders without the ctx segment instead.
+test('every kit installs a statusline that renders', () => {
+  const kits = packagedKits();
+  assert.ok(kits.length >= 4, 'the kit glob returned nothing — the loop would pass vacuously');
+  for (const kit of kits) {
+    const p = fresh();
+    assert.strictEqual(init(p, [], kit).status, 0, `[${kit}] init failed`);
+    const settings = JSON.parse(fs.readFileSync(path.join(p, '.claude/settings.json'), 'utf-8'));
+    const [bin, ...args] = settings.statusLine.command.split(/\s+/);
+    const payload = JSON.stringify({ model: { display_name: 'Opus' }, workspace: { current_dir: p }, session_id: 't', transcript_path: path.join(p, 'none.jsonl') });
+    const r = spawnSync(bin, args, { cwd: p, input: payload, encoding: 'utf-8' });
+    assert.strictEqual(r.status, 0, `[${kit}] statusline exited ${r.status}: ${r.stderr.split('\n')[0]}`);
+    assert.ok(r.stdout.trim(), `[${kit}] statusline printed nothing`);
+  }
+});
+
 test('hr installs its thirteen skills grouped under skills/hr/, each named hr-<dir>', () => {
   const p = fresh();
   const r = init(p, [], 'hr');

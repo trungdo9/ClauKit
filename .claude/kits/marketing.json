@@ -1,6 +1,6 @@
 {
   "name": "marketing",
-  "description": "Marketing Kit + Marketing Automation — /mk: namespace, 59 marketing + 8 sales + 2 finance skills, 12 agents, 14 commands, 12 workflows, 5 MCP wrappers, 6 automation skills, 2 integration skills (WordPress)",
+  "description": "Marketing Kit + Marketing Automation — /mk: namespace, 59 marketing + 8 sales + 2 finance skills, 12 agents, 14 commands, 12 workflows, 5 MCP wrappers, 6 automation skills, 3 integration skills (WordPress, Shopify)",
   "namespace": "mk",
   "version": "0.1.0",
   "paths": {

@@ -12,7 +12,7 @@
 - **6 workflow files** (marketing 10-phase, seo 7-phase closed loop, sales 5-phase, crm 5-phase, video 6-phase, design 5-phase)
 - **5 MCP wrappers** (ga4, gsc, sendgrid, resend, reviewweb) — with manual fallback
 - **6 automation skills** (5 MCP wrappers + marketing-orchestrator)
-- **2 integration skills** (`wordpress-rest` client + `mcp-wordpress` wrapper) — publish/update/audit WordPress content via `/mk:content publish` + `/mk:seo audit wp:<id>`
+- **3 integration skills** (`wordpress-rest` client + `mcp-wordpress` wrapper — publish/update/audit WordPress content via `/mk:content publish` + `/mk:seo audit wp:<id>`; `shopify-publish` — Shopify blog articles & pages)
 
 **Skill breakdown (56 total):**
 - 25 from `AgriciDaniel/claude-seo` (1 root + 24 sub-skills: audit, technical, content, schema, geo, local, page, images, sitemap, drift, cluster, content-brief, competitor-pages, ecommerce, hreflang, programmatic, backlinks, sxo, flow, plan, maps, dataforseo, google, image-gen)

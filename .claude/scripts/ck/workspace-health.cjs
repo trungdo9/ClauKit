@@ -18,7 +18,7 @@
  * Read-only. Never writes, never network. Exit 0 = all PASS, 1 = at least one
  * WARN or FAIL, 2 = the script itself could not run.
  *
- * Usage: node .claude/scripts/workspace-health.cjs [--json]
+ * Usage: node .claude/scripts/ck/workspace-health.cjs [--json]
  */
 
 const fs = require('fs');

@@ -27,7 +27,16 @@ const VersionColor = color('1;33');  // yellow
 const UsageColor = color('1;35');    // magenta
 const CostColor = color('1;36');     // cyan
 const CtxColors = { ok: color('1;32'), warn: color('1;33'), alert: color('1;31') }; // green/yellow/red
-const { contextMeter, planUsage } = require('./scripts/ck/statusline-context-meter.cjs');
+// The meter ships with `scripts/ck/`, which the marketing, ba and hr kits do not
+// install. An unguarded require killed the whole statusline there with "Cannot
+// find module"; without the meter it now drops the ctx and plan-usage segments.
+let contextMeter = () => null;
+let planUsage = () => null;
+try {
+    ({ contextMeter, planUsage } = require('./scripts/ck/statusline-context-meter.cjs'));
+} catch (err) {
+    if (err.code !== 'MODULE_NOT_FOUND') throw err;
+}
 const Reset = reset();
 
 /**

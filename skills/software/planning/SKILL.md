@@ -109,6 +109,8 @@ node .claude/scripts/ck/plan-lint.cjs <plan-dir>      # 0 = PASS · 1 = violatio
 
 Verifies: `## Global Constraints` present and non-empty · every phase has a gate stating `<command> → <expected>` (`**Exit gate:**`, `**Acceptance:**` and `**Exit criteria:**` all count) · every phase declares `**Interfaces**` (or `**Interfaces:** none — no cross-phase surface`, a recorded decision rather than silence) · no banned placeholders outside code fences and quotations · the `## Plan Completeness` block exists with all six items ticked. Warns when the plan spans >1 top-level dir with no scope options table.
 
+**No `.claude/scripts/ck/` in this install** (the marketing kit ships `planning` without the helpers, deliberately): the gate still holds — run the five checks above by hand against `plan.md`, record each as PASS/FAIL in the hand-over message, and treat any FAIL as exit 1. Say that the check was manual; never report it as `plan-lint` PASS.
+
 **Exit 1 ⇒ the plan does not leave the planner.** Do not present it for review, do not implement against it. The two items no script can settle — spec coverage and cross-phase type agreement — stay attestation-only and the tool says so rather than implying it checked them.
 
 Why hard: without `## Global Constraints`, `.claude/scripts/ck/phase-brief.cjs` emits a "plan declares no Global Constraints" comment and **exits 0**, so every per-phase implementer works without the verbatim values and the violation only surfaces at review, three gates later. Run against this repo's own flagship plan the gate returns 11 violations — the failure mode is the normal case, not a hypothetical.
