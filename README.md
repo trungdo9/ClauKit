@@ -82,6 +82,6 @@ ck help
 
 ## License
 
-MIT — see [LICENSE](./LICENSE). Third-party attributions: [skills/THIRD_PARTY_NOTICES.md](./skills/THIRD_PARTY_NOTICES.md).
+MIT © 2024 Duy Nguyen, © 2026 trungdo9 — see [LICENSE](./LICENSE). Third-party attributions: [skills/THIRD_PARTY_NOTICES.md](./skills/THIRD_PARTY_NOTICES.md).
 
 Issues: https://github.com/trungdo9/ClauKit/issues
