@@ -210,7 +210,6 @@ Eliminate code duplication
 - Keep files under 200 lines for optimal context management
 - Split large files into focused components
 - Extract utilities into separate modules
-- Exception: `README.md` (curated at ~768 lines per recent deliberate commits) — see Unresolved Questions
 
 ### Security First
 - Try-catch error handling
@@ -303,4 +302,4 @@ Kit-specific MCP wrappers live under `.claude/skills/automation/` (GA4, GSC, Sen
 ## Unresolved Questions
 
 1. ~~registry command-count inconsistency~~ — RESOLVED 2026-07-31; re-verified 2026-08-21: header, § 3 and § 6 all read 57 logical commands / 213 entries, recounted from disk (see registry § 6).
-2. `README.md` is 768 lines, exceeding the generic "<300 lines" guidance in `CLAUDE.md` — appears to be a deliberate choice from a recent commit ("docs: split marketing kit guide into MARKETING.md"). Flagging rather than enforcing; needs an explicit decision on whether the rule should carve out an exception for README.
+2. ~~`README.md` over 300 lines~~ — RESOLVED 2026-10-08: rewritten minimal (~90 lines); flows, comparisons and FAQ dropped, depth stays in `docs/` and kit READMEs.
