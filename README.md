@@ -64,7 +64,7 @@ The full catalogue of skills, agents and commands is [docs/clauKit-registry.md](
 - **Hooks** (fail open, wired in `settings.json`):
   - `guard-destructive` — blocks `reset --hard`, `clean -fdx`, `stash -u`, unguarded `DELETE`/`TRUNCATE`.
   - `branch-guard` — refuses to move HEAD while another live session shares the tree.
-  - `protected-branch-guard` — refuses `push`/`merge` to `main`, `master`, `staging`, `uat`, `prod`.
+  - `protected-branch-guard` — refuses `push`/`merge` to `main`, `master`, `staging`, `uat`, `prod`, in repos that run a staging ladder (`origin/staging` exists); a repo without one commits to `main` by design and is left alone. Consent: `CK_ALLOW_PROTECTED_PUSH=1`.
 - **Durable runs** — `plans/<plan>/STATE.md` lets an interrupted run resume by re-checking git and gates.
 
 ## CLI
